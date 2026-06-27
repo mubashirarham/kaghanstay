@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guest Account Dashboard | Kaghan Hotel & Resorts</title>
+    <meta name="robots" content="noindex, nofollow">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Global CSS -->
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body class="bg-[#F8FAFC] text-[#0F172A] overflow-x-hidden font-sans pt-24">
+
+    <!-- Header / Navigation -->
+    <nav id="hotel-navbar" class="fixed top-0 left-0 right-0 z-50 py-5 px-6 md:px-12 flex justify-between items-center text-white bg-[#0F172A] border-b border-white/10">
+        <div class="flex items-center gap-3">
+            <img src="../assets/images/logo.png" alt="Kaghan Properties Logo" class="h-10 w-auto object-contain">
+            <div class="flex flex-col">
+                <span class="text-lg font-bold tracking-wider uppercase outfit leading-none">Kaghan</span>
+                <span class="text-xs text-[#D4AF37] tracking-[0.2em] uppercase font-semibold">Hotel & Resorts</span>
+            </div>
+        </div>
+
+        <div class="flex gap-6 items-center font-medium">
+            <a href="../index.html" class="text-slate-300 hover:text-[#D4AF37] transition-colors text-sm">Resort Home</a>
+            <a href="../rooms.html" class="text-slate-300 hover:text-[#D4AF37] transition-colors text-sm">Suites</a>
+            <button onclick="KaghanDB.logout()" class="border border-white/20 text-white px-4 py-1.5 rounded-full hover:bg-rose-600 hover:border-rose-600 transition-all text-xs font-semibold">
+                Logout
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="py-12 px-6 md:px-12 max-w-7xl mx-auto space-y-10">
+        
+        <!-- Welcome banner -->
+        <div class="bg-gradient-to-r from-[#1E293B] to-[#0F172A] rounded-3xl p-8 border border-white/5 shadow-xl text-white flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+            <div>
+                <span class="text-[#D4AF37] text-xs font-bold uppercase tracking-wider">Guest Console</span>
+                <h1 class="text-2xl md:text-3xl font-bold outfit mt-1">Welcome Back, <span id="user-greeting-name">Guest</span>!</h1>
+                <p class="text-slate-400 text-xs mt-1">Manage stay details and loyalty points from your personal dashboard.</p>
+            </div>
+            <!-- Loyalty Status Card -->
+            <div class="bg-[#1E293B]/70 border border-slate-700/50 rounded-2xl p-5 w-full md:w-auto min-w-[240px] flex items-center gap-4">
+                <div class="w-12 h-12 bg-[#D4AF37]/10 text-[#D4AF37] rounded-xl flex items-center justify-center text-2xl shadow-inner">
+                    <i class="fa-solid fa-crown"></i>
+                </div>
+                <div>
+                    <span id="loyalty-tier" class="text-xs uppercase tracking-wider font-extrabold text-[#D4AF37]">Silver Stay Circle</span>
+                    <div class="flex items-baseline gap-1 mt-1">
+                        <span id="loyalty-points-val" class="text-2xl font-black outfit">350</span>
+                        <span class="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">Loyalty Points</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Guest Statistics Grid -->
+        <section class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div class="bg-white rounded-3xl border border-slate-100 p-6 shadow-md flex items-center gap-5">
+                <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-lg shadow-sm">
+                    <i class="fa-solid fa-calendar-check"></i>
+                </div>
+                <div>
+                    <span class="text-slate-400 text-[9px] uppercase font-bold tracking-wider block">Active Stays</span>
+                    <span id="stat-active-bookings" class="text-lg font-black outfit text-slate-800">0</span>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-3xl border border-slate-100 p-6 shadow-md flex items-center gap-5">
+                <div class="w-12 h-12 bg-[#D4AF37]/10 text-[#D4AF37] rounded-2xl flex items-center justify-center text-lg shadow-sm">
+                    <i class="fa-solid fa-moon"></i>
+                </div>
+                <div>
+                    <span class="text-slate-400 text-[9px] uppercase font-bold tracking-wider block">Nights Booked</span>
+                    <span id="stat-nights-stayed" class="text-lg font-black outfit text-slate-800">0 Nights</span>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-3xl border border-slate-100 p-6 shadow-md flex items-center gap-5">
+                <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-lg shadow-sm">
+                    <i class="fa-solid fa-wallet"></i>
+                </div>
+                <div>
+                    <span class="text-slate-400 text-[9px] uppercase font-bold tracking-wider block">Total Spent</span>
+                    <span id="stat-total-spend" class="text-lg font-black outfit text-slate-800">PKR 0</span>
+                </div>
+            </div>
+        </section>
+
+        <div class="flex flex-col lg:flex-row gap-10">
+            <!-- Bookings List Column (Left) -->
+            <div class="w-full lg:w-2/3 space-y-8">
+                
+                <!-- Active Reservations Card -->
+                <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-lg font-bold outfit text-slate-900 flex items-center gap-2">
+                            <i class="fa-solid fa-calendar-days text-[#D4AF37]"></i> Active Reservations
+                        </h2>
+                        <a href="../booking.html" class="bg-[#D4AF37] text-white text-[10px] uppercase tracking-widest font-extrabold px-4 py-2.5 rounded-xl hover:bg-slate-900 transition-all shadow-sm">
+                            New Booking
+                        </a>
+                    </div>
+
+                    <!-- Active Bookings Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="border-b border-slate-100 text-slate-400 text-[9px] uppercase tracking-wider font-bold">
+                                    <th class="px-6 py-3">ID</th>
+                                    <th class="px-6 py-3">Suite Style</th>
+                                    <th class="px-6 py-3">Stay Dates</th>
+                                    <th class="px-6 py-3">Total Paid</th>
+                                    <th class="px-6 py-3">Status</th>
+                                    <th class="px-6 py-3">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="active-bookings-tbody">
+                                <!-- Loaded dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Active Empty State -->
+                    <div id="active-bookings-empty-state" class="hidden text-center py-10">
+                        <p class="text-slate-400 text-xs">No active reservations.</p>
+                    </div>
+                </div>
+
+                <!-- Previous Stay History Card -->
+                <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md">
+                    <h2 class="text-lg font-bold outfit text-slate-900 mb-6 flex items-center gap-2">
+                        <i class="fa-solid fa-clock-rotate-left text-[#D4AF37]"></i> Previous Stay History
+                    </h2>
+
+                    <!-- Previous Bookings Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="border-b border-slate-100 text-slate-400 text-[9px] uppercase tracking-wider font-bold">
+                                    <th class="px-6 py-3">ID</th>
+                                    <th class="px-6 py-3">Suite Style</th>
+                                    <th class="px-6 py-3">Stay Dates</th>
+                                    <th class="px-6 py-3">Total Paid</th>
+                                    <th class="px-6 py-3">Status</th>
+                                    <th class="px-6 py-3">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="previous-bookings-tbody">
+                                <!-- Loaded dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Previous Empty State -->
+                    <div id="previous-bookings-empty-state" class="hidden text-center py-10">
+                        <p class="text-slate-400 text-xs">No previous stays history.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Settings Column (Right) -->
+            <div class="w-full lg:w-1/3">
+                <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md">
+                    <h2 class="text-xl font-bold outfit text-slate-900 mb-6 flex items-center gap-2">
+                        <i class="fa-solid fa-user-gear text-[#D4AF37]"></i> Profile Settings
+                    </h2>
+
+                    <form id="profile-form" class="space-y-4">
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-2">Guest Account Email</label>
+                            <input type="email" id="profile-email" disabled class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-100 text-slate-400 cursor-not-allowed">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-2">Full Name</label>
+                            <input type="text" id="profile-name" required class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 focus:border-[#D4AF37] outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-2">Phone Number</label>
+                            <input type="text" id="profile-phone" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 focus:border-[#D4AF37] outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-2">Password</label>
+                            <input type="password" id="profile-pass" required class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 focus:border-[#D4AF37] outline-none">
+                        </div>
+
+                        <button type="submit" class="w-full bg-[#0F172A] text-white py-3 rounded-xl font-bold hover:bg-[#D4AF37] transition-all text-xs shadow-md mt-6">
+                            Save Changes
+                        </button>
+                    </form>
+
+                    <div class="border-t border-slate-100 pt-6 mt-6">
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 text-xs">
+                                <i class="fa-solid fa-address-card"></i>
+                            </div>
+                            <div class="text-[10px] text-slate-500 font-medium">
+                                <span class="block font-bold text-slate-800 mb-0.5">Accredited Guest ledger</span>
+                                <span>Unique Account ID: <strong id="user-meta-name" class="text-[#D4AF37]">Mubashir</strong> (<span id="user-meta-email">guest@kaghan.com</span>)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Cancellation Confirmation Dialog -->
+    <div id="cancel-confirm-modal" class="fixed inset-0 bg-[#0F172A]/70 z-[100] flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl max-w-sm w-full overflow-hidden shadow-2xl relative border border-slate-100 transform scale-95 transition-transform duration-300 p-8 text-center text-slate-800">
+            <div class="w-14 h-14 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fa-solid fa-exclamation-triangle text-2xl"></i>
+            </div>
+            
+            <h2 class="text-xl font-bold outfit text-slate-900 mb-2">Cancel Reservation?</h2>
+            <p class="text-slate-400 text-xs px-4 mb-6 leading-relaxed">
+                Are you sure you want to cancel this booking? Applied loyalty points will be returned to your profile. This action cannot be undone.
+            </p>
+
+            <div class="flex gap-4">
+                <button onclick="closeCancelModal()" class="w-1/2 border border-slate-200 text-slate-800 font-bold py-3 rounded-xl hover:bg-slate-100 transition-all text-xs">
+                    No, Keep Stay
+                </button>
+                <button onclick="executeCancelBooking()" class="w-1/2 bg-rose-600 text-white font-bold py-3 rounded-xl hover:bg-rose-700 transition-all text-xs shadow-md">
+                    Yes, Cancel Stay
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reschedule Booking Modal -->
+    <div id="reschedule-modal" class="fixed inset-0 bg-[#0F172A]/70 z-[100] flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl max-w-md w-full overflow-hidden shadow-2xl relative border border-slate-100 transform scale-95 transition-transform duration-300 p-8 text-slate-800 text-center">
+            <button onclick="closeRescheduleModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700">
+                <i class="fa-solid fa-times text-lg"></i>
+            </button>
+            <h2 class="text-xl font-bold outfit text-slate-900 mb-2">Reschedule Reservation</h2>
+            <p class="text-slate-400 text-xs mb-6">Select new check-in and check-out dates for your stay.</p>
+            
+            <div class="space-y-4 text-left">
+                <div>
+                    <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-2">Check In Date</label>
+                    <input type="date" id="reschedule-check-in" onchange="calculateReschedulePrice()" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:border-[#D4AF37] text-xs bg-slate-50 text-slate-800">
+                </div>
+                <div>
+                    <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-2">Check Out Date</label>
+                    <input type="date" id="reschedule-check-out" onchange="calculateReschedulePrice()" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:border-[#D4AF37] text-xs bg-slate-50 text-slate-800">
+                </div>
+                <div class="border-t border-slate-100 pt-4 flex justify-between items-center text-xs font-bold text-slate-500">
+                    <span>New Total Price (with GST):</span>
+                    <span id="reschedule-price-lbl" class="text-sm font-extrabold text-[#D4AF37]">PKR 0</span>
+                </div>
+                <div id="reschedule-warning" class="hidden text-[10px] text-rose-600 bg-rose-50 border border-rose-100 p-3 rounded-xl font-semibold text-center"></div>
+            </div>
+
+            <div class="flex gap-4 mt-6">
+                <button onclick="closeRescheduleModal()" class="w-1/2 border border-slate-200 text-slate-800 font-bold py-3 rounded-xl hover:bg-slate-100 transition-all text-xs">
+                    Cancel
+                </button>
+                <button id="reschedule-submit-btn" onclick="executeRescheduleBooking()" class="w-1/2 bg-[#0F172A] text-white font-bold py-3 rounded-xl hover:bg-[#D4AF37] transition-all text-xs shadow-md">
+                    Confirm Change
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Room Review Submission Modal -->
+    <div id="review-modal" class="fixed inset-0 bg-[#0F172A]/70 z-[100] flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl max-w-md w-full overflow-hidden shadow-2xl relative border border-slate-100 transform scale-95 transition-transform duration-300 p-8 text-slate-800 text-center">
+            <button onclick="closeReviewModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700">
+                <i class="fa-solid fa-times text-lg"></i>
+            </button>
+            <h2 class="text-xl font-bold outfit text-slate-900 mb-2">Write Room Review</h2>
+            <p id="review-modal-room-name" class="text-[#D4AF37] text-xs font-bold mb-6">Deluxe Alpine Room</p>
+            
+            <div class="space-y-4 text-left">
+                <div>
+                    <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-2">Select Star Rating</label>
+                    <div class="flex justify-center gap-2 text-2xl text-slate-300" id="review-star-container">
+                        <i class="fa-solid fa-star cursor-pointer hover:text-amber-400 transition-colors" data-rating="1" onclick="setReviewRating(1)"></i>
+                        <i class="fa-solid fa-star cursor-pointer hover:text-amber-400 transition-colors" data-rating="2" onclick="setReviewRating(2)"></i>
+                        <i class="fa-solid fa-star cursor-pointer hover:text-amber-400 transition-colors" data-rating="3" onclick="setReviewRating(3)"></i>
+                        <i class="fa-solid fa-star cursor-pointer hover:text-amber-400 transition-colors" data-rating="4" onclick="setReviewRating(4)"></i>
+                        <i class="fa-solid fa-star cursor-pointer hover:text-amber-400 transition-colors" data-rating="5" onclick="setReviewRating(5)"></i>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-2">Your Review & Comments</label>
+                    <textarea id="review-comment" rows="4" placeholder="Share your experience staying in this suite..." class="w-full border border-slate-200 rounded-xl px-4 py-3 outline-none focus:border-[#D4AF37] text-xs bg-slate-50 text-slate-800"></textarea>
+                </div>
+            </div>
+
+            <div class="flex gap-4 mt-6">
+                <button onclick="closeReviewModal()" class="w-1/2 border border-slate-200 text-slate-800 font-bold py-3 rounded-xl hover:bg-slate-100 transition-all text-xs">
+                    Cancel
+                </button>
+                <button onclick="executeSubmitReview()" class="w-1/2 bg-gradient-to-r from-[#D4AF37] to-[#DC2626] text-white font-bold py-3 rounded-xl hover:opacity-90 transition-all text-xs shadow-md">
+                    Submit Review
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="../assets/js/shared.js"></script>
+    <script src="../assets/js/users.js"></script>
+    <script src="../assets/js/newsletter.js"></script>
+    <script src="../assets/js/user/bookings.js"></script>
+    <script src="../assets/js/user/reviews.js"></script>
+    <script src="../assets/js/user/profile.js"></script>
+    <script src="../assets/js/user/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suites & Rooms | Kaghan Hotel & Resorts</title>
+    <meta name="description" content="Discover our selection of luxury suites, executive rooms, and mountain penthouses. Premium amenities, 24/7 service, and scenic views in Islamabad.">
+    <link rel="canonical" href="https://stay.kaghanproperties.com/rooms">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://stay.kaghanproperties.com/rooms">
+    <meta property="og:title" content="Suites & Rooms | Kaghan Hotel & Resorts">
+    <meta property="og:description" content="Discover our selection of luxury suites, executive rooms, and mountain penthouses. Premium amenities, 24/7 service, and scenic views in Islamabad.">
+    <meta property="og:image" content="https://kaghanproperties.com/assets/images/logo.png">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://stay.kaghanproperties.com/rooms">
+    <meta name="twitter:title" content="Suites & Rooms | Kaghan Hotel & Resorts">
+    <meta name="twitter:description" content="Discover our selection of luxury suites, executive rooms, and mountain penthouses. Premium amenities, 24/7 service, and scenic views in Islamabad.">
+    <meta name="twitter:image" content="https://kaghanproperties.com/assets/images/logo.png">
+
+    <!-- Structured Data (JSON-LD ItemList & Accommodations Schema) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": "Kaghan Hotel & Resorts Suite Catalog",
+      "description": "Exquisite luxury hotel suites and rooms catalog in Pine Valley, Islamabad.",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "item": {
+            "@type": "HotelRoom",
+            "name": "Standard Cozy Room",
+            "description": "Elegant cozy room featuring a queen-sized bed, en-suite bathroom, high-speed Wi-Fi, and smart TV.",
+            "bed": "Queen Bed",
+            "occupancy": {
+              "@type": "QuantitativeValue",
+              "value": 2
+            }
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "item": {
+            "@type": "HotelRoom",
+            "name": "Deluxe Alpine Suite",
+            "description": "Luxurious Alpine-themed suite with private balcony, king-sized bed, writing desk, and mini-bar.",
+            "bed": "King Bed",
+            "occupancy": {
+              "@type": "QuantitativeValue",
+              "value": 2
+            }
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "item": {
+            "@type": "HotelRoom",
+            "name": "Executive Scenic Suite",
+            "description": "Premium corner suite overlooking the Margalla Hills, separate lounge space, walk-in closet, and premium tub.",
+            "bed": "King Bed",
+            "occupancy": {
+              "@type": "QuantitativeValue",
+              "value": 3
+            }
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "item": {
+            "@type": "HotelRoom",
+            "name": "Presidential Panorama Penthouse",
+            "description": "Magnificent top-floor penthouse with panoramic glass walls, private terrace, dining area, jacuzzi, and dedicated butler service.",
+            "bed": "Grand King Bed",
+            "occupancy": {
+              "@type": "QuantitativeValue",
+              "value": 4
+            }
+          }
+        }
+      ]
+    }
+    </script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Global CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="bg-[#F8FAFC] text-[#0F172A] overflow-x-hidden font-sans pt-24">
+
+    <!-- Header / Navigation -->
+    <nav id="hotel-navbar" class="fixed top-0 left-0 right-0 z-50 py-5 px-6 md:px-12 flex justify-between items-center text-white bg-[#0F172A] border-b border-white/10">
+        <div class="flex items-center gap-3">
+            <img src="assets/images/logo.png" alt="Kaghan Properties Logo" class="h-10 w-auto object-contain">
+            <div class="flex flex-col">
+                <span class="text-lg font-bold tracking-wider uppercase outfit leading-none">Kaghan</span>
+                <span class="text-xs text-[#D4AF37] tracking-[0.2em] uppercase font-semibold">Hotel & Resorts</span>
+            </div>
+        </div>
+
+        <div class="hidden md:flex gap-8 items-center font-medium">
+            <a href="index.html" class="hover:text-[#D4AF37] transition-colors">Home</a>
+            <a href="rooms.html" class="text-[#D4AF37] hover:text-[#D4AF37] transition-colors">Rooms</a>
+            <a href="booking.html" class="hover:text-[#D4AF37] transition-colors">Book Stay</a>
+            <div id="auth-links" class="flex gap-4 items-center">
+                <a href="login.html" class="border border-[#D4AF37] text-white px-5 py-2 rounded-full hover:bg-[#D4AF37] hover:text-white transition-all text-sm font-semibold">Login</a>
+                <a href="login.html?register=true" class="bg-[#D4AF37] text-white px-5 py-2 rounded-full hover:bg-white hover:text-slate-900 transition-all text-sm font-semibold luxury-shadow">Register</a>
+            </div>
+        </div>
+
+        <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
+            <i class="fa-solid fa-bars text-2xl"></i>
+        </button>
+    </nav>
+
+    <!-- Mobile Drawer -->
+    <div id="mobile-drawer" class="fixed inset-0 bg-[#0F172A]/95 z-[60] hidden flex flex-col items-center justify-center gap-8 text-white text-xl font-semibold">
+        <button id="menu-close" class="absolute top-6 right-6 text-white text-3xl">
+            <i class="fa-solid fa-times"></i>
+        </button>
+        <a href="index.html" class="hover:text-[#D4AF37]" onclick="toggleDrawer()">Home</a>
+        <a href="rooms.html" class="text-[#D4AF37]" onclick="toggleDrawer()">Rooms</a>
+        <a href="booking.html" class="hover:text-[#D4AF37]" onclick="toggleDrawer()">Book Stay</a>
+        <div id="auth-links-mobile" class="flex flex-col gap-4 w-64 text-center">
+            <a href="login.html" class="border border-[#D4AF37] text-white py-3 rounded-full hover:bg-[#D4AF37] transition-all text-base" onclick="toggleDrawer()">Login</a>
+            <a href="login.html?register=true" class="bg-[#D4AF37] text-white py-3 rounded-full hover:bg-white hover:text-slate-900 transition-all text-base" onclick="toggleDrawer()">Register</a>
+        </div>
+    </div>
+
+    <!-- Header Banner -->
+    <div class="bg-[#0F172A] text-white py-16 px-6 text-center relative overflow-hidden">
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-800 via-[#0F172A] to-[#0F172A] opacity-80"></div>
+        <div class="relative z-10 max-w-4xl mx-auto">
+            <h1 class="text-3xl md:text-5xl font-bold outfit mb-4">Our Suites & Rooms</h1>
+            <p class="text-slate-400 text-sm md:text-base font-light max-w-xl mx-auto">
+                Explore a curation of luxury and privacy, designed specifically for your comfort. Find the perfect fit for your Islamabad escape.
+            </p>
+        </div>
+    </div>
+
+    <!-- Explorer Grid & Filters -->
+    <section class="py-12 px-6 md:px-12 max-w-7xl mx-auto">
+        <div class="flex flex-col lg:flex-row gap-8">
+            
+            <!-- Filters Sidebar -->
+            <aside class="w-full lg:w-1/4 bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md h-fit">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="font-bold text-lg outfit text-slate-900">Filters</h3>
+                    <button onclick="clearFilters()" class="text-xs font-semibold text-[#D4AF37] hover:underline">Reset All</button>
+                </div>
+                
+                <div class="space-y-6">
+                    <!-- Search Input -->
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider text-slate-500 font-semibold mb-2">Search Keyword</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-search absolute left-3 top-3 text-slate-400"></i>
+                            <input type="text" id="filter-search" oninput="applyFilters()" placeholder="e.g. Valley, Twin, Pool" class="w-full border border-slate-200 rounded-xl pl-9 pr-4 py-2 outline-none focus:border-[#D4AF37] text-sm bg-slate-50 text-slate-800">
+                        </div>
+                    </div>
+
+                    <!-- Room Category -->
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider text-slate-500 font-semibold mb-2">Room Category</label>
+                        <select id="filter-category" onchange="applyFilters()" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:border-[#D4AF37] text-sm bg-slate-50 text-slate-800 cursor-pointer">
+                            <option value="all">All Categories</option>
+                            <option value="deluxe">Deluxe Rooms</option>
+                            <option value="executive">Executive Suites</option>
+                            <option value="presidential">Presidential Penthouse</option>
+                        </select>
+                    </div>
+
+                    <!-- Max Price -->
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider text-slate-500 font-semibold mb-2">Max Price per Night</label>
+                        <div class="flex justify-between text-xs text-slate-400 mb-2 font-medium">
+                            <span>PKR 10,000</span>
+                            <span id="price-val">PKR 150,000</span>
+                        </div>
+                        <input type="range" id="filter-price" min="10000" max="150000" step="5000" value="150000" oninput="updatePriceLabel(); applyFilters()" class="w-full accent-[#D4AF37] cursor-pointer">
+                    </div>
+
+                    <!-- Sorting -->
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider text-slate-500 font-semibold mb-2">Sort Results By</label>
+                        <select id="sort-by" onchange="applyFilters()" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:border-[#D4AF37] text-sm bg-slate-50 text-slate-800 cursor-pointer">
+                            <option value="default">Default</option>
+                            <option value="price-low">Price: Low to High</option>
+                            <option value="price-high">Price: High to Low</option>
+                            <option value="rating">Guest Rating</option>
+                        </select>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Rooms Grid -->
+            <main class="w-full lg:w-3/4">
+                <div class="flex justify-between items-center mb-6">
+                    <p class="text-slate-400 text-sm font-medium"><span id="results-count" class="text-slate-900 font-bold">5</span> luxury suites matching</p>
+                </div>
+
+                <div id="rooms-grid" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Loaded dynamically via JS -->
+                </div>
+
+                <div id="no-rooms-fallback" class="hidden text-center py-20 bg-white border border-slate-100 rounded-3xl shadow-sm">
+                    <i class="fa-solid fa-hotel text-4xl text-slate-300 mb-4"></i>
+                    <h3 class="text-lg font-bold outfit text-slate-900 mb-1">No Suites Found</h3>
+                    <p class="text-slate-400 text-xs">Try adjusting your filters or keyword query.</p>
+                </div>
+            </main>
+
+        </div>
+    </section>
+
+    <!-- Suite Details Modal -->
+    <div id="details-modal" class="fixed inset-0 bg-[#0F172A]/70 z-[100] flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl relative border border-slate-100 transform scale-95 transition-transform duration-300">
+            <button onclick="closeDetailsModal()" class="absolute top-4 right-4 bg-slate-900/60 backdrop-blur-md text-white w-8 h-8 rounded-full flex items-center justify-center hover:bg-slate-900 z-10">
+                <i class="fa-solid fa-times"></i>
+            </button>
+            <div id="modal-content">
+                <!-- Content injected dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-[#0b111e] text-slate-400 pt-20 pb-10 px-6 md:px-12 border-t border-slate-900 mt-24">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+            <div>
+                <div class="flex items-center gap-3 mb-6 text-white">
+                    <img src="assets/images/logo.png" alt="Kaghan Properties Logo" class="h-8 w-auto object-contain">
+                    <span class="text-base font-bold tracking-wider outfit font-semibold">KAGHAN HOTEL & RESORTS</span>
+                </div>
+                <p class="text-sm leading-relaxed mb-6">
+                    Luxury staying and smart reservation system designed to deliver five-star hospitality directly to your viewport.
+                </p>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-6 uppercase tracking-wider text-xs outfit">Resort Nav</h4>
+                <ul class="space-y-3 text-sm">
+                    <li><a href="rooms.html" class="hover:text-[#D4AF37]">Our Suites</a></li>
+                    <li><a href="booking.html" class="hover:text-[#D4AF37]">Make Reservation</a></li>
+                    <li><a href="login.html" class="hover:text-[#D4AF37]">Guest Portal</a></li>
+                    <li><a href="admin/index.html" class="hover:text-[#D4AF37]">Admin Console</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-6 uppercase tracking-wider text-xs outfit">Contact Front Desk</h4>
+                <p class="text-xs leading-relaxed mb-4">
+                    Main Jinnah Avenue Extension, Pine Valley Estates, Islamabad, Pakistan
+                </p>
+                <p class="text-sm text-[#D4AF37] font-bold"><i class="fa-solid fa-phone mr-2"></i>0334-0091127</p>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-6 uppercase tracking-wider text-xs outfit">Newsletter</h4>
+                <div class="flex mt-3">
+                    <input type="email" placeholder="Email Address" class="bg-slate-900 border-none rounded-l-xl px-4 py-2.5 text-sm w-full outline-none text-white">
+                    <button class="bg-[#D4AF37] text-white px-4 rounded-r-xl hover:bg-white hover:text-slate-900 transition-all font-semibold text-sm">Join</button>
+                </div>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto pt-8 border-t border-slate-900 flex flex-col md:flex-row justify-between items-center gap-4 text-xs">
+            <p>&copy; 2026 Kaghan Hotel & Resorts. All Rights Reserved. SECP Registered.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="assets/js/shared.js"></script>
+    <script src="assets/js/users.js"></script>
+    <script src="assets/js/rooms.js"></script>
+    <script src="assets/js/newsletter.js"></script>
+</body>
+</html>

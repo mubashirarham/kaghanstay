@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kaghan Hotel & Resorts | Premium Luxury Stay Islamabad</title>
+    <meta name="description" content="Experience absolute luxury at Kaghan Hotel & Resorts. Nestled in the scenic foothills of Islamabad, offering presidential suites, infinity pools, and world-class service.">
+    <link rel="canonical" href="https://stay.kaghanproperties.com/">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://stay.kaghanproperties.com/">
+    <meta property="og:title" content="Kaghan Hotel & Resorts | Premium Luxury Stay Islamabad">
+    <meta property="og:description" content="Experience absolute luxury at Kaghan Hotel & Resorts. Nestled in the scenic foothills of Islamabad, offering presidential suites, infinity pools, and world-class service.">
+    <meta property="og:image" content="https://kaghanproperties.com/assets/images/logo.png">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://stay.kaghanproperties.com/">
+    <meta name="twitter:title" content="Kaghan Hotel & Resorts | Premium Luxury Stay Islamabad">
+    <meta name="twitter:description" content="Experience absolute luxury at Kaghan Hotel & Resorts. Nestled in the scenic foothills of Islamabad, offering presidential suites, infinity pools, and world-class service.">
+    <meta name="twitter:image" content="https://kaghanproperties.com/assets/images/logo.png">
+
+    <!-- Structured Data (JSON-LD Hotel Schema) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Hotel",
+      "name": "Kaghan Hotel & Resorts",
+      "image": "https://kaghanproperties.com/assets/images/logo.png",
+      "description": "Experience absolute luxury at Kaghan Hotel & Resorts in Islamabad. Nested in Margalla Hills, featuring infinity pools, royal suites, and high-fidelity service.",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Pine Valley, Margalla Foothills",
+        "addressLocality": "Islamabad",
+        "addressCountry": "PK"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": "33.7294",
+        "longitude": "73.0931"
+      },
+      "telephone": "+923340091127",
+      "priceRange": "$$$$",
+      "starRating": {
+        "@type": "Rating",
+        "ratingValue": "5"
+      }
+    }
+    </script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Global CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="bg-[#F8FAFC] text-[#0F172A] overflow-x-hidden font-sans">
+
+    <!-- Header / Navigation -->
+    <nav id="hotel-navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-5 px-6 md:px-12 flex justify-between items-center text-white bg-[#0F172A]/90 backdrop-blur-md border-b border-white/10">
+        <div class="flex items-center gap-3">
+            <img src="assets/images/logo.png" alt="Kaghan Properties Logo" class="h-10 w-auto object-contain">
+            <div class="flex flex-col">
+                <span class="text-lg font-bold tracking-wider uppercase outfit leading-none">Kaghan</span>
+                <span class="text-xs text-[#D4AF37] tracking-[0.2em] uppercase font-semibold">Hotel & Resorts</span>
+            </div>
+        </div>
+
+        <!-- Navigation Links -->
+        <div class="hidden md:flex gap-8 items-center font-medium">
+            <a href="index.html" class="text-[#D4AF37] hover:text-[#D4AF37] transition-colors">Home</a>
+            <a href="rooms.html" class="hover:text-[#D4AF37] transition-colors">Rooms</a>
+            <a href="booking.html" class="hover:text-[#D4AF37] transition-colors">Book Stay</a>
+            <div id="auth-links" class="flex gap-4 items-center">
+                <!-- Dynamically updated by shared JS -->
+                <a href="login.html" class="border border-[#D4AF37] text-white px-5 py-2 rounded-full hover:bg-[#D4AF37] hover:text-white transition-all text-sm font-semibold">Login</a>
+                <a href="login.html?register=true" class="bg-[#D4AF37] text-white px-5 py-2 rounded-full hover:bg-white hover:text-slate-900 transition-all text-sm font-semibold luxury-shadow">Register</a>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Toggle Button -->
+        <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
+            <i class="fa-solid fa-bars text-2xl"></i>
+        </button>
+    </nav>
+
+    <!-- Mobile Drawer Navigation -->
+    <div id="mobile-drawer" class="fixed inset-0 bg-[#0F172A]/95 z-[60] hidden flex flex-col items-center justify-center gap-8 text-white text-xl font-semibold">
+        <button id="menu-close" class="absolute top-6 right-6 text-white text-3xl">
+            <i class="fa-solid fa-times"></i>
+        </button>
+        <a href="index.html" class="text-[#D4AF37]" onclick="toggleDrawer()">Home</a>
+        <a href="rooms.html" class="hover:text-[#D4AF37]" onclick="toggleDrawer()">Rooms</a>
+        <a href="booking.html" class="hover:text-[#D4AF37]" onclick="toggleDrawer()">Book Stay</a>
+        <div id="auth-links-mobile" class="flex flex-col gap-4 w-64 text-center">
+            <a href="login.html" class="border border-[#D4AF37] text-white py-3 rounded-full hover:bg-[#D4AF37] transition-all text-base" onclick="toggleDrawer()">Login</a>
+            <a href="login.html?register=true" class="bg-[#D4AF37] text-white py-3 rounded-full hover:bg-white hover:text-slate-900 transition-all text-base shadow-lg" onclick="toggleDrawer()">Register</a>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <header class="relative h-screen flex flex-col justify-center items-center overflow-hidden">
+        <div class="absolute inset-0">
+            <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1920&q=80" alt="Kaghan Luxury Hotel Islamabad" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-[#0F172A] via-[#0F172A]/50 to-[#0F172A]/30"></div>
+        </div>
+
+        <div class="relative z-10 text-center px-4 max-w-4xl mx-auto mt-20 animate-fade-in">
+            <span class="text-[#D4AF37] uppercase tracking-[0.4em] text-xs md:text-sm font-bold mb-4 block">A New Era of Luxury</span>
+            <h1 class="text-4xl md:text-6xl lg:text-7xl text-white font-bold leading-tight mb-6 outfit">Escape into pure <br><span class="text-[#D4AF37]">Alpine Luxury</span></h1>
+            <p class="text-slate-200 text-sm md:text-lg mb-10 max-w-2xl mx-auto font-light leading-relaxed">
+                Nestled in the breathtaking hills of Islamabad, experience five-star amenities, customized butler services, and private infinity pools.
+            </p>
+        </div>
+
+        <!-- Search Widget -->
+        <div class="relative z-10 w-full max-w-5xl px-4 -mb-16 md:-mb-10 mt-4">
+            <div class="glass-dark rounded-3xl p-6 md:p-8 border border-white/10 shadow-2xl text-white">
+                <form id="hero-search-form" class="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
+                    <div>
+                        <label class="block text-xs uppercase tracking-widest text-[#D4AF37] font-semibold mb-2">Check In</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-calendar-alt absolute left-4 top-3.5 text-slate-400"></i>
+                            <input type="date" id="search-check-in" required class="w-full bg-[#1E293B]/70 border border-slate-700 rounded-xl pl-11 pr-4 py-3 outline-none focus:border-[#D4AF37] transition-all text-white text-sm">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs uppercase tracking-widest text-[#D4AF37] font-semibold mb-2">Check Out</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-calendar-alt absolute left-4 top-3.5 text-slate-400"></i>
+                            <input type="date" id="search-check-out" required class="w-full bg-[#1E293B]/70 border border-slate-700 rounded-xl pl-11 pr-4 py-3 outline-none focus:border-[#D4AF37] transition-all text-white text-sm">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs uppercase tracking-widest text-[#D4AF37] font-semibold mb-2">Room Style</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-bed absolute left-4 top-3.5 text-slate-400"></i>
+                            <select id="search-room-type" class="w-full bg-[#1E293B]/70 border border-slate-700 rounded-xl pl-11 pr-4 py-3 outline-none focus:border-[#D4AF37] transition-all text-white text-sm appearance-none cursor-pointer">
+                                <option value="all">All Room Styles</option>
+                                <option value="deluxe">Deluxe Alpine Room</option>
+                                <option value="executive">Executive Valley Suite</option>
+                                <option value="presidential">Presidential Penthouse</option>
+                            </select>
+                            <i class="fa-solid fa-chevron-down absolute right-4 top-4 text-slate-400 pointer-events-none text-xs"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <button type="submit" class="w-full bg-[#D4AF37] text-white py-3.5 rounded-xl font-bold hover:bg-white hover:text-slate-900 transition-all shadow-lg flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-search"></i>
+                            Find Suites
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </header>
+
+    <!-- Welcome Section / Brand Narrative -->
+    <section class="pt-32 pb-20 px-6 md:px-12 bg-white">
+        <div class="max-w-7xl mx-auto flex flex-col lg:flex-row gap-16 items-center">
+            <div class="lg:w-1/2">
+                <span class="text-[#D4AF37] font-bold uppercase tracking-widest text-xs mb-4 block">Legendary Hospitality</span>
+                <h2 class="text-3xl md:text-5xl font-bold mb-6 outfit text-[#0F172A]">A sanctuary designed for your <span class="text-[#D4AF37]">absolute relaxation.</span></h2>
+                <div class="w-20 h-1 bg-[#D4AF37] mb-8"></div>
+                <p class="text-slate-600 leading-relaxed mb-6 font-light">
+                    Kaghan Hotel & Resorts provides an unparalleled escape from the rush of metropolitan life. Designed for local dignitaries and international travelers, our suites fuse contemporary smart-home controls with classic Alpine design aesthetics.
+                </p>
+                <p class="text-slate-600 leading-relaxed mb-8 font-light">
+                    From personalized menus curated by Michelin-star chefs to private pool temperature controls, every detail is refined to meet the standard of global excellence.
+                </p>
+                <div class="flex gap-8">
+                    <div>
+                        <span class="text-4xl font-extrabold text-[#D4AF37] outfit">4.9★</span>
+                        <p class="text-xs uppercase text-slate-500 tracking-wider font-semibold mt-1">Average Guest Rating</p>
+                    </div>
+                    <div class="border-l border-slate-200"></div>
+                    <div>
+                        <span class="text-4xl font-extrabold text-[#D4AF37] outfit">100%</span>
+                        <p class="text-xs uppercase text-slate-500 tracking-wider font-semibold mt-1">Privacy Guarantee</p>
+                    </div>
+                </div>
+            </div>
+            <div class="lg:w-1/2 grid grid-cols-2 gap-4">
+                <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=600&q=80" alt="Luxury Pool" class="rounded-3xl hover-lift w-full h-72 object-cover shadow-md">
+                <img src="https://images.unsplash.com/photo-1584132967334-10e028bd69f7?auto=format&fit=crop&w=600&q=80" alt="Resort Suite" class="rounded-3xl hover-lift w-full h-72 object-cover mt-8 shadow-md">
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Suites Section -->
+    <section class="py-24 px-6 md:px-12 bg-slate-50">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-16">
+                <div>
+                    <span class="text-[#D4AF37] font-bold uppercase tracking-widest text-xs mb-3 block">Luxurious Suites</span>
+                    <h2 class="text-3xl md:text-5xl font-bold outfit text-[#0F172A]">Featured <span class="text-[#D4AF37]">Accommodations</span></h2>
+                </div>
+                <a href="rooms.html" class="text-slate-900 border-b-2 border-[#D4AF37] font-bold py-2 flex items-center gap-2 hover:text-[#D4AF37] transition-all mt-4 md:mt-0">
+                    Explore All Rooms
+                    <i class="fa-solid fa-arrow-right text-sm"></i>
+                </a>
+            </div>
+
+            <!-- Dynamic Room Container -->
+            <div id="featured-rooms" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                <!-- Seeded via Javascript dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Amenities Grid -->
+    <section class="py-24 px-6 md:px-12 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-20">
+                <span class="text-[#D4AF37] font-bold uppercase tracking-widest text-xs mb-3 block">World Class Services</span>
+                <h2 class="text-3xl md:text-5xl font-bold outfit text-[#0F172A]">The Kaghan <span class="text-[#D4AF37]">Experience</span></h2>
+                <div class="w-24 h-1 bg-[#D4AF37] mx-auto mt-4"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <div class="p-8 border border-slate-100 rounded-3xl hover-lift bg-slate-50 text-center shadow-sm">
+                    <div class="w-16 h-16 bg-[#D4AF37]/10 text-[#D4AF37] rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <i class="fa-solid fa-utensils text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 outfit">Epicurean Dining</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed">
+                        Indulge in organic, gourmet creations drafted by culinary masters and served on-demand in our dining hall or directly to your suite.
+                    </p>
+                </div>
+                <div class="p-8 border border-slate-100 rounded-3xl hover-lift bg-slate-50 text-center shadow-sm">
+                    <div class="w-16 h-16 bg-[#D4AF37]/10 text-[#D4AF37] rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <i class="fa-solid fa-spa text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 outfit">Soma Wellness Spa</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed">
+                        Restore balance to your body and mind with our thermal baths, Himalayan salt treatments, and custom massage rituals.
+                    </p>
+                </div>
+                <div class="p-8 border border-slate-100 rounded-3xl hover-lift bg-slate-50 text-center shadow-sm">
+                    <div class="w-16 h-16 bg-[#D4AF37]/10 text-[#D4AF37] rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <i class="fa-solid fa-person-shelter text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 outfit">Personal Concierge</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed">
+                        From helicopter sightseeing over Margalla Hills to booking exclusive boardrooms, our elite guest relations crew is at your service 24/7.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Slider -->
+    <section class="py-24 bg-[#0F172A] text-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <span class="text-[#D4AF37] font-bold uppercase tracking-widest text-xs mb-3 block">Guest Stories</span>
+                <h2 class="text-3xl md:text-5xl font-bold outfit mb-4">Reviews of <span class="text-[#D4AF37]">Distinction</span></h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-slate-800/40 border border-slate-700/50 p-8 rounded-3xl">
+                    <div class="flex text-[#D4AF37] mb-6 text-sm">★★★★★</div>
+                    <p class="text-slate-300 italic mb-8 font-light leading-relaxed">
+                        "The Presidential Penthouse exceeded every expectation. The views are unmatched, and having a private heated pool overlooking the hills made our anniversary unforgettable. An absolute masterpiece!"
+                    </p>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-[#D4AF37] rounded-full flex items-center justify-center font-bold text-slate-900">AS</div>
+                        <div>
+                            <h4 class="font-bold">Asad Siddiqui</h4>
+                            <p class="text-xs text-slate-500">Corporate Executive</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/40 border border-slate-700/50 p-8 rounded-3xl">
+                    <div class="flex text-[#D4AF37] mb-6 text-sm">★★★★★</div>
+                    <p class="text-slate-300 italic mb-8 font-light leading-relaxed">
+                        "Service here is art. The custom concierge team arranged a private mountain dinner with just 3 hours notice. The Executive Suite is clean, luxurious, and spacious."
+                    </p>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-[#D4AF37] rounded-full flex items-center justify-center font-bold text-slate-900">ZM</div>
+                        <div>
+                            <h4 class="font-bold">Zainab Malik</h4>
+                            <p class="text-xs text-slate-500">Diplomat (EU Delegation)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/40 border border-slate-700/50 p-8 rounded-3xl">
+                    <div class="flex text-[#D4AF37] mb-6 text-sm">★★★★★</div>
+                    <p class="text-slate-300 italic mb-8 font-light leading-relaxed">
+                        "Everything from booking on the web portal to the express checkout was completely seamless. Highly recommend the Loyalty point system, already saved 20,000 PKR on my next reservation!"
+                    </p>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-[#D4AF37] rounded-full flex items-center justify-center font-bold text-slate-900">RK</div>
+                        <div>
+                            <h4 class="font-bold">Raja Kamran</h4>
+                            <p class="text-xs text-slate-500">Overseas Client (UK)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </section>
+
+    <!-- Dynamic Resort News & Alpine Insights Section -->
+    <section class="py-24 px-6 md:px-12 bg-white relative border-t border-slate-100">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-16">
+                <div>
+                    <span class="text-[#D4AF37] font-bold uppercase tracking-widest text-sm mb-3 block">Resort Journal</span>
+                    <h2 class="text-4xl font-bold outfit text-slate-900">Alpine Insights & <span class="text-[#D4AF37]">Attractions Guide</span></h2>
+                </div>
+                <a href="blog.html" class="text-[#D4AF37] font-bold hover:underline uppercase tracking-wider text-xs flex items-center gap-1.5 mt-4 md:mt-0">Read All Articles <i class="fa-solid fa-arrow-right text-[10px]"></i></a>
+            </div>
+
+            <!-- Dynamic Blogs Grid -->
+            <div id="resort-blog-feed-container" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Dynamically populated via JS -->
+                <div class="col-span-2 text-center text-slate-400 py-12">
+                    <i class="fa-solid fa-spinner animate-spin text-2xl text-[#D4AF37] mb-3"></i>
+                    <p class="text-xs uppercase font-semibold tracking-wider">Syncing resort feeds...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-[#0b111e] text-slate-400 pt-20 pb-10 px-6 md:px-12 border-t border-slate-900">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+            <div>
+                <div class="flex items-center gap-3 mb-6 text-white">
+                    <img src="assets/images/logo.png" alt="Kaghan Properties Logo" class="h-8 w-auto object-contain">
+                    <span class="text-base font-bold tracking-wider outfit font-semibold">KAGHAN HOTEL & RESORTS</span>
+                </div>
+                <p class="text-sm leading-relaxed mb-6">
+                    A subsidiary of Kaghan Properties Pvt. Ltd., bringing world-class ultra-luxury hospitality experiences and smart booking infrastructure to Pakistan.
+                </p>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-6 uppercase tracking-wider text-xs outfit">Resort Nav</h4>
+                <ul class="space-y-3 text-sm">
+                    <li><a href="rooms.html" class="hover:text-[#D4AF37] transition-colors">Our Suites</a></li>
+                    <li><a href="booking.html" class="hover:text-[#D4AF37] transition-colors">Make Reservation</a></li>
+                    <li><a href="login.html" class="hover:text-[#D4AF37] transition-colors">Guest Portal</a></li>
+                    <li><a href="admin/index.html" class="hover:text-[#D4AF37] transition-colors">Admin Console</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-6 uppercase tracking-wider text-xs outfit">Contact Front Desk</h4>
+                <p class="text-xs leading-relaxed mb-4">
+                    Main Jinnah Avenue Extension, Pine Valley Estates, Islamabad, Pakistan
+                </p>
+                <p class="text-sm text-[#D4AF37] font-bold"><i class="fa-solid fa-phone mr-2"></i>0334-0091127</p>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-6 uppercase tracking-wider text-xs outfit">Newsletter</h4>
+                <div class="flex mt-3">
+                    <input type="email" placeholder="Email Address" class="bg-slate-900 border-none rounded-l-xl px-4 py-2.5 text-sm w-full outline-none text-white focus:ring-1 focus:ring-[#D4AF37]">
+                    <button class="bg-[#D4AF37] text-white px-4 rounded-r-xl hover:bg-white hover:text-slate-900 transition-all font-semibold text-sm">Join</button>
+                </div>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto pt-8 border-t border-slate-900 flex flex-col md:flex-row justify-between items-center gap-4 text-xs">
+            <p>&copy; 2026 Kaghan Hotel & Resorts. All Rights Reserved. SECP Registered.</p>
+            <div class="flex gap-6">
+                <a href="#" class="hover:text-[#D4AF37]">Privacy Policy</a>
+                <a href="#" class="hover:text-[#D4AF37]">Terms of Stay</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="assets/js/shared.js"></script>
+    <script src="assets/js/users.js"></script>
+    <script src="assets/js/newsletter.js"></script>
+    <script>
+        // Update header user auth state
+        function renderNavbar() {
+            const user = KaghanDB.getCurrentUser();
+            const authContainer = document.getElementById('auth-links');
+            const authContainerMobile = document.getElementById('auth-links-mobile');
+            
+            if (user) {
+                const dashboardUrl = user.role === 'admin' ? 'admin/index.html' : 'user/index.html';
+                const html = `
+                    <span class="text-slate-300 text-sm hidden lg:inline">Welcome, <strong>${user.name}</strong></span>
+                    <a href="${dashboardUrl}" class="bg-[#D4AF37] text-white px-5 py-2 rounded-full hover:bg-white hover:text-slate-900 transition-all text-sm font-semibold shadow-md">Dashboard</a>
+                    <button onclick="logoutUser()" class="border border-white/20 text-white px-4 py-2 rounded-full hover:bg-rose-600 hover:border-rose-600 transition-all text-sm font-semibold">Logout</button>
+                `;
+                authContainer.innerHTML = html;
+                authContainerMobile.innerHTML = `
+                    <span class="text-slate-300 text-sm">Logged in as <strong>${user.name}</strong></span>
+                    <a href="${dashboardUrl}" class="bg-[#D4AF37] text-white py-3 rounded-full text-center">Dashboard</a>
+                    <button onclick="logoutUser()" class="border border-rose-500 text-rose-500 py-3 rounded-full text-center">Logout</button>
+                `;
+            }
+        }
+
+        function logoutUser() {
+            KaghanDB.logout();
+        }
+
+        // Drawer Menu Functions
+        const drawer = document.getElementById('mobile-drawer');
+        document.getElementById('menu-toggle').addEventListener('click', () => {
+            drawer.classList.remove('hidden');
+        });
+        document.getElementById('menu-close').addEventListener('click', () => {
+            drawer.classList.add('hidden');
+        });
+        function toggleDrawer() {
+            drawer.classList.toggle('hidden');
+        }
+
+        // Render Featured Rooms
+        async function loadFeaturedRooms() {
+            const rooms = await KaghanDB.getRooms();
+            const container = document.getElementById('featured-rooms');
+            
+            // Slice the first 3 rooms to show on the landing page
+            const featuredList = rooms.slice(0, 3);
+            
+            container.innerHTML = featuredList.map(room => `
+                <div class="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-lg hover-lift group">
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="${room.image}" alt="${room.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div class="absolute top-4 right-4 bg-slate-900/80 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-[#D4AF37] border border-white/10 uppercase tracking-widest">
+                            ${room.type}
+                        </div>
+                    </div>
+                    <div class="p-8">
+                        <div class="flex justify-between items-start mb-4">
+                            <h3 class="text-xl font-bold outfit text-slate-900">${room.name}</h3>
+                            <div class="flex items-center gap-1 text-[#D4AF37] font-semibold text-sm">
+                                <i class="fa-solid fa-star"></i>
+                                <span>${room.rating}</span>
+                            </div>
+                        </div>
+                        <p class="text-slate-500 text-xs line-clamp-3 mb-6 leading-relaxed font-light">
+                            ${room.description}
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            ${room.amenities.slice(0, 3).map(a => `
+                                <span class="bg-slate-50 text-slate-600 text-[10px] uppercase font-bold tracking-wider px-3 py-1 rounded-full border border-slate-100">
+                                    ${a}
+                                </span>
+                            `).join('')}
+                            ${room.amenities.length > 3 ? `<span class="bg-slate-50 text-[#D4AF37] text-[10px] uppercase font-bold px-2 py-1 rounded-full border border-slate-100">+${room.amenities.length - 3} more</span>` : ''}
+                        </div>
+                        <div class="border-t border-slate-100 pt-6 flex justify-between items-center">
+                            <div>
+                                <span class="text-slate-400 text-[10px] uppercase tracking-wider block font-semibold">Rate Per Night</span>
+                                <span class="text-xl font-extrabold text-[#D4AF37] outfit">${KaghanUI.formatPKR(room.price)}</span>
+                            </div>
+                            <a href="booking.html?room=${room.id}" class="bg-[#0F172A] text-white text-xs font-bold px-6 py-3.5 rounded-xl hover:bg-[#D4AF37] transition-all shadow-md">
+                                Reserve Suite
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Set minimum check-in and check-out dates
+        function setupDateSelectors() {
+            const today = new Date().toISOString().split('T')[0];
+            const checkInInput = document.getElementById('search-check-in');
+            const checkOutInput = document.getElementById('search-check-out');
+            
+            checkInInput.min = today;
+            checkInInput.value = today;
+            
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const tomorrowStr = tomorrow.toISOString().split('T')[0];
+            checkOutInput.min = tomorrowStr;
+            checkOutInput.value = tomorrowStr;
+            
+            checkInInput.addEventListener('change', () => {
+                const checkInDate = new Date(checkInInput.value);
+                const nextDay = new Date(checkInDate);
+                nextDay.setDate(nextDay.getDate() + 1);
+                checkOutInput.min = nextDay.toISOString().split('T')[0];
+                if (new Date(checkOutInput.value) <= checkInDate) {
+                    checkOutInput.value = nextDay.toISOString().split('T')[0];
+                }
+            });
+        }
+
+        // Handle Search Form Submission
+        document.getElementById('hero-search-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const checkIn = document.getElementById('search-check-in').value;
+            const checkOut = document.getElementById('search-check-out').value;
+            const roomType = document.getElementById('search-room-type').value;
+            
+            // Redirect to reservation page with parameters
+            window.location.href = `booking.html?checkIn=${checkIn}&checkOut=${checkOut}&type=${roomType}`;
+        });
+
+        // Fetch and Render Dynamic Blog Posts Feed (Hospitality/Stay portal)
+        async function loadResortBlogs() {
+            const container = document.getElementById('resort-blog-feed-container');
+            if (!container) return;
+
+            try {
+                const blogs = await KaghanDB.getBlogs();
+                const stayBlogs = blogs.filter(b => b.portal === 'stay');
+                if (stayBlogs.length === 0) {
+                    container.innerHTML = `<div class="col-span-2 text-center text-slate-500 py-12">No updates published in the resort journal yet. Check Admin Panel.</div>`;
+                    return;
+                }
+
+                // Render latest 2 stay blogs
+                const latest = stayBlogs.slice(0, 2);
+                container.innerHTML = latest.map(b => {
+                    const img = b.imageUrl || 'assets/images/logo.png';
+                    return `
+                        <div class="bg-white rounded-[2.5rem] border border-slate-100 p-8 shadow-md hover-lift hover:border-[#D4AF37] transition-all duration-300 flex flex-col md:flex-row gap-6 items-center">
+                            <div class="w-full md:w-1/3 aspect-video md:aspect-square rounded-2xl overflow-hidden shrink-0 border border-slate-100">
+                                <img src="${img}" alt="${b.title}" class="w-full h-full object-cover" onerror="this.src='../assets/images/logo.png'">
+                            </div>
+                            <div class="flex-grow">
+                                <span class="text-[#D4AF37] font-bold text-[9px] uppercase tracking-widest block mb-2">${b.category}</span>
+                                <h4 class="text-lg font-bold outfit text-slate-900 mb-3 leading-snug">${b.title}</h4>
+                                <p class="text-slate-500 text-xs leading-relaxed mb-4 line-clamp-2">${b.excerpt}</p>
+                                <a href="blog.html#${b.slug}" class="text-slate-950 hover:text-[#D4AF37] text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 self-start">Read Article <i class="fa-solid fa-arrow-right text-[10px]"></i></a>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } catch (err) {
+                console.error("Failed to load featured blogs:", err);
+                container.innerHTML = `<div class="col-span-2 text-center text-rose-500 py-12">Failed to sync resort news feeds.</div>`;
+            }
+        }
+
+        // Initialize Page
+        window.addEventListener('DOMContentLoaded', async () => {
+            renderNavbar();
+            await loadFeaturedRooms();
+            await loadResortBlogs();
+            setupDateSelectors();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrator Console | Kaghan Hotel & Resorts</title>
+    <meta name="robots" content="noindex, nofollow">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Cloudinary Widget -->
+    <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
+    <!-- Google Fonts: Outfit & Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .outfit {
+            font-family: 'Outfit', sans-serif;
+        }
+        .sidebar-active {
+            color: #D4AF37 !important;
+            background-color: rgba(212, 175, 55, 0.05) !important;
+            border-left: 4px solid #DC2626 !important; /* Crimson Red active border to match the swoosh */
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-[#F8FAFC] text-[#0F172A] overflow-x-hidden font-sans">
+
+    <!-- Sidebar -->
+    <aside id="admin-sidebar" class="fixed inset-y-0 left-0 z-40 w-64 lg:w-72 bg-[#0B0F19] border-r border-slate-800 text-white transform -translate-x-full md:translate-x-0 transition-transform duration-300 flex flex-col justify-between">
+        <div>
+            <!-- Branding -->
+            <div class="p-6 border-b border-slate-800 flex items-center gap-3">
+                <img src="../assets/images/logo.png" alt="Kaghan Properties Logo" class="h-10 w-auto object-contain">
+                <div class="flex flex-col">
+                    <span class="text-base font-bold tracking-wider uppercase outfit leading-none">Kaghan</span>
+                    <span class="text-[10px] text-[#D4AF37] tracking-[0.2em] uppercase font-semibold">Hotel & Resorts</span>
+                </div>
+            </div>
+            
+            <!-- Navigation Items -->
+            <nav class="p-4 space-y-1.5" id="sidebar-nav">
+                <button onclick="switchTab('overview')" id="tab-btn-overview" class="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all sidebar-active text-left">
+                    <i class="fa-solid fa-chart-pie w-5 text-sm"></i> Overview
+                </button>
+                <button onclick="switchTab('bookings')" id="tab-btn-bookings" class="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white hover:bg-slate-800/20 text-left">
+                    <i class="fa-solid fa-calendar-days w-5 text-sm"></i> Bookings Manager
+                </button>
+                <button onclick="switchTab('rooms')" id="tab-btn-rooms" class="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white hover:bg-slate-800/20 text-left">
+                    <i class="fa-solid fa-bed w-5 text-sm"></i> Room Inventory
+                </button>
+                <button onclick="switchTab('guests')" id="tab-btn-guests" class="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white hover:bg-slate-800/20 text-left">
+                    <i class="fa-solid fa-users w-5 text-sm"></i> Guest Registry
+                </button>
+                <button onclick="switchTab('newsletter')" id="tab-btn-newsletter" class="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white hover:bg-slate-800/20 text-left">
+                    <i class="fa-solid fa-envelope-open-text w-5 text-sm"></i> Subscribers
+                </button>
+                <button onclick="switchTab('reviews')" id="tab-btn-reviews" class="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white hover:bg-slate-800/20 text-left">
+                    <i class="fa-solid fa-star w-5 text-sm"></i> Guest Reviews
+                </button>
+                <button onclick="switchTab('blogs')" id="tab-btn-blogs" class="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white hover:bg-slate-800/20 text-left">
+                    <i class="fa-solid fa-newspaper w-5 text-sm"></i> Blog Management
+                </button>
+            </nav>
+        </div>
+
+        <!-- Sidebar User Control -->
+        <div class="p-6 border-t border-slate-800 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center border border-slate-700 text-slate-300">
+                    <i class="fa-solid fa-user-tie text-sm"></i>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-xs font-bold text-slate-200" id="sidebar-admin-name">Admin</span>
+                    <span class="text-[9px] text-[#D4AF37] uppercase font-semibold">Resort Manager</span>
+                </div>
+            </div>
+            <button onclick="KaghanDB.logout()" class="text-slate-400 hover:text-rose-500 transition-colors p-1.5 rounded-lg hover:bg-slate-800" title="Logout">
+                <i class="fa-solid fa-right-from-bracket"></i>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="md:pl-64 lg:pl-72 flex flex-col min-h-screen">
+        
+        <!-- Top Nav Header -->
+        <header class="bg-white border-b border-slate-100 py-4 px-6 md:px-8 flex justify-between items-center sticky top-0 z-30 shadow-sm">
+            <div class="flex items-center gap-3">
+                <button onclick="toggleSidebar()" class="md:hidden text-slate-600 hover:text-slate-900 p-2 rounded-lg hover:bg-slate-50 transition-colors">
+                    <i class="fa-solid fa-bars text-lg"></i>
+                </button>
+                <img src="../assets/images/logo.png" alt="Logo" class="h-8 w-auto md:block hidden object-contain">
+                <div>
+                    <span class="text-[10px] uppercase font-extrabold tracking-widest text-[#D4AF37]">Hotel Management System</span>
+                    <h2 class="text-sm font-bold text-slate-800">Admin Console</h2>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="../index.html" class="text-xs font-bold text-slate-500 hover:text-[#D4AF37] transition-all flex items-center gap-1">
+                    <i class="fa-solid fa-house"></i> View Website
+                </a>
+                <div class="h-4 w-px bg-slate-200"></div>
+                <button onclick="KaghanDB.logout()" class="text-xs font-bold text-rose-600 hover:text-rose-700 transition-all flex items-center gap-1">
+                    <i class="fa-solid fa-sign-out-alt"></i> Log Out
+                </button>
+            </div>
+        </header>
+
+        <!-- Main View Space -->
+        <main class="flex-grow p-6 md:p-8 max-w-7xl w-full mx-auto space-y-8">
+            
+            <!-- VIEW: OVERVIEW -->
+            <div id="view-overview" class="tab-view space-y-8">
+                <!-- Greeting -->
+                <div>
+                    <span class="text-[#D4AF37] text-xs font-bold uppercase tracking-wider">Metrics Circle</span>
+                    <h1 class="text-2xl font-extrabold outfit text-slate-900 mt-0.5">Resort Operations Overview</h1>
+                    <p class="text-slate-400 text-xs font-light">Real-time occupancy status, revenue totals, and booking stats.</p>
+                </div>
+
+                <!-- Metrics Grid -->
+                <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="bg-white rounded-3xl border border-slate-100 p-6 shadow-md flex items-center gap-5">
+                        <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-lg shadow-sm">
+                            <i class="fa-solid fa-money-bill-wave"></i>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 text-[9px] uppercase font-bold tracking-wider block">Total Revenue</span>
+                            <span id="metric-revenue" class="text-lg font-black outfit text-slate-800">PKR 0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-3xl border border-slate-100 p-6 shadow-md flex items-center gap-5">
+                        <div class="w-12 h-12 bg-[#D4AF37]/10 text-[#D4AF37] rounded-2xl flex items-center justify-center text-lg shadow-sm">
+                            <i class="fa-solid fa-house-chimney-user"></i>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 text-[9px] uppercase font-bold tracking-wider block">Occupancy Rate</span>
+                            <span id="metric-occupancy" class="text-lg font-black outfit text-slate-800">0%</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-3xl border border-slate-100 p-6 shadow-md flex items-center gap-5">
+                        <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-lg shadow-sm">
+                            <i class="fa-solid fa-calendar-check"></i>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 text-[9px] uppercase font-bold tracking-wider block">Total Bookings</span>
+                            <span id="metric-bookings" class="text-lg font-black outfit text-slate-800">0</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-3xl border border-slate-100 p-6 shadow-md flex items-center gap-5">
+                        <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center text-lg shadow-sm">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 text-[9px] uppercase font-bold tracking-wider block">Registered Guests</span>
+                            <span id="metric-users" class="text-lg font-black outfit text-slate-800">0</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Stays preview (Last 5) -->
+                <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-lg font-bold outfit text-slate-900 flex items-center gap-2">
+                            <i class="fa-solid fa-clock-rotate-left text-[#D4AF37]"></i> Recent Booking Ledgers
+                        </h3>
+                        <button onclick="switchTab('bookings')" class="text-[#D4AF37] hover:underline text-xs font-bold">
+                            View All Manager <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="border-b border-slate-100 text-slate-400 text-[9px] uppercase tracking-wider font-bold">
+                                    <th class="px-6 py-3">ID</th>
+                                    <th class="px-6 py-3">Guest Details</th>
+                                    <th class="px-6 py-3">Suite Style</th>
+                                    <th class="px-6 py-3">Stay Dates</th>
+                                    <th class="px-6 py-3">Amount</th>
+                                    <th class="px-6 py-3">Change Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="overview-bookings-tbody">
+                                <!-- Loaded dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: BOOKINGS -->
+            <div id="view-bookings" class="tab-view hidden space-y-6">
+                <div>
+                    <span class="text-[#D4AF37] text-xs font-bold uppercase tracking-wider">Stay Circles</span>
+                    <h1 class="text-2xl font-extrabold outfit text-slate-900 mt-0.5">Bookings Ledger Manager</h1>
+                    <p class="text-slate-400 text-xs font-light">Search, inspect details, and update approval state of reservations.</p>
+                </div>
+
+                <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md space-y-6">
+                    <div class="flex flex-col sm:flex-row gap-4 justify-between items-center">
+                        <div class="relative w-full sm:w-80">
+                            <input type="text" id="booking-search-input" placeholder="Search by name, email, booking ID..." class="w-full border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-xs bg-slate-50 outline-none focus:border-[#D4AF37]">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-400 text-xs"></i>
+                        </div>
+                        <div class="flex gap-2 w-full sm:w-auto">
+                            <select id="booking-filter-status" class="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-bold text-slate-700 outline-none cursor-pointer w-full sm:w-auto">
+                                <option value="all">All Booking Statuses</option>
+                                <option value="confirmed">Confirmed</option>
+                                <option value="completed">Completed</option>
+                                <option value="cancelled">Cancelled</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="border-b border-slate-100 text-slate-400 text-[9px] uppercase tracking-wider font-bold">
+                                    <th class="px-6 py-3">ID</th>
+                                    <th class="px-6 py-3">Guest Details</th>
+                                    <th class="px-6 py-3">Suite Style</th>
+                                    <th class="px-6 py-3">Stay Dates</th>
+                                    <th class="px-6 py-3">Amount</th>
+                                    <th class="px-6 py-3">Change Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-bookings-tbody">
+                                <!-- Loaded dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="bookings-empty-state" class="hidden text-center py-12">
+                        <p class="text-slate-400 text-xs">No matching bookings found in the database.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: ROOMS -->
+            <div id="view-rooms" class="tab-view hidden space-y-6">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <span class="text-[#D4AF37] text-xs font-bold uppercase tracking-wider">Inventory Circle</span>
+                        <h1 class="text-2xl font-extrabold outfit text-slate-900 mt-0.5">Resort Room Inventory</h1>
+                        <p class="text-slate-400 text-xs font-light">Add new luxury room styles, adjust price rates, and manage availability.</p>
+                    </div>
+                    <button onclick="openAddRoomModal()" class="bg-gradient-to-r from-[#D4AF37] to-[#DC2626] text-white text-xs font-bold px-4 py-3 rounded-xl hover:opacity-90 transition-all shadow-md flex items-center gap-1.5">
+                        <i class="fa-solid fa-plus"></i> Add Room Style
+                    </button>
+                </div>
+
+                <!-- Room Grid -->
+                <div id="admin-rooms-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Loaded dynamically -->
+                </div>
+            </div>
+
+            <!-- VIEW: GUESTS -->
+            <div id="view-guests" class="tab-view hidden space-y-6">
+                <div>
+                    <span class="text-[#D4AF37] text-xs font-bold uppercase tracking-wider">Registry Circle</span>
+                    <h1 class="text-2xl font-extrabold outfit text-slate-900 mt-0.5">Registered Guest Registry</h1>
+                    <p class="text-slate-400 text-xs font-light">View active guest details and award or adjust stay loyalty points manually.</p>
+                </div>
+
+                <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md space-y-6">
+                    <div class="flex gap-4 items-center">
+                        <div class="relative w-full sm:w-80">
+                            <input type="text" id="guest-search-input" placeholder="Search by name, email, phone..." class="w-full border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-xs bg-slate-50 outline-none focus:border-[#D4AF37]">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-400 text-xs"></i>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="border-b border-slate-100 text-slate-400 text-[9px] uppercase tracking-wider font-bold">
+                                    <th class="px-6 py-3">Name</th>
+                                    <th class="px-6 py-3">Email Address</th>
+                                    <th class="px-6 py-3">Phone Line</th>
+                                    <th class="px-6 py-3">Loyalty Points</th>
+                                    <th class="px-6 py-3">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-guests-tbody">
+                                <!-- Loaded dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="guests-empty-state" class="hidden text-center py-12">
+                        <p class="text-slate-400 text-xs">No guest profiles matching your search filters.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: SUBSCRIBERS -->
+            <div id="view-newsletter" class="tab-view hidden space-y-6">
+                <div>
+                    <span class="text-[#D4AF37] text-xs font-bold uppercase tracking-wider">Newsletter Circle</span>
+                    <h1 class="text-2xl font-extrabold outfit text-slate-900 mt-0.5">Newsletter Subscriptions</h1>
+                    <p class="text-slate-400 text-xs font-light">Audit resort subscriber listings and process list removals.</p>
+                </div>
+
+                <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md space-y-6">
+                    <div class="flex gap-4 items-center">
+                        <div class="relative w-full sm:w-80">
+                            <input type="text" id="newsletter-search-input" placeholder="Search subscribed emails..." class="w-full border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-xs bg-slate-50 outline-none focus:border-[#D4AF37]">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-400 text-xs"></i>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="border-b border-slate-100 text-slate-400 text-[9px] uppercase tracking-wider font-bold">
+                                    <th class="px-6 py-3">Email Address</th>
+                                    <th class="px-6 py-3">Date Subscribed</th>
+                                    <th class="px-6 py-3">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-newsletter-tbody">
+                                <!-- Loaded dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="newsletter-empty-state" class="hidden text-center py-12">
+                        <p class="text-slate-400 text-xs">No matching subscribers in the distribution pool.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: REVIEWS -->
+            <div id="view-reviews" class="tab-view hidden space-y-6">
+                <div>
+                    <span class="text-[#D4AF37] text-xs font-bold uppercase tracking-wider">Moderation Circle</span>
+                    <h1 class="text-2xl font-extrabold outfit text-slate-900 mt-0.5">Guest Reviews Moderation</h1>
+                    <p class="text-slate-400 text-xs font-light">Audit stay experiences, room comments, and delete reviews with inappropriate text.</p>
+                </div>
+
+                <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md space-y-6">
+                    <div class="flex gap-4 items-center">
+                        <div class="relative w-full sm:w-80">
+                            <input type="text" id="review-search-input" placeholder="Search by user or room..." class="w-full border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-xs bg-slate-50 outline-none focus:border-[#D4AF37]">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-400 text-xs"></i>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="border-b border-slate-100 text-slate-400 text-[9px] uppercase tracking-wider font-bold">
+                                    <th class="px-6 py-3">Guest Name</th>
+                                    <th class="px-6 py-3">Room Name</th>
+                                    <th class="px-6 py-3">Rating</th>
+                                    <th class="px-6 py-3">Review Text</th>
+                                    <th class="px-6 py-3">Date Submitted</th>
+                                    <th class="px-6 py-3">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-reviews-tbody">
+                                <!-- Loaded dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="reviews-empty-state" class="hidden text-center py-12">
+                        <p class="text-slate-400 text-xs">No matching reviews found in the database.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: BLOGS MANAGEMENT -->
+            <div id="view-blogs" class="tab-view hidden space-y-6">
+                <div>
+                    <span class="text-[#D4AF37] text-xs font-bold uppercase tracking-wider">Journal Circle</span>
+                    <h1 class="text-2xl font-extrabold outfit text-slate-900 mt-0.5">Resort Journal Management</h1>
+                    <p class="text-slate-400 text-xs font-light">Add, review, and delete resort blog posts and local guides.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Write Blog Post Form -->
+                    <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md h-fit">
+                        <h3 class="text-lg font-bold outfit text-slate-950 mb-6">Write Blog Post</h3>
+                        <form id="blog-form" class="space-y-4">
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Blog Title</label>
+                                <input type="text" id="blog-title" required placeholder="e.g. Hiking Trails of Pine Valley" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Category</label>
+                                <select id="blog-cat" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                                    <option value="Resort Activities">Resort Activities</option>
+                                    <option value="Pine Valley Guides">Pine Valley Guides</option>
+                                    <option value="Dining & Spa">Dining & Spa</option>
+                                    <option value="Local Attractions">Local Attractions</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Author</label>
+                                <input type="text" id="blog-author" required value="Resort Manager" placeholder="Author name" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Featured Image</label>
+                                <div class="flex gap-2">
+                                    <input type="text" id="blog-img" placeholder="https://res.cloudinary.com/..." class="flex-grow border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                                    <button type="button" id="upload-blog-img-btn" class="bg-slate-800 hover:bg-[#D4AF37] hover:text-slate-950 text-white px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0">
+                                        <i class="fa-solid fa-cloud-arrow-up"></i> Upload
+                                    </button>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Brief Excerpt</label>
+                                <input type="text" id="blog-excerpt" required placeholder="A short 1-2 sentence description..." class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Article Body Content (HTML allowed)</label>
+                                <textarea id="blog-content" rows="6" required placeholder="Write the main blog article content..." class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37] resize-none"></textarea>
+                            </div>
+                            <button type="submit" class="w-full bg-gradient-to-r from-[#D4AF37] to-[#DC2626] text-white font-bold py-3 rounded-xl hover:opacity-90 transition-all text-xs shadow-md mt-4 flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-plus text-xs"></i>
+                                Publish Journal Post
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Blog Posts List -->
+                    <div class="lg:col-span-2 bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md">
+                        <h3 class="text-lg font-bold outfit text-slate-950 mb-6">Published Journal Articles</h3>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="border-b border-slate-100 text-slate-400 text-[9px] uppercase tracking-wider font-bold">
+                                        <th class="px-6 py-3">Preview</th>
+                                        <th class="px-6 py-3">Article Info</th>
+                                        <th class="px-6 py-3">Published Date</th>
+                                        <th class="px-6 py-3">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-blogs-tbody">
+                                    <!-- Loaded dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="blogs-empty-state" class="hidden text-center py-12">
+                            <p class="text-slate-400 text-xs">No journal articles published yet.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- MODAL: EDIT ROOM DETAILS -->
+    <div id="edit-room-modal" class="fixed inset-0 bg-[#0F172A]/70 z-[100] flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl max-w-md w-full overflow-hidden shadow-2xl relative border border-slate-100 transform scale-95 transition-transform duration-300 p-8 text-slate-850">
+            <button onclick="closeEditRoomModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700">
+                <i class="fa-solid fa-times text-lg"></i>
+            </button>
+            
+            <h3 class="text-lg font-bold outfit text-slate-950 mb-1">Edit Room Style Details</h3>
+            <p id="edit-room-name-lbl" class="text-xs text-slate-400 font-semibold mb-6">Deluxe Alpine Room</p>
+
+            <form id="edit-room-form" class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Room Name</label>
+                        <input type="text" id="edit-room-name" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Style Class</label>
+                        <select id="edit-room-type" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800">
+                            <option value="deluxe">Deluxe Room</option>
+                            <option value="executive">Executive Suite</option>
+                            <option value="presidential">Presidential Penthouse</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Price per Night (PKR)</label>
+                        <input type="number" id="edit-room-price" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Max Guests</label>
+                        <input type="number" id="edit-room-guests" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Description</label>
+                    <textarea id="edit-room-desc" required rows="3" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Amenities (Comma separated)</label>
+                    <input type="text" id="edit-room-amenities" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800">
+                </div>
+
+                <div class="flex gap-4 pt-4">
+                    <button type="button" onclick="closeEditRoomModal()" class="w-1/2 border border-slate-200 text-slate-800 font-bold py-3 rounded-xl hover:bg-slate-100 transition-all text-xs">
+                        Cancel
+                    </button>
+                    <button type="submit" class="w-1/2 bg-gradient-to-r from-[#D4AF37] to-[#DC2626] text-white font-bold py-3 rounded-xl hover:opacity-90 transition-all text-xs shadow-md">
+                        Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: ADD NEW ROOM -->
+    <div id="add-room-modal" class="fixed inset-0 bg-[#0F172A]/70 z-[100] flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl max-w-md w-full overflow-hidden shadow-2xl relative border border-slate-100 transform scale-95 transition-transform duration-300 p-8 text-slate-850">
+            <button onclick="closeAddRoomModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700">
+                <i class="fa-solid fa-times text-lg"></i>
+            </button>
+            
+            <h3 class="text-lg font-bold outfit text-slate-950 mb-6">Add New Room Style</h3>
+
+            <form id="add-room-form" class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Room Name</label>
+                        <input type="text" id="add-room-name" required placeholder="e.g. Alpine Suite" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Style Class</label>
+                        <select id="add-room-type" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800">
+                            <option value="deluxe">Deluxe Room</option>
+                            <option value="executive">Executive Suite</option>
+                            <option value="presidential">Presidential Penthouse</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Price per Night</label>
+                        <input type="number" id="add-room-price" required placeholder="PKR rate" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Room Photo (Cloudinary)</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="add-room-image" placeholder="https://res.cloudinary.com/... or upload" class="flex-grow border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none">
+                            <button type="button" id="upload-room-img-btn" class="bg-slate-800 hover:bg-[#D4AF37] hover:text-slate-950 text-white px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0">
+                                <i class="fa-solid fa-cloud-arrow-up"></i> Upload
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Description</label>
+                    <textarea id="add-room-desc" required rows="3" placeholder="Explain the suite features..." class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Amenities (Comma separated)</label>
+                    <input type="text" id="add-room-amenities" placeholder="King Bed, Balcony, Wi-Fi" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800">
+                </div>
+
+                <div class="flex gap-4 pt-4">
+                    <button type="button" onclick="closeAddRoomModal()" class="w-1/2 border border-slate-200 text-slate-800 font-bold py-3 rounded-xl hover:bg-slate-100 transition-all text-xs">
+                        Cancel
+                    </button>
+                    <button type="submit" class="w-1/2 bg-gradient-to-r from-[#D4AF37] to-[#DC2626] text-white font-bold py-3 rounded-xl hover:opacity-90 transition-all text-xs shadow-md">
+                        Save Suite
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: ADJUST USER LOYALTY POINTS -->
+    <div id="adjust-points-modal" class="fixed inset-0 bg-[#0F172A]/70 z-[100] flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl max-w-sm w-full overflow-hidden shadow-2xl relative border border-slate-100 transform scale-95 transition-transform duration-300 p-8 text-slate-850">
+            <button onclick="closeAdjustPointsModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700">
+                <i class="fa-solid fa-times text-lg"></i>
+            </button>
+            
+            <h3 class="text-lg font-bold outfit text-slate-950 mb-1">Adjust Loyalty Points</h3>
+            <p id="adjust-points-user-lbl" class="text-xs text-slate-400 font-semibold mb-6">Guest: ...</p>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-2">Points Adjustment Value (e.g. +100 or -50)</label>
+                    <input type="number" id="adjust-points-amount" placeholder="Adjustment amount" class="w-full border border-slate-200 rounded-xl px-4 py-3 outline-none focus:border-[#D4AF37] text-sm bg-slate-50 text-slate-800 font-bold">
+                </div>
+                
+                <div class="flex gap-4 pt-4">
+                    <button onclick="closeAdjustPointsModal()" class="w-1/2 border border-slate-200 text-slate-800 font-bold py-3 rounded-xl hover:bg-slate-100 transition-all text-xs">
+                        Cancel
+                    </button>
+                    <button onclick="saveUserPointsAdjustment()" class="w-1/2 bg-gradient-to-r from-[#D4AF37] to-[#DC2626] text-white font-bold py-3 rounded-xl hover:opacity-90 transition-all text-xs shadow-md">
+                        Apply Adjust
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="../assets/js/shared.js"></script>
+    <script src="../assets/js/users.js"></script>
+    <script src="../assets/js/newsletter.js"></script>
+    <script src="../assets/js/admin/bookings.js"></script>
+    <script src="../assets/js/admin/inventory.js"></script>
+    <script src="../assets/js/admin/reviews.js"></script>
+    <script src="../assets/js/admin/guests.js"></script>
+    <script src="../assets/js/admin/blogs.js"></script>
+    <script src="../assets/js/admin/dashboard.js"></script>
+</body>
+</html>

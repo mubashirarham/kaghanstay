@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alpine Resorts Blog & Pine Valley Guide | Kaghan Resorts</title>
+    <meta name="description" content="Stay updated with resort activities, local travel tips, dining guides, and luxury stay offers at Kaghan Hotel & Resorts, Islamabad.">
+    <link rel="canonical" href="https://stay.kaghanproperties.com/blog">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://stay.kaghanproperties.com/blog">
+    <meta property="og:title" content="Alpine Resorts Blog & Pine Valley Guide | Kaghan Resorts">
+    <meta property="og:description" content="Stay updated with resort activities, local travel tips, dining guides, and luxury stay offers.">
+    <meta property="og:image" content="../assets/images/logo.png">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://stay.kaghanproperties.com/blog">
+    <meta name="twitter:title" content="Alpine Resorts Blog & Pine Valley Guide | Kaghan Resorts">
+    <meta name="twitter:description" content="Stay updated with resort activities, local travel tips, dining guides, and luxury stay offers.">
+    <meta name="twitter:image" content="../assets/images/logo.png">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .outfit {
+            font-family: 'Outfit', sans-serif;
+        }
+        .hover-lift {
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+        }
+        .hover-lift:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px -15px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-[#F8FAFC] text-[#0F172A] flex flex-col min-h-screen">
+
+    <!-- Header / Navigation -->
+    <nav id="hotel-navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-5 px-6 md:px-12 flex justify-between items-center text-white bg-[#0F172A]/90 backdrop-blur-md border-b border-white/10">
+        <div class="flex items-center gap-3">
+            <img src="assets/images/logo.png" alt="Kaghan Properties Logo" class="h-10 w-auto object-contain" onerror="this.src='../assets/images/logo.png'">
+            <div class="flex flex-col">
+                <span class="text-lg font-bold tracking-wider uppercase outfit leading-none">Kaghan</span>
+                <span class="text-xs text-[#D4AF37] tracking-[0.2em] uppercase font-semibold">Hotel & Resorts</span>
+            </div>
+        </div>
+
+        <!-- Navigation Links -->
+        <div class="hidden md:flex gap-8 items-center font-medium">
+            <a href="index.html" class="hover:text-[#D4AF37] transition-colors">Home</a>
+            <a href="rooms.html" class="hover:text-[#D4AF37] transition-colors">Rooms</a>
+            <a href="booking.html" class="hover:text-[#D4AF37] transition-colors">Book Stay</a>
+            <a href="blog.html" class="text-[#D4AF37] hover:text-[#D4AF37] transition-colors font-bold underline decoration-[#D4AF37] decoration-2 underline-offset-4">Blog</a>
+            <div id="auth-links" class="flex gap-4 items-center">
+                <a href="login.html" class="border border-[#D4AF37] text-white px-5 py-2 rounded-full hover:bg-[#D4AF37] hover:text-white transition-all text-sm font-semibold">Login</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Section -->
+    <header class="pt-40 pb-20 bg-[#0F172A] text-white relative overflow-hidden">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,_var(--tw-gradient-stops))] from-[#D4AF37]/10 via-transparent to-transparent opacity-40"></div>
+        <div class="max-w-5xl mx-auto px-6 relative z-10 text-center">
+            <span class="text-[#D4AF37] font-bold uppercase tracking-[0.3em] text-xs mb-4 block">Resort Journal</span>
+            <h1 class="text-4xl md:text-6xl font-extrabold mb-6 outfit leading-tight">Alpine Journal & <span class="text-[#D4AF37]">Attractions Guide</span></h1>
+            <p class="text-slate-400 text-md max-w-xl mx-auto">Explore hiking routes, resort updates, spa packages, and the scenic marvels of Pine Valley Islamabad.</p>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-grow max-w-7xl mx-auto w-full px-4 md:px-8 py-16">
+        
+        <!-- View 1: Blog Grid List -->
+        <div id="blog-list-view" class="space-y-12">
+            
+            <!-- Category Filter Row -->
+            <div class="flex gap-3 overflow-x-auto pb-4 justify-start md:justify-center border-b border-slate-200/60">
+                <button onclick="filterCategory('all')" id="cat-btn-all" class="px-5 py-2.5 rounded-full text-xs font-bold bg-[#0F172A] text-white shadow-md transition-all whitespace-nowrap">All Resort Articles</button>
+                <button onclick="filterCategory('Resort Updates')" id="cat-btn-Resort Updates" class="px-5 py-2.5 rounded-full text-xs font-bold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition-all whitespace-nowrap">Resort Updates</button>
+                <button onclick="filterCategory('Pine Valley Guide')" id="cat-btn-Pine Valley Guide" class="px-5 py-2.5 rounded-full text-xs font-bold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition-all whitespace-nowrap">Pine Valley Guide</button>
+                <button onclick="filterCategory('Stay Offers')" id="cat-btn-Stay Offers" class="px-5 py-2.5 rounded-full text-xs font-bold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition-all whitespace-nowrap">Stay Offers</button>
+            </div>
+
+            <!-- Blog Grid -->
+            <div id="blog-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Dynamically loaded blog items -->
+                <div class="col-span-3 text-center text-slate-400 py-12">
+                    <i class="fa-solid fa-spinner animate-spin text-2xl text-[#D4AF37] mb-3"></i>
+                    <p class="text-xs uppercase font-semibold tracking-wider">Syncing article catalog...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- View 2: Full Article Reader (Hidden by default) -->
+        <div id="blog-reader-view" class="hidden max-w-4xl mx-auto bg-white border border-slate-100 rounded-[3rem] shadow-xl overflow-hidden p-6 md:p-12 relative">
+            <button onclick="closeReader()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-900 transition-colors text-xl w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center">
+                <i class="fa-solid fa-arrow-left text-sm"></i>
+            </button>
+
+            <!-- Metadata -->
+            <div class="space-y-4 mb-8">
+                <span id="read-cat" class="bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/25 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider inline-block">Category</span>
+                <h2 id="read-title" class="text-3xl md:text-5xl font-extrabold outfit text-slate-950 leading-tight">Article Title</h2>
+                <div class="flex items-center gap-4 text-xs text-slate-400 font-semibold pt-2">
+                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-user text-[#D4AF37]"></i> <span id="read-author">Author</span></span>
+                    <span class="h-3 w-px bg-slate-200"></span>
+                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-calendar text-[#D4AF37]"></i> <span id="read-date">Date</span></span>
+                </div>
+            </div>
+
+            <!-- Featured Image -->
+            <div class="h-[450px] rounded-3xl overflow-hidden mb-8 border border-slate-100">
+                <img id="read-image" src="" alt="Featured Art" class="w-full h-full object-cover">
+            </div>
+
+            <!-- Main Rich text Content -->
+            <article id="read-content" class="text-slate-700 text-sm leading-relaxed space-y-6 prose max-w-none">
+                <!-- Loaded dynamically -->
+            </article>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-[#0F172A] text-slate-400 pt-16 pb-12 px-6 md:px-12 border-t border-white/10 mt-auto">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-3">
+                <img src="assets/images/logo.png" alt="Logo" class="h-8 w-auto object-contain" onerror="this.src='../assets/images/logo.png'">
+                <span class="text-xs uppercase font-extrabold tracking-widest text-[#D4AF37]">Kaghan Hotel & Resorts</span>
+            </div>
+            <p class="text-xs">&copy; 2026 Kaghan Resorts. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Firebase compat SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <!-- shared DB script -->
+    <script src="../assets/js/shared.js"></script>
+
+    <!-- Blog Controller Logic -->
+    <script>
+        let allBlogs = [];
+        let filteredBlogs = [];
+        let activeCategory = 'all';
+
+        async function initBlog() {
+            try {
+                const list = await KaghanDB.getBlogs();
+                // Filter blog posts to only show stay portal posts or all posts
+                allBlogs = list.filter(b => b.portal === 'stay');
+                
+                // Seed dynamic default blog posts if stay collection is empty
+                if (allBlogs.length === 0) {
+                    await seedDefaultBlogs();
+                    const listReload = await KaghanDB.getBlogs();
+                    allBlogs = listReload.filter(b => b.portal === 'stay');
+                }
+
+                checkHashRoute();
+            } catch(e) {
+                console.error("Fail to load blog engine:", e);
+                document.getElementById('blog-grid').innerHTML = `<div class="col-span-3 text-center text-rose-500 py-12">Failed to load articles from database.</div>`;
+            }
+        }
+
+        // Default SEO Seeds for stay resorts
+        async function seedDefaultBlogs() {
+            const defaults = [
+                {
+                    title: "Pine Valley Hiking Trails: Exploring Margalla Foothills",
+                    slug: "pine-valley-hiking-trails-islamabad",
+                    excerpt: "A hiker's roadmap detailing secret paths, flora, and sunrise spots adjacent to Kaghan Resorts Islamabad.",
+                    content: `<p>Located in the scenic foothills of Islamabad, Kaghan Resorts offers direct access to some of the most serene, untouched hiking trails in the Margalla region. These trails wind through thick pine clusters, leading to panoramic lookouts of the capital valley.</p>
+                              <p>Our favorite trail—Trail 3B—starts just 5 minutes from the resort lobby. It takes hikers on a moderate 45-minute climb, leading to Pinecrest Ridge. Sunrise from this point is breathtaking, offering panoramic views of Rawal Lake and the city skyline in a fresh, mist-covered alpine landscape.</p>
+                              <p>Our concierge desks provides complimentary hiking kits, including map layouts, local safety guidelines, water bottles, and walking sticks. Ensure you wear sturdy footwear and head out early to experience the raw morning tranquility.</p>`,
+                    author: "Resort Concierge",
+                    imageUrl: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=800&q=80",
+                    category: "Pine Valley Guide",
+                    portal: "stay"
+                },
+                {
+                    title: "Luxury Retreat Packages: Golden Hours Spa Launch",
+                    slug: "spa-retreat-launch-kaghan-resorts",
+                    excerpt: "Indulge in absolute alpine relaxation. Discover our newly launched hot-stone sauna and Swedish massage treatments.",
+                    content: `<p>Kaghan Resorts is proud to launch its Golden Hours Wellness Spa, a dedicated sanctuary featuring Swedish therapy, hot-stone saunas, and organic pine oil aromatherapy.</p>
+                              <p>Designed to heal mind and body, our wellness packages cater to weekend stays and corporate travelers. Guests staying in Executive and Presidential Suites receive complimentary 30-minute relaxation coupons upon checking in.</p>
+                              <p>Enjoy panoramic glass walls overlooking the mountain forests while getting custom therapies from our professional spa technicians. Book your slots in advance during peak season.</p>`,
+                    author: "Resort Manager",
+                    imageUrl: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=800&q=80",
+                    category: "Stay Offers",
+                    portal: "stay"
+                }
+            ];
+            for (const b of defaults) {
+                await KaghanDB.addBlog(b);
+            }
+        }
+
+        // Render articles list
+        function renderBlogs() {
+            const grid = document.getElementById('blog-grid');
+            filteredBlogs = allBlogs.filter(b => activeCategory === 'all' || b.category === activeCategory);
+
+            if (filteredBlogs.length === 0) {
+                grid.innerHTML = `<div class="col-span-3 text-center text-slate-500 py-12">No resort updates published under this category yet.</div>`;
+                return;
+            }
+
+            grid.innerHTML = filteredBlogs.map(b => {
+                const img = b.imageUrl || 'assets/images/logo.png';
+                return `
+                    <div class="bg-white rounded-[2.5rem] border border-slate-100 overflow-hidden shadow-sm hover-lift hover:border-[#D4AF37] transition-all flex flex-col justify-between">
+                        <div class="h-56 overflow-hidden relative">
+                            <img src="${img}" alt="${b.title}" class="w-full h-full object-cover" onerror="this.src='../assets/images/logo.png'">
+                            <span class="absolute top-4 left-4 bg-slate-900 text-white text-[9px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">${b.category}</span>
+                        </div>
+                        <div class="p-8 flex-grow flex flex-col justify-between">
+                            <div>
+                                <h4 class="text-lg font-bold outfit text-slate-900 mb-3 leading-snug">${b.title}</h4>
+                                <p class="text-slate-500 text-xs leading-relaxed mb-6">${b.excerpt}</p>
+                            </div>
+                            <div class="pt-4 border-t border-slate-50 flex justify-between items-center text-[10px] font-semibold text-slate-400">
+                                <span>BY ${b.author.toUpperCase()}</span>
+                                <a href="#${b.slug}" class="text-[#D4AF37] font-bold uppercase tracking-wider hover:underline flex items-center gap-1.5">Read Post <i class="fa-solid fa-arrow-right text-[8px]"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Filter Category
+        function filterCategory(cat) {
+            activeCategory = cat;
+            document.querySelectorAll('main button[id^="cat-btn-"]').forEach(btn => {
+                btn.className = 'px-5 py-2.5 rounded-full text-xs font-bold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition-all whitespace-nowrap';
+            });
+            document.getElementById(`cat-btn-${cat}`).className = 'px-5 py-2.5 rounded-full text-xs font-bold bg-[#0F172A] text-white shadow-md transition-all whitespace-nowrap';
+            renderBlogs();
+        }
+
+        // Show Single Article Reader
+        function openReader(slug) {
+            const article = allBlogs.find(b => b.slug === slug);
+            if (!article) {
+                closeReader();
+                return;
+            }
+
+            document.getElementById('blog-list-view').classList.add('hidden');
+            const reader = document.getElementById('blog-reader-view');
+            reader.classList.remove('hidden');
+
+            document.getElementById('read-title').innerText = article.title;
+            document.getElementById('read-cat').innerText = article.category;
+            document.getElementById('read-author').innerText = article.author;
+            document.getElementById('read-date').innerText = new Date(article.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById('read-image').src = article.imageUrl || '../assets/images/logo.png';
+            document.getElementById('read-image').onerror = function() { this.src = '../assets/images/logo.png'; };
+            document.getElementById('read-content').innerHTML = article.content;
+
+            window.scrollTo({ top: 300, behavior: 'smooth' });
+        }
+
+        function closeReader() {
+            window.location.hash = '';
+            document.getElementById('blog-reader-view').classList.add('hidden');
+            document.getElementById('blog-list-view').classList.remove('hidden');
+        }
+
+        // Hash Routing
+        function checkHashRoute() {
+            const hash = window.location.hash.substring(1);
+            if (hash) {
+                openReader(hash);
+            } else {
+                closeReader();
+                renderBlogs();
+            }
+        }
+
+        window.addEventListener('hashchange', checkHashRoute);
+        window.addEventListener('load', initBlog);
+    </script>
+</body>
+</html>

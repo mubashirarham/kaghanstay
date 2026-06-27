@@ -1,0 +1,248 @@
+// Kaghan Hotel Management System - Admin Dashboard Orchestrator
+if (window.KaghanDB) {
+    window.KaghanDB.getNewsletterSubscribers = async () => {
+        const snap = await firebase.firestore().collection('newsletter').get();
+        const list = [];
+        snap.forEach(doc => list.push(doc.data()));
+        return list.sort((a, b) => new Date(b.subscribedAt) - new Date(a.subscribedAt));
+    };
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    // Guard route: ensure logged-in user with role 'admin'
+    if (!KaghanDB.guardRoute('admin')) {
+        return;
+    }
+
+    // Set admin name in sidebar
+    const user = KaghanDB.getCurrentUser();
+    if (user && document.getElementById('sidebar-admin-name')) {
+        document.getElementById('sidebar-admin-name').innerText = user.name;
+    }
+
+    await initAdminDashboard();
+    setupEventListeners();
+});
+
+async function initAdminDashboard() {
+    // Register forms in inventory module
+    if (window.AdminInventoryModule) {
+        window.AdminInventoryModule.initForms();
+    }
+    if (window.AdminBlogsModule) {
+        window.AdminBlogsModule.init();
+    }
+
+    await refreshAll();
+}
+
+async function refreshAll() {
+    await renderMetrics();
+    await renderOverviewBookings();
+    
+    // Call modules rendering
+    if (window.AdminBookingsModule) await window.AdminBookingsModule.render();
+    if (window.AdminInventoryModule) await window.AdminInventoryModule.render();
+    if (window.AdminGuestsModule) await window.AdminGuestsModule.render();
+    if (window.AdminReviewsModule) await window.AdminReviewsModule.render();
+    if (window.AdminBlogsModule) await window.AdminBlogsModule.render();
+    await renderNewsletter();
+}
+
+function setupEventListeners() {
+    // Bookings Manager tab search & filters
+    const bookingSearch = document.getElementById('booking-search-input');
+    const bookingStatus = document.getElementById('booking-filter-status');
+    if (bookingSearch) bookingSearch.addEventListener('input', () => {
+        if (window.AdminBookingsModule) window.AdminBookingsModule.render();
+    });
+    if (bookingStatus) bookingStatus.addEventListener('change', () => {
+        if (window.AdminBookingsModule) window.AdminBookingsModule.render();
+    });
+
+    // Guest Registry search
+    const guestSearch = document.getElementById('guest-search-input');
+    if (guestSearch) guestSearch.addEventListener('input', () => {
+        if (window.AdminGuestsModule) window.AdminGuestsModule.render(guestSearch.value);
+    });
+
+    // Reviews search
+    const reviewSearch = document.getElementById('review-search-input');
+    if (reviewSearch) reviewSearch.addEventListener('input', () => {
+        if (window.AdminReviewsModule) window.AdminReviewsModule.render();
+    });
+
+    // Newsletter search
+    const newsletterSearch = document.getElementById('newsletter-search-input');
+    if (newsletterSearch) newsletterSearch.addEventListener('input', () => renderNewsletter(newsletterSearch.value));
+}
+
+// Switch tabs and load details
+window.switchTab = (tabName) => {
+    const views = document.querySelectorAll('.tab-view');
+    views.forEach(v => v.classList.add('hidden'));
+
+    const activeView = document.getElementById(`view-${tabName}`);
+    if (activeView) activeView.classList.remove('hidden');
+
+    const buttons = document.querySelectorAll('#sidebar-nav button');
+    buttons.forEach(btn => {
+        btn.classList.remove('sidebar-active');
+        btn.classList.add('text-slate-400', 'hover:text-white', 'hover:bg-slate-800/20');
+    });
+
+    const activeBtn = document.getElementById(`tab-btn-${tabName}`);
+    if (activeBtn) {
+        activeBtn.classList.add('sidebar-active');
+        activeBtn.classList.remove('text-slate-400', 'hover:text-white', 'hover:bg-slate-800/20');
+    }
+
+    // Auto close sidebar on mobile
+    const sidebar = document.getElementById('admin-sidebar');
+    if (sidebar && !sidebar.classList.contains('-translate-x-full')) {
+        sidebar.classList.add('-translate-x-full');
+    }
+};
+
+window.toggleSidebar = () => {
+    const sidebar = document.getElementById('admin-sidebar');
+    if (sidebar) {
+        sidebar.classList.toggle('-translate-x-full');
+    }
+};
+
+// Render overview dashboard numbers
+async function renderMetrics() {
+    const bookings = await KaghanDB.getBookings();
+    const rooms = await KaghanDB.getRooms();
+    const users = await KaghanDB.getUsers();
+    const activeUsers = users.filter(u => u.role === 'user');
+
+    // Revenue = sum of confirmed and completed stays
+    const totalRevenue = bookings
+        .filter(b => b.status === 'confirmed' || b.status === 'completed')
+        .reduce((sum, b) => sum + b.totalPrice, 0);
+
+    // Occupancy Rate = % of rooms currently active ('confirmed')
+    const activeStays = bookings.filter(b => b.status === 'confirmed').length;
+    const occupancyRate = rooms.length > 0 ? Math.round((activeStays / rooms.length) * 100) : 0;
+
+    const revEl = document.getElementById('metric-revenue');
+    const occEl = document.getElementById('metric-occupancy');
+    const bkEl = document.getElementById('metric-bookings');
+    const usrEl = document.getElementById('metric-users');
+
+    if (revEl) revEl.innerText = KaghanUI.formatPKR(totalRevenue);
+    if (occEl) occEl.innerText = `${occupancyRate}%`;
+    if (bkEl) bkEl.innerText = bookings.length;
+    if (usrEl) usrEl.innerText = activeUsers.length;
+}
+
+// Render Overview tab list of stays
+async function renderOverviewBookings() {
+    const bookings = await KaghanDB.getBookings();
+    const rooms = await KaghanDB.getRooms();
+    const tbody = document.getElementById('overview-bookings-tbody');
+
+    if (!tbody) return;
+
+    if (bookings.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-slate-400 text-xs">No recent bookings.</td></tr>`;
+        return;
+    }
+
+    const recentBookings = bookings.slice(0, 5);
+    tbody.innerHTML = recentBookings.map(booking => {
+        const room = rooms.find(r => r.id === booking.roomId) || { name: 'Unknown Suite' };
+        
+        let statusBadge = '';
+        if (booking.status === 'confirmed') {
+            statusBadge = '<span class="bg-emerald-50 text-emerald-700 text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider border border-emerald-150">Confirmed</span>';
+        } else if (booking.status === 'completed') {
+            statusBadge = '<span class="bg-blue-50 text-blue-700 text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider border border-blue-150">Completed</span>';
+        } else {
+            statusBadge = '<span class="bg-rose-50 text-rose-700 text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider border border-rose-150">Cancelled</span>';
+        }
+
+        const isWalkin = booking.userId === 'usr-guest-walkin';
+        const guestBadge = isWalkin 
+            ? `<span class="bg-slate-100 text-slate-700 border border-slate-350 rounded px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wider ml-2">Walk-in</span>`
+            : `<span class="bg-indigo-50 text-indigo-700 border border-indigo-150 rounded px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wider ml-2">Member</span>`;
+
+        return `
+            <tr class="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
+                <td class="px-6 py-4 text-xs font-bold text-[#D4AF37] uppercase">${booking.id}</td>
+                <td class="px-6 py-4">
+                    <span class="font-bold text-slate-800 text-xs flex items-center">
+                        ${booking.guestName}
+                        ${guestBadge}
+                    </span>
+                </td>
+                <td class="px-6 py-4 text-xs text-slate-600 font-medium">${room.name}</td>
+                <td class="px-6 py-4 text-[11px] text-slate-500">
+                    ${KaghanUI.formatDate(booking.checkIn)} to ${KaghanUI.formatDate(booking.checkOut)}
+                </td>
+                <td class="px-6 py-4 font-bold text-slate-800 text-xs">${KaghanUI.formatPKR(booking.totalPrice)}</td>
+                <td class="px-6 py-4">${statusBadge}</td>
+            </tr>
+        `;
+    }).join('');
+}
+
+// Render newsletter list
+async function renderNewsletter(searchKeyword = '') {
+    const subscribers = await KaghanDB.getNewsletterSubscribers();
+    const tbody = document.getElementById('admin-newsletter-tbody');
+    const emptyState = document.getElementById('newsletter-empty-state');
+
+    if (!tbody) return;
+
+    const filtered = subscribers.filter(s => {
+        const keyword = searchKeyword.toLowerCase().trim();
+        return !keyword || s.email.toLowerCase().includes(keyword);
+    });
+
+    if (filtered.length === 0) {
+        tbody.innerHTML = '';
+        if (emptyState) emptyState.classList.remove('hidden');
+        return;
+    }
+
+    if (emptyState) emptyState.classList.add('hidden');
+    tbody.innerHTML = filtered.map(sub => {
+        return `
+            <tr class="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
+                <td class="px-6 py-4 text-sm font-semibold text-slate-800">${sub.email}</td>
+                <td class="px-6 py-4 text-xs text-slate-500">${KaghanUI.formatDate(sub.subscribedAt)}</td>
+                <td class="px-6 py-4 flex gap-2">
+                    <button onclick="removeSubscriber('${sub.email}')" class="bg-rose-50 border border-rose-100 text-rose-600 text-[10px] font-bold px-3 py-1.5 rounded-lg hover:bg-rose-600 hover:text-white transition-all flex items-center gap-1.5">
+                        <i class="fa-solid fa-trash-can text-[9px]"></i> Remove
+                    </button>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+window.removeSubscriber = async (email) => {
+    if (!confirm(`Are you sure you want to remove "${email}" from the newsletter subscription list?`)) return;
+
+    try {
+        const snap = await firebase.firestore().collection('newsletter').where('email', '==', email).get();
+        if (!snap.empty) {
+            await snap.docs[0].ref.delete();
+            KaghanUI.showToast('Subscriber removed successfully.', 'success');
+            await renderNewsletter();
+        } else {
+            KaghanUI.showToast('Subscriber not found.', 'error');
+        }
+    } catch (err) {
+        console.error("Error removing subscriber:", err);
+        KaghanUI.showToast('Failed to remove subscriber.', 'error');
+    }
+};
+
+// Export refresh for global use
+window.AdminDashboardModule = {
+    refreshAll
+};
