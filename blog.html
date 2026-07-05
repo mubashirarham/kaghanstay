@@ -3,23 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alpine Resorts Blog & Pine Valley Guide | Kaghan Resorts</title>
-    <meta name="description" content="Stay updated with resort activities, local travel tips, dining guides, and luxury stay offers at Kaghan Hotel & Resorts, Islamabad.">
-    <link rel="canonical" href="https://stay.kaghanproperties.com/blog">
+    <title>Alpine Resorts Blog & Guide | KPH Stay</title>
+    <meta name="description" content="Stay updated with resort activities, local travel tips, dining guides, and luxury stay offers at KPH Stay (Kaghan Properties Hospitality Stay), Islamabad & Nathia Gali.">
+    <link rel="canonical" href="https://kphstay.com/blog">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
+    <link rel="apple-touch-icon" href="assets/images/logo.png">
+    <meta name="theme-color" content="#0F172A">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://stay.kaghanproperties.com/blog">
-    <meta property="og:title" content="Alpine Resorts Blog & Pine Valley Guide | Kaghan Resorts">
-    <meta property="og:description" content="Stay updated with resort activities, local travel tips, dining guides, and luxury stay offers.">
+    <meta property="og:url" content="https://kphstay.com/blog">
+    <meta property="og:title" content="Alpine Resorts Blog & Guide | KPH Stay">
+    <meta property="og:description" content="Stay updated with resort activities, local travel tips, dining guides, and luxury stay offers at KPH Stay (Kaghan Properties Hospitality Stay), Islamabad & Nathia Gali.">
     <meta property="og:image" content="../assets/images/logo.png">
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:url" content="https://stay.kaghanproperties.com/blog">
-    <meta name="twitter:title" content="Alpine Resorts Blog & Pine Valley Guide | Kaghan Resorts">
-    <meta name="twitter:description" content="Stay updated with resort activities, local travel tips, dining guides, and luxury stay offers.">
+    <meta name="twitter:url" content="https://kphstay.com/blog">
+    <meta name="twitter:title" content="Alpine Resorts Blog & Guide | KPH Stay">
+    <meta name="twitter:description" content="Stay updated with resort activities, local travel tips, dining guides, and luxury stay offers at KPH Stay (Kaghan Properties Hospitality Stay), Islamabad & Nathia Gali.">
     <meta name="twitter:image" content="../assets/images/logo.png">
+
+    <!-- Structured Data (JSON-LD Blog & Breadcrumbs Schema) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Blog",
+      "name": "KPH Stay Resort Journal",
+      "description": "Stay updated with resort activities, local travel tips, dining guides, and luxury stay offers at KPH Stay, Islamabad & Nathia Gali.",
+      "url": "https://kphstay.com/blog",
+      "publisher": {
+        "@type": "Organization",
+        "name": "KPH Stay",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://kphstay.com/assets/images/logo.png"
+        }
+      }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://kphstay.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Journal",
+          "item": "https://kphstay.com/blog"
+        }
+      ]
+    }
+    </script>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -50,10 +93,10 @@
     <!-- Header / Navigation -->
     <nav id="hotel-navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-5 px-6 md:px-12 flex justify-between items-center text-white bg-[#0F172A]/90 backdrop-blur-md border-b border-white/10">
         <div class="flex items-center gap-3">
-            <img src="assets/images/logo.png" alt="Kaghan Properties Logo" class="h-10 w-auto object-contain" onerror="this.src='../assets/images/logo.png'">
+            <img src="assets/images/logo.png" alt="KPH Stay Logo" class="h-10 w-auto object-contain" onerror="this.src='../assets/images/logo.png'">
             <div class="flex flex-col">
-                <span class="text-lg font-bold tracking-wider uppercase outfit leading-none">Kaghan</span>
-                <span class="text-xs text-[#D4AF37] tracking-[0.2em] uppercase font-semibold">Hotel & Resorts</span>
+                <span class="text-lg font-bold tracking-wider uppercase outfit leading-none">KPH</span>
+                <span class="text-xs text-[#D4AF37] tracking-[0.2em] uppercase font-semibold">Stay</span>
             </div>
         </div>
 
@@ -272,6 +315,35 @@
             document.getElementById('read-image').onerror = function() { this.src = '../assets/images/logo.png'; };
             document.getElementById('read-content').innerHTML = article.content;
 
+            // Dynamically inject BlogPosting JSON-LD Schema for bot crawling / SEO
+            let dynamicSchema = document.getElementById('dynamic-article-schema');
+            if (dynamicSchema) dynamicSchema.remove();
+
+            dynamicSchema = document.createElement('script');
+            dynamicSchema.id = 'dynamic-article-schema';
+            dynamicSchema.type = 'application/ld+json';
+            dynamicSchema.text = JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "BlogPosting",
+                "headline": article.title,
+                "description": article.excerpt,
+                "image": article.imageUrl || "https://kphstay.com/assets/images/logo.png",
+                "author": {
+                    "@type": "Person",
+                    "name": article.author
+                },
+                "publisher": {
+                    "@type": "Organization",
+                    "name": "KPH Stay",
+                    "logo": {
+                        "@type": "ImageObject",
+                        "url": "https://kphstay.com/assets/images/logo.png"
+                    }
+                },
+                "datePublished": article.createdAt || new Date().toISOString()
+            });
+            document.head.appendChild(dynamicSchema);
+
             window.scrollTo({ top: 300, behavior: 'smooth' });
         }
 
@@ -279,6 +351,10 @@
             window.location.hash = '';
             document.getElementById('blog-reader-view').classList.add('hidden');
             document.getElementById('blog-list-view').classList.remove('hidden');
+
+            // Remove dynamic article schema
+            const dynamicSchema = document.getElementById('dynamic-article-schema');
+            if (dynamicSchema) dynamicSchema.remove();
         }
 
         // Hash Routing
@@ -291,6 +367,17 @@
                 renderBlogs();
             }
         }
+
+        // Listen for real-time blog database updates
+        window.addEventListener('kaghan-db-blogs', (e) => {
+            const list = e.detail;
+            allBlogs = list.filter(b => b.portal === 'stay');
+            if (allBlogs.length === 0) {
+                seedDefaultBlogs();
+                return;
+            }
+            checkHashRoute();
+        });
 
         window.addEventListener('hashchange', checkHashRoute);
         window.addEventListener('load', initBlog);

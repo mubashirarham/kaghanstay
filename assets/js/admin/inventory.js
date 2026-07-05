@@ -25,6 +25,10 @@
                     <div class="flex justify-between items-start mb-2">
                         <h4 class="font-bold text-[#0F172A] outfit text-sm leading-tight">${room.name}</h4>
                     </div>
+                    <div class="text-[10px] text-[#D4AF37] font-bold mb-3 flex items-center gap-1">
+                        <i class="fa-solid fa-location-dot text-[9px]"></i>
+                        <span>${room.location || 'Islamabad'}</span>
+                    </div>
                     <p class="text-slate-400 text-xs line-clamp-2 mb-4 font-light leading-relaxed">
                         ${room.description}
                     </p>
@@ -41,9 +45,14 @@
                         <span class="text-slate-400 text-[8px] uppercase tracking-wider block font-bold">Price per night</span>
                         <span class="text-sm font-black text-[#D4AF37]">${KaghanUI.formatPKR(room.price)}</span>
                     </div>
-                    <button onclick="openEditRoomModal('${room.id}')" class="bg-slate-50 border border-slate-200 text-slate-800 text-[10px] font-bold px-3 py-2 rounded-lg hover:bg-slate-100 transition-all">
-                        Edit Details
-                    </button>
+                    <div class="flex gap-2">
+                        <button onclick="deleteRoomRecord('${room.id}')" class="bg-rose-50 border border-rose-200 text-rose-600 text-[10px] font-bold px-2.5 py-2 rounded-lg hover:bg-rose-100 hover:text-rose-700 transition-all" title="Delete Room Style">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                        <button onclick="openEditRoomModal('${room.id}')" class="bg-slate-50 border border-slate-200 text-slate-800 text-[10px] font-bold px-3 py-2 rounded-lg hover:bg-slate-100 transition-all">
+                            Edit Details
+                        </button>
+                    </div>
                 </div>
             </div>
         `).join('');
@@ -70,6 +79,7 @@
         document.getElementById('edit-room-name-lbl').innerText = room.name;
         document.getElementById('edit-room-name').value = room.name;
         document.getElementById('edit-room-type').value = room.type;
+        document.getElementById('edit-room-location').value = room.location || 'Islamabad';
         document.getElementById('edit-room-price').value = room.price;
         document.getElementById('edit-room-guests').value = room.maxGuests || 2;
         document.getElementById('edit-room-desc').value = room.description;
@@ -104,6 +114,7 @@
 
             const name = document.getElementById('edit-room-name').value.trim();
             const type = document.getElementById('edit-room-type').value;
+            const location = document.getElementById('edit-room-location').value;
             const price = parseInt(document.getElementById('edit-room-price').value);
             const maxGuests = parseInt(document.getElementById('edit-room-guests').value);
             const description = document.getElementById('edit-room-desc').value.trim();
@@ -124,7 +135,8 @@
                 price,
                 maxGuests,
                 description,
-                amenities
+                amenities,
+                location
             };
 
             const success = await KaghanDB.updateRoom(activeEditRoomId, updatedData);
@@ -172,6 +184,7 @@
             
             const name = document.getElementById('add-room-name').value.trim();
             const type = document.getElementById('add-room-type').value;
+            const location = document.getElementById('add-room-location').value;
             const price = parseInt(document.getElementById('add-room-price').value);
             const description = document.getElementById('add-room-desc').value.trim();
             const amenitiesInput = document.getElementById('add-room-amenities').value.trim();
@@ -202,7 +215,8 @@
                 description,
                 maxGuests: type === 'presidential' ? 6 : type === 'executive' ? 3 : 2,
                 rating: 5.0,
-                reviewsCount: 0
+                reviewsCount: 0,
+                location
             };
 
             await KaghanDB.addRoom(newRoom);
@@ -214,6 +228,19 @@
             closeAddRoomModal();
         });
     }
+
+    window.deleteRoomRecord = async (roomId) => {
+        if (!confirm(`Are you sure you want to permanently delete room/suite style "${roomId}"?`)) return;
+        const success = await KaghanDB.deleteRoom(roomId);
+        if (success) {
+            KaghanUI.showToast(`Room style ${roomId} successfully removed.`, 'success');
+            if (window.AdminDashboardModule) {
+                await window.AdminDashboardModule.refreshAll();
+            }
+        } else {
+            KaghanUI.showToast('Failed to delete room style.', 'error');
+        }
+    };
 
     // Export to window
     window.AdminInventoryModule = {

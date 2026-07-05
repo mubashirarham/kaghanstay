@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     await initDashboard();
+    setupActiveDatabaseListeners();
 });
 
 async function initDashboard() {
@@ -19,4 +20,18 @@ async function initDashboard() {
     if (window.UserBookingsModule) {
         await window.UserBookingsModule.render();
     }
+}
+
+function setupActiveDatabaseListeners() {
+    window.addEventListener('kaghan-db-bookings', async () => {
+        if (window.UserBookingsModule) await window.UserBookingsModule.render();
+    });
+
+    window.addEventListener('kaghan-db-rooms', async () => {
+        if (window.UserBookingsModule) await window.UserBookingsModule.render();
+    });
+
+    window.addEventListener('kaghan-db-current-user', () => {
+        if (window.UserProfileModule) window.UserProfileModule.render();
+    });
 }

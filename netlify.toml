@@ -1,3 +1,9 @@
+# Redirect sitemap.xml to dynamic generator
+[[redirects]]
+  from = "/sitemap.xml"
+  to = "/.netlify/functions/sitemap"
+  status = 200
+
 # Redirect default index files to root
 [[redirects]]
   from = "/index.html"
@@ -35,8 +41,24 @@
   to = "/login.html"
   status = 200
 
+[[redirects]]
+  from = "/contact"
+  to = "/contact.html"
+  status = 200
+
+[[redirects]]
+  from = "/terms"
+  to = "/terms.html"
+  status = 200
+
+[[redirects]]
+  from = "/privacy"
+  to = "/privacy.html"
+  status = 200
+
 [build]
   publish = "."
+  functions = "netlify/functions"
 
 [build.processing]
   skip_node_bundling = true
@@ -54,3 +76,24 @@
 [build.processing.js]
   bundle = true
   minify = true
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Content-Security-Policy = "upgrade-insecure-requests"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[edge_functions]]
+  path = "/.netlify/functions/chatbot"
+  function = "rate-limiter"
+
+[[edge_functions]]
+  path = "/*"
+  function = "seo-filter"

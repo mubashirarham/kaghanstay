@@ -1,0 +1,10 @@
+{
+  "name": "kaghan-stay-platform",
+  "version": "1.0.0",
+  "description": "Kaghan Stay resort platform service wrapper",
+  "main": "netlify/functions/booking-email.js",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "nodemailer": "^6.9.13"
+  }
+}

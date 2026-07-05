@@ -3,24 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Your Stay | Kaghan Hotel & Resorts</title>
-    <meta name="description" content="Secure your luxury accommodations at Kaghan Hotel & Resorts. Fast, secure online booking, custom dining upgrades, and instant booking confirmation.">
-    <link rel="canonical" href="https://stay.kaghanproperties.com/booking">
+    <title>Book Your Stay | KPH Stay</title>
+    <meta name="description" content="Secure your luxury accommodations at KPH Stay. Fast, secure online booking, custom dining upgrades, and instant booking confirmation.">
+    <link rel="canonical" href="https://kphstay.com/booking">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
+    <link rel="apple-touch-icon" href="assets/images/logo.png">
+    <meta name="theme-color" content="#0F172A">
     <meta name="robots" content="noindex, follow">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://stay.kaghanproperties.com/booking">
-    <meta property="og:title" content="Book Your Stay | Kaghan Hotel & Resorts">
-    <meta property="og:description" content="Secure your luxury accommodations at Kaghan Hotel & Resorts. Fast, secure online booking, custom dining upgrades, and instant booking confirmation.">
-    <meta property="og:image" content="https://kaghanproperties.com/assets/images/logo.png">
+    <meta property="og:url" content="https://kphstay.com/booking">
+    <meta property="og:title" content="Book Your Stay | KPH Stay">
+    <meta property="og:description" content="Secure your luxury accommodations at KPH Stay. Fast, secure online booking, custom dining upgrades, and instant booking confirmation.">
+    <meta property="og:image" content="https://kphstay.com/assets/images/logo.png">
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:url" content="https://stay.kaghanproperties.com/booking">
-    <meta name="twitter:title" content="Book Your Stay | Kaghan Hotel & Resorts">
-    <meta name="twitter:description" content="Secure your luxury accommodations at Kaghan Hotel & Resorts. Fast, secure online booking, custom dining upgrades, and instant booking confirmation.">
-    <meta name="twitter:image" content="https://kaghanproperties.com/assets/images/logo.png">
+    <meta name="twitter:url" content="https://kphstay.com/booking">
+    <meta name="twitter:title" content="Book Your Stay | KPH Stay">
+    <meta name="twitter:description" content="Secure your luxury accommodations at KPH Stay. Fast, secure online booking, custom dining upgrades, and instant booking confirmation.">
+    <meta name="twitter:image" content="https://kphstay.com/assets/images/logo.png">
+
+    <!-- BreadcrumbList Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://kphstay.com/"},
+        {"@type": "ListItem", "position": 2, "name": "Book Your Stay", "item": "https://kphstay.com/booking"}
+      ]
+    }
+    </script>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -34,10 +50,10 @@
     <!-- Header / Navigation -->
     <nav id="hotel-navbar" class="fixed top-0 left-0 right-0 z-50 py-5 px-6 md:px-12 flex justify-between items-center text-white bg-[#0F172A] border-b border-white/10">
         <div class="flex items-center gap-3">
-            <img src="assets/images/logo.png" alt="Kaghan Properties Logo" class="h-10 w-auto object-contain">
+            <img src="assets/images/logo.png" alt="KPH Stay Logo" class="h-10 w-auto object-contain">
             <div class="flex flex-col">
-                <span class="text-lg font-bold tracking-wider uppercase outfit leading-none">Kaghan</span>
-                <span class="text-xs text-[#D4AF37] tracking-[0.2em] uppercase font-semibold">Hotel & Resorts</span>
+                <span class="text-lg font-bold tracking-wider uppercase outfit leading-none">KPH</span>
+                <span class="text-xs text-[#D4AF37] tracking-[0.2em] uppercase font-semibold">Stay</span>
             </div>
         </div>
 
@@ -114,22 +130,67 @@
                         Stay & Room Details
                     </h2>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                        <div>
-                            <label class="block text-xs uppercase tracking-wider text-slate-500 font-semibold mb-2">Check In Date</label>
-                            <input type="date" id="book-check-in" required onchange="calculatePrice()" class="w-full border border-slate-200 rounded-xl px-4 py-3 outline-none focus:border-[#D4AF37] text-sm bg-slate-50 text-slate-800">
-                        </div>
-                        <div>
-                            <label class="block text-xs uppercase tracking-wider text-slate-500 font-semibold mb-2">Check Out Date</label>
-                            <input type="date" id="book-check-out" required onchange="calculatePrice()" class="w-full border border-slate-200 rounded-xl px-4 py-3 outline-none focus:border-[#D4AF37] text-sm bg-slate-50 text-slate-800">
+                    <!-- Interactive Calendar -->
+                    <div class="mb-6">
+                        <label class="block text-xs uppercase tracking-wider text-slate-500 font-semibold mb-3">Choose Stay Dates on Calendar</label>
+                        <div class="bg-slate-50 border border-slate-100 rounded-2xl p-5">
+                            <div class="flex justify-between items-center mb-4">
+                                <button type="button" onclick="changeCalendarMonth(-1)" class="w-8 h-8 rounded-full hover:bg-slate-200 flex items-center justify-center text-slate-600 transition-colors"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                                <span id="calendar-month-year" class="font-bold text-sm outfit text-slate-800 uppercase tracking-wider"></span>
+                                <button type="button" onclick="changeCalendarMonth(1)" class="w-8 h-8 rounded-full hover:bg-slate-200 flex items-center justify-center text-slate-600 transition-colors"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                            </div>
+                            
+                            <div class="grid grid-cols-7 gap-1 text-center text-[10px] uppercase font-bold text-slate-400 mb-2">
+                                <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+                            </div>
+                            
+                            <div id="calendar-days-grid" class="grid grid-cols-7 gap-1">
+                                <!-- Loaded dynamically via JS -->
+                            </div>
                         </div>
                     </div>
 
-                    <div>
-                        <label class="block text-xs uppercase tracking-wider text-slate-500 font-semibold mb-2">Select Your Suite</label>
-                        <select id="book-room-id" onchange="onRoomChange()" class="w-full border border-slate-200 rounded-xl px-4 py-3.5 outline-none focus:border-[#D4AF37] text-sm bg-slate-50 text-slate-800 cursor-pointer">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-xs uppercase tracking-wider text-slate-500 font-semibold mb-2">Check In Date</label>
+                            <input type="date" id="book-check-in" required readonly class="w-full border border-slate-200 rounded-xl px-4 py-3 outline-none text-sm bg-slate-100 text-slate-500 cursor-not-allowed">
+                        </div>
+                        <div>
+                            <label class="block text-xs uppercase tracking-wider text-slate-500 font-semibold mb-2">Check Out Date</label>
+                            <input type="date" id="book-check-out" required readonly class="w-full border border-slate-200 rounded-xl px-4 py-3 outline-none text-sm bg-slate-100 text-slate-500 cursor-not-allowed">
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-xs uppercase tracking-wider text-slate-500 font-semibold mb-2">Select Location</label>
+                        <select id="book-location" onchange="filterRoomsByLocation()" class="w-full border border-slate-200 rounded-xl px-4 py-3.5 outline-none focus:border-[#D4AF37] text-sm bg-slate-50 text-slate-800 cursor-pointer">
+                            <option value="all">All Locations</option>
+                            <option value="Islamabad">Islamabad</option>
+                            <option value="Nathia Gali">Nathia Gali</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-xs uppercase tracking-wider text-slate-500 font-semibold mb-3">Select Your Suite</label>
+                        <!-- Hidden select for form compatibility -->
+                        <select id="book-room-id" onchange="onRoomChange()" class="hidden">
                             <!-- Loaded via JS -->
                         </select>
+                        <!-- Dynamic Cards Grid -->
+                        <div id="book-rooms-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[350px] overflow-y-auto pr-2">
+                            <!-- Loaded via JS dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Rent Billing Cycle (Visible/Enabled for Apartments) -->
+                    <div id="billing-cycle-box" class="mt-6 hidden">
+                        <label class="block text-xs uppercase tracking-wider text-slate-500 font-semibold mb-2">Rent Billing Cycle</label>
+                        <select id="book-billing-cycle" onchange="calculatePrice()" class="w-full border border-slate-200 rounded-xl px-4 py-3.5 outline-none focus:border-[#D4AF37] text-sm bg-slate-50 text-slate-800 cursor-pointer">
+                            <option value="daily">Daily Basis</option>
+                            <option value="weekly">Weekly Basis</option>
+                            <option value="monthly">Monthly Basis</option>
+                        </select>
+                        <p class="text-slate-400 text-[10px] mt-1 font-light">Select daily, weekly, or monthly cycle to unlock discounted rates for longer stays.</p>
                     </div>
                     <!-- Upcoming Reserved Dates Box -->
                     <div id="reserved-dates-box" class="mt-5 hidden bg-slate-50 border border-slate-100 p-5 rounded-2xl">
@@ -142,32 +203,18 @@
                 <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md">
                     <h2 class="text-xl font-bold outfit text-slate-900 mb-6 flex items-center gap-3">
                         <span class="w-8 h-8 bg-[#D4AF37]/10 text-[#D4AF37] rounded-full flex items-center justify-center text-sm font-bold">3</span>
-                        Payment Details
+                        Payment Selection
                     </h2>
 
-                    <form id="payment-form" class="space-y-6">
-                        <div>
-                            <label class="block text-xs uppercase tracking-wider text-slate-500 font-semibold mb-2">Cardholder Name</label>
-                            <input type="text" id="card-name" required placeholder="John Doe" class="w-full border border-slate-200 rounded-xl px-4 py-3 outline-none focus:border-[#D4AF37] text-sm bg-slate-50 text-slate-800">
+                    <div class="bg-slate-50 border border-slate-150 rounded-2xl p-5 flex items-start gap-4">
+                        <div class="w-10 h-10 rounded-full bg-[#D4AF37]/10 text-[#D4AF37] flex items-center justify-center text-lg shrink-0 mt-0.5">
+                            <i class="fa-solid fa-hotel"></i>
                         </div>
                         <div>
-                            <label class="block text-xs uppercase tracking-wider text-slate-500 font-semibold mb-2">Credit Card Number</label>
-                            <div class="relative">
-                                <i class="fa-solid fa-credit-card absolute left-4 top-4 text-slate-400"></i>
-                                <input type="text" id="card-number" required placeholder="0000 0000 0000 0000" maxlength="19" class="w-full border border-slate-200 rounded-xl pl-11 pr-4 py-3 outline-none focus:border-[#D4AF37] text-sm bg-slate-50 text-slate-800">
-                            </div>
+                            <h4 class="font-bold text-slate-800 text-sm">Pay on Check-in (Cash / Card)</h4>
+                            <p class="text-slate-400 text-xs mt-1 leading-relaxed">Secure reservation today. No prepayment or credit card required. You will complete your full payment directly at the reception counter during check-in.</p>
                         </div>
-                        <div class="grid grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-xs uppercase tracking-wider text-slate-500 font-semibold mb-2">Expiration Date</label>
-                                <input type="text" id="card-expiry" required placeholder="MM/YY" maxlength="5" class="w-full border border-slate-200 rounded-xl px-4 py-3 outline-none focus:border-[#D4AF37] text-sm bg-slate-50 text-slate-800">
-                            </div>
-                            <div>
-                                <label class="block text-xs uppercase tracking-wider text-slate-500 font-semibold mb-2">CVV / CV2</label>
-                                <input type="password" id="card-cvv" required placeholder="***" maxlength="3" class="w-full border border-slate-200 rounded-xl px-4 py-3 outline-none focus:border-[#D4AF37] text-sm bg-slate-50 text-slate-800">
-                            </div>
-                        </div>
-                    </form>
+                    </div>
                 </div>
             </div>
 
@@ -181,6 +228,7 @@
                         <img id="preview-room-img" src="" alt="Suite Preview" class="w-20 h-20 object-cover rounded-2xl">
                         <div class="flex flex-col justify-center">
                             <h4 id="preview-room-name" class="font-bold text-slate-900 outfit text-sm leading-tight">Deluxe Alpine Room</h4>
+                            <span id="preview-room-location" class="text-[10px] text-slate-400 font-bold mt-0.5 flex items-center gap-1"><i class="fa-solid fa-location-dot text-[#D4AF37]"></i> Islamabad</span>
                             <span id="preview-room-price" class="text-xs font-semibold text-[#D4AF37] mt-1">25,000 PKR / Night</span>
                             <span id="preview-room-guests" class="text-[10px] text-slate-400 mt-0.5">Capacity: Max 2 guests</span>
                         </div>
@@ -228,12 +276,12 @@
                         </div>
                     </div>
 
-                    <button onclick="submitBooking()" class="w-full bg-[#D4AF37] text-white py-4 rounded-2xl font-bold hover:bg-[#0F172A] transition-all shadow-lg flex items-center justify-center gap-2">
+                    <button onclick="submitBooking()" class="w-full bg-[#D4AF37] text-white py-4 rounded-2xl font-bold hover:bg-[#0F172A] transition-all shadow-lg flex items-center justify-center gap-2 btn-shimmer">
                         <i class="fa-solid fa-lock text-xs"></i>
                         Confirm Stay
                     </button>
                     <p class="text-[10px] text-center text-slate-400">
-                        Secured SSL checkout powered by Kaghan Banking. Cancellation charges may apply in accordance to company policy.
+                        Secured SSL checkout powered by KPH Stay. Cancellation charges may apply in accordance to company policy.
                     </p>
                 </div>
             </div>
@@ -250,7 +298,7 @@
             
             <h2 class="text-2xl font-bold outfit text-slate-900 mb-2">Booking Confirmed!</h2>
             <p class="text-slate-400 text-xs px-4 mb-6 leading-relaxed">
-                Thank you for choosing Kaghan Hotel & Resorts. Your reservation is pending final check-in.
+                Thank you for choosing KPH Stay. Your reservation is pending final check-in.
             </p>
 
             <div class="bg-slate-50 rounded-2xl p-5 mb-8 text-left text-sm space-y-3 font-medium border border-slate-100">
@@ -334,34 +382,129 @@
             }
         }
 
+        let allAvailableRooms = [];
+
         // Load Rooms in Select
         async function loadRoomSelector() {
             const allRooms = await KaghanDB.getRooms();
-            const rooms = allRooms.filter(r => r.status === 'available');
-            const selector = document.getElementById('book-room-id');
+            allAvailableRooms = allRooms.filter(r => r.status === 'available');
             
-            selector.innerHTML = rooms.map(room => `
-                <option value="${room.id}">${room.name} (${KaghanUI.formatPKR(room.price)} / Night)</option>
+            // Read URL query parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const queryLocation = urlParams.get('location');
+            const queryRoomId = urlParams.get('room');
+
+            if (queryLocation && ['Islamabad', 'Nathia Gali'].includes(queryLocation)) {
+                document.getElementById('book-location').value = queryLocation;
+            }
+
+            await filterRoomsByLocation(queryRoomId);
+        }
+
+        async function filterRoomsByLocation(preselectedRoomId = null) {
+            const location = document.getElementById('book-location').value;
+            const selector = document.getElementById('book-room-id');
+            const grid = document.getElementById('book-rooms-grid');
+            
+            const filteredRooms = allAvailableRooms.filter(r => location === 'all' || (r.location || 'Islamabad') === location);
+            
+            if (filteredRooms.length === 0) {
+                selector.innerHTML = '<option value="">No suites available in this location</option>';
+                if (grid) grid.innerHTML = '<div class="col-span-2 text-center py-8 text-slate-400 text-xs">No suites available in this location.</div>';
+                selectedRoom = null;
+                // Clear preview
+                document.getElementById('preview-room-img').src = 'assets/images/logo.png';
+                document.getElementById('preview-room-name').innerText = 'No Suite Selected';
+                document.getElementById('preview-room-location').innerHTML = '';
+                document.getElementById('preview-room-guests').innerText = 'Capacity: -';
+                document.getElementById('preview-room-price').innerText = '-';
+                document.getElementById('calc-rate').innerText = '-';
+                document.getElementById('calc-nights').innerText = '-';
+                document.getElementById('calc-subtotal').innerText = 'PKR 0';
+                document.getElementById('calc-tax').innerText = 'PKR 0';
+                document.getElementById('calc-total').innerText = 'PKR 0';
+                document.getElementById('reserved-dates-box').classList.add('hidden');
+                return;
+            }
+
+            selector.innerHTML = filteredRooms.map(room => `
+                <option value="${room.id}">${room.name} (${room.location || 'Islamabad'}) - (${KaghanUI.formatPKR(room.price)} / Night)</option>
             `).join('');
 
-            // Read Room from URL query parameter
-            const urlParams = new URLSearchParams(window.location.search);
-            const queryRoomId = urlParams.get('room');
-            if (queryRoomId && rooms.some(r => r.id === queryRoomId)) {
-                selector.value = queryRoomId;
+            // Pre-select room if requested and available in filtered list
+            if (preselectedRoomId && filteredRooms.some(r => r.id === preselectedRoomId)) {
+                selector.value = preselectedRoomId;
+            } else {
+                if (preselectedRoomId) {
+                    const matchRoom = allAvailableRooms.find(r => r.id === preselectedRoomId);
+                    if (matchRoom) {
+                        document.getElementById('book-location').value = matchRoom.location || 'Islamabad';
+                        return filterRoomsByLocation(preselectedRoomId);
+                    }
+                }
             }
+
+            // Sync visual cards grid
+            if (grid) {
+                grid.innerHTML = filteredRooms.map(room => {
+                    const isSelected = room.id === selector.value;
+                    const borderClass = isSelected ? 'border-[#D4AF37] bg-[#D4AF37]/5 ring-2 ring-[#D4AF37]' : 'border-slate-100 bg-white hover:border-slate-300';
+                    return `
+                        <div onclick="selectRoomCard('${room.id}')" id="room-card-${room.id}" class="border rounded-2xl p-4 flex gap-4 cursor-pointer transition-all bg-white hover:border-slate-350 border-slate-100 hover:shadow-md ${borderClass}">
+                            <img src="${room.image}" alt="${room.name}" class="w-16 h-16 object-cover rounded-xl shrink-0">
+                            <div class="flex flex-col justify-center flex-grow">
+                                <h4 class="font-bold text-slate-800 text-xs outfit leading-snug">${room.name}</h4>
+                                <span class="text-[9px] text-[#D4AF37] font-bold mt-0.5 flex items-center gap-0.5"><i class="fa-solid fa-location-dot"></i> ${room.location || 'Islamabad'}</span>
+                                <span class="text-xs font-semibold text-slate-500 mt-1">${KaghanUI.formatPKR(room.price)} / Night</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
             await onRoomChange();
         }
 
+        window.selectRoomCard = (roomId) => {
+            const selector = document.getElementById('book-room-id');
+            if (selector) {
+                selector.value = roomId;
+                onRoomChange();
+            }
+        };
+
         async function onRoomChange() {
             const roomId = document.getElementById('book-room-id').value;
+            if (!roomId) return;
             selectedRoom = await KaghanDB.getRoomById(roomId);
             
             if (selectedRoom) {
+                // Update active state in grid cards
+                const allCards = document.querySelectorAll('#book-rooms-grid > div');
+                allCards.forEach(c => {
+                    c.className = "border rounded-2xl p-4 flex gap-4 cursor-pointer transition-all bg-white hover:border-slate-350 border-slate-100 hover:shadow-md";
+                });
+                const activeCard = document.getElementById(`room-card-${roomId}`);
+                if (activeCard) {
+                    activeCard.className = "border rounded-2xl p-4 flex gap-4 cursor-pointer transition-all bg-[#D4AF37]/5 border-[#D4AF37] ring-2 ring-[#D4AF37] shadow-md";
+                }
+
                 document.getElementById('preview-room-img').src = selectedRoom.image;
                 document.getElementById('preview-room-name').innerText = selectedRoom.name;
-                document.getElementById('preview-room-price').innerText = `${KaghanUI.formatPKR(selectedRoom.price)} / Night`;
+                document.getElementById('preview-room-location').innerHTML = `<i class="fa-solid fa-location-dot text-[#D4AF37] text-[9px] mr-1"></i> ${selectedRoom.location || 'Islamabad'}`;
                 document.getElementById('preview-room-guests').innerText = `Capacity: Max ${selectedRoom.maxGuests} guests`;
+
+                const billingBox = document.getElementById('billing-cycle-box');
+                const billingCycleSelect = document.getElementById('book-billing-cycle');
+                
+                if (selectedRoom.isApartment) {
+                    billingBox.classList.remove('hidden');
+                    document.getElementById('preview-room-price').innerText = `${KaghanUI.formatPKR(selectedRoom.priceDaily || selectedRoom.price)}/N | ${KaghanUI.formatPKR(selectedRoom.priceWeekly)}/W | ${KaghanUI.formatPKR(selectedRoom.priceMonthly)}/M`;
+                } else {
+                    billingBox.classList.add('hidden');
+                    billingCycleSelect.value = 'daily';
+                    document.getElementById('preview-room-price').innerText = `${KaghanUI.formatPKR(selectedRoom.price)} / Night`;
+                }
 
                 // Load upcoming reserved dates
                 const allBookings = await KaghanDB.getBookings();
@@ -382,9 +525,151 @@
                     reservedList.innerHTML = `<span class="text-emerald-650 font-semibold bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded">Suite is wide open - no reservations!</span>`;
                 }
 
+                await updateBookedDates();
                 await calculatePrice();
             }
         }
+
+        let bookedDatesList = [];
+        let selectedStartDate = null;
+        let selectedEndDate = null;
+        let currentCalendarDate = new Date();
+
+        async function updateBookedDates() {
+            bookedDatesList = [];
+            if (!selectedRoom) return;
+
+            const allBookings = await KaghanDB.getBookings();
+            const roomBookings = allBookings.filter(b => b.roomId === selectedRoom.id && b.status !== 'cancelled');
+
+            roomBookings.forEach(b => {
+                let start = new Date(b.checkIn);
+                let end = new Date(b.checkOut);
+                
+                // Add check-in up to check-out dates
+                let curr = new Date(start);
+                while (curr < end) {
+                    bookedDatesList.push(curr.toISOString().split('T')[0]);
+                    curr.setDate(curr.getDate() + 1);
+                }
+            });
+            
+            renderCalendar();
+        }
+
+        function renderCalendar() {
+            const grid = document.getElementById('calendar-days-grid');
+            const monthYearLabel = document.getElementById('calendar-month-year');
+            if (!grid || !monthYearLabel) return;
+
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+
+            monthYearLabel.innerText = currentCalendarDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }).toUpperCase();
+
+            // First day of month
+            const firstDayIndex = new Date(year, month, 1).getDay();
+            // Total days in month
+            const totalDays = new Date(year, month + 1, 0).getDate();
+            // Total days in prev month
+            const prevTotalDays = new Date(year, month, 0).getDate();
+
+            let daysHtml = '';
+
+            // Render empty slots / prev month days
+            for (let i = firstDayIndex; i > 0; i--) {
+                const prevDay = prevTotalDays - i + 1;
+                daysHtml += `<div class="p-2 text-xs text-slate-300 font-light select-none pointer-events-none">${prevDay}</div>`;
+            }
+
+            // Render current month days
+            const todayStr = new Date().toISOString().split('T')[0];
+            
+            for (let day = 1; day <= totalDays; day++) {
+                const dateObj = new Date(year, month, day);
+                const yyyy = dateObj.getFullYear();
+                const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
+                const dd = String(dateObj.getDate()).padStart(2, '0');
+                const dateStr = `${yyyy}-${mm}-${dd}`;
+
+                const isPast = dateStr < todayStr;
+                const isBooked = bookedDatesList.includes(dateStr);
+                
+                let dayClass = "p-2 text-xs font-semibold rounded-xl text-center cursor-pointer transition-all ";
+                let clickHandler = `onclick="handleCalendarDayClick('${dateStr}')"`;
+
+                if (isPast) {
+                    dayClass += "text-slate-300 line-through cursor-not-allowed pointer-events-none";
+                    clickHandler = "";
+                } else if (isBooked) {
+                    dayClass += "bg-rose-50 text-rose-500 border border-rose-100 line-through cursor-not-allowed pointer-events-none";
+                    clickHandler = "";
+                } else {
+                    // Highlight selected range
+                    const isStart = selectedStartDate && dateStr === selectedStartDate;
+                    const isEnd = selectedEndDate && dateStr === selectedEndDate;
+                    const inRange = selectedStartDate && selectedEndDate && dateStr > selectedStartDate && dateStr < selectedEndDate;
+
+                    if (isStart || isEnd) {
+                        dayClass += "bg-[#D4AF37] text-white font-extrabold shadow-sm";
+                    } else if (inRange) {
+                        dayClass += "bg-[#D4AF37]/15 text-[#D4AF37]";
+                    } else {
+                        dayClass += "bg-white text-slate-800 border border-slate-100 hover:border-[#D4AF37] hover:bg-slate-50";
+                    }
+                }
+
+                daysHtml += `<div ${clickHandler} class="${dayClass}">${day}</div>`;
+            }
+
+            grid.innerHTML = daysHtml;
+        }
+
+        window.changeCalendarMonth = (direction) => {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + direction);
+            renderCalendar();
+        };
+
+        window.handleCalendarDayClick = (dateStr) => {
+            if (!selectedStartDate || (selectedStartDate && selectedEndDate)) {
+                selectedStartDate = dateStr;
+                selectedEndDate = null;
+                KaghanUI.showToast("Check-in date selected. Choose check-out date.", "info");
+            } else if (selectedStartDate && !selectedEndDate) {
+                if (dateStr <= selectedStartDate) {
+                    selectedStartDate = dateStr;
+                    KaghanUI.showToast("Check-in date updated. Choose check-out date.", "info");
+                } else {
+                    // Check if there is any booked date in between selected range
+                    let hasOverlap = false;
+                    let curr = new Date(selectedStartDate);
+                    let target = new Date(dateStr);
+                    while (curr < target) {
+                        const currStr = curr.toISOString().split('T')[0];
+                        if (bookedDatesList.includes(currStr)) {
+                            hasOverlap = true;
+                            break;
+                        }
+                        curr.setDate(curr.getDate() + 1);
+                    }
+
+                    if (hasOverlap) {
+                        KaghanUI.showToast("Selected range overlaps with an existing booking. Please choose free dates.", "error");
+                        return;
+                    }
+
+                    selectedEndDate = dateStr;
+                    KaghanUI.showToast("Stay dates selected!", "success");
+                }
+            }
+
+            // Sync with input fields
+            document.getElementById('book-check-in').value = selectedStartDate || '';
+            document.getElementById('book-check-out').value = selectedEndDate || '';
+
+            renderCalendar();
+            calculatePrice();
+        };
 
         // Set Date Limits & Pre-fill Dates from URL
         function setupDates() {
@@ -405,26 +690,19 @@
 
             if (queryIn && queryIn >= today) {
                 checkInInput.value = queryIn;
+                selectedStartDate = queryIn;
             } else {
                 checkInInput.value = today;
+                selectedStartDate = today;
             }
 
             if (queryOut && queryOut > checkInInput.value) {
                 checkOutInput.value = queryOut;
+                selectedEndDate = queryOut;
             } else {
                 checkOutInput.value = checkOutInput.min;
+                selectedEndDate = checkOutInput.min;
             }
-
-            checkInInput.addEventListener('change', async () => {
-                const checkInDate = new Date(checkInInput.value);
-                const nextDay = new Date(checkInDate);
-                nextDay.setDate(nextDay.getDate() + 1);
-                checkOutInput.min = nextDay.toISOString().split('T')[0];
-                if (new Date(checkOutInput.value) <= checkInDate) {
-                    checkOutInput.value = nextDay.toISOString().split('T')[0];
-                }
-                await calculatePrice();
-            });
         }
 
         // Live calculation logic
@@ -440,8 +718,27 @@
             const timeDiff = checkOutDate.getTime() - checkInDate.getTime();
             stayNights = Math.ceil(timeDiff / (1000 * 3600 * 24)) || 1;
             
-            const rate = selectedRoom.price;
-            const subtotal = rate * stayNights;
+            let rate = selectedRoom.price;
+            let cycleText = 'Night';
+            let subtotal = rate * stayNights;
+            
+            const billingCycle = document.getElementById('book-billing-cycle').value;
+            if (selectedRoom.isApartment) {
+                if (billingCycle === 'weekly' && selectedRoom.priceWeekly) {
+                    rate = selectedRoom.priceWeekly;
+                    cycleText = 'Week';
+                    subtotal = Math.round((rate / 7) * stayNights);
+                } else if (billingCycle === 'monthly' && selectedRoom.priceMonthly) {
+                    rate = selectedRoom.priceMonthly;
+                    cycleText = 'Month';
+                    subtotal = Math.round((rate / 30) * stayNights);
+                } else {
+                    rate = selectedRoom.priceDaily || selectedRoom.price;
+                    cycleText = 'Night';
+                    subtotal = rate * stayNights;
+                }
+            }
+            
             const tax = Math.round(subtotal * 0.15); // 15% GST
             
             let pointsDiscount = 0;
@@ -492,7 +789,7 @@
             
             finalPrice = (subtotal + tax) - tierDiscount - pointsDiscount;
             
-            document.getElementById('calc-rate').innerText = KaghanUI.formatPKR(rate);
+            document.getElementById('calc-rate').innerText = `${KaghanUI.formatPKR(rate)} / ${cycleText}`;
             document.getElementById('calc-nights').innerText = `${stayNights} Night${stayNights > 1 ? 's' : ''}`;
             document.getElementById('calc-subtotal').innerText = KaghanUI.formatPKR(subtotal);
             document.getElementById('calc-tax').innerText = KaghanUI.formatPKR(tax);
@@ -579,26 +876,10 @@
             
             const checkIn = document.getElementById('book-check-in').value;
             const checkOut = document.getElementById('book-check-out').value;
-            
-            const cardName = document.getElementById('card-name').value;
-            const cardNum = document.getElementById('card-number').value;
-            const cardExpiry = document.getElementById('card-expiry').value;
-            const cardCvv = document.getElementById('card-cvv').value;
 
             // Simple validations
             if (!name || !phone || !email || !checkIn || !checkOut || !selectedRoom) {
                 KaghanUI.showToast('Please fill out guest and stay details.', 'error');
-                return;
-            }
-            if (!cardName || cardNum.length < 19 || cardExpiry.length < 5 || cardCvv.length < 3) {
-                KaghanUI.showToast('Please enter valid credit card billing details.', 'error');
-                return;
-            }
-
-            // Luhn Check Card number (strip spaces)
-            const cleanCardNum = cardNum.replace(/\s+/g, '');
-            if (!checkLuhn(cleanCardNum)) {
-                KaghanUI.showToast('Credit card verification failed (invalid card checksum).', 'error');
                 return;
             }
 
@@ -623,6 +904,7 @@
                 checkOut: checkOut,
                 totalPrice: finalPrice,
                 status: 'confirmed', // Instant confirmation simulation
+                billingCycle: selectedRoom.isApartment ? document.getElementById('book-billing-cycle').value : 'daily',
                 createdAt: new Date().toISOString().split('T')[0]
             };
 
@@ -632,7 +914,7 @@
             submitBtn.disabled = true;
 
             const phases = [
-                '<i class="fa-solid fa-circle-notch animate-spin mr-1"></i> Verifying credit details...',
+                '<i class="fa-solid fa-circle-notch animate-spin mr-1"></i> Registering check-in payment option...',
                 '<i class="fa-solid fa-circle-notch animate-spin mr-1"></i> Checking room ledger...',
                 '<i class="fa-solid fa-circle-notch animate-spin mr-1"></i> Confirming reservation...'
             ];

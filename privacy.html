@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy | KPH Stay</title>
+    <meta name="description" content="Read KPH Stay's privacy policy covering personal data collection, cookie consent, local storage usage, Firestore data partitioning, and guest information protection standards for stays in Islamabad and Nathia Gali.">
+    <link rel="canonical" href="https://kphstay.com/privacy">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
+    <link rel="apple-touch-icon" href="assets/images/logo.png">
+    <meta name="theme-color" content="#0F172A">
+
+    <!-- BreadcrumbList Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://kphstay.com/"},
+        {"@type": "ListItem", "position": 2, "name": "Privacy Policy", "item": "https://kphstay.com/privacy"}
+      ]
+    }
+    </script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .outfit { font-family: 'Outfit', sans-serif; }
+    </style>
+</head>
+<body class="bg-[#F8FAFC] text-[#0F172A] pt-24 min-h-screen flex flex-col justify-between">
+
+    <!-- Navigation Header -->
+    <nav id="hotel-navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-5 px-6 md:px-12 flex justify-between items-center text-white bg-[#0F172A]/90 backdrop-blur-md border-b border-white/10">
+        <a href="index.html" class="flex items-center gap-3">
+            <img src="assets/images/logo.png" alt="KPH Stay Logo" class="h-10 w-auto object-contain" onerror="this.src='../assets/images/logo.png'">
+            <div class="flex flex-col">
+                <span class="text-lg font-bold tracking-wider uppercase outfit leading-none">KPH</span>
+                <span class="text-xs text-[#D4AF37] tracking-[0.2em] uppercase font-semibold">Stay</span>
+            </div>
+        </a>
+        <div class="hidden md:flex items-center gap-8 text-sm font-medium tracking-wide">
+            <a href="index.html" class="hover:text-[#D4AF37] transition-all">Home</a>
+            <a href="rooms.html" class="hover:text-[#D4AF37] transition-all">Rooms</a>
+            <a href="blog.html" class="hover:text-[#D4AF37] transition-all">Journal</a>
+            <a href="contact.html" class="hover:text-[#D4AF37] transition-all">Contact</a>
+        </div>
+        <div class="flex items-center gap-4">
+            <a href="login.html" class="text-sm font-medium hover:text-[#D4AF37] transition-all mr-2">Sign In</a>
+            <a href="booking.html" class="bg-[#D4AF37] hover:bg-white hover:text-slate-900 text-slate-950 px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all shadow-md">Book Now</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow py-16 px-6 md:px-12 max-w-4xl mx-auto w-full text-left">
+        <span class="text-xs text-[#D4AF37] uppercase tracking-[0.3em] font-bold block text-center">Resort Guide</span>
+        <h1 class="text-3xl md:text-5xl font-extrabold outfit mt-3 mb-4 text-center tracking-tight text-slate-900">Privacy Policy</h1>
+        <p class="text-center text-slate-400 text-xs font-semibold mb-10"><i class="fa-solid fa-clock mr-1"></i> Last Updated: July 2026 &nbsp;|&nbsp; <a href="contact.html" class="text-[#D4AF37] hover:underline">Questions? Contact Us</a></p>
+        
+        <div class="bg-white p-8 md:p-12 rounded-[2.5rem] border border-slate-200/60 shadow-sm space-y-8 text-sm text-slate-600 leading-relaxed font-light">
+            
+            <section>
+                <h3 class="text-lg font-bold outfit text-slate-800 mb-3">1. Information Collection</h3>
+                <p>
+                    When you perform a reservation or access guest portals at KPH Stay, we collect standard user details to confirm check-ins. This includes: name, contact email address, telephone numbers, and check-in/out schedules. If you consult our AI Concierge Chatbot, dialogue history is recorded to help answer reservation queries.
+                </p>
+            </section>
+
+            <section>
+                <h3 class="text-lg font-bold outfit text-slate-800 mb-3">2. Data Security & Storage</h3>
+                <p>
+                    All guest listings and room ledger documents are securely stored in **Google Cloud Firebase Firestore** databases. We apply custom rules to ensure guests can only view bookings mapped directly to their own account IDs, preventing cross-profile data leakage.
+                </p>
+            </section>
+
+            <section>
+                <h3 class="text-lg font-bold outfit text-slate-800 mb-3">3. Use of Information</h3>
+                <p>
+                    Collected guest profiles are exclusively used for:
+                </p>
+                <ul class="list-disc pl-5 mt-2 space-y-1">
+                    <li>Confirming and logging cabin reservations.</li>
+                    <li>Updating loyalty points balances in the Guest Dashboard.</li>
+                    <li>Analyzing general analytics metrics on the Admin Dashboard.</li>
+                    <li>Answering customer inquiries submitted via contact forms.</li>
+                </ul>
+                <p class="mt-2">
+                    We will never lease, sell, or distribute your email or profile information to third-party advertising companies.
+                </p>
+            </section>
+
+            <section>
+                <h3 class="text-lg font-bold outfit text-slate-800 mb-3">4. Cookie & Local Storage Usage</h3>
+                <p>
+                    We store data locally on your device to enhance your user experience:
+                </p>
+                <ul class="list-disc pl-5 mt-2 space-y-1">
+                    <li><strong>localStorage:</strong> Retains active login sessions (`kaghan_hotel_session`) and Concierge AI conversation transcripts to save progress on page transitions.</li>
+                    <li><strong>Service Worker Cache:</strong> Saves core styles and navigation templates locally to enable offline reading in mountain resort areas.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h3 class="text-lg font-bold outfit text-slate-800 mb-3">5. Guest Rights</h3>
+                <p>
+                    You retain the right to query our lobby desk to inspect, edit, or request permanent deletion of your logged profile and historical check-in records from our databases. Contact us at `lobby@kphstay.com` to initiate modifications.
+                </p>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-[#0F172A] text-white pt-16 pb-8 border-t border-white/5 mt-16">
+        <div class="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 text-left mb-12">
+            <div>
+                <div class="flex items-center gap-3 mb-4">
+                    <img src="assets/images/logo.png" alt="KPH Stay" class="h-8 w-auto">
+                    <span class="font-bold tracking-wider outfit text-lg uppercase">KPH <span class="text-[#D4AF37] text-xs">Stay</span></span>
+                </div>
+                <p class="text-xs text-slate-400 font-light leading-relaxed">
+                    Premium serviced apartments, cabins, and suites in Nathia Gali and Islamabad.
+                </p>
+            </div>
+            <div>
+                <h5 class="text-xs uppercase tracking-widest font-bold text-[#D4AF37] mb-4">Quick Links</h5>
+                <ul class="space-y-2 text-xs font-light text-slate-300">
+                    <li><a href="rooms.html" class="hover:text-white">Suites Catalog</a></li>
+                    <li><a href="blog.html" class="hover:text-white">Resort Journal</a></li>
+                    <li><a href="contact.html" class="hover:text-white">Contact Lobby</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="text-xs uppercase tracking-widest font-bold text-[#D4AF37] mb-4">Legal Guides</h5>
+                <ul class="space-y-2 text-xs font-light text-slate-300">
+                    <li><a href="terms.html" class="hover:text-white">Terms & Conditions</a></li>
+                    <li><a href="privacy.html" class="hover:text-white">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="text-xs uppercase tracking-widest font-bold text-[#D4AF37] mb-4">Contact Info</h5>
+                <p class="text-xs text-slate-300 font-light leading-relaxed">
+                    +92 334 009 1127<br>
+                    lobby@kphstay.com
+                </p>
+            </div>
+        </div>
+        <div class="border-t border-white/5 pt-8 text-center text-xs text-slate-500 font-semibold tracking-wider uppercase">
+            &copy; 2026 KPH Stay. All Rights Reserved.
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="assets/js/shared.js"></script>
+</body>
+</html>

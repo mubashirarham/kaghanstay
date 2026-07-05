@@ -1,0 +1,22 @@
+{
+  "short_name": "KPH Stay",
+  "name": "KPH Stay Resort & Apartments",
+  "description": "Premium luxury resort and serviced apartment rentals in Islamabad and Nathia Gali.",
+  "icons": [
+    {
+      "src": "assets/images/logo.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "assets/images/logo.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/index.html",
+  "background_color": "#0F172A",
+  "theme_color": "#D4AF37",
+  "display": "standalone",
+  "orientation": "portrait"
+}

@@ -1,0 +1,12 @@
+# User-Agent rules for KPH Stay (kphstay.com)
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /user/
+Disallow: /404.html
+
+# Crawl-Delay (politeness directive)
+Crawl-delay: 1
+
+# Sitemap location
+Sitemap: https://kphstay.com/sitemap.xml

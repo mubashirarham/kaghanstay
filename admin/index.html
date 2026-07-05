@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administrator Console | Kaghan Hotel & Resorts</title>
+    <title>Administrator Console | KPH Stay</title>
     <meta name="robots" content="noindex, nofollow">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -49,10 +49,10 @@
         <div>
             <!-- Branding -->
             <div class="p-6 border-b border-slate-800 flex items-center gap-3">
-                <img src="../assets/images/logo.png" alt="Kaghan Properties Logo" class="h-10 w-auto object-contain">
+                <img src="../assets/images/logo.png" alt="KPH Stay Logo" class="h-10 w-auto object-contain">
                 <div class="flex flex-col">
-                    <span class="text-base font-bold tracking-wider uppercase outfit leading-none">Kaghan</span>
-                    <span class="text-[10px] text-[#D4AF37] tracking-[0.2em] uppercase font-semibold">Hotel & Resorts</span>
+                    <span class="text-base font-bold tracking-wider uppercase outfit leading-none">KPH</span>
+                    <span class="text-[10px] text-[#D4AF37] tracking-[0.2em] uppercase font-semibold">Stay</span>
                 </div>
             </div>
             
@@ -212,10 +212,15 @@
 
             <!-- VIEW: BOOKINGS -->
             <div id="view-bookings" class="tab-view hidden space-y-6">
-                <div>
-                    <span class="text-[#D4AF37] text-xs font-bold uppercase tracking-wider">Stay Circles</span>
-                    <h1 class="text-2xl font-extrabold outfit text-slate-900 mt-0.5">Bookings Ledger Manager</h1>
-                    <p class="text-slate-400 text-xs font-light">Search, inspect details, and update approval state of reservations.</p>
+                <div class="flex justify-between items-center">
+                    <div>
+                        <span class="text-[#D4AF37] text-xs font-bold uppercase tracking-wider">Stay Circles</span>
+                        <h1 class="text-2xl font-extrabold outfit text-slate-900 mt-0.5">Bookings Ledger Manager</h1>
+                        <p class="text-slate-400 text-xs font-light">Search, inspect details, and update approval state of reservations.</p>
+                    </div>
+                    <button onclick="openAddBookingModal()" class="bg-gradient-to-r from-[#D4AF37] to-[#DC2626] text-white text-xs font-bold px-4 py-3 rounded-xl hover:opacity-90 transition-all shadow-md flex items-center gap-1.5">
+                        <i class="fa-solid fa-plus"></i> Add Walk-in Booking
+                    </button>
                 </div>
 
                 <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md space-y-6">
@@ -498,10 +503,17 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-3 gap-4">
                     <div>
                         <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Price per Night (PKR)</label>
                         <input type="number" id="edit-room-price" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Location</label>
+                        <select id="edit-room-location" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800">
+                            <option value="Islamabad">Islamabad</option>
+                            <option value="Nathia Gali">Nathia Gali</option>
+                        </select>
                     </div>
                     <div>
                         <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Max Guests</label>
@@ -541,7 +553,7 @@
             <h3 class="text-lg font-bold outfit text-slate-950 mb-6">Add New Room Style</h3>
 
             <form id="add-room-form" class="space-y-4">
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-3 gap-4">
                     <div>
                         <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Room Name</label>
                         <input type="text" id="add-room-name" required placeholder="e.g. Alpine Suite" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800">
@@ -552,6 +564,13 @@
                             <option value="deluxe">Deluxe Room</option>
                             <option value="executive">Executive Suite</option>
                             <option value="presidential">Presidential Penthouse</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Location</label>
+                        <select id="add-room-location" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800">
+                            <option value="Islamabad">Islamabad</option>
+                            <option value="Nathia Gali">Nathia Gali</option>
                         </select>
                     </div>
                 </div>
@@ -588,6 +607,151 @@
                     </button>
                     <button type="submit" class="w-1/2 bg-gradient-to-r from-[#D4AF37] to-[#DC2626] text-white font-bold py-3 rounded-xl hover:opacity-90 transition-all text-xs shadow-md">
                         Save Suite
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: ADD BOOKING -->
+    <div id="add-booking-modal" class="fixed inset-0 bg-[#0F172A]/70 z-[100] flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl relative border border-slate-100 transform scale-95 transition-transform duration-300 p-8 text-slate-805">
+            <button type="button" onclick="closeAddBookingModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700">
+                <i class="fa-solid fa-times text-lg"></i>
+            </button>
+            
+            <h3 class="text-xl font-bold outfit text-slate-900 mb-6">Add Walk-in Booking</h3>
+            
+            <form id="add-booking-form" class="space-y-4" onsubmit="submitAddBooking(event)">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Guest Name</label>
+                        <input type="text" id="add-booking-name" required placeholder="John Doe" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Guest Email</label>
+                        <input type="email" id="add-booking-email" required placeholder="guest@email.com" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Guest Phone</label>
+                        <input type="text" id="add-booking-phone" required placeholder="+92 300 1234567" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Select Suite</label>
+                        <select id="add-booking-room" required onchange="calculateAdminAddBookingPrice()" class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none cursor-pointer focus:border-[#D4AF37]">
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Check In</label>
+                        <input type="date" id="add-booking-checkin" required onchange="calculateAdminAddBookingPrice()" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Check Out</label>
+                        <input type="date" id="add-booking-checkout" required onchange="calculateAdminAddBookingPrice()" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Total Price (PKR)</label>
+                        <input type="number" id="add-booking-price" required placeholder="0" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none font-bold focus:border-[#D4AF37]">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Status</label>
+                        <select id="add-booking-status" required class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none cursor-pointer focus:border-[#D4AF37]">
+                            <option value="confirmed">Confirmed</option>
+                            <option value="completed">Completed</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 pt-4">
+                    <button type="button" onclick="closeAddBookingModal()" class="w-1/2 border border-slate-200 text-slate-800 font-bold py-3 rounded-xl hover:bg-slate-100 transition-all text-xs">
+                        Cancel
+                    </button>
+                    <button type="submit" class="w-1/2 bg-gradient-to-r from-[#D4AF37] to-[#DC2626] text-white font-bold py-3 rounded-xl hover:opacity-90 transition-all text-xs shadow-md">
+                        Save Booking
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: EDIT BOOKING -->
+    <div id="edit-booking-modal" class="fixed inset-0 bg-[#0F172A]/70 z-[100] flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl relative border border-slate-100 transform scale-95 transition-transform duration-300 p-8 text-slate-805">
+            <button type="button" onclick="closeEditBookingModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700">
+                <i class="fa-solid fa-times text-lg"></i>
+            </button>
+            
+            <h3 class="text-xl font-bold outfit text-slate-900 mb-1">Edit Booking Details</h3>
+            <p id="edit-booking-id-lbl" class="text-xs text-slate-400 font-semibold mb-6">Booking ID: ...</p>
+            
+            <form id="edit-booking-form" class="space-y-4" onsubmit="submitEditBooking(event)">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Guest Name</label>
+                        <input type="text" id="edit-booking-name" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Guest Email</label>
+                        <input type="email" id="edit-booking-email" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Guest Phone</label>
+                        <input type="text" id="edit-booking-phone" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Select Suite</label>
+                        <select id="edit-booking-room" required onchange="calculateAdminEditBookingPrice()" class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none cursor-pointer focus:border-[#D4AF37]">
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Check In</label>
+                        <input type="date" id="edit-booking-checkin" required onchange="calculateAdminEditBookingPrice()" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Check Out</label>
+                        <input type="date" id="edit-booking-checkout" required onchange="calculateAdminEditBookingPrice()" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Total Price (PKR)</label>
+                        <input type="number" id="edit-booking-price" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none font-bold focus:border-[#D4AF37]">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Status</label>
+                        <select id="edit-booking-status" required class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none cursor-pointer focus:border-[#D4AF37]">
+                            <option value="confirmed">Confirmed</option>
+                            <option value="completed">Completed</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 pt-4">
+                    <button type="button" onclick="closeEditBookingModal()" class="w-1/2 border border-slate-200 text-slate-800 font-bold py-3 rounded-xl hover:bg-slate-100 transition-all text-xs">
+                        Cancel
+                    </button>
+                    <button type="submit" class="w-1/2 bg-gradient-to-r from-[#D4AF37] to-[#DC2626] text-white font-bold py-3 rounded-xl hover:opacity-90 transition-all text-xs shadow-md">
+                        Save Changes
                     </button>
                 </div>
             </form>

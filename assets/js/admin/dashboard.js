@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     await initAdminDashboard();
     setupEventListeners();
+    setupActiveDatabaseListeners();
 });
 
 async function initAdminDashboard() {
@@ -241,6 +242,37 @@ window.removeSubscriber = async (email) => {
         KaghanUI.showToast('Failed to remove subscriber.', 'error');
     }
 };
+
+function setupActiveDatabaseListeners() {
+    window.addEventListener('kaghan-db-rooms', async () => {
+        if (window.AdminInventoryModule) await window.AdminInventoryModule.render();
+        await renderMetrics();
+        await renderOverviewBookings();
+    });
+
+    window.addEventListener('kaghan-db-bookings', async () => {
+        if (window.AdminBookingsModule) await window.AdminBookingsModule.render();
+        await renderOverviewBookings();
+        await renderMetrics();
+    });
+
+    window.addEventListener('kaghan-db-reviews', async () => {
+        if (window.AdminReviewsModule) await window.AdminReviewsModule.render();
+    });
+
+    window.addEventListener('kaghan-db-blogs', async () => {
+        if (window.AdminBlogsModule) await window.AdminBlogsModule.render();
+    });
+
+    window.addEventListener('kaghan-db-users', async () => {
+        if (window.AdminGuestsModule) await window.AdminGuestsModule.render();
+        await renderMetrics();
+    });
+
+    window.addEventListener('kaghan-db-newsletter', async () => {
+        await renderNewsletter();
+    });
+}
 
 // Export refresh for global use
 window.AdminDashboardModule = {

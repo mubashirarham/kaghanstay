@@ -90,6 +90,7 @@
                     <td class="px-6 py-4 text-xs font-bold text-[#D4AF37] uppercase">${booking.id}</td>
                     <td class="px-6 py-4">
                         <span class="font-bold text-slate-800 text-xs block">${room.name}</span>
+                        <span class="text-[9px] text-[#D4AF37] font-bold block mt-0.5"><i class="fa-solid fa-location-dot text-[8px] mr-1"></i>${room.location || 'Islamabad'}</span>
                         <span class="text-slate-400 text-[9px] block mt-0.5">${KaghanUI.formatPKR(room.price)} / Night</span>
                     </td>
                     <td class="px-6 py-4 text-xs font-semibold text-slate-600">
