@@ -23,39 +23,12 @@
     }
 
     function renderNavbar() {
-        const user = KaghanDB.getCurrentUser();
-        const authContainer = document.getElementById('auth-links');
-        const authContainerMobile = document.getElementById('auth-links-mobile');
-        
-        if (user && authContainer) {
-            const dashboardUrl = user.role === 'admin' ? 'admin/index.html' : 'user/index.html';
-            authContainer.innerHTML = `
-                <span class="text-slate-300 text-sm hidden lg:inline">Welcome, <strong>${user.name}</strong></span>
-                <a href="${dashboardUrl}" class="bg-[#D4AF37] text-white px-5 py-2 rounded-full hover:bg-white hover:text-slate-900 transition-all text-sm font-semibold shadow-md">Dashboard</a>
-                <button onclick="KaghanDB.logout()" class="border border-white/20 text-white px-4 py-2 rounded-full hover:bg-rose-600 hover:border-rose-600 transition-all text-sm font-semibold">Logout</button>
-            `;
-            if (authContainerMobile) {
-                authContainerMobile.innerHTML = `
-                    <span class="text-slate-300 text-sm font-semibold">Logged in: <strong>${user.name}</strong></span>
-                    <a href="${dashboardUrl}" class="bg-[#D4AF37] text-white py-3 rounded-full text-center">Dashboard</a>
-                    <button onclick="KaghanDB.logout()" class="border border-rose-500 text-rose-500 py-3 rounded-full text-center">Logout</button>
-                `;
-            }
-        }
+        if (window.renderNavbar) window.renderNavbar();
     }
 
     function setupRoomsEventListeners() {
-        // Mobile Navigation Drawer Toggle
-        const drawer = document.getElementById('mobile-drawer');
-        const menuToggle = document.getElementById('menu-toggle');
-        const menuClose = document.getElementById('menu-close');
+        // Mobile Navigation Drawer Toggle handled by shared.js
 
-        if (menuToggle && drawer) {
-            menuToggle.addEventListener('click', () => drawer.classList.remove('hidden'));
-        }
-        if (menuClose && drawer) {
-            menuClose.addEventListener('click', () => drawer.classList.add('hidden'));
-        }
 
         // Live updating label for price selector slider
         const priceSlider = document.getElementById('filter-price');

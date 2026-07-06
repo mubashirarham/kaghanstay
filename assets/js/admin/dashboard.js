@@ -243,6 +243,62 @@ window.removeSubscriber = async (email) => {
     }
 };
 
+window.sendNewsletterBroadcast = async (event) => {
+    event.preventDefault();
+    
+    const subjectInput = document.getElementById('newsletter-subject');
+    const bodyInput = document.getElementById('newsletter-body');
+    const submitBtn = document.getElementById('broadcast-submit-btn');
+
+    if (!subjectInput || !bodyInput) return;
+
+    const subject = subjectInput.value.trim();
+    const htmlBody = bodyInput.value.trim();
+
+    if (!subject || !htmlBody) {
+        KaghanUI.showToast('Please fill out both Subject and Content.', 'error');
+        return;
+    }
+
+    if (!confirm(`Are you sure you want to broadcast this newsletter campaign to all subscribers?`)) {
+        return;
+    }
+
+    try {
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xs"></i> Broadcasting Campaign...`;
+        }
+
+        const res = await fetch('/.netlify/functions/send-newsletter', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ subject, htmlBody })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            throw new Error(data.error || 'Failed to broadcast newsletter.');
+        }
+
+        KaghanUI.showToast(data.message || 'Newsletter broadcast completed successfully!', 'success');
+        
+        // Reset form
+        subjectInput.value = '';
+        bodyInput.value = '';
+        
+    } catch (err) {
+        console.error("Newsletter broadcast error:", err);
+        KaghanUI.showToast(err.message || 'Failed to dispatch broadcast campaign.', 'error');
+    } finally {
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = `<i class="fa-solid fa-paper-plane text-xs"></i> Send to All Subscribers`;
+        }
+    }
+};
+
 function setupActiveDatabaseListeners() {
     window.addEventListener('kaghan-db-rooms', async () => {
         if (window.AdminInventoryModule) await window.AdminInventoryModule.render();

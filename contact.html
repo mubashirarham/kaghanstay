@@ -60,24 +60,48 @@
 
     <!-- Navigation Header -->
     <nav id="hotel-navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-5 px-6 md:px-12 flex justify-between items-center text-white bg-[#0F172A]/90 backdrop-blur-md border-b border-white/10">
-        <a href="index.html" class="flex items-center gap-3">
+        <div class="flex items-center gap-3">
             <img src="assets/images/logo.png" alt="KPH Stay Logo" class="h-10 w-auto object-contain" onerror="this.src='../assets/images/logo.png'">
             <div class="flex flex-col">
                 <span class="text-lg font-bold tracking-wider uppercase outfit leading-none">KPH</span>
                 <span class="text-xs text-[#D4AF37] tracking-[0.2em] uppercase font-semibold">Stay</span>
             </div>
-        </a>
-        <div class="hidden md:flex items-center gap-8 text-sm font-medium tracking-wide">
-            <a href="index.html" class="hover:text-[#D4AF37] transition-all">Home</a>
-            <a href="rooms.html" class="hover:text-[#D4AF37] transition-all">Rooms</a>
-            <a href="blog.html" class="hover:text-[#D4AF37] transition-all">Journal</a>
-            <a href="contact.html" class="text-[#D4AF37] border-b-2 border-[#D4AF37] pb-1">Contact</a>
         </div>
-        <div class="flex items-center gap-4">
-            <a href="login.html" class="text-sm font-medium hover:text-[#D4AF37] transition-all mr-2">Sign In</a>
-            <a href="booking.html" class="bg-[#D4AF37] hover:bg-white hover:text-slate-900 text-slate-950 px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all shadow-md">Book Now</a>
+
+        <!-- Navigation Links -->
+        <div class="hidden md:flex gap-8 items-center font-medium">
+            <a href="index.html" class="hover:text-[#D4AF37] transition-colors">Home</a>
+            <a href="rooms.html" class="hover:text-[#D4AF37] transition-colors">Rooms</a>
+            <a href="booking.html" class="hover:text-[#D4AF37] transition-colors">Book Stay</a>
+            <a href="blog.html" class="hover:text-[#D4AF37] transition-colors">Blog</a>
+            <a href="contact.html" class="text-[#D4AF37] hover:text-[#D4AF37] transition-colors font-bold underline decoration-[#D4AF37] decoration-2 underline-offset-4">Contact</a>
+            <div id="auth-links" class="flex gap-4 items-center">
+                <a href="login.html" class="border border-[#D4AF37] text-white px-5 py-2 rounded-full hover:bg-[#D4AF37] hover:text-white transition-all text-sm font-semibold">Login</a>
+                <a href="login.html?register=true" class="bg-[#D4AF37] text-white px-5 py-2 rounded-full hover:bg-white hover:text-slate-900 transition-all text-sm font-semibold luxury-shadow">Register</a>
+            </div>
         </div>
+
+        <!-- Mobile Menu Toggle Button -->
+        <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
+            <i class="fa-solid fa-bars text-2xl"></i>
+        </button>
     </nav>
+
+    <!-- Mobile Drawer -->
+    <div id="mobile-drawer" class="fixed inset-0 bg-[#0F172A]/95 z-[60] flex flex-col items-center justify-center gap-8 text-white text-xl font-semibold">
+        <button id="menu-close" class="absolute top-6 right-6 text-white text-3xl">
+            <i class="fa-solid fa-times"></i>
+        </button>
+        <a href="index.html" class="hover:text-[#D4AF37]" onclick="toggleDrawer()">Home</a>
+        <a href="rooms.html" class="hover:text-[#D4AF37]" onclick="toggleDrawer()">Rooms</a>
+        <a href="booking.html" class="hover:text-[#D4AF37]" onclick="toggleDrawer()">Book Stay</a>
+        <a href="blog.html" class="hover:text-[#D4AF37]" onclick="toggleDrawer()">Blog</a>
+        <a href="contact.html" class="text-[#D4AF37]" onclick="toggleDrawer()">Contact</a>
+        <div id="auth-links-mobile" class="flex flex-col gap-4 w-64 text-center">
+            <a href="login.html" class="border border-[#D4AF37] text-white py-3 rounded-full hover:bg-[#D4AF37] transition-all text-base" onclick="toggleDrawer()">Login</a>
+            <a href="login.html?register=true" class="bg-[#D4AF37] text-white py-3 rounded-full hover:bg-white hover:text-slate-900 transition-all text-base shadow-lg" onclick="toggleDrawer()">Register</a>
+        </div>
+    </div>
 
     <!-- Main Section -->
     <main class="flex-grow py-16 px-6 md:px-12 max-w-6xl mx-auto w-full">

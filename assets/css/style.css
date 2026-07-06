@@ -186,3 +186,83 @@ input[type="range"]::-webkit-slider-thumb:hover {
     background-color: rgba(212, 175, 55, 0.04) !important;
     box-shadow: 0 10px 25px -5px rgba(212, 175, 55, 0.15) !important;
 }
+
+/* Premium Mobile Drawer Transition System */
+#mobile-drawer {
+    display: flex !important;
+    transform: translateX(100%);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease, visibility 0.4s;
+    opacity: 0;
+    visibility: hidden;
+}
+
+#mobile-drawer.open {
+    transform: translateX(0);
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Fluid responsive typography overrides */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2.25rem !important; /* text-4xl */
+        line-height: 2.75rem !important;
+    }
+    h2 {
+        font-size: 1.75rem !important; /* text-3xl */
+        line-height: 2.25rem !important;
+    }
+    .hero-title {
+        font-size: 2.5rem !important;
+        line-height: 3rem !important;
+    }
+    /* Section padding scale downs to prevent giant gaps on mobile */
+    .py-24 {
+        padding-top: 3.5rem !important;
+        padding-bottom: 3.5rem !important;
+    }
+    .py-32 {
+        padding-top: 4.5rem !important;
+        padding-bottom: 4.5rem !important;
+    }
+    .pt-32 {
+        padding-top: 4.5rem !important;
+    }
+    .pb-20 {
+        padding-bottom: 3rem !important;
+    }
+}
+
+/* Table Scroll Wrapper and Fade Indicators */
+.table-scroll-container {
+    position: relative;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Glow Border & Underline Hover animations */
+.link-underline {
+    position: relative;
+}
+.link-underline::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    transform: scaleX(0);
+    height: 2px;
+    bottom: -4px;
+    left: 0;
+    background-color: var(--brand-gold);
+    transform-origin: bottom right;
+    transition: transform 0.25s ease-out;
+}
+.link-underline:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+}
+
+/* Custom interactive inputs styling */
+input:focus, select:focus, textarea:focus {
+    transform: scale(1.005);
+}
+

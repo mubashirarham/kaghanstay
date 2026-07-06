@@ -1,3 +1,4 @@
+require('dotenv').config();
 const FIRESTORE_BASE_URL = 'https://firestore.googleapis.com/v1/projects/kaghan-properties/databases/(default)/documents';
 
 // Fallback Groq API Key provided by user

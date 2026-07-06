@@ -190,7 +190,7 @@
                             View All Manager <i class="fa-solid fa-chevron-right text-[10px]"></i>
                         </button>
                     </div>
-                    <div class="overflow-x-auto">
+                    <div class="table-scroll-container overflow-x-auto">
                         <table class="w-full text-left border-collapse">
                             <thead>
                                 <tr class="border-b border-slate-100 text-slate-400 text-[9px] uppercase tracking-wider font-bold">
@@ -239,7 +239,7 @@
                         </div>
                     </div>
 
-                    <div class="overflow-x-auto">
+                    <div class="table-scroll-container overflow-x-auto">
                         <table class="w-full text-left border-collapse">
                             <thead>
                                 <tr class="border-b border-slate-100 text-slate-400 text-[9px] uppercase tracking-wider font-bold">
@@ -297,7 +297,7 @@
                         </div>
                     </div>
 
-                    <div class="overflow-x-auto">
+                    <div class="table-scroll-container overflow-x-auto">
                         <table class="w-full text-left border-collapse">
                             <thead>
                                 <tr class="border-b border-slate-100 text-slate-400 text-[9px] uppercase tracking-wider font-bold">
@@ -323,34 +323,56 @@
             <div id="view-newsletter" class="tab-view hidden space-y-6">
                 <div>
                     <span class="text-[#D4AF37] text-xs font-bold uppercase tracking-wider">Newsletter Circle</span>
-                    <h1 class="text-2xl font-extrabold outfit text-slate-900 mt-0.5">Newsletter Subscriptions</h1>
-                    <p class="text-slate-400 text-xs font-light">Audit resort subscriber listings and process list removals.</p>
+                    <h1 class="text-2xl font-extrabold outfit text-slate-900 mt-0.5">Newsletter Subscriptions & Broadcast</h1>
+                    <p class="text-slate-400 text-xs font-light">Audit resort subscriber listings, remove emails, and write/broadcast newsletter campaigns.</p>
                 </div>
 
-                <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md space-y-6">
-                    <div class="flex gap-4 items-center">
-                        <div class="relative w-full sm:w-80">
-                            <input type="text" id="newsletter-search-input" placeholder="Search subscribed emails..." class="w-full border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-xs bg-slate-50 outline-none focus:border-[#D4AF37]">
-                            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-400 text-xs"></i>
-                        </div>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Write/Send Newsletter Form -->
+                    <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md h-fit">
+                        <h3 class="text-lg font-bold outfit text-slate-950 mb-6">Broadcast Campaign</h3>
+                        <form id="newsletter-broadcast-form" class="space-y-4" onsubmit="sendNewsletterBroadcast(event)">
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Subject Title</label>
+                                <input type="text" id="newsletter-subject" required placeholder="e.g. Summer Packages at Kaghan Stay!" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">HTML/Text Campaign Content</label>
+                                <textarea id="newsletter-body" rows="8" required placeholder="Write your newsletter content here..." class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37] resize-none"></textarea>
+                            </div>
+                            <button type="submit" id="broadcast-submit-btn" class="w-full bg-gradient-to-r from-[#D4AF37] to-[#DC2626] text-white font-bold py-3 rounded-xl hover:opacity-90 transition-all text-xs shadow-md mt-4 flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-paper-plane text-xs"></i>
+                                Send to All Subscribers
+                            </button>
+                        </form>
                     </div>
 
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="border-b border-slate-100 text-slate-400 text-[9px] uppercase tracking-wider font-bold">
-                                    <th class="px-6 py-3">Email Address</th>
-                                    <th class="px-6 py-3">Date Subscribed</th>
-                                    <th class="px-6 py-3">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="admin-newsletter-tbody">
-                                <!-- Loaded dynamically -->
-                            </tbody>
-                        </table>
-                    </div>
-                    <div id="newsletter-empty-state" class="hidden text-center py-12">
-                        <p class="text-slate-400 text-xs">No matching subscribers in the distribution pool.</p>
+                    <!-- Subscribers List -->
+                    <div class="lg:col-span-2 bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md space-y-6">
+                        <div class="flex gap-4 items-center">
+                            <div class="relative w-full sm:w-80">
+                                <input type="text" id="newsletter-search-input" placeholder="Search subscribed emails..." class="w-full border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-xs bg-slate-50 outline-none focus:border-[#D4AF37]">
+                                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-400 text-xs"></i>
+                            </div>
+                        </div>
+
+                        <div class="table-scroll-container overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="border-b border-slate-100 text-slate-400 text-[9px] uppercase tracking-wider font-bold">
+                                        <th class="px-6 py-3">Email Address</th>
+                                        <th class="px-6 py-3">Date Subscribed</th>
+                                        <th class="px-6 py-3">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-newsletter-tbody">
+                                    <!-- Loaded dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="newsletter-empty-state" class="hidden text-center py-12">
+                            <p class="text-slate-400 text-xs">No matching subscribers in the distribution pool.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -371,7 +393,7 @@
                         </div>
                     </div>
 
-                    <div class="overflow-x-auto">
+                    <div class="table-scroll-container overflow-x-auto">
                         <table class="w-full text-left border-collapse">
                             <thead>
                                 <tr class="border-b border-slate-100 text-slate-400 text-[9px] uppercase tracking-wider font-bold">
@@ -452,7 +474,7 @@
                     <div class="lg:col-span-2 bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md">
                         <h3 class="text-lg font-bold outfit text-slate-950 mb-6">Published Journal Articles</h3>
                         
-                        <div class="overflow-x-auto">
+                        <div class="table-scroll-container overflow-x-auto">
                             <table class="w-full text-left border-collapse">
                                 <thead>
                                     <tr class="border-b border-slate-100 text-slate-400 text-[9px] uppercase tracking-wider font-bold">

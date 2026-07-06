@@ -106,11 +106,34 @@
             <a href="rooms.html" class="hover:text-[#D4AF37] transition-colors">Rooms</a>
             <a href="booking.html" class="hover:text-[#D4AF37] transition-colors">Book Stay</a>
             <a href="blog.html" class="text-[#D4AF37] hover:text-[#D4AF37] transition-colors font-bold underline decoration-[#D4AF37] decoration-2 underline-offset-4">Blog</a>
+            <a href="contact.html" class="hover:text-[#D4AF37] transition-colors">Contact</a>
             <div id="auth-links" class="flex gap-4 items-center">
                 <a href="login.html" class="border border-[#D4AF37] text-white px-5 py-2 rounded-full hover:bg-[#D4AF37] hover:text-white transition-all text-sm font-semibold">Login</a>
+                <a href="login.html?register=true" class="bg-[#D4AF37] text-white px-5 py-2 rounded-full hover:bg-white hover:text-slate-900 transition-all text-sm font-semibold luxury-shadow">Register</a>
             </div>
         </div>
+
+        <!-- Mobile Menu Toggle Button -->
+        <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
+            <i class="fa-solid fa-bars text-2xl"></i>
+        </button>
     </nav>
+
+    <!-- Mobile Drawer -->
+    <div id="mobile-drawer" class="fixed inset-0 bg-[#0F172A]/95 z-[60] flex flex-col items-center justify-center gap-8 text-white text-xl font-semibold">
+        <button id="menu-close" class="absolute top-6 right-6 text-white text-3xl">
+            <i class="fa-solid fa-times"></i>
+        </button>
+        <a href="index.html" class="hover:text-[#D4AF37]" onclick="toggleDrawer()">Home</a>
+        <a href="rooms.html" class="hover:text-[#D4AF37]" onclick="toggleDrawer()">Rooms</a>
+        <a href="booking.html" class="hover:text-[#D4AF37]" onclick="toggleDrawer()">Book Stay</a>
+        <a href="blog.html" class="text-[#D4AF37]" onclick="toggleDrawer()">Blog</a>
+        <a href="contact.html" class="hover:text-[#D4AF37]" onclick="toggleDrawer()">Contact</a>
+        <div id="auth-links-mobile" class="flex flex-col gap-4 w-64 text-center">
+            <a href="login.html" class="border border-[#D4AF37] text-white py-3 rounded-full hover:bg-[#D4AF37] transition-all text-base" onclick="toggleDrawer()">Login</a>
+            <a href="login.html?register=true" class="bg-[#D4AF37] text-white py-3 rounded-full hover:bg-white hover:text-slate-900 transition-all text-base shadow-lg" onclick="toggleDrawer()">Register</a>
+        </div>
+    </div>
 
     <!-- Header Section -->
     <header class="pt-40 pb-20 bg-[#0F172A] text-white relative overflow-hidden">

@@ -167,7 +167,7 @@
     </nav>
 
     <!-- Mobile Drawer Navigation -->
-    <div id="mobile-drawer" class="fixed inset-0 bg-[#0F172A]/95 z-[60] hidden flex flex-col items-center justify-center gap-8 text-white text-xl font-semibold">
+    <div id="mobile-drawer" class="fixed inset-0 bg-[#0F172A]/95 z-[60] flex flex-col items-center justify-center gap-8 text-white text-xl font-semibold">
         <button id="menu-close" class="absolute top-6 right-6 text-white text-3xl">
             <i class="fa-solid fa-times"></i>
         </button>
@@ -197,27 +197,27 @@
 
         <!-- Search Widget -->
         <div class="relative z-10 w-full max-w-5xl px-4 -mb-16 md:-mb-10 mt-4">
-            <div class="glass-dark rounded-3xl p-6 md:p-8 border border-white/10 shadow-2xl text-white">
-                <form id="hero-search-form" class="grid grid-cols-1 md:grid-cols-5 gap-6 items-end">
+            <div class="glass-dark rounded-3xl p-5 md:p-8 border border-white/10 shadow-2xl text-white">
+                <form id="hero-search-form" class="grid grid-cols-1 md:grid-cols-5 gap-4 md:gap-6 items-end">
                     <div>
                         <label class="block text-xs uppercase tracking-widest text-[#D4AF37] font-semibold mb-2">Check In</label>
                         <div class="relative">
                             <i class="fa-solid fa-calendar-alt absolute left-4 top-3.5 text-slate-400"></i>
-                            <input type="date" id="search-check-in" required class="w-full bg-[#1E293B]/70 border border-slate-700 rounded-xl pl-11 pr-4 py-3 outline-none focus:border-[#D4AF37] transition-all text-white text-sm">
+                            <input type="date" id="search-check-in" required class="w-full bg-[#1E293B]/70 border border-slate-700 rounded-xl pl-11 pr-4 py-3 outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37] focus:ring-opacity-40 transition-all text-white text-sm">
                         </div>
                     </div>
                     <div>
                         <label class="block text-xs uppercase tracking-widest text-[#D4AF37] font-semibold mb-2">Check Out</label>
                         <div class="relative">
                             <i class="fa-solid fa-calendar-alt absolute left-4 top-3.5 text-slate-400"></i>
-                            <input type="date" id="search-check-out" required class="w-full bg-[#1E293B]/70 border border-slate-700 rounded-xl pl-11 pr-4 py-3 outline-none focus:border-[#D4AF37] transition-all text-white text-sm">
+                            <input type="date" id="search-check-out" required class="w-full bg-[#1E293B]/70 border border-slate-700 rounded-xl pl-11 pr-4 py-3 outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37] focus:ring-opacity-40 transition-all text-white text-sm">
                         </div>
                     </div>
                     <div>
                         <label class="block text-xs uppercase tracking-widest text-[#D4AF37] font-semibold mb-2">Location</label>
                         <div class="relative">
                             <i class="fa-solid fa-location-dot absolute left-4 top-3.5 text-slate-400"></i>
-                            <select id="search-location" class="w-full bg-[#1E293B]/70 border border-slate-700 rounded-xl pl-11 pr-4 py-3 outline-none focus:border-[#D4AF37] transition-all text-white text-sm appearance-none cursor-pointer">
+                            <select id="search-location" class="w-full bg-[#1E293B]/70 border border-slate-700 rounded-xl pl-11 pr-4 py-3 outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37] focus:ring-opacity-40 transition-all text-white text-sm appearance-none cursor-pointer">
                                 <option value="all">All Locations</option>
                                 <option value="Islamabad">Islamabad</option>
                                 <option value="Nathia Gali">Nathia Gali</option>
@@ -229,7 +229,7 @@
                         <label class="block text-xs uppercase tracking-widest text-[#D4AF37] font-semibold mb-2">Room Style</label>
                         <div class="relative">
                             <i class="fa-solid fa-bed absolute left-4 top-3.5 text-slate-400"></i>
-                            <select id="search-room-type" class="w-full bg-[#1E293B]/70 border border-slate-700 rounded-xl pl-11 pr-4 py-3 outline-none focus:border-[#D4AF37] transition-all text-white text-sm appearance-none cursor-pointer">
+                            <select id="search-room-type" class="w-full bg-[#1E293B]/70 border border-slate-700 rounded-xl pl-11 pr-4 py-3 outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37] focus:ring-opacity-40 transition-all text-white text-sm appearance-none cursor-pointer">
                                 <option value="all">All Room Styles</option>
                                 <option value="deluxe">Deluxe Alpine Room</option>
                                 <option value="executive">Executive Valley Suite</option>
@@ -576,53 +576,63 @@
             </div>
 
             <div class="space-y-4" id="faq-container">
-                <div class="border border-slate-200 rounded-2xl overflow-hidden bg-slate-50">
-                    <button onclick="this.parentElement.classList.toggle('faq-open')" class="w-full flex justify-between items-center p-6 text-left hover:bg-slate-100 transition-colors">
+                <div class="border border-slate-200 rounded-2xl overflow-hidden bg-slate-50 transition-all duration-300">
+                    <button onclick="toggleFAQ(this)" class="w-full flex justify-between items-center p-6 text-left hover:bg-slate-100 transition-colors">
                         <span class="font-bold text-[#0F172A] text-sm outfit pr-4">What are the check-in and check-out times at KPH Stay?</span>
                         <i class="fa-solid fa-chevron-down text-[#D4AF37] text-xs shrink-0 transition-transform duration-300"></i>
                     </button>
-                    <div class="px-6 pb-6 hidden text-slate-600 text-sm leading-relaxed font-light">
-                        Check-in time is <strong>2:00 PM</strong> and check-out time is <strong>12:00 PM (noon)</strong>. Early check-in and late check-out can be arranged upon request by contacting our concierge desk, subject to room availability. Luggage storage is available complimentary for guests arriving early or departing late.
+                    <div class="accordion-content text-slate-600 text-sm leading-relaxed font-light">
+                        <div class="px-6 pb-6">
+                            Check-in time is <strong>2:00 PM</strong> and check-out time is <strong>12:00 PM (noon)</strong>. Early check-in and late check-out can be arranged upon request by contacting our concierge desk, subject to room availability. Luggage storage is available complimentary for guests arriving early or departing late.
+                        </div>
                     </div>
                 </div>
 
-                <div class="border border-slate-200 rounded-2xl overflow-hidden bg-slate-50">
-                    <button onclick="this.parentElement.classList.toggle('faq-open')" class="w-full flex justify-between items-center p-6 text-left hover:bg-slate-100 transition-colors">
+                <div class="border border-slate-200 rounded-2xl overflow-hidden bg-slate-50 transition-all duration-300">
+                    <button onclick="toggleFAQ(this)" class="w-full flex justify-between items-center p-6 text-left hover:bg-slate-100 transition-colors">
                         <span class="font-bold text-[#0F172A] text-sm outfit pr-4">Does KPH Stay offer service apartments in Islamabad?</span>
                         <i class="fa-solid fa-chevron-down text-[#D4AF37] text-xs shrink-0 transition-transform duration-300"></i>
                     </button>
-                    <div class="px-6 pb-6 hidden text-slate-600 text-sm leading-relaxed font-light">
-                        Yes! KPH Stay offers fully furnished <strong>service apartments</strong> ranging from Studio to 3BHK configurations in Islamabad near Margalla Hills. Each apartment includes an equipped kitchen with cookware and utensils, a spacious living area, high-speed Wi-Fi, 24/7 security, and regular professional housekeeping — making it perfect for extended business stays, family relocations, and medical tourism visits.
+                    <div class="accordion-content text-slate-600 text-sm leading-relaxed font-light">
+                        <div class="px-6 pb-6">
+                            Yes! KPH Stay offers fully furnished <strong>service apartments</strong> ranging from Studio to 3BHK configurations in Islamabad near Margalla Hills. Each apartment includes an equipped kitchen with cookware and utensils, a spacious living area, high-speed Wi-Fi, 24/7 security, and regular professional housekeeping — making it perfect for extended business stays, family relocations, and medical tourism visits.
+                        </div>
                     </div>
                 </div>
 
-                <div class="border border-slate-200 rounded-2xl overflow-hidden bg-slate-50">
-                    <button onclick="this.parentElement.classList.toggle('faq-open')" class="w-full flex justify-between items-center p-6 text-left hover:bg-slate-100 transition-colors">
+                <div class="border border-slate-200 rounded-2xl overflow-hidden bg-slate-50 transition-all duration-300">
+                    <button onclick="toggleFAQ(this)" class="w-full flex justify-between items-center p-6 text-left hover:bg-slate-100 transition-colors">
                         <span class="font-bold text-[#0F172A] text-sm outfit pr-4">What is KPH Stay's cancellation policy?</span>
                         <i class="fa-solid fa-chevron-down text-[#D4AF37] text-xs shrink-0 transition-transform duration-300"></i>
                     </button>
-                    <div class="px-6 pb-6 hidden text-slate-600 text-sm leading-relaxed font-light">
-                        We offer <strong>free cancellation up to 48 hours</strong> before the check-in date. Cancellations made within 48 hours may be subject to a one-night charge. Refunds are processed within 5–7 business days. For group bookings of 5+ rooms, a 72-hour notice period applies. Please refer to our <a href="terms.html" class="text-[#D4AF37] font-semibold hover:underline">Terms of Stay</a> for full details.
+                    <div class="accordion-content text-slate-600 text-sm leading-relaxed font-light">
+                        <div class="px-6 pb-6">
+                            We offer <strong>free cancellation up to 48 hours</strong> before the check-in date. Cancellations made within 48 hours may be subject to a one-night charge. Refunds are processed within 5–7 business days. For group bookings of 5+ rooms, a 72-hour notice period applies. Please refer to our <a href="terms.html" class="text-[#D4AF37] font-semibold hover:underline">Terms of Stay</a> for full details.
+                        </div>
                     </div>
                 </div>
 
-                <div class="border border-slate-200 rounded-2xl overflow-hidden bg-slate-50">
-                    <button onclick="this.parentElement.classList.toggle('faq-open')" class="w-full flex justify-between items-center p-6 text-left hover:bg-slate-100 transition-colors">
+                <div class="border border-slate-200 rounded-2xl overflow-hidden bg-slate-50 transition-all duration-300">
+                    <button onclick="toggleFAQ(this)" class="w-full flex justify-between items-center p-6 text-left hover:bg-slate-100 transition-colors">
                         <span class="font-bold text-[#0F172A] text-sm outfit pr-4">Does KPH Stay provide airport transfer services?</span>
                         <i class="fa-solid fa-chevron-down text-[#D4AF37] text-xs shrink-0 transition-transform duration-300"></i>
                     </button>
-                    <div class="px-6 pb-6 hidden text-slate-600 text-sm leading-relaxed font-light">
-                        Yes, we offer private <strong>airport shuttle pickups</strong> from Islamabad International Airport (ISB). Sedans, SUVs, and luxury vehicles are available. Please contact our concierge desk at <strong>+92 334 009 1127</strong> at least 24 hours before your arrival to arrange a transfer. Rates vary based on vehicle type and destination (Islamabad or Nathia Gali).
+                    <div class="accordion-content text-slate-600 text-sm leading-relaxed font-light">
+                        <div class="px-6 pb-6">
+                            Yes, we offer private <strong>airport shuttle pickups</strong> from Islamabad International Airport (ISB). Sedans, SUVs, and luxury vehicles are available. Please contact our concierge desk at <strong>+92 334 009 1127</strong> at least 24 hours before your arrival to arrange a transfer. Rates vary based on vehicle type and destination (Islamabad or Nathia Gali).
+                        </div>
                     </div>
                 </div>
 
-                <div class="border border-slate-200 rounded-2xl overflow-hidden bg-slate-50">
-                    <button onclick="this.parentElement.classList.toggle('faq-open')" class="w-full flex justify-between items-center p-6 text-left hover:bg-slate-100 transition-colors">
+                <div class="border border-slate-200 rounded-2xl overflow-hidden bg-slate-50 transition-all duration-300">
+                    <button onclick="toggleFAQ(this)" class="w-full flex justify-between items-center p-6 text-left hover:bg-slate-100 transition-colors">
                         <span class="font-bold text-[#0F172A] text-sm outfit pr-4">Are pets allowed at KPH Stay properties?</span>
                         <i class="fa-solid fa-chevron-down text-[#D4AF37] text-xs shrink-0 transition-transform duration-300"></i>
                     </button>
-                    <div class="px-6 pb-6 hidden text-slate-600 text-sm leading-relaxed font-light">
-                        Currently, pets are <strong>not permitted</strong> inside KPH Stay accommodations to maintain the comfort, cleanliness, and safety of all guests. Service animals with valid documentation are welcome. If you have special requirements, please contact our team and we'll do our best to accommodate your needs.
+                    <div class="accordion-content text-slate-600 text-sm leading-relaxed font-light">
+                        <div class="px-6 pb-6">
+                            Currently, pets are <strong>not permitted</strong> inside KPH Stay accommodations to maintain the comfort, cleanliness, and safety of all guests. Service animals with valid documentation are welcome. If you have special requirements, please contact our team and we'll do our best to accommodate your needs.
+                        </div>
                     </div>
                 </div>
             </div>
@@ -685,42 +695,9 @@
     <script src="assets/js/newsletter.js"></script>
     <script>
         // Update header user auth state
-        function renderNavbar() {
-            const user = KaghanDB.getCurrentUser();
-            const authContainer = document.getElementById('auth-links');
-            const authContainerMobile = document.getElementById('auth-links-mobile');
-            
-            if (user) {
-                const dashboardUrl = user.role === 'admin' ? 'admin/index.html' : 'user/index.html';
-                const html = `
-                    <span class="text-slate-300 text-sm hidden lg:inline">Welcome, <strong>${user.name}</strong></span>
-                    <a href="${dashboardUrl}" class="bg-[#D4AF37] text-white px-5 py-2 rounded-full hover:bg-white hover:text-slate-900 transition-all text-sm font-semibold shadow-md">Dashboard</a>
-                    <button onclick="logoutUser()" class="border border-white/20 text-white px-4 py-2 rounded-full hover:bg-rose-600 hover:border-rose-600 transition-all text-sm font-semibold">Logout</button>
-                `;
-                authContainer.innerHTML = html;
-                authContainerMobile.innerHTML = `
-                    <span class="text-slate-300 text-sm">Logged in as <strong>${user.name}</strong></span>
-                    <a href="${dashboardUrl}" class="bg-[#D4AF37] text-white py-3 rounded-full text-center">Dashboard</a>
-                    <button onclick="logoutUser()" class="border border-rose-500 text-rose-500 py-3 rounded-full text-center">Logout</button>
-                `;
-            }
-        }
+        // renderNavbar and logoutUser are handled by shared.js
 
-        function logoutUser() {
-            KaghanDB.logout();
-        }
-
-        // Drawer Menu Functions
-        const drawer = document.getElementById('mobile-drawer');
-        document.getElementById('menu-toggle').addEventListener('click', () => {
-            drawer.classList.remove('hidden');
-        });
-        document.getElementById('menu-close').addEventListener('click', () => {
-            drawer.classList.add('hidden');
-        });
-        function toggleDrawer() {
-            drawer.classList.toggle('hidden');
-        }
+        // Drawer Menu Functions handled by shared.js
 
         // Render Featured Rooms
         async function loadFeaturedRooms() {
@@ -869,12 +846,19 @@
         });
     </script>
 
-    <!-- FAQ Accordion Styles & Behavior -->
-    <style>
-        .faq-open > div:last-child { display: block !important; }
-        .faq-open > button i { transform: rotate(180deg); }
-        .faq-open { background-color: white; border-color: #D4AF37; }
-    </style>
+    <!-- FAQ Accordion Behavior Script -->
+    <script>
+        function toggleFAQ(button) {
+            const parent = button.parentElement;
+            parent.classList.toggle('accordion-active');
+            parent.classList.toggle('bg-white');
+            parent.classList.toggle('border-[#D4AF37]');
+            const icon = button.querySelector('i');
+            if (icon) {
+                icon.classList.toggle('rotate-180');
+            }
+        }
+    </script>
 
 </body>
 </html>

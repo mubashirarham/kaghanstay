@@ -73,7 +73,7 @@
     </nav>
 
     <!-- Mobile Drawer -->
-    <div id="mobile-drawer" class="fixed inset-0 bg-[#0F172A]/95 z-[60] hidden flex flex-col items-center justify-center gap-8 text-white text-xl font-semibold">
+    <div id="mobile-drawer" class="fixed inset-0 bg-[#0F172A]/95 z-[60] flex flex-col items-center justify-center gap-8 text-white text-xl font-semibold">
         <button id="menu-close" class="absolute top-6 right-6 text-white text-3xl">
             <i class="fa-solid fa-times"></i>
         </button>
@@ -349,25 +349,12 @@
 
         // Render Navbar
         function renderNavbar() {
+            if (window.renderNavbar) window.renderNavbar();
             const user = KaghanDB.getCurrentUser();
-            const authContainer = document.getElementById('auth-links');
-            const authContainerMobile = document.getElementById('auth-links-mobile');
             const promo = document.getElementById('guest-login-promo');
             const loyaltyBox = document.getElementById('loyalty-box');
             
             if (user) {
-                const dashboardUrl = user.role === 'admin' ? 'admin/index.html' : 'user/index.html';
-                authContainer.innerHTML = `
-                    <span class="text-slate-300 text-sm hidden lg:inline">Welcome, <strong>${user.name}</strong></span>
-                    <a href="${dashboardUrl}" class="bg-[#D4AF37] text-white px-5 py-2 rounded-full hover:bg-white hover:text-slate-900 transition-all text-sm font-semibold shadow-md">Dashboard</a>
-                    <button onclick="KaghanDB.logout()" class="border border-white/20 text-white px-4 py-2 rounded-full hover:bg-rose-600 hover:border-rose-600 transition-all text-sm font-semibold">Logout</button>
-                `;
-                authContainerMobile.innerHTML = `
-                    <span class="text-slate-300 text-sm font-semibold">Logged in: <strong>${user.name}</strong></span>
-                    <a href="${dashboardUrl}" class="bg-[#D4AF37] text-white py-3 rounded-full text-center">Dashboard</a>
-                    <button onclick="KaghanDB.logout()" class="border border-rose-500 text-rose-500 py-3 rounded-full text-center">Logout</button>
-                `;
-                
                 // Pre-fill fields
                 document.getElementById('guest-name').value = user.name;
                 document.getElementById('guest-email').value = user.email;
@@ -595,7 +582,7 @@
                 const isPast = dateStr < todayStr;
                 const isBooked = bookedDatesList.includes(dateStr);
                 
-                let dayClass = "p-2 text-xs font-semibold rounded-xl text-center cursor-pointer transition-all ";
+                let dayClass = "p-1.5 md:p-2 text-[10px] md:text-xs font-semibold rounded-xl text-center cursor-pointer transition-all ";
                 let clickHandler = `onclick="handleCalendarDayClick('${dateStr}')"`;
 
                 if (isPast) {
@@ -980,11 +967,7 @@
             }
         }
 
-        // Drawer
-        const drawer = document.getElementById('mobile-drawer');
-        document.getElementById('menu-toggle').addEventListener('click', () => drawer.classList.remove('hidden'));
-        document.getElementById('menu-close').addEventListener('click', () => drawer.classList.add('hidden'));
-        function toggleDrawer() { drawer.classList.toggle('hidden'); }
+        // Drawer handled by shared.js
 
         // Initialize Page
         window.addEventListener('DOMContentLoaded', async () => {
