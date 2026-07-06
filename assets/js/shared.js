@@ -1099,78 +1099,89 @@ function injectCookieBanner() {
     }
 }
 
-// Call UI injections & set up shared menu handlers on DOMContentLoaded
-document.addEventListener('DOMContentLoaded', () => {
+// Expose drawer and navbar functions globally immediately at load-time
+window.toggleDrawer = () => {
+    const drawer = document.getElementById('mobile-drawer');
+    if (drawer) {
+        drawer.classList.toggle('open');
+    }
+};
+
+window.renderNavbar = () => {
+    const user = KaghanDB.getCurrentUser();
+    const authContainer = document.getElementById('auth-links');
+    const authContainerMobile = document.getElementById('auth-links-mobile');
+    
+    const isDashboard = window.location.pathname.includes('/user/') || window.location.pathname.includes('/admin/');
+    const prefix = isDashboard ? '../' : '';
+    const loginPrefix = isDashboard ? '../' : '';
+    
+    if (user) {
+        const dashboardUrl = user.role === 'admin' ? `${prefix}admin/index.html` : `${prefix}user/index.html`;
+        if (authContainer) {
+            authContainer.innerHTML = `
+                <span class="text-slate-300 text-sm hidden lg:inline">Welcome, <strong>${user.name}</strong></span>
+                <a href="${dashboardUrl}" class="bg-[#D4AF37] text-white px-5 py-2 rounded-full hover:bg-white hover:text-slate-900 transition-all text-sm font-semibold shadow-md">Dashboard</a>
+                <button onclick="KaghanDB.logout()" class="border border-white/20 text-white px-4 py-2 rounded-full hover:bg-rose-600 hover:border-rose-600 transition-all text-sm font-semibold">Logout</button>
+            `;
+        }
+        if (authContainerMobile) {
+            authContainerMobile.innerHTML = `
+                <span class="text-slate-300 text-sm">Logged in as <strong>${user.name}</strong></span>
+                <a href="${dashboardUrl}" class="bg-[#D4AF37] text-white py-3 rounded-full text-center">Dashboard</a>
+                <button onclick="KaghanDB.logout()" class="border border-rose-500 text-rose-500 py-3 rounded-full text-center">Logout</button>
+            `;
+        }
+    } else {
+        if (authContainer) {
+            authContainer.innerHTML = `
+                <a href="${loginPrefix}login.html" class="border border-[#D4AF37] text-white px-5 py-2 rounded-full hover:bg-[#D4AF37] hover:text-white transition-all text-sm font-semibold">Login</a>
+                <a href="${loginPrefix}login.html?register=true" class="bg-[#D4AF37] text-white px-5 py-2 rounded-full hover:bg-white hover:text-slate-900 transition-all text-sm font-semibold luxury-shadow">Register</a>
+            `;
+        }
+        if (authContainerMobile) {
+            authContainerMobile.innerHTML = `
+                <a href="${loginPrefix}login.html" class="border border-[#D4AF37] text-white py-3 rounded-full hover:bg-[#D4AF37] transition-all text-base" onclick="toggleDrawer()">Login</a>
+                <a href="${loginPrefix}login.html?register=true" class="bg-[#D4AF37] text-white py-3 rounded-full hover:bg-white hover:text-slate-900 transition-all text-base shadow-lg" onclick="toggleDrawer()">Register</a>
+            `;
+        }
+    }
+};
+
+// Centralized dynamic UI listener setup & script injections
+function initializeSharedUI() {
     const drawer = document.getElementById('mobile-drawer');
     const menuToggle = document.getElementById('menu-toggle');
     const menuClose = document.getElementById('menu-close');
 
     if (menuToggle && drawer) {
-        menuToggle.addEventListener('click', () => {
-            drawer.classList.add('open');
-        });
+        menuToggle.removeEventListener('click', window.toggleDrawer);
+        menuToggle.addEventListener('click', window.toggleDrawer);
     }
     if (menuClose && drawer) {
-        menuClose.addEventListener('click', () => {
-            drawer.classList.remove('open');
-        });
+        const closeDrawer = () => {
+            if (drawer) drawer.classList.remove('open');
+        };
+        menuClose.removeEventListener('click', closeDrawer);
+        menuClose.addEventListener('click', closeDrawer);
     }
-    window.toggleDrawer = () => {
-        if (drawer) {
-            drawer.classList.toggle('open');
-        }
-    };
 
-    // Centralized dynamic navbar auth state rendering
-    window.renderNavbar = () => {
-        const user = KaghanDB.getCurrentUser();
-        const authContainer = document.getElementById('auth-links');
-        const authContainerMobile = document.getElementById('auth-links-mobile');
-        
-        const isDashboard = window.location.pathname.includes('/user/') || window.location.pathname.includes('/admin/');
-        const prefix = isDashboard ? '../' : '';
-        const loginPrefix = isDashboard ? '../' : '';
-        
-        if (user) {
-            const dashboardUrl = user.role === 'admin' ? `${prefix}admin/index.html` : `${prefix}user/index.html`;
-            if (authContainer) {
-                authContainer.innerHTML = `
-                    <span class="text-slate-300 text-sm hidden lg:inline">Welcome, <strong>${user.name}</strong></span>
-                    <a href="${dashboardUrl}" class="bg-[#D4AF37] text-white px-5 py-2 rounded-full hover:bg-white hover:text-slate-900 transition-all text-sm font-semibold shadow-md">Dashboard</a>
-                    <button onclick="KaghanDB.logout()" class="border border-white/20 text-white px-4 py-2 rounded-full hover:bg-rose-600 hover:border-rose-600 transition-all text-sm font-semibold">Logout</button>
-                `;
-            }
-            if (authContainerMobile) {
-                authContainerMobile.innerHTML = `
-                    <span class="text-slate-300 text-sm">Logged in as <strong>${user.name}</strong></span>
-                    <a href="${dashboardUrl}" class="bg-[#D4AF37] text-white py-3 rounded-full text-center">Dashboard</a>
-                    <button onclick="KaghanDB.logout()" class="border border-rose-500 text-rose-500 py-3 rounded-full text-center">Logout</button>
-                `;
-            }
-        } else {
-            if (authContainer) {
-                authContainer.innerHTML = `
-                    <a href="${loginPrefix}login.html" class="border border-[#D4AF37] text-white px-5 py-2 rounded-full hover:bg-[#D4AF37] hover:text-white transition-all text-sm font-semibold">Login</a>
-                    <a href="${loginPrefix}login.html?register=true" class="bg-[#D4AF37] text-white px-5 py-2 rounded-full hover:bg-white hover:text-slate-900 transition-all text-sm font-semibold luxury-shadow">Register</a>
-                `;
-            }
-            if (authContainerMobile) {
-                authContainerMobile.innerHTML = `
-                    <a href="${loginPrefix}login.html" class="border border-[#D4AF37] text-white py-3 rounded-full hover:bg-[#D4AF37] transition-all text-base" onclick="toggleDrawer()">Login</a>
-                    <a href="${loginPrefix}login.html?register=true" class="bg-[#D4AF37] text-white py-3 rounded-full hover:bg-white hover:text-slate-900 transition-all text-base shadow-lg" onclick="toggleDrawer()">Register</a>
-                `;
-            }
-        }
-    };
-
-    // Render navbar auth state automatically on load
+    // Automatically sync header auth state
     window.renderNavbar();
 
+    // Trigger chatbot and cookie consent injections
     setTimeout(() => {
         injectChatbot();
         injectCookieBanner();
     }, 500);
-});
+}
+
+// Call UI initialization immediately if DOM is ready, otherwise defer until DOMContentLoaded
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeSharedUI);
+} else {
+    initializeSharedUI();
+}
 
 
 
