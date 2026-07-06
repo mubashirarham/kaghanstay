@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kph-stay-cache-v1';
+const CACHE_NAME = 'kph-stay-cache-v2';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
