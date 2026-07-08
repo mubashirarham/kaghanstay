@@ -122,22 +122,22 @@ const DEFAULT_ROOMS = [
         location: 'Islamabad'
     },
     {
-        id: 'apt-penthouse-101',
-        name: 'Luxury Penthouse',
-        type: 'penthouse',
+        id: 'apt-farmhouse-101',
+        name: 'Fully Furnished Farmhouse',
+        type: 'farmhouse',
         price: 120000,
         priceDaily: 120000,
         priceWeekly: 700000,
         priceMonthly: 2400000,
         isApartment: true,
         image: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80',
-        amenities: ['3 Master Suites', 'Private Infinity Pool', '24/7 Personal Butler', 'Private Dining Hall', 'Smart Automation', 'Airport Shuttle Pickups'],
+        amenities: ['3 Master Suites', 'Private Pool', '24/7 Personal Butler', 'Private Dining Hall', 'Smart Automation', 'Retreat Gardens'],
         status: 'available',
-        description: 'The pinnacle of luxury. Located on the highest floor, our Penthouse offers three master suites, private heated infinity pool, a dedicated personal butler, private dining hall, and smart home automation.',
-        maxGuests: 6,
+        description: 'The pinnacle of luxury retreat. Our Fully Furnished Farmhouse features beautiful garden landscapes, a private swimming pool, personal chef, and high-end smart security. Located in the scenic hills of Murree.',
+        maxGuests: 16,
         rating: 5.0,
         reviewsCount: 15,
-        location: 'Islamabad'
+        location: 'Murree'
     }
 ];
 

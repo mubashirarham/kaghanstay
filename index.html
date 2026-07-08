@@ -220,6 +220,7 @@
                             <select id="search-location" class="w-full bg-[#1E293B]/70 border border-slate-700 rounded-xl pl-11 pr-4 py-3 outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37] focus:ring-opacity-40 transition-all text-white text-sm appearance-none cursor-pointer">
                                 <option value="all">All Locations</option>
                                 <option value="Islamabad">Islamabad</option>
+                                <option value="Murree">Murree</option>
                                 <option value="Nathia Gali">Nathia Gali</option>
                             </select>
                             <i class="fa-solid fa-chevron-down absolute right-4 top-4 text-slate-400 pointer-events-none text-xs"></i>
@@ -231,16 +232,15 @@
                             <i class="fa-solid fa-bed absolute left-4 top-3.5 text-slate-400"></i>
                             <select id="search-room-type" class="w-full bg-[#1E293B]/70 border border-slate-700 rounded-xl pl-11 pr-4 py-3 outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37] focus:ring-opacity-40 transition-all text-white text-sm appearance-none cursor-pointer">
                                 <option value="all">All Categories</option>
-                                <option value="studio">Studio Apartment</option>
-                                <option value="1bed">1 Bed Apartment</option>
-                                <option value="2bed">2 Bed Apartment</option>
-                                <option value="3bed">3 Bed Apartment</option>
-                                <option value="4bed">4 Bed</option>
-                                <option value="penthouse">Penthouse</option>
-                                <option value="5marla">5 Marla House</option>
-                                <option value="10marla">10 Marla House</option>
-                                <option value="1kanal">1 Kanal House</option>
-                                <option value="farmhouse">Farmhouse</option>
+                                <option value="studio">Studio Furnished Apartment</option>
+                                <option value="1bed">1 Bed Furnished Apartment</option>
+                                <option value="2bed">2 Bed Furnished Apartment</option>
+                                <option value="3bed">3 Bed Furnished Apartment</option>
+                                <option value="4bed">4 Bed Furnished Apartment</option>
+                                <option value="5marla">5 Marla Furnished House</option>
+                                <option value="10marla">10 Marla Furnished House</option>
+                                <option value="1kanal">1 Kanal Furnished House</option>
+                                <option value="farmhouse">Fully Furnished Farmhouse</option>
                             </select>
                             <i class="fa-solid fa-chevron-down absolute right-4 top-4 text-slate-400 pointer-events-none text-xs"></i>
                         </div>
@@ -722,16 +722,15 @@
                         <img src="${room.image}" alt="${room.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                         <div class="absolute top-4 right-4 bg-slate-900/80 backdrop-blur-md px-3.5 py-1.5 rounded-full text-[10px] font-bold text-[#D4AF37] border border-white/10 uppercase tracking-widest flex items-center gap-1.5 shadow-lg">
                             ${
-                                room.type === 'studio' ? '<i class="fa-solid fa-cube"></i> Studio' :
-                                room.type === '1bed' ? '<i class="fa-solid fa-bed"></i> 1 Bed' :
-                                room.type === '2bed' ? '<i class="fa-solid fa-door-open"></i> 2 Bed' :
-                                room.type === '3bed' ? '<i class="fa-solid fa-house-chimney"></i> 3 Bed' :
-                                room.type === '4bed' ? '<i class="fa-solid fa-building"></i> 4 Bed' :
-                                room.type === 'penthouse' ? '<i class="fa-solid fa-crown"></i> Penthouse' :
-                                room.type === '5marla' ? '<i class="fa-solid fa-house"></i> 5 Marla' :
-                                room.type === '10marla' ? '<i class="fa-solid fa-house-user"></i> 10 Marla' :
-                                room.type === '1kanal' ? '<i class="fa-solid fa-hotel"></i> 1 Kanal' :
-                                room.type === 'farmhouse' ? '<i class="fa-solid fa-tree"></i> Farmhouse' :
+                                room.type === 'studio' ? '<i class="fa-solid fa-cube"></i> Studio Furnished' :
+                                room.type === '1bed' ? '<i class="fa-solid fa-bed"></i> 1 Bed Furnished' :
+                                room.type === '2bed' ? '<i class="fa-solid fa-door-open"></i> 2 Bed Furnished' :
+                                room.type === '3bed' ? '<i class="fa-solid fa-house-chimney"></i> 3 Bed Furnished' :
+                                room.type === '4bed' ? '<i class="fa-solid fa-building"></i> 4 Bed Furnished' :
+                                room.type === '5marla' ? '<i class="fa-solid fa-house"></i> 5 Marla Furnished' :
+                                room.type === '10marla' ? '<i class="fa-solid fa-house-user"></i> 10 Marla Furnished' :
+                                room.type === '1kanal' ? '<i class="fa-solid fa-hotel"></i> 1 Kanal Furnished' :
+                                room.type === 'farmhouse' ? '<i class="fa-solid fa-tree"></i> Furnished Farmhouse' :
                                 room.type
                             }
                         </div>
