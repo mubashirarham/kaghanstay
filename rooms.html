@@ -145,7 +145,7 @@
           "name": "What types of rooms are available at KPH Stay?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "KPH Stay offers fully furnished Studio Apartments, 1 Bed Apartments, 2 Bed Apartments, Three Bed Apartments, Four Bed Apartments, and Luxury Penthouses across Islamabad and Nathia Gali locations."
+            "text": "KPH Stay offers fully furnished Studio Apartments, 1 Bed Apartments, 2 Bed Apartments, 3 Bed Apartments, 4 Bed Apartments, and Luxury Penthouses across Islamabad and Nathia Gali locations."
           }
         },
         {
@@ -284,9 +284,13 @@
                                 <option value="studio">Studio Apartment</option>
                                 <option value="1bed">1 Bed Apartment</option>
                                 <option value="2bed">2 Bed Apartment</option>
-                                <option value="3bed">Three Bed Apartment</option>
-                                <option value="4bed">Four Bed</option>
+                                <option value="3bed">3 Bed Apartment</option>
+                                <option value="4bed">4 Bed</option>
                                 <option value="penthouse">Penthouse</option>
+                                <option value="5marla">5 Marla House</option>
+                                <option value="10marla">10 Marla House</option>
+                                <option value="1kanal">1 Kanal House</option>
+                                <option value="farmhouse">Farmhouse</option>
                             </select>
                             <div class="flex flex-col gap-1.5" id="custom-category-filters">
                                 <button data-value="all" type="button" class="category-filter-btn active w-full flex items-center justify-between px-4 py-3 rounded-2xl border text-xs font-semibold tracking-wider transition-all">
@@ -306,15 +310,31 @@
                                     <i class="fa-solid fa-chevron-right text-[10px] opacity-0 transition-all"></i>
                                 </button>
                                 <button data-value="3bed" type="button" class="category-filter-btn w-full flex items-center justify-between px-4 py-3 rounded-2xl border text-xs font-semibold tracking-wider transition-all">
-                                    <span class="flex items-center gap-2.5"><i class="fa-solid fa-house-chimney text-[#D4AF37]"></i> Three Bed Apartment</span>
+                                    <span class="flex items-center gap-2.5"><i class="fa-solid fa-house-chimney text-[#D4AF37]"></i> 3 Bed Apartment</span>
                                     <i class="fa-solid fa-chevron-right text-[10px] opacity-0 transition-all"></i>
                                 </button>
                                 <button data-value="4bed" type="button" class="category-filter-btn w-full flex items-center justify-between px-4 py-3 rounded-2xl border text-xs font-semibold tracking-wider transition-all">
-                                    <span class="flex items-center gap-2.5"><i class="fa-solid fa-building text-[#D4AF37]"></i> Four Bed</span>
+                                    <span class="flex items-center gap-2.5"><i class="fa-solid fa-building text-[#D4AF37]"></i> 4 Bed</span>
                                     <i class="fa-solid fa-chevron-right text-[10px] opacity-0 transition-all"></i>
                                 </button>
                                 <button data-value="penthouse" type="button" class="category-filter-btn w-full flex items-center justify-between px-4 py-3 rounded-2xl border text-xs font-semibold tracking-wider transition-all">
                                     <span class="flex items-center gap-2.5"><i class="fa-solid fa-crown text-[#D4AF37]"></i> Penthouse</span>
+                                    <i class="fa-solid fa-chevron-right text-[10px] opacity-0 transition-all"></i>
+                                </button>
+                                <button data-value="5marla" type="button" class="category-filter-btn w-full flex items-center justify-between px-4 py-3 rounded-2xl border text-xs font-semibold tracking-wider transition-all">
+                                    <span class="flex items-center gap-2.5"><i class="fa-solid fa-house text-[#D4AF37]"></i> 5 Marla House</span>
+                                    <i class="fa-solid fa-chevron-right text-[10px] opacity-0 transition-all"></i>
+                                </button>
+                                <button data-value="10marla" type="button" class="category-filter-btn w-full flex items-center justify-between px-4 py-3 rounded-2xl border text-xs font-semibold tracking-wider transition-all">
+                                    <span class="flex items-center gap-2.5"><i class="fa-solid fa-house-user text-[#D4AF37]"></i> 10 Marla House</span>
+                                    <i class="fa-solid fa-chevron-right text-[10px] opacity-0 transition-all"></i>
+                                </button>
+                                <button data-value="1kanal" type="button" class="category-filter-btn w-full flex items-center justify-between px-4 py-3 rounded-2xl border text-xs font-semibold tracking-wider transition-all">
+                                    <span class="flex items-center gap-2.5"><i class="fa-solid fa-hotel text-[#D4AF37]"></i> 1 Kanal House</span>
+                                    <i class="fa-solid fa-chevron-right text-[10px] opacity-0 transition-all"></i>
+                                </button>
+                                <button data-value="farmhouse" type="button" class="category-filter-btn w-full flex items-center justify-between px-4 py-3 rounded-2xl border text-xs font-semibold tracking-wider transition-all">
+                                    <span class="flex items-center gap-2.5"><i class="fa-solid fa-tree text-[#D4AF37]"></i> Farmhouse</span>
                                     <i class="fa-solid fa-chevron-right text-[10px] opacity-0 transition-all"></i>
                                 </button>
                             </div>

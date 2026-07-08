@@ -164,7 +164,7 @@
                     <div class="relative h-56 overflow-hidden">
                         <img src="${room.image}" alt="${room.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                         <div class="absolute top-4 right-4 bg-slate-900/80 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-[#D4AF37] border border-white/10 uppercase tracking-widest">
-                            ${room.type === 'studio' ? 'Studio' : room.type === '1bed' ? '1 Bed' : room.type === '2bed' ? '2 Bed' : room.type === '3bed' ? '3 Bed' : room.type === '4bed' ? '4 Bed' : room.type === 'penthouse' ? 'Penthouse' : room.type}
+                            ${room.type === 'studio' ? 'Studio' : room.type === '1bed' ? '1 Bed' : room.type === '2bed' ? '2 Bed' : room.type === '3bed' ? '3 Bed' : room.type === '4bed' ? '4 Bed' : room.type === 'penthouse' ? 'Penthouse' : room.type === '5marla' ? '5 Marla' : room.type === '10marla' ? '10 Marla' : room.type === '1kanal' ? '1 Kanal' : room.type === 'farmhouse' ? 'Farmhouse' : room.type}
                         </div>
                     </div>
                     <div class="p-6">
@@ -224,7 +224,7 @@
                 <div class="relative h-64">
                     <img src="${room.image}" alt="${room.name}" class="w-full h-full object-cover">
                     <div class="absolute bottom-4 left-4 bg-slate-900/80 backdrop-blur-md px-4 py-1.5 rounded-full text-xs font-bold text-[#D4AF37] border border-white/10 uppercase tracking-widest">
-                        ${room.type === 'studio' ? 'Studio Apartment' : room.type === '1bed' ? '1 Bed Apartment' : room.type === '2bed' ? '2 Bed Apartment' : room.type === '3bed' ? '3 Bed Apartment' : room.type === '4bed' ? '4 Bed Apartment' : room.type === 'penthouse' ? 'Penthouse' : room.type}
+                        ${room.type === 'studio' ? 'Studio Apartment' : room.type === '1bed' ? '1 Bed Apartment' : room.type === '2bed' ? '2 Bed Apartment' : room.type === '3bed' ? '3 Bed Apartment' : room.type === '4bed' ? '4 Bed Apartment' : room.type === 'penthouse' ? 'Penthouse' : room.type === '5marla' ? '5 Marla House' : room.type === '10marla' ? '10 Marla House' : room.type === '1kanal' ? '1 Kanal House' : room.type === 'farmhouse' ? 'Farmhouse' : room.type}
                     </div>
                 </div>
                 <div class="p-8">

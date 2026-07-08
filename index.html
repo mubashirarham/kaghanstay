@@ -234,9 +234,13 @@
                                 <option value="studio">Studio Apartment</option>
                                 <option value="1bed">1 Bed Apartment</option>
                                 <option value="2bed">2 Bed Apartment</option>
-                                <option value="3bed">Three Bed Apartment</option>
-                                <option value="4bed">Four Bed</option>
+                                <option value="3bed">3 Bed Apartment</option>
+                                <option value="4bed">4 Bed</option>
                                 <option value="penthouse">Penthouse</option>
+                                <option value="5marla">5 Marla House</option>
+                                <option value="10marla">10 Marla House</option>
+                                <option value="1kanal">1 Kanal House</option>
+                                <option value="farmhouse">Farmhouse</option>
                             </select>
                             <i class="fa-solid fa-chevron-down absolute right-4 top-4 text-slate-400 pointer-events-none text-xs"></i>
                         </div>
@@ -724,6 +728,10 @@
                                 room.type === '3bed' ? '<i class="fa-solid fa-house-chimney"></i> 3 Bed' :
                                 room.type === '4bed' ? '<i class="fa-solid fa-building"></i> 4 Bed' :
                                 room.type === 'penthouse' ? '<i class="fa-solid fa-crown"></i> Penthouse' :
+                                room.type === '5marla' ? '<i class="fa-solid fa-house"></i> 5 Marla' :
+                                room.type === '10marla' ? '<i class="fa-solid fa-house-user"></i> 10 Marla' :
+                                room.type === '1kanal' ? '<i class="fa-solid fa-hotel"></i> 1 Kanal' :
+                                room.type === 'farmhouse' ? '<i class="fa-solid fa-tree"></i> Farmhouse' :
                                 room.type
                             }
                         </div>
