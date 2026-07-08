@@ -47,6 +47,21 @@
         const categorySelect = document.getElementById('filter-category');
         if (categorySelect) categorySelect.addEventListener('change', applyFilters);
 
+        // Bind custom category buttons
+        const customCategoryContainer = document.getElementById('custom-category-filters');
+        if (customCategoryContainer) {
+            const btns = customCategoryContainer.querySelectorAll('.category-filter-btn');
+            btns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const value = btn.getAttribute('data-value');
+                    if (categorySelect) {
+                        categorySelect.value = value;
+                        categorySelect.dispatchEvent(new Event('change'));
+                    }
+                });
+            });
+        }
+
         const locationSelect = document.getElementById('filter-location');
         if (locationSelect) locationSelect.addEventListener('change', applyFilters);
 
@@ -89,6 +104,19 @@
         const maxPrice = priceSlider ? parseInt(priceSlider.value) : 150000;
         const sortBy = sortSelect ? sortSelect.value : 'default';
 
+        // Sync custom category buttons state
+        const customCategoryContainer = document.getElementById('custom-category-filters');
+        if (customCategoryContainer && categorySelect) {
+            const btns = customCategoryContainer.querySelectorAll('.category-filter-btn');
+            btns.forEach(btn => {
+                if (btn.getAttribute('data-value') === categorySelect.value) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+
         let filtered = rooms.filter(room => {
             const matchesKeyword = !keyword || 
                                    room.name.toLowerCase().includes(keyword) || 
@@ -118,6 +146,10 @@
         const countLabel = document.getElementById('results-count');
 
         if (countLabel) countLabel.innerText = roomsList.length;
+        
+        // Also update mobile results count
+        const mobileCount = document.getElementById('results-count-mobile');
+        if (mobileCount) mobileCount.innerText = roomsList.length;
 
         if (roomsList.length === 0) {
             if (container) container.innerHTML = '';
@@ -132,7 +164,7 @@
                     <div class="relative h-56 overflow-hidden">
                         <img src="${room.image}" alt="${room.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                         <div class="absolute top-4 right-4 bg-slate-900/80 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-[#D4AF37] border border-white/10 uppercase tracking-widest">
-                            ${room.type}
+                            ${room.type === 'studio' ? 'Studio' : room.type === '1bed' ? '1 Bed' : room.type === '2bed' ? '2 Bed' : room.type === '3bed' ? '3 Bed' : room.type === '4bed' ? '4 Bed' : room.type === 'penthouse' ? 'Penthouse' : room.type}
                         </div>
                     </div>
                     <div class="p-6">
@@ -192,7 +224,7 @@
                 <div class="relative h-64">
                     <img src="${room.image}" alt="${room.name}" class="w-full h-full object-cover">
                     <div class="absolute bottom-4 left-4 bg-slate-900/80 backdrop-blur-md px-4 py-1.5 rounded-full text-xs font-bold text-[#D4AF37] border border-white/10 uppercase tracking-widest">
-                        ${room.type} Suite
+                        ${room.type === 'studio' ? 'Studio Apartment' : room.type === '1bed' ? '1 Bed Apartment' : room.type === '2bed' ? '2 Bed Apartment' : room.type === '3bed' ? '3 Bed Apartment' : room.type === '4bed' ? '4 Bed Apartment' : room.type === 'penthouse' ? 'Penthouse' : room.type}
                     </div>
                 </div>
                 <div class="p-8">

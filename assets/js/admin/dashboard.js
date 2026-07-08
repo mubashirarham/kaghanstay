@@ -1,4 +1,26 @@
 // Kaghan Hotel Management System - Admin Dashboard Orchestrator
+
+// Ensure KaghanUI.showToast exists (fallback in case shared.js version differs)
+if (window.KaghanUI && !window.KaghanUI.showToast) {
+    window.KaghanUI.showToast = function(message, type = 'info') {
+        let container = document.getElementById('toast-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'toast-container';
+            document.body.appendChild(container);
+        }
+        const colors = { success: 'bg-emerald-500', error: 'bg-rose-500', info: 'bg-slate-700', warning: 'bg-amber-500' };
+        const icons = { success: 'fa-check-circle', error: 'fa-circle-xmark', info: 'fa-circle-info', warning: 'fa-triangle-exclamation' };
+        const toast = document.createElement('div');
+        toast.className = `${colors[type] || colors.info} text-white text-xs font-semibold px-4 py-3 rounded-xl shadow-lg flex items-center gap-2 pointer-events-auto animate-fade-up`;
+        toast.innerHTML = `<i class="fa-solid ${icons[type] || icons.info}"></i> ${message}`;
+        container.appendChild(toast);
+        setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateY(8px)'; toast.style.transition = 'all 0.4s ease'; setTimeout(() => toast.remove(), 400); }, 3500);
+    };
+}
+
+
+
 if (window.KaghanDB) {
     window.KaghanDB.getNewsletterSubscribers = async () => {
         const snap = await firebase.firestore().collection('newsletter').get();
@@ -41,7 +63,7 @@ async function refreshAll() {
     await renderMetrics();
     await renderOverviewBookings();
     
-    // Call modules rendering
+    // Core modules
     if (window.AdminBookingsModule) await window.AdminBookingsModule.render();
     if (window.AdminInventoryModule) await window.AdminInventoryModule.render();
     if (window.AdminGuestsModule) await window.AdminGuestsModule.render();
@@ -97,6 +119,19 @@ window.switchTab = (tabName) => {
         activeBtn.classList.add('sidebar-active');
         activeBtn.classList.remove('text-slate-400', 'hover:text-white', 'hover:bg-slate-800/20');
     }
+
+    // Update mobile bottom nav active state
+    const bottomBtns = document.querySelectorAll('#admin-bottom-nav button');
+    bottomBtns.forEach(btn => {
+        const onClickAttr = btn.getAttribute('onclick');
+        if (onClickAttr && onClickAttr.includes(`'${tabName}'`)) {
+            btn.classList.add('text-[#D4AF37]');
+            btn.classList.remove('text-slate-400');
+        } else {
+            btn.classList.remove('text-[#D4AF37]');
+            btn.classList.add('text-slate-400');
+        }
+    });
 
     // Auto close sidebar on mobile
     const sidebar = document.getElementById('admin-sidebar');
@@ -334,3 +369,5 @@ function setupActiveDatabaseListeners() {
 window.AdminDashboardModule = {
     refreshAll
 };
+
+// End of Admin Dashboard Orchestrator

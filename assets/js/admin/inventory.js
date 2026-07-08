@@ -213,7 +213,7 @@
                 amenities,
                 status: 'available',
                 description,
-                maxGuests: type === 'presidential' ? 6 : type === 'executive' ? 3 : 2,
+                maxGuests: type === '4bed' ? 8 : (type === '3bed' || type === 'penthouse') ? 6 : type === '2bed' ? 4 : 2,
                 rating: 5.0,
                 reviewsCount: 0,
                 location

@@ -32,76 +32,6 @@ fdb.enablePersistence().catch((err) => {
 // Default Seeding Data (used if Firestore is empty)
 const DEFAULT_ROOMS = [
     {
-        id: 'room-deluxe-101',
-        name: 'Deluxe Alpine Room',
-        type: 'deluxe',
-        price: 25000,
-        image: 'https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=800&q=80',
-        amenities: ['King Bed', 'Mountain View', 'High-Speed Wi-Fi', 'Smart TV', 'Premium Minibar', '24/7 Butler Service'],
-        status: 'available',
-        description: 'Immerse yourself in rustic luxury. The Deluxe Alpine Room features warm wooden accents, an expansive view of the Islamabad hills, and premium bedding designed for supreme comfort.',
-        maxGuests: 2,
-        rating: 4.8,
-        reviewsCount: 24,
-        location: 'Islamabad'
-    },
-    {
-        id: 'room-deluxe-102',
-        name: 'Deluxe Alpine Twin',
-        type: 'deluxe',
-        price: 28000,
-        image: 'https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=800&q=80',
-        amenities: ['Twin Beds', 'Garden View', 'High-Speed Wi-Fi', 'Smart TV', 'Luxury Bath toiletries', 'Coffee Maker'],
-        status: 'available',
-        description: 'Perfect for business partners or families. Features two premium twin beds, large French windows opening to our manicured pine gardens, and custom workspaces.',
-        maxGuests: 2,
-        rating: 4.7,
-        reviewsCount: 18,
-        location: 'Islamabad'
-    },
-    {
-        id: 'room-suite-201',
-        name: 'Executive Valley Suite',
-        type: 'executive',
-        price: 55000,
-        image: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80',
-        amenities: ['Master Bedroom', 'Separate Lounge', 'Private Balcony', 'Espresso Machine', 'Jacuzzi Bath', 'Executive Lounge Access'],
-        status: 'available',
-        description: 'A sanctuary of sophistication. The Executive Valley Suite boasts a separate living room, private terrace overlooking the beautiful Nathia Gali hills, walk-in closets, and exclusive access to the sky lounge with complimentary drinks.',
-        maxGuests: 3,
-        rating: 4.9,
-        reviewsCount: 42,
-        location: 'Nathia Gali'
-    },
-    {
-        id: 'room-suite-202',
-        name: 'Grand Family Suite',
-        type: 'executive',
-        price: 75000,
-        image: 'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80',
-        amenities: ['2 Bedrooms', 'Living Lounge', 'Kitchenette', 'Espresso Machine', 'Kids Play Area Access', 'Personal Laundry'],
-        status: 'available',
-        description: 'Designed for luxury family retreats. Offering two bedrooms, a central dining lounge, kitchenette, and panoramic mountain vistas. The ultimate home away from home.',
-        maxGuests: 5,
-        rating: 4.9,
-        reviewsCount: 31,
-        location: 'Nathia Gali'
-    },
-    {
-        id: 'room-penthouse-301',
-        name: 'Presidential Infinity Penthouse',
-        type: 'presidential',
-        price: 150000,
-        image: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80',
-        amenities: ['3 Master Suites', 'Private Infinity Pool', '24/7 Personal Chef', 'Private Dining Hall', 'Smart Automation', 'Airport Chauffeur'],
-        status: 'available',
-        description: 'The pinnacle of luxury. Hovering above the clouds, our Presidential Penthouse offers three master suites, a private heated infinity pool overlooking Margalla Hills, a personal chef, and state-of-the-art automation.',
-        maxGuests: 6,
-        rating: 5.0,
-        reviewsCount: 15,
-        location: 'Islamabad'
-    },
-    {
         id: 'apt-studio-101',
         name: 'Studio Apartment',
         type: 'studio',
@@ -110,67 +40,103 @@ const DEFAULT_ROOMS = [
         priceWeekly: 50000,
         priceMonthly: 180000,
         isApartment: true,
-        image: 'assets/images/apartment_studio.jpg',
+        image: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80',
         amenities: ['King Bed', '1 Bathroom', 'Balcony', 'Equipped Kitchen', '24-Hour Reception', 'Near to Market', 'High-Speed Wi-Fi', '24/7 Security'],
         status: 'available',
-        description: 'Cozy and modern Studio Apartment at Cube Apartment, Bahria Enclave Islamabad. Features a king-sized bed, fully equipped kitchen, private balcony, and 24-hour reception access. Perfect for single business travelers or couples.',
+        description: 'Cozy and modern Studio Apartment at Bahria Enclave Islamabad. Features a king-sized bed, fully equipped kitchen, private balcony, and 24-hour reception access. Perfect for single business travelers or couples.',
         maxGuests: 2,
         rating: 4.9,
         reviewsCount: 16,
         location: 'Islamabad'
     },
     {
-        id: 'apt-1bhk-101',
-        name: 'One Bedroom Apartment (1BHK)',
-        type: '1bhk',
+        id: 'apt-1bed-101',
+        name: '1 Bed Apartment',
+        type: '1bed',
         price: 12000,
         priceDaily: 12000,
         priceWeekly: 75000,
         priceMonthly: 270000,
         isApartment: true,
-        image: 'assets/images/apartment_1bhk.jpg',
+        image: 'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80',
         amenities: ['King Bed', '1 Bedroom', 'Living Room', 'Equipped Kitchen', 'High-Speed Wi-Fi', '24/7 Security', 'Housekeeping'],
         status: 'available',
-        description: 'Elegant one-bedroom apartment (1BHK) featuring fully furnished, home-like living spaces. Comes equipped with a kitchen, spacious living room, high-speed Wi-Fi, and round-the-clock security.',
+        description: 'Elegant one-bedroom apartment featuring fully furnished, home-like living spaces. Comes equipped with a kitchen, spacious living room, high-speed Wi-Fi, and round-the-clock security.',
         maxGuests: 2,
         rating: 4.8,
         reviewsCount: 12,
         location: 'Islamabad'
     },
     {
-        id: 'apt-2bhk-101',
-        name: 'Two Bedroom Apartment (2BHK)',
-        type: '2bhk',
+        id: 'apt-2bed-101',
+        name: '2 Bed Apartment',
+        type: '2bed',
         price: 18000,
         priceDaily: 18000,
         priceWeekly: 110000,
         priceMonthly: 400000,
         isApartment: true,
-        image: 'assets/images/apartment_2bhk.jpg',
+        image: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80',
         amenities: ['2 Bedrooms', '3 Bathrooms', 'Living Room', 'Kitchen', 'Store Room', 'High-Speed Wi-Fi', '24/7 Security', 'Housekeeping'],
         status: 'available',
-        description: 'Spacious two-bedroom apartment (2BHK) ideal for family travel or extended stays. Features two premium bedrooms, three bathrooms, a comfortable living room, equipped kitchen, and store room.',
+        description: 'Spacious two-bedroom apartment overlooking the majestic hills. Ideal for family travel or extended stays. Features two premium bedrooms, three bathrooms, a comfortable living room, equipped kitchen, and store room.',
         maxGuests: 4,
         rating: 4.9,
         reviewsCount: 20,
-        location: 'Islamabad'
+        location: 'Nathia Gali'
     },
     {
-        id: 'apt-3bhk-101',
-        name: 'Three Bedroom Apartment (3BHK)',
-        type: '3bhk',
+        id: 'apt-3bed-101',
+        name: '3 Bed Apartment',
+        type: '3bed',
         price: 25000,
         priceDaily: 25000,
         priceWeekly: 150000,
         priceMonthly: 550000,
         isApartment: true,
-        image: 'assets/images/apartment_3bhk.jpg',
+        image: 'https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=800&q=80',
         amenities: ['3 Bedrooms', '3 Bathrooms', 'Spacious Lounge', 'Kitchen', 'Balcony', 'High-Speed Wi-Fi', '24/7 Security', 'Housekeeping'],
         status: 'available',
-        description: 'Luxurious and extremely spacious three-bedroom apartment (3BHK) perfect for large groups or families. Fully furnished with high-end appliances, a spacious living area, and premium home-like comfort.',
+        description: 'Luxurious and extremely spacious three-bedroom apartment in the heart of Alpine landscape. Fully furnished with high-end appliances, a spacious living area, and premium home-like comfort.',
         maxGuests: 6,
         rating: 5.0,
         reviewsCount: 8,
+        location: 'Nathia Gali'
+    },
+    {
+        id: 'apt-4bed-101',
+        name: '4 Bed Apartment',
+        type: '4bed',
+        price: 35000,
+        priceDaily: 35000,
+        priceWeekly: 200000,
+        priceMonthly: 700000,
+        isApartment: true,
+        image: 'https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=800&q=80',
+        amenities: ['4 Bedrooms', '4 Bathrooms', 'Huge Lounge', 'Equipped Kitchen', 'Terrace', 'High-Speed Wi-Fi', '24/7 Security', 'Butler Service'],
+        status: 'available',
+        description: 'Stunning four-bedroom apartment designed for maximum comfort and style. Includes four master bedrooms, four bathrooms, a massive family lounge, equipped kitchen, and a private terrace overlooking Bahria Enclave.',
+        maxGuests: 8,
+        rating: 4.9,
+        reviewsCount: 14,
+        location: 'Islamabad'
+    },
+    {
+        id: 'apt-penthouse-101',
+        name: 'Luxury Penthouse',
+        type: 'penthouse',
+        price: 120000,
+        priceDaily: 120000,
+        priceWeekly: 700000,
+        priceMonthly: 2400000,
+        isApartment: true,
+        image: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80',
+        amenities: ['3 Master Suites', 'Private Infinity Pool', '24/7 Personal Butler', 'Private Dining Hall', 'Smart Automation', 'Airport Shuttle Pickups'],
+        status: 'available',
+        description: 'The pinnacle of luxury. Located on the highest floor, our Penthouse offers three master suites, private heated infinity pool, a dedicated personal butler, private dining hall, and smart home automation.',
+        maxGuests: 6,
+        rating: 5.0,
+        reviewsCount: 15,
         location: 'Islamabad'
     }
 ];
@@ -179,8 +145,8 @@ const DEFAULT_USERS = [
     {
         id: 'usr-admin',
         name: 'KPH Admin',
-        email: 'admin@kphstay.com',
-        password: 'admin123',
+        email: 'tanzilminhas2007@gmail.com',
+        password: 'tanzil@minhas2007',
         role: 'admin',
         loyaltyPoints: 0,
         phone: '+92 334 0091127'
@@ -200,26 +166,26 @@ const DEFAULT_BOOKINGS = [
     {
         id: 'BK-7841',
         userId: 'usr-guest',
-        roomId: 'room-suite-201',
+        roomId: 'apt-2bed-101',
         guestName: 'Mubashir Arham',
         guestEmail: 'guest@kphstay.com',
         guestPhone: '+92 300 1234567',
         checkIn: '2026-07-10',
         checkOut: '2026-07-14',
-        totalPrice: 220000,
+        totalPrice: 72000,
         status: 'confirmed',
         createdAt: '2026-06-15'
     },
     {
         id: 'BK-1029',
         userId: 'usr-guest',
-        roomId: 'room-deluxe-101',
+        roomId: 'apt-studio-101',
         guestName: 'Mubashir Arham',
         guestEmail: 'guest@kphstay.com',
         guestPhone: '+92 300 1234567',
         checkIn: '2026-05-01',
         checkOut: '2026-05-03',
-        totalPrice: 50000,
+        totalPrice: 16000,
         status: 'completed',
         createdAt: '2026-04-20'
     }
@@ -228,38 +194,23 @@ const DEFAULT_BOOKINGS = [
 // Initialize and Seed Firestore collections
 async function initializeFirestore() {
     try {
-        // Seed Rooms
-        const roomsSnap = await fdb.collection('rooms').limit(1).get();
-        if (roomsSnap.empty) {
-            for (const r of DEFAULT_ROOMS) {
-                await fdb.collection('rooms').doc(r.id).set(r);
-            }
-            console.log("Firestore rooms collection seeded.");
-        } else {
-            // Seed new apartments if they do not exist
-            for (const r of DEFAULT_ROOMS) {
-                if (r.isApartment) {
-                    const doc = await fdb.collection('rooms').doc(r.id).get();
-                    if (!doc.exists) {
-                        await fdb.collection('rooms').doc(r.id).set(r);
-                        console.log(`Seeded new apartment: ${r.name}`);
-                    }
-                }
-            }
-        }
-
-        // Migrate existing database rooms if they lack location attribute
-        const allRoomsSnap = await fdb.collection('rooms').get();
-        allRoomsSnap.forEach(async doc => {
-            const rData = doc.data();
-            if (!rData.location) {
-                const isNathiaGali = doc.id === 'room-suite-201' || doc.id === 'room-suite-202';
-                await fdb.collection('rooms').doc(doc.id).update({
-                    location: isNathiaGali ? 'Nathia Gali' : 'Islamabad'
-                });
-                console.log(`Migrated room ${doc.id} to location: ${isNathiaGali ? 'Nathia Gali' : 'Islamabad'}`);
+        // Synchronize rooms database collection
+        const allDbRooms = await fdb.collection('rooms').get();
+        const defaultIds = DEFAULT_ROOMS.map(r => r.id);
+        
+        // Remove obsolete rooms that do not exist in default list
+        allDbRooms.forEach(async doc => {
+            if (!defaultIds.includes(doc.id)) {
+                await fdb.collection('rooms').doc(doc.id).delete();
+                console.log(`Deleted obsolete room: ${doc.id}`);
             }
         });
+        
+        // Set/Merge default rooms
+        for (const r of DEFAULT_ROOMS) {
+            await fdb.collection('rooms').doc(r.id).set(r, { merge: true });
+        }
+        console.log("Firestore rooms collection fully synchronized with new categories.");
 
         // Seed Users
         const usersSnap = await fdb.collection('users').limit(1).get();
@@ -269,14 +220,19 @@ async function initializeFirestore() {
             }
             console.log("Firestore users collection seeded.");
         } else {
-            // Migrate existing default users to new kphstay.com emails
+            // Migrate/Update default admin to tanzilminhas2007@gmail.com and tanzil@minhas2007
             const adminDoc = await fdb.collection('users').doc('usr-admin').get();
-            if (adminDoc.exists && adminDoc.data().email === 'admin@kaghan.com') {
-                await fdb.collection('users').doc('usr-admin').update({
-                    email: 'admin@kphstay.com',
-                    name: 'KPH Admin'
-                });
-                console.log("Migrated default admin email to admin@kphstay.com");
+            if (!adminDoc.exists || adminDoc.data().email !== 'tanzilminhas2007@gmail.com' || adminDoc.data().password !== 'tanzil@minhas2007') {
+                await fdb.collection('users').doc('usr-admin').set({
+                    id: 'usr-admin',
+                    name: 'KPH Admin',
+                    email: 'tanzilminhas2007@gmail.com',
+                    password: 'tanzil@minhas2007',
+                    role: 'admin',
+                    loyaltyPoints: 0,
+                    phone: '+92 51 8461975'
+                }, { merge: true });
+                console.log("Admin credentials updated in database.");
             }
             const guestDoc = await fdb.collection('users').doc('usr-guest').get();
             if (guestDoc.exists && guestDoc.data().email === 'guest@kaghan.com') {
@@ -1182,6 +1138,60 @@ if (document.readyState === 'loading') {
 } else {
     initializeSharedUI();
 }
+
+// ============================================================
+// GLOBAL SCROLL ANIMATION SYSTEM
+// Uses IntersectionObserver to trigger [data-animate] elements
+// ============================================================
+(function initScrollAnimations() {
+    function setupObserver() {
+        const animatedEls = document.querySelectorAll('[data-animate]');
+        if (!animatedEls.length) return;
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animated');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+        animatedEls.forEach(el => observer.observe(el));
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupObserver);
+    } else {
+        setupObserver();
+    }
+})();
+
+// ============================================================
+// ROOMS FILTER SIDEBAR TOGGLE (mobile)
+// ============================================================
+window.openFilterSidebar = function() {
+    const sidebar = document.getElementById('rooms-filter-sidebar');
+    if (sidebar) sidebar.classList.add('open');
+    document.body.style.overflow = 'hidden';
+};
+
+window.closeFilterSidebar = function() {
+    const sidebar = document.getElementById('rooms-filter-sidebar');
+    if (sidebar) sidebar.classList.remove('open');
+    document.body.style.overflow = '';
+};
+
+// Close filter sidebar when clicking overlay backdrop
+document.addEventListener('click', function(e) {
+    const sidebar = document.getElementById('rooms-filter-sidebar');
+    const panel = document.getElementById('rooms-filter-panel');
+    if (sidebar && sidebar.classList.contains('open') && panel && !panel.contains(e.target)) {
+        const toggleBtn = document.getElementById('filter-toggle-btn');
+        if (toggleBtn && toggleBtn.contains(e.target)) return;
+        window.closeFilterSidebar();
+    }
+});
 
 
 

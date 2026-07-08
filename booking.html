@@ -163,11 +163,14 @@
 
                     <div class="mb-6">
                         <label class="block text-xs uppercase tracking-wider text-slate-500 font-semibold mb-2">Select Location</label>
-                        <select id="book-location" onchange="filterRoomsByLocation()" class="w-full border border-slate-200 rounded-xl px-4 py-3.5 outline-none focus:border-[#D4AF37] text-sm bg-slate-50 text-slate-800 cursor-pointer">
-                            <option value="all">All Locations</option>
-                            <option value="Islamabad">Islamabad</option>
-                            <option value="Nathia Gali">Nathia Gali</option>
-                        </select>
+                        <div class="relative">
+                            <select id="book-location" onchange="filterRoomsByLocation()" class="w-full border border-slate-200 rounded-xl pl-4 pr-11 py-3.5 outline-none focus:border-[#D4AF37] text-sm bg-slate-50 text-slate-800 cursor-pointer appearance-none">
+                                <option value="all">All Locations</option>
+                                <option value="Islamabad">Islamabad</option>
+                                <option value="Nathia Gali">Nathia Gali</option>
+                            </select>
+                            <i class="fa-solid fa-chevron-down absolute right-4 top-4.5 text-slate-400 pointer-events-none text-xs"></i>
+                        </div>
                     </div>
 
                     <div class="mb-6">
@@ -185,11 +188,14 @@
                     <!-- Rent Billing Cycle (Visible/Enabled for Apartments) -->
                     <div id="billing-cycle-box" class="mt-6 hidden">
                         <label class="block text-xs uppercase tracking-wider text-slate-500 font-semibold mb-2">Rent Billing Cycle</label>
-                        <select id="book-billing-cycle" onchange="calculatePrice()" class="w-full border border-slate-200 rounded-xl px-4 py-3.5 outline-none focus:border-[#D4AF37] text-sm bg-slate-50 text-slate-800 cursor-pointer">
-                            <option value="daily">Daily Basis</option>
-                            <option value="weekly">Weekly Basis</option>
-                            <option value="monthly">Monthly Basis</option>
-                        </select>
+                        <div class="relative">
+                            <select id="book-billing-cycle" onchange="calculatePrice()" class="w-full border border-slate-200 rounded-xl pl-4 pr-11 py-3.5 outline-none focus:border-[#D4AF37] text-sm bg-slate-50 text-slate-800 cursor-pointer appearance-none">
+                                <option value="daily">Daily Basis</option>
+                                <option value="weekly">Weekly Basis</option>
+                                <option value="monthly">Monthly Basis</option>
+                            </select>
+                            <i class="fa-solid fa-chevron-down absolute right-4 top-4.5 text-slate-400 pointer-events-none text-xs"></i>
+                        </div>
                         <p class="text-slate-400 text-[10px] mt-1 font-light">Select daily, weekly, or monthly cycle to unlock discounted rates for longer stays.</p>
                     </div>
                     <!-- Upcoming Reserved Dates Box -->

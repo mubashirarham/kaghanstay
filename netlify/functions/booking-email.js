@@ -168,7 +168,7 @@ exports.handler = async (event, context) => {
                         </div>
                     </div>
 
-                    <p>If you have any questions or require check-in assistance or custom airport shuttle pickups, please contact our lobby support line at +923340091127.</p>
+                    <p>If you have any questions or require check-in assistance or custom airport shuttle pickups, please contact our lobby support line at +92 51 8461975.</p>
                     <p>We look forward to welcoming you soon.</p>
                     <p style="margin-top: 30px; font-weight: 500; color: #0F172A;">Warmest regards,<br><span style="color: #D4AF37; font-size: 13px;">KPH Resort Concierge</span></p>
                 </div>

@@ -8,6 +8,12 @@
 
         if (!tbody) return;
 
+        // Reset check boxes state on re-render
+        const selectAll = document.getElementById('bookings-select-all');
+        if (selectAll) selectAll.checked = false;
+        const bulkBar = document.getElementById('booking-bulk-actions');
+        if (bulkBar) bulkBar.classList.add('hidden');
+
         const keyword = (document.getElementById('booking-search-input')?.value || '').toLowerCase().trim();
         const statusFilter = document.getElementById('booking-filter-status')?.value || 'all';
 
@@ -49,6 +55,7 @@
 
             return `
                 <tr class="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
+                    <td class="px-4 py-4"><input type="checkbox" value="${booking.id}" onclick="updateBulkActionBar()" class="booking-row-checkbox rounded border-slate-300 text-[#D4AF37] focus:ring-[#D4AF37] cursor-pointer"></td>
                     <td class="px-6 py-4 text-xs font-bold text-[#D4AF37] uppercase">${booking.id}</td>
                     <td class="px-6 py-4">
                         <span class="font-bold text-slate-800 text-sm block">${booking.guestName}</span>
@@ -73,6 +80,97 @@
             `;
         }).join('');
     }
+
+    // Quick filter pills state sync and style update
+    window.setBookingFilterStatus = (status) => {
+        const select = document.getElementById('booking-filter-status');
+        if (select) {
+            select.value = status;
+        }
+
+        // Update pills visual style
+        const pills = document.querySelectorAll('#booking-filter-pills button');
+        pills.forEach(btn => {
+            const isTarget = btn.id === `filter-pill-${status}`;
+            if (isTarget) {
+                btn.className = 'px-4 py-2 rounded-xl text-xs font-bold transition-all border border-[#D4AF37]/35 bg-[#D4AF37]/10 text-[#D4AF37] hover:bg-[#D4AF37]/15';
+            } else {
+                btn.className = 'px-4 py-2 rounded-xl text-xs font-bold transition-all border border-slate-200 bg-slate-50/50 text-slate-500 hover:bg-slate-100';
+            }
+        });
+
+        renderBookings();
+    };
+
+    // Checkbox toggling and select-all logic
+    window.toggleSelectAllBookings = (selectAllEl) => {
+        const checkBoxes = document.querySelectorAll('.booking-row-checkbox');
+        checkBoxes.forEach(box => {
+            box.checked = selectAllEl.checked;
+        });
+        updateBulkActionBar();
+    };
+
+    window.updateBulkActionBar = () => {
+        const checkBoxes = document.querySelectorAll('.booking-row-checkbox');
+        const selected = Array.from(checkBoxes).filter(box => box.checked);
+        const countSpan = document.getElementById('selected-bookings-count');
+        const bulkBar = document.getElementById('booking-bulk-actions');
+
+        if (countSpan) countSpan.innerText = selected.length;
+
+        if (bulkBar) {
+            if (selected.length > 0) {
+                bulkBar.classList.remove('hidden');
+            } else {
+                bulkBar.classList.add('hidden');
+                // Deselect main toggle if everything is deselected
+                const selectAll = document.getElementById('bookings-select-all');
+                if (selectAll) selectAll.checked = false;
+            }
+        }
+    };
+
+    // Bulk actions
+    window.bulkChangeBookingStatus = async (newStatus) => {
+        const checkBoxes = document.querySelectorAll('.booking-row-checkbox');
+        const selectedIds = Array.from(checkBoxes).filter(box => box.checked).map(box => box.value);
+
+        if (selectedIds.length === 0) return;
+
+        if (!confirm(`Are you sure you want to update the status of ${selectedIds.length} bookings to "${newStatus}"?`)) return;
+
+        let successes = 0;
+        for (const id of selectedIds) {
+            const success = await KaghanDB.updateBookingStatus(id, newStatus);
+            if (success) successes++;
+        }
+
+        KaghanUI.showToast(`Updated status for ${successes}/${selectedIds.length} bookings.`, 'success');
+        if (window.AdminDashboardModule) {
+            await window.AdminDashboardModule.refreshAll();
+        }
+    };
+
+    window.bulkDeleteBookings = async () => {
+        const checkBoxes = document.querySelectorAll('.booking-row-checkbox');
+        const selectedIds = Array.from(checkBoxes).filter(box => box.checked).map(box => box.value);
+
+        if (selectedIds.length === 0) return;
+
+        if (!confirm(`CAUTION: Are you sure you want to permanently delete the ledger of ${selectedIds.length} bookings? This cannot be undone.`)) return;
+
+        let successes = 0;
+        for (const id of selectedIds) {
+            const success = await KaghanDB.deleteBooking(id);
+            if (success) successes++;
+        }
+
+        KaghanUI.showToast(`Permanently deleted ${successes}/${selectedIds.length} bookings from ledger.`, 'success');
+        if (window.AdminDashboardModule) {
+            await window.AdminDashboardModule.refreshAll();
+        }
+    };
 
     window.changeBookingStatus = async (id, newStatus) => {
         const success = await KaghanDB.updateBookingStatus(id, newStatus);

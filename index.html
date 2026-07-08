@@ -49,7 +49,7 @@
         "latitude": "33.7294",
         "longitude": "73.0931"
       },
-      "telephone": "+923340091127",
+      "telephone": "+92518461975",
       "priceRange": "PKR 8,000 - PKR 50,000",
       "starRating": {
         "@type": "Rating",
@@ -98,7 +98,7 @@
           "name": "Does KPH Stay offer service apartments in Islamabad?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes, KPH Stay offers fully furnished service apartments ranging from Studio to 3BHK configurations in Islamabad near Margalla Hills. All apartments include equipped kitchens, living areas, high-speed Wi-Fi, 24/7 security, and regular housekeeping."
+            "text": "Yes, KPH Stay offers fully furnished service apartments ranging from Studio to 4 Bed and Penthouse configurations in Islamabad near Margalla Hills. All apartments include equipped kitchens, living areas, high-speed Wi-Fi, 24/7 security, and regular housekeeping."
           }
         },
         {
@@ -188,17 +188,17 @@
         </div>
 
         <div class="relative z-10 text-center px-4 max-w-4xl mx-auto mt-20 animate-fade-in">
-            <span class="text-[#D4AF37] uppercase tracking-[0.4em] text-xs md:text-sm font-bold mb-4 block">A New Era of Luxury</span>
-            <h1 class="text-4xl md:text-6xl lg:text-7xl text-white font-bold leading-tight mb-6 outfit">Escape into pure <br><span class="text-[#D4AF37]">Alpine Luxury</span></h1>
-            <p class="text-slate-200 text-sm md:text-lg mb-10 max-w-2xl mx-auto font-light leading-relaxed">
-                Nestled in the breathtaking hills of Islamabad, experience five-star amenities, customized butler services, and private infinity pools.
+            <span class="text-[#D4AF37] uppercase tracking-[0.4em] text-xs md:text-sm font-bold mb-4 block" data-animate="fade-down">A New Era of Luxury Living</span>
+            <h1 class="text-4xl md:text-6xl lg:text-7xl text-white font-bold leading-tight mb-6 outfit hero-title" data-animate="fade-up">Escape into pure <br><span class="text-[#D4AF37]">Alpine Luxury</span></h1>
+            <p class="text-slate-200 text-sm md:text-lg mb-10 max-w-2xl mx-auto font-light leading-relaxed" data-animate="fade-up">
+                Nestled in the breathtaking hills of Islamabad, experience five-star amenities, customized butler services, and premium furnished apartments.
             </p>
         </div>
 
         <!-- Search Widget -->
-        <div class="relative z-10 w-full max-w-5xl px-4 -mb-16 md:-mb-10 mt-4">
+        <div class="relative z-10 w-full max-w-5xl px-4 -mb-16 md:-mb-10 mt-4" data-animate="fade-up">
             <div class="glass-dark rounded-3xl p-5 md:p-8 border border-white/10 shadow-2xl text-white">
-                <form id="hero-search-form" class="grid grid-cols-1 md:grid-cols-5 gap-4 md:gap-6 items-end">
+                <form id="hero-search-form" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 md:gap-6 items-end">
                     <div>
                         <label class="block text-xs uppercase tracking-widest text-[#D4AF37] font-semibold mb-2">Check In</label>
                         <div class="relative">
@@ -230,18 +230,21 @@
                         <div class="relative">
                             <i class="fa-solid fa-bed absolute left-4 top-3.5 text-slate-400"></i>
                             <select id="search-room-type" class="w-full bg-[#1E293B]/70 border border-slate-700 rounded-xl pl-11 pr-4 py-3 outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37] focus:ring-opacity-40 transition-all text-white text-sm appearance-none cursor-pointer">
-                                <option value="all">All Room Styles</option>
-                                <option value="deluxe">Deluxe Alpine Room</option>
-                                <option value="executive">Executive Valley Suite</option>
-                                <option value="presidential">Presidential Penthouse</option>
+                                <option value="all">All Categories</option>
+                                <option value="studio">Studio Apartment</option>
+                                <option value="1bed">1 Bed Apartment</option>
+                                <option value="2bed">2 Bed Apartment</option>
+                                <option value="3bed">Three Bed Apartment</option>
+                                <option value="4bed">Four Bed</option>
+                                <option value="penthouse">Penthouse</option>
                             </select>
                             <i class="fa-solid fa-chevron-down absolute right-4 top-4 text-slate-400 pointer-events-none text-xs"></i>
                         </div>
                     </div>
-                    <div>
+                    <div class="sm:col-span-2 md:col-span-1">
                         <button type="submit" class="w-full bg-[#D4AF37] text-white py-3.5 rounded-xl font-bold hover:bg-white hover:text-slate-900 transition-all shadow-lg flex items-center justify-center gap-2 btn-shimmer">
                             <i class="fa-solid fa-search"></i>
-                            Find Suites
+                            Find Apartments
                         </button>
                     </div>
                 </form>
@@ -664,9 +667,9 @@
             <div>
                 <h4 class="text-white font-bold mb-6 uppercase tracking-wider text-xs outfit">Contact Front Desk</h4>
                 <p class="text-xs leading-relaxed mb-4">
-                    Main Jinnah Avenue Extension, Pine Valley Estates, Islamabad, Pakistan
+                    Office 203, 2nd Floor, Asian Arcade, opposite Zoo, C Avenue, Sector C, Bahria Enclave, Islamabad, Pakistan
                 </p>
-                <p class="text-sm text-[#D4AF37] font-bold"><i class="fa-solid fa-phone mr-2"></i>0334-0091127</p>
+                <p class="text-sm text-[#D4AF37] font-bold"><i class="fa-solid fa-phone mr-2"></i>+92 51 8461975</p>
             </div>
             <div>
                 <h4 class="text-white font-bold mb-6 uppercase tracking-wider text-xs outfit">Newsletter</h4>
@@ -713,8 +716,16 @@
                 <div class="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-lg hover-lift group">
                     <div class="relative h-64 overflow-hidden">
                         <img src="${room.image}" alt="${room.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        <div class="absolute top-4 right-4 bg-slate-900/80 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-[#D4AF37] border border-white/10 uppercase tracking-widest">
-                            ${room.type}
+                        <div class="absolute top-4 right-4 bg-slate-900/80 backdrop-blur-md px-3.5 py-1.5 rounded-full text-[10px] font-bold text-[#D4AF37] border border-white/10 uppercase tracking-widest flex items-center gap-1.5 shadow-lg">
+                            ${
+                                room.type === 'studio' ? '<i class="fa-solid fa-cube"></i> Studio' :
+                                room.type === '1bed' ? '<i class="fa-solid fa-bed"></i> 1 Bed' :
+                                room.type === '2bed' ? '<i class="fa-solid fa-door-open"></i> 2 Bed' :
+                                room.type === '3bed' ? '<i class="fa-solid fa-house-chimney"></i> 3 Bed' :
+                                room.type === '4bed' ? '<i class="fa-solid fa-building"></i> 4 Bed' :
+                                room.type === 'penthouse' ? '<i class="fa-solid fa-crown"></i> Penthouse' :
+                                room.type
+                            }
                         </div>
                     </div>
                     <div class="p-8">
