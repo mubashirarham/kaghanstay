@@ -10,16 +10,204 @@
         await initRoomsPage();
     });
 
+    // Pagination Globals
+    let currentPage = 1;
+    const itemsPerPage = 6;
+
     async function initRoomsPage() {
         renderNavbar();
+
+        // Populate dynamic filters before initial render
+        await populateFilters();
+
         setupRoomsEventListeners();
 
         // Listen for real-time rooms updates
         window.addEventListener('kaghan-db-rooms', () => {
             applyFilters();
         });
+        window.addEventListener('kaghan-db-categories', async () => {
+            await populateFilters();
+            applyFilters();
+        });
+        window.addEventListener('kaghan-db-locations', async () => {
+            await populateFilters();
+            applyFilters();
+        });
 
         await loadParams();
+    }
+
+    // Leaflet Map Globals
+    let mapInstance = null;
+    let mapMarkers = [];
+    let isMapMode = false;
+
+    window.toggleMapMode = () => {
+        isMapMode = !isMapMode;
+        const gridContainer = document.getElementById('rooms-grid-container');
+        const mapContainer = document.getElementById('rooms-map-container');
+        const btnText = document.getElementById('toggle-map-text');
+        const btnIcon = document.querySelector('#toggle-map-btn i');
+
+        if (isMapMode) {
+            gridContainer.classList.remove('w-full');
+            gridContainer.classList.add('w-1/2'); // Split layout
+            
+            mapContainer.classList.remove('w-0', 'opacity-0', 'hidden', 'lg:block');
+            mapContainer.classList.add('w-1/2', 'opacity-100');
+            
+            btnText.innerText = 'Hide Map';
+            btnIcon.className = 'fa-solid fa-list';
+
+            // Initialize or resize map
+            setTimeout(() => {
+                if (!mapInstance && typeof L !== 'undefined') {
+                    initMap();
+                } else if (mapInstance) {
+                    mapInstance.invalidateSize();
+                }
+            }, 300);
+        } else {
+            gridContainer.classList.remove('w-1/2');
+            gridContainer.classList.add('w-full');
+            
+            mapContainer.classList.remove('w-1/2', 'opacity-100');
+            mapContainer.classList.add('w-0', 'opacity-0', 'hidden', 'lg:block');
+            
+            btnText.innerText = 'Show Map';
+            btnIcon.className = 'fa-solid fa-map-location-dot';
+        }
+    };
+
+    function initMap() {
+        mapInstance = L.map('rooms-map').setView([33.7294, 73.0931], 11); // Default to Islamabad
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(mapInstance);
+        applyFilters(); // Draw markers for current filtered set
+    }
+
+    function updateMapMarkers(rooms) {
+        if (!mapInstance) return;
+
+        // Clear existing markers
+        mapMarkers.forEach(m => mapInstance.removeLayer(m));
+        mapMarkers = [];
+
+        // Bounds to auto-zoom
+        const bounds = L.latLngBounds();
+
+        rooms.forEach(room => {
+            // Mock coordinates based on location name if missing
+            let lat = room.lat;
+            let lng = room.lng;
+            
+            if (!lat || !lng) {
+                // Fuzzy fallback coordinates for demonstration
+                const locStr = (room.location || '').toLowerCase();
+                if (locStr.includes('nathia')) { lat = 34.0722; lng = 73.3831; }
+                else if (locStr.includes('murree')) { lat = 33.9070; lng = 73.3943; }
+                else { lat = 33.7294 + (Math.random()*0.02 - 0.01); lng = 73.0931 + (Math.random()*0.02 - 0.01); } // Default ISB scattered
+            }
+
+            const priceText = KaghanUI.formatPKR(room.priceDaily || room.price);
+            
+            // Custom divIcon for price marker (Airbnb style)
+            const icon = L.divIcon({
+                className: 'custom-map-marker',
+                html: `<div class="bg-white px-3 py-1.5 rounded-2xl shadow-lg border border-slate-200 text-xs font-bold text-slate-800 hover:bg-[#D4AF37] hover:text-white transition-colors cursor-pointer hover:scale-110 transform-gpu">${priceText}</div>`,
+                iconSize: [80, 30],
+                iconAnchor: [40, 15]
+            });
+
+            const marker = L.marker([lat, lng], { icon: icon }).addTo(mapInstance);
+            bounds.extend([lat, lng]);
+
+            // Popup logic
+            marker.bindPopup(`
+                <div class="p-2 w-48 font-sans">
+                    <img src="${room.image}" class="w-full h-24 object-cover rounded-xl mb-2">
+                    <h4 class="font-bold text-sm text-slate-800 leading-tight">${room.name}</h4>
+                    <p class="text-xs text-[#D4AF37] font-bold mt-1">${priceText} / Night</p>
+                    <a href="booking.html?id=${room.id}" class="block text-center bg-slate-900 text-white text-xs py-1.5 rounded-lg mt-2 hover:bg-[#D4AF37]">Book Now</a>
+                </div>
+            `);
+
+            mapMarkers.push(marker);
+        });
+
+        if (mapMarkers.length > 0) {
+            mapInstance.fitBounds(bounds, { padding: [50, 50], maxZoom: 15 });
+        }
+    }
+
+    async function populateFilters() {
+        const categories = await KaghanDB.getCategories();
+        const locations = await KaghanDB.getLocations();
+
+        // Populate Location Select
+        const locationSelect = document.getElementById('filter-location');
+        if (locationSelect) {
+            let currentVal = locationSelect.value;
+            locationSelect.innerHTML = `<option value="all">All Locations</option>` +
+                locations.map(l => `<option value="${l.id}">${l.label}</option>`).join('');
+            if(locations.find(l => l.id === currentVal)) locationSelect.value = currentVal;
+        }
+
+        // Populate Category Select
+        const categorySelect = document.getElementById('filter-category');
+        if (categorySelect) {
+            let currentVal = categorySelect.value;
+            categorySelect.innerHTML = `<option value="all">All Categories</option>` +
+                categories.map(c => `<option value="${c.id}">${c.label}</option>`).join('');
+            if(categories.find(c => c.id === currentVal)) categorySelect.value = currentVal;
+        }
+
+        // Populate Custom Category Filter Bar
+        const customCategoryContainer = document.getElementById('custom-category-filters');
+        if (customCategoryContainer) {
+            let html = `
+                <button data-value="all" type="button" class="category-filter-btn flex flex-col items-center gap-2 group active-category opacity-100 hover:opacity-100 transition-opacity min-w-[64px]">
+                    <div class="w-8 h-8 flex items-center justify-center text-slate-800 text-2xl group-[.active-category]:text-[#D4AF37]"><i class="fa-solid fa-border-all"></i></div>
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 group-[.active-category]:text-slate-900 group-[.active-category]:border-b-2 group-[.active-category]:border-[#D4AF37] pb-1">All</span>
+                </button>
+            `;
+
+            categories.forEach(cat => {
+                const iconOrImg = cat.image 
+                    ? `<img src="${cat.image}" class="w-full h-full object-cover rounded-lg group-[.active-category]:ring-2 ring-[#D4AF37] ring-offset-2">` 
+                    : `<i class="fa-solid ${cat.icon}"></i>`;
+                    
+                html += `
+                    <button data-value="${cat.id}" type="button" class="category-filter-btn flex flex-col items-center gap-2 group opacity-60 hover:opacity-100 transition-opacity min-w-[64px]">
+                        <div class="w-8 h-8 flex items-center justify-center text-slate-800 text-2xl group-[.active-category]:text-[#D4AF37]">${iconOrImg}</div>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 group-[.active-category]:text-slate-900 group-[.active-category]:border-b-2 group-[.active-category]:border-[#D4AF37] pb-1">${cat.label}</span>
+                    </button>
+                `;
+            });
+            customCategoryContainer.innerHTML = html;
+        }
+
+        // Rebind custom category buttons since they were recreated
+        rebindCustomCategoryButtons();
+    }
+
+    function rebindCustomCategoryButtons() {
+        const customCategoryContainer = document.getElementById('custom-category-filters');
+        const categorySelect = document.getElementById('filter-category');
+        if (customCategoryContainer) {
+            const btns = customCategoryContainer.querySelectorAll('.category-filter-btn');
+            btns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const value = btn.getAttribute('data-value');
+                    if (categorySelect) {
+                        categorySelect.value = value;
+                        categorySelect.dispatchEvent(new Event('change'));
+                    }
+                });
+            });
+        }
     }
 
     function renderNavbar() {
@@ -28,7 +216,6 @@
 
     function setupRoomsEventListeners() {
         // Mobile Navigation Drawer Toggle handled by shared.js
-
 
         // Live updating label for price selector slider
         const priceSlider = document.getElementById('filter-price');
@@ -46,21 +233,6 @@
 
         const categorySelect = document.getElementById('filter-category');
         if (categorySelect) categorySelect.addEventListener('change', applyFilters);
-
-        // Bind custom category buttons
-        const customCategoryContainer = document.getElementById('custom-category-filters');
-        if (customCategoryContainer) {
-            const btns = customCategoryContainer.querySelectorAll('.category-filter-btn');
-            btns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const value = btn.getAttribute('data-value');
-                    if (categorySelect) {
-                        categorySelect.value = value;
-                        categorySelect.dispatchEvent(new Event('change'));
-                    }
-                });
-            });
-        }
 
         const locationSelect = document.getElementById('filter-location');
         if (locationSelect) locationSelect.addEventListener('change', applyFilters);
@@ -110,9 +282,11 @@
             const btns = customCategoryContainer.querySelectorAll('.category-filter-btn');
             btns.forEach(btn => {
                 if (btn.getAttribute('data-value') === categorySelect.value) {
-                    btn.classList.add('active');
+                    btn.classList.add('active-category', 'opacity-100');
+                    btn.classList.remove('opacity-60');
                 } else {
-                    btn.classList.remove('active');
+                    btn.classList.remove('active-category', 'opacity-100');
+                    btn.classList.add('opacity-60');
                 }
             });
         }
@@ -123,7 +297,7 @@
                                    room.description.toLowerCase().includes(keyword) ||
                                    room.amenities.some(a => a.toLowerCase().includes(keyword));
             const matchesCategory = category === 'all' || room.type === category;
-            const matchesLocation = location === 'all' || (room.location || 'Islamabad') === location;
+            const matchesLocation = location === 'all' || room.location === location;
             const matchesPrice = room.price <= maxPrice;
             return matchesKeyword && matchesCategory && matchesLocation && matchesPrice;
         });
@@ -137,79 +311,137 @@
             filtered.sort((a, b) => b.rating - a.rating);
         }
 
+        // Reset to page 1 on filter change
+        currentPage = 1;
         renderRooms(filtered);
+    }
+
+    async function getCategoryLabel(categoryId) {
+        const categories = await KaghanDB.getCategories();
+        const cat = categories.find(c => c.id === categoryId);
+        return cat ? cat.label : categoryId;
     }
 
     function renderRooms(roomsList) {
         const container = document.getElementById('rooms-grid');
         const fallback = document.getElementById('no-rooms-fallback');
         const countLabel = document.getElementById('results-count');
+        const pagination = document.getElementById('rooms-pagination');
 
         if (countLabel) countLabel.innerText = roomsList.length;
         
-        // Also update mobile results count
         const mobileCount = document.getElementById('results-count-mobile');
         if (mobileCount) mobileCount.innerText = roomsList.length;
 
         if (roomsList.length === 0) {
             if (container) container.innerHTML = '';
             if (fallback) fallback.classList.remove('hidden');
+            if (pagination) pagination.classList.add('hidden');
+            updateMapMarkers([]);
             return;
         }
 
         if (fallback) fallback.classList.add('hidden');
+        if (pagination) pagination.classList.remove('hidden');
+
+        // Pagination calculations
+        const totalPages = Math.ceil(roomsList.length / itemsPerPage);
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const paginatedRooms = roomsList.slice(startIndex, endIndex);
+
         if (container) {
-            container.innerHTML = roomsList.map(room => `
-                <div class="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-md hover-lift group">
-                    <div class="relative h-56 overflow-hidden">
-                        <img src="${room.image}" alt="${room.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        <div class="absolute top-4 right-4 bg-slate-900/80 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-[#D4AF37] border border-white/10 uppercase tracking-widest">
-                            ${room.type === 'studio' ? 'Studio Furnished' : room.type === '1bed' ? '1 Bed Furnished' : room.type === '2bed' ? '2 Bed Furnished' : room.type === '3bed' ? '3 Bed Furnished' : room.type === '4bed' ? '4 Bed Furnished' : room.type === '5marla' ? '5 Marla Furnished' : room.type === '10marla' ? '10 Marla Furnished' : room.type === '1kanal' ? '1 Kanal Furnished' : room.type === 'farmhouse' ? 'Fully Furnished Farmhouse' : room.type}
+            container.innerHTML = paginatedRooms.map(room => {
+                let mainImg = room.image || (room.images && room.images.length ? room.images[0] : '');
+                return `
+                <div onclick="window.location.href='booking.html?room=${room.id}'" class="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-md hover-lift group cursor-pointer flex flex-col h-full">
+                    <div class="relative h-56 overflow-hidden bg-slate-100 shrink-0">
+                        <img src="${mainImg}" alt="${room.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div class="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-xl shadow-sm border border-white/20 text-[10px] font-bold uppercase tracking-wider text-[#D4AF37]">
+                            ${KaghanUI.formatPKR(room.priceDaily || room.price)} <span class="text-slate-500 lowercase font-medium">/night</span>
+                        </div>
+                        <div class="absolute top-4 right-4 bg-slate-900/80 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-[#D4AF37] border border-white/10 uppercase tracking-widest room-cat-label" data-cat="${room.type}">
+                            ${room.type}
                         </div>
                     </div>
-                    <div class="p-6">
-                        <div class="flex justify-between items-start mb-1">
+                    <div class="p-6 flex-1 flex flex-col">
+                        <div class="flex justify-between items-start mb-2">
                             <h3 class="text-lg font-bold outfit text-[#0F172A] leading-tight">${room.name}</h3>
-                            <div class="flex items-center gap-1 text-[#D4AF37] font-bold text-xs">
+                            <div class="flex items-center gap-1 text-[#D4AF37] font-bold text-xs bg-[#D4AF37]/10 px-2 py-1 rounded-lg">
                                 <i class="fa-solid fa-star"></i>
-                                <span>${room.rating}</span>
+                                <span>${room.rating || '5.0'}</span>
                             </div>
                         </div>
-                        <div class="text-[10px] text-slate-400 font-bold mb-3 flex items-center gap-1">
+                        <div class="text-[10px] text-slate-400 font-bold mb-3 flex items-center gap-1 uppercase tracking-widest">
                             <i class="fa-solid fa-location-dot text-[#D4AF37] text-[9px]"></i>
-                            <span>${room.location || 'Islamabad'}</span>
+                            <span>${room.locationName || room.location || 'Islamabad'}</span>
                         </div>
                         <p class="text-slate-500 text-xs line-clamp-2 font-light leading-relaxed mb-4">
                             ${room.description}
                         </p>
-                        <div class="flex flex-wrap gap-1.5 mb-6">
-                            ${room.amenities.slice(0, 3).map(a => `
-                                <span class="bg-slate-50 text-slate-500 text-[9px] uppercase font-bold tracking-wider px-2 py-0.5 rounded border border-slate-100">
-                                    ${a}
+                        <div class="flex flex-wrap gap-1.5 mb-6 mt-auto">
+                            ${(room.amenities || []).slice(0, 3).map(a => `
+                                <span class="bg-slate-50 text-slate-500 text-[9px] uppercase font-bold tracking-wider px-2 py-1 rounded border border-slate-100 flex items-center gap-1">
+                                    <i class="fa-solid fa-check text-[#D4AF37]"></i> ${a}
                                 </span>
                             `).join('')}
-                            ${room.amenities.length > 3 ? `<span class="bg-slate-50 text-[#D4AF37] text-[9px] uppercase font-bold px-2 py-0.5 rounded border border-slate-100">+${room.amenities.length - 3}</span>` : ''}
+                            ${(room.amenities || []).length > 3 ? `<span class="bg-slate-50 text-[#D4AF37] text-[9px] uppercase font-bold px-2 py-1 rounded border border-slate-100">+${room.amenities.length - 3}</span>` : ''}
                         </div>
-                        <div class="border-t border-slate-100 pt-5 flex justify-between items-center">
-                            <div>
-                                <span class="text-slate-400 text-[9px] uppercase tracking-wider block font-semibold">${room.isApartment ? 'Rates starting from' : 'Rate Per Night'}</span>
-                                <span class="text-lg font-extrabold text-[#D4AF37] outfit">${KaghanUI.formatPKR(room.price)}</span>
-                                ${room.isApartment ? `<span class="text-slate-400 text-[10px] block font-light">Daily, Weekly & Monthly rents</span>` : ''}
+                        <div class="border-t border-slate-100 pt-4 mt-auto flex justify-between items-center">
+                            <div class="flex items-center gap-1.5 text-slate-500 text-xs font-semibold">
+                                <i class="fa-solid fa-user-group text-[#D4AF37]"></i> Max ${room.maxGuests} Guests
                             </div>
-                            <div class="flex gap-2">
-                                <button onclick="openDetailsModal('${room.id}')" class="border border-slate-200 text-slate-800 text-xs font-bold px-4 py-2.5 rounded-xl hover:bg-slate-100 transition-all">
-                                    Details
-                                </button>
-                                <a href="booking.html?room=${room.id}" class="bg-[#0F172A] text-white text-xs font-bold px-4 py-2.5 rounded-xl hover:bg-[#D4AF37] transition-all shadow-sm">
-                                    Book Now
-                                </a>
-                            </div>
+                            <button onclick="event.stopPropagation(); window.location.href='booking.html?room=${room.id}'" class="bg-[#0F172A] text-white text-xs font-bold px-4 py-2 rounded-xl hover:bg-[#D4AF37] transition-all shadow-sm">
+                                Book Now
+                            </button>
                         </div>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
+
+            // Post-process labels
+            container.querySelectorAll('.room-cat-label').forEach(async el => {
+                const catId = el.getAttribute('data-cat');
+                el.innerText = await getCategoryLabel(catId);
+            });
+
+            // Update map pins to match filtered list
+            if (typeof updateMapMarkers === 'function') {
+                updateMapMarkers(roomsList);
+            }
+
+            // Render Pagination controls
+            if (pagination) {
+                let pHTML = '';
+                // Prev btn
+                pHTML += `<button onclick="changePage(${currentPage - 1})" class="w-10 h-10 rounded-xl flex items-center justify-center font-bold transition-all border ${currentPage === 1 ? 'border-slate-100 text-slate-300 cursor-not-allowed bg-slate-50' : 'border-slate-200 text-slate-600 hover:border-[#D4AF37] hover:text-[#D4AF37] bg-white shadow-sm'}" ${currentPage === 1 ? 'disabled' : ''}><i class="fa-solid fa-chevron-left"></i></button>`;
+                
+                // Number btns
+                for(let i = 1; i <= totalPages; i++) {
+                    if(i === currentPage) {
+                        pHTML += `<button class="w-10 h-10 rounded-xl flex items-center justify-center font-bold transition-all border border-[#D4AF37] bg-[#D4AF37] text-white shadow-md">${i}</button>`;
+                    } else {
+                        pHTML += `<button onclick="changePage(${i})" class="w-10 h-10 rounded-xl flex items-center justify-center font-bold transition-all border border-slate-200 text-slate-600 hover:border-[#D4AF37] hover:text-[#D4AF37] bg-white shadow-sm">${i}</button>`;
+                    }
+                }
+
+                // Next btn
+                pHTML += `<button onclick="changePage(${currentPage + 1})" class="w-10 h-10 rounded-xl flex items-center justify-center font-bold transition-all border ${currentPage === totalPages ? 'border-slate-100 text-slate-300 cursor-not-allowed bg-slate-50' : 'border-slate-200 text-slate-600 hover:border-[#D4AF37] hover:text-[#D4AF37] bg-white shadow-sm'}" ${currentPage === totalPages ? 'disabled' : ''}><i class="fa-solid fa-chevron-right"></i></button>`;
+                
+                if(totalPages <= 1) pHTML = ''; // Hide if only 1 page
+                
+                pagination.innerHTML = pHTML;
+            }
         }
     }
+
+    // Global pagination function
+    window.changePage = (page) => {
+        currentPage = page;
+        // Re-run filter/render logic (it will use the current filter state but updated currentPage)
+        applyFilters(); 
+        window.scrollTo({ top: document.getElementById('rooms-grid-container').offsetTop - 100, behavior: 'smooth' });
+    };
 
     // Modal Details Display
     window.openDetailsModal = async (roomId) => {
@@ -220,11 +452,37 @@
         const content = document.getElementById('modal-content');
 
         if (content) {
+            const catLabel = await getCategoryLabel(room.type);
+            const images = room.images && room.images.length ? room.images : [room.image || ''];
+            
+            let galleryHtml = '';
+            if (images.length === 1) {
+                galleryHtml = `<img src="${images[0]}" alt="${room.name}" class="w-full h-64 md:h-80 object-cover">`;
+            } else {
+                const thumbnails = images.slice(1, 5).map((img, idx) => `
+                    <div class="w-full h-full relative group cursor-pointer" onclick="openLightbox('${img}')">
+                        <img src="${img}" class="w-full h-full object-cover rounded-xl transition-all hover:opacity-90">
+                        ${(images.length > 5 && idx === 3) ? `<div class="absolute inset-0 bg-black/50 rounded-xl flex items-center justify-center text-white font-bold text-sm backdrop-blur-sm">+${images.length - 5} More</div>` : ''}
+                    </div>
+                `).join('');
+
+                galleryHtml = `
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 h-64 md:h-80 p-2">
+                        <div class="h-full cursor-pointer" onclick="openLightbox('${images[0]}')">
+                            <img src="${images[0]}" alt="${room.name}" class="w-full h-full object-cover rounded-l-2xl hover:opacity-95 transition-opacity">
+                        </div>
+                        <div class="grid grid-cols-2 grid-rows-2 gap-2 h-full hidden md:grid">
+                            ${thumbnails}
+                        </div>
+                    </div>
+                `;
+            }
+
             content.innerHTML = `
-                <div class="relative h-64">
-                    <img src="${room.image}" alt="${room.name}" class="w-full h-full object-cover">
-                    <div class="absolute bottom-4 left-4 bg-slate-900/80 backdrop-blur-md px-4 py-1.5 rounded-full text-xs font-bold text-[#D4AF37] border border-white/10 uppercase tracking-widest">
-                        ${room.type === 'studio' ? 'Studio Furnished Apartment' : room.type === '1bed' ? '1 Bed Furnished Apartment' : room.type === '2bed' ? '2 Bed Furnished Apartment' : room.type === '3bed' ? '3 Bed Furnished Apartment' : room.type === '4bed' ? '4 Bed Furnished Apartment' : room.type === '5marla' ? '5 Marla Furnished House' : room.type === '10marla' ? '10 Marla Furnished House' : room.type === '1kanal' ? '1 Kanal Furnished House' : room.type === 'farmhouse' ? 'Fully Furnished Farmhouse' : room.type}
+                <div class="relative bg-slate-100 rounded-t-3xl overflow-hidden">
+                    ${galleryHtml}
+                    <div class="absolute bottom-4 left-4 bg-slate-900/80 backdrop-blur-md px-4 py-1.5 rounded-full text-xs font-bold text-[#D4AF37] border border-white/10 uppercase tracking-widest z-10 pointer-events-none">
+                        ${catLabel}
                     </div>
                 </div>
                 <div class="p-8">
@@ -233,7 +491,7 @@
                             <h2 class="text-2xl font-bold outfit text-slate-900">${room.name}</h2>
                             <div class="text-xs text-[#D4AF37] font-extrabold flex items-center gap-1 mt-1">
                                 <i class="fa-solid fa-location-dot"></i>
-                                <span>${room.location || 'Islamabad'}</span>
+                                <span>${room.locationName || room.location}</span>
                             </div>
                             <p class="text-slate-400 text-xs mt-1.5">Capacity: Up to ${room.maxGuests} Guests</p>
                         </div>
@@ -261,14 +519,8 @@
 
                     <div class="border-t border-slate-100 pt-6 flex justify-between items-center">
                         <div>
-                            <span class="text-slate-400 text-[10px] uppercase tracking-wider block font-semibold">${room.isApartment ? 'Daily Rate' : 'Price per night'}</span>
+                            <span class="text-slate-400 text-[10px] uppercase tracking-wider block font-semibold">Price per night</span>
                             <span class="text-2xl font-black text-[#D4AF37] outfit">${KaghanUI.formatPKR(room.price)}</span>
-                            ${room.isApartment ? `
-                                <div class="text-xs text-slate-500 mt-2 space-y-1">
-                                    <div>Weekly Rate: <strong class="text-[#D4AF37]">${KaghanUI.formatPKR(room.priceWeekly)} / Week</strong></div>
-                                    <div>Monthly Rate: <strong class="text-[#D4AF37]">${KaghanUI.formatPKR(room.priceMonthly)} / Month</strong></div>
-                                </div>
-                            ` : ''}
                         </div>
                         <a href="booking.html?room=${room.id}" class="bg-[#D4AF37] text-white font-bold px-8 py-3.5 rounded-2xl hover:bg-[#0F172A] transition-all shadow-lg text-sm">
                             Instant Book
@@ -298,18 +550,46 @@
         }
     };
 
+    window.openLightbox = (imgSrc) => {
+        // very basic lightbox
+        const lightbox = document.createElement('div');
+        lightbox.className = 'fixed inset-0 z-[100] bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 opacity-0 transition-opacity';
+        lightbox.onclick = () => {
+            lightbox.classList.add('opacity-0');
+            setTimeout(() => lightbox.remove(), 300);
+        };
+        const img = document.createElement('img');
+        img.src = imgSrc;
+        img.className = 'max-w-full max-h-full rounded-2xl shadow-2xl';
+        lightbox.appendChild(img);
+        document.body.appendChild(lightbox);
+        setTimeout(() => lightbox.classList.remove('opacity-0'), 10);
+    };
+
+    // Extract URL query params to auto-filter on load
     async function loadParams() {
         const urlParams = new URLSearchParams(window.location.search);
-        const type = urlParams.get('type');
-        if (type && type !== 'all') {
-            const categorySelect = document.getElementById('filter-category');
-            if (categorySelect) categorySelect.value = type;
-        }
+        const category = urlParams.get('category');
         const location = urlParams.get('location');
-        if (location && location !== 'all') {
-            const locationSelect = document.getElementById('filter-location');
-            if (locationSelect) locationSelect.value = location;
+
+        const categorySelect = document.getElementById('filter-category');
+        const locationSelect = document.getElementById('filter-location');
+
+        let shouldFilter = false;
+        if (category && categorySelect) {
+            categorySelect.value = category;
+            shouldFilter = true;
         }
-        await applyFilters();
+        if (location && locationSelect) {
+            locationSelect.value = location;
+            shouldFilter = true;
+        }
+
+        if (shouldFilter) {
+            await applyFilters();
+        } else {
+            // initial render
+            await applyFilters();
+        }
     }
 })();

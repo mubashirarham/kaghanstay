@@ -59,9 +59,23 @@
                 statusBadge = `<span class="bg-slate-50 text-slate-700 text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider border border-slate-200">${booking.status}</span>`;
             }
 
-            const canCancel = booking.status === 'confirmed';
-            const canReschedule = booking.status === 'confirmed';
-            const canReview = booking.status === 'completed';
+            let canCancel = false;
+            let canReschedule = booking.status === 'confirmed';
+            let canReview = booking.status === 'completed';
+
+            if (booking.status === 'confirmed') {
+                const now = new Date();
+                // Check if created within 48 hours
+                // If createdAt is missing or invalid, assume it's an old legacy booking that can't be cancelled, 
+                // or we could use the checkIn date. For safety, let's parse createdAt.
+                if (booking.createdAt) {
+                    const createdDate = new Date(booking.createdAt);
+                    const hoursSinceCreation = (now - createdDate) / (1000 * 60 * 60);
+                    if (hoursSinceCreation <= 48) {
+                        canCancel = true;
+                    }
+                }
+            }
 
             let actionsHtml = '';
             if (canCancel) {
@@ -73,11 +87,31 @@
                         <i class="fa-solid fa-calendar-days text-[9px]"></i> Reschedule
                     </button>
                 `;
+            } else if (booking.status === 'confirmed' && !canCancel) {
+                actionsHtml += `
+                    <span class="text-[9px] text-slate-400 italic block mb-1">Past 48h cancel window</span>
+                    <button onclick="openRescheduleModal('${booking.id}')" class="bg-slate-50 border border-slate-200 text-slate-700 text-[10px] font-bold px-2 py-1 rounded hover:bg-slate-100 transition-all inline-flex items-center gap-1">
+                        <i class="fa-solid fa-calendar-days text-[9px]"></i> Reschedule
+                    </button>
+                `;
+            } else if (booking.status === 'confirmed') {
+                actionsHtml += `
+                    <button onclick="openRescheduleModal('${booking.id}')" class="bg-slate-50 border border-slate-200 text-slate-700 text-[10px] font-bold px-2 py-1 rounded hover:bg-slate-100 transition-all inline-flex items-center gap-1">
+                        <i class="fa-solid fa-calendar-days text-[9px]"></i> Reschedule
+                    </button>
+                `;
             }
             if (canReview) {
                 actionsHtml += `
                     <button onclick="openReviewModal('${booking.id}', '${room.id}', '${room.name}')" class="bg-[#D4AF37]/10 border border-[#D4AF37]/20 text-[#D4AF37] text-[10px] font-bold px-2 py-1 rounded hover:bg-[#D4AF37] hover:text-white transition-all inline-flex items-center gap-1">
                         <i class="fa-solid fa-star text-[9px]"></i> Write Review
+                    </button>
+                `;
+            }
+            if (booking.status === 'confirmed' || booking.status === 'completed') {
+                actionsHtml += `
+                    <button onclick="downloadPDFInvoice('${booking.id}')" class="bg-indigo-50 border border-indigo-200 text-indigo-700 text-[10px] font-bold px-2 py-1 rounded hover:bg-indigo-100 transition-all inline-flex items-center gap-1 ml-1.5" title="Download PDF Invoice">
+                        <i class="fa-solid fa-file-pdf text-[9px]"></i> PDF
                     </button>
                 `;
             }

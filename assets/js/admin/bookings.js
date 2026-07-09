@@ -67,12 +67,15 @@
                         ${KaghanUI.formatDate(booking.checkIn)} to ${KaghanUI.formatDate(booking.checkOut)}
                     </td>
                     <td class="px-6 py-4 font-bold text-slate-800 text-sm">${KaghanUI.formatPKR(booking.totalPrice)}</td>
-                    <td class="px-6 py-4 flex items-center gap-2">
+                    <td class="px-6 py-4 flex gap-2">
                         ${statusSelect}
-                        <button onclick="openEditBookingModal('${booking.id}')" class="text-slate-500 hover:text-[#D4AF37] p-1.5 rounded hover:bg-slate-50 transition-colors" title="Edit Booking">
-                            <i class="fa-solid fa-pen-to-square text-sm"></i>
+                        <button onclick="downloadPDFInvoice('${booking.id}')" class="bg-indigo-50 border border-indigo-200 text-indigo-700 text-[10px] font-bold px-2.5 py-1.5 rounded hover:bg-indigo-100 transition-all inline-flex items-center gap-1.5" title="Download PDF Invoice">
+                            <i class="fa-solid fa-file-pdf text-[9px]"></i> PDF
                         </button>
-                        <button onclick="deleteBookingRecord('${booking.id}')" class="text-rose-500 hover:text-rose-700 p-1.5 rounded hover:bg-rose-50 transition-colors" title="Delete Booking Ledger">
+                        <button onclick="openEditBookingModal('${booking.id}')" class="bg-slate-50 border border-slate-200 text-slate-700 text-[10px] font-bold px-2.5 py-1.5 rounded hover:bg-slate-100 transition-all inline-flex items-center gap-1.5" title="Edit Booking Details">
+                            <i class="fa-solid fa-pen text-[9px]"></i> Edit
+                        </button>
+                        <button onclick="deleteBookingRecord('${booking.id}')" class="text-rose-500 hover:text-rose-700 p-1.5 rounded hover:bg-rose-50 transition-colors" title="Delete Booking">
                             <i class="fa-solid fa-trash-can text-sm"></i>
                         </button>
                     </td>
@@ -406,8 +409,72 @@
         }
     };
 
+    // Render Admin Calendar
+    let calendarInstance = null;
+
+    async function renderCalendar() {
+        const calendarEl = document.getElementById('admin-calendar');
+        if (!calendarEl || typeof FullCalendar === 'undefined') return;
+
+        const bookings = await KaghanDB.getBookings();
+        const rooms = await KaghanDB.getRooms();
+
+        const events = bookings.map(b => {
+            const room = rooms.find(r => r.id === b.roomId) || { name: 'Unknown Suite' };
+            let color = '#3B82F6'; // Default Blue for completed
+            if (b.status === 'confirmed') color = '#10B981'; // Green
+            if (b.status === 'cancelled') color = '#EF4444'; // Red
+            if (b.status === 'pending') color = '#F59E0B'; // Orange
+
+            // FullCalendar exclusive end date logic (needs +1 day for inclusive visual rendering)
+            const endDate = new Date(b.checkOut);
+            endDate.setDate(endDate.getDate() + 1);
+
+            return {
+                id: b.id,
+                title: `${room.name} - ${b.guestName}`,
+                start: b.checkIn,
+                end: endDate.toISOString().split('T')[0],
+                backgroundColor: color,
+                borderColor: color,
+                extendedProps: {
+                    status: b.status,
+                    guest: b.guestName,
+                    room: room.name
+                }
+            };
+        });
+
+        if (calendarInstance) {
+            calendarInstance.removeAllEvents();
+            calendarInstance.addEventSource(events);
+            calendarInstance.render();
+        } else {
+            calendarInstance = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek'
+                },
+                events: events,
+                eventClick: function(info) {
+                    // Open the edit modal when an event is clicked
+                    if (window.openEditBookingModal) {
+                        window.openEditBookingModal(info.event.id);
+                    }
+                }
+            });
+            calendarInstance.render();
+        }
+    }
+
     // Export to window
     window.AdminBookingsModule = {
-        render: renderBookings
+        render: async () => {
+            await renderBookings();
+            await renderCalendar();
+        },
+        renderCalendar: renderCalendar
     };
 })();

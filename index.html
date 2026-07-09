@@ -219,9 +219,7 @@
                             <i class="fa-solid fa-location-dot absolute left-4 top-3.5 text-slate-400"></i>
                             <select id="search-location" class="w-full bg-[#1E293B]/70 border border-slate-700 rounded-xl pl-11 pr-4 py-3 outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37] focus:ring-opacity-40 transition-all text-white text-sm appearance-none cursor-pointer">
                                 <option value="all">All Locations</option>
-                                <option value="Islamabad">Islamabad</option>
-                                <option value="Murree">Murree</option>
-                                <option value="Nathia Gali">Nathia Gali</option>
+                                <!-- Dynamically loaded -->
                             </select>
                             <i class="fa-solid fa-chevron-down absolute right-4 top-4 text-slate-400 pointer-events-none text-xs"></i>
                         </div>
@@ -232,15 +230,7 @@
                             <i class="fa-solid fa-bed absolute left-4 top-3.5 text-slate-400"></i>
                             <select id="search-room-type" class="w-full bg-[#1E293B]/70 border border-slate-700 rounded-xl pl-11 pr-4 py-3 outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37] focus:ring-opacity-40 transition-all text-white text-sm appearance-none cursor-pointer">
                                 <option value="all">All Categories</option>
-                                <option value="studio">Studio Furnished Apartment</option>
-                                <option value="1bed">1 Bed Furnished Apartment</option>
-                                <option value="2bed">2 Bed Furnished Apartment</option>
-                                <option value="3bed">3 Bed Furnished Apartment</option>
-                                <option value="4bed">4 Bed Furnished Apartment</option>
-                                <option value="5marla">5 Marla Furnished House</option>
-                                <option value="10marla">10 Marla Furnished House</option>
-                                <option value="1kanal">1 Kanal Furnished House</option>
-                                <option value="farmhouse">Fully Furnished Farmhouse</option>
+                                <!-- Dynamically loaded -->
                             </select>
                             <i class="fa-solid fa-chevron-down absolute right-4 top-4 text-slate-400 pointer-events-none text-xs"></i>
                         </div>
@@ -256,42 +246,10 @@
         </div>
     </header>
 
-    <!-- Welcome Section / Brand Narrative -->
-    <section class="pt-32 pb-20 px-6 md:px-12 bg-white">
-        <div class="max-w-7xl mx-auto flex flex-col lg:flex-row gap-16 items-center">
-            <div class="lg:w-1/2">
-                <span class="text-[#D4AF37] font-bold uppercase tracking-widest text-xs mb-4 block">Legendary Hospitality</span>
-                <h2 class="text-3xl md:text-5xl font-bold mb-6 outfit text-[#0F172A]">A sanctuary designed for your <span class="text-[#D4AF37]">absolute relaxation.</span></h2>
-                <div class="w-20 h-1 bg-[#D4AF37] mb-8"></div>
-                <p class="text-slate-600 leading-relaxed mb-6 font-light">
-                    Kaghan Hotel & Resorts provides an unparalleled escape from the rush of metropolitan life. Designed for local dignitaries and international travelers, our suites fuse contemporary smart-home controls with classic Alpine design aesthetics.
-                </p>
-                <p class="text-slate-600 leading-relaxed mb-8 font-light">
-                    From personalized menus curated by Michelin-star chefs to private pool temperature controls, every detail is refined to meet the standard of global excellence.
-                </p>
-                <div class="flex gap-8">
-                    <div>
-                        <span class="text-4xl font-extrabold text-[#D4AF37] outfit">4.9★</span>
-                        <p class="text-xs uppercase text-slate-500 tracking-wider font-semibold mt-1">Average Guest Rating</p>
-                    </div>
-                    <div class="border-l border-slate-200"></div>
-                    <div>
-                        <span class="text-4xl font-extrabold text-[#D4AF37] outfit">100%</span>
-                        <p class="text-xs uppercase text-slate-500 tracking-wider font-semibold mt-1">Privacy Guarantee</p>
-                    </div>
-                </div>
-            </div>
-            <div class="lg:w-1/2 grid grid-cols-2 gap-4">
-                <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=600&q=80" alt="Luxury Pool" class="rounded-3xl hover-lift w-full h-72 object-cover shadow-md">
-                <img src="https://images.unsplash.com/photo-1584132967334-10e028bd69f7?auto=format&fit=crop&w=600&q=80" alt="Resort Suite" class="rounded-3xl hover-lift w-full h-72 object-cover mt-8 shadow-md">
-            </div>
-        </div>
-    </section>
-
     <!-- Featured Suites Section -->
     <section class="py-24 px-6 md:px-12 bg-slate-50">
         <div class="max-w-7xl mx-auto">
-            <div class="flex flex-col md:flex-row md:items-end justify-between mb-16">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-10">
                 <div>
                     <span class="text-[#D4AF37] font-bold uppercase tracking-widest text-xs mb-3 block">Luxurious Suites</span>
                     <h2 class="text-3xl md:text-5xl font-bold outfit text-[#0F172A]">Featured <span class="text-[#D4AF37]">Accommodations</span></h2>
@@ -300,6 +258,21 @@
                     Explore All Rooms
                     <i class="fa-solid fa-arrow-right text-sm"></i>
                 </a>
+            </div>
+
+            <!-- Category Filter Bar (Airbnb Style) -->
+            <div class="relative max-w-7xl mx-auto -mt-20 z-20 bg-white rounded-[2.5rem] shadow-2xl p-6 md:p-8 mb-20 border border-slate-100">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xs uppercase tracking-widest text-slate-400 font-bold">Sort by Signature Style</h3>
+                    <div class="flex gap-2">
+                        <button class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-800 hover:border-slate-800 transition-colors"><i class="fa-solid fa-chevron-left text-[10px]"></i></button>
+                        <button class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-800 hover:border-slate-800 transition-colors"><i class="fa-solid fa-chevron-right text-[10px]"></i></button>
+                    </div>
+                </div>
+
+                <div id="index-categories-container" class="flex overflow-x-auto gap-8 pb-4 hide-scrollbar snap-x px-4 md:px-0">
+                    <!-- Dynamically loaded categories -->
+                </div>
             </div>
 
             <!-- Dynamic Room Container -->
@@ -471,7 +444,7 @@
                     </div>
                     <div class="p-8">
                         <p class="text-slate-600 text-sm leading-relaxed font-light mb-4">
-                            Our Islamabad properties are nestled in the foothills of the majestic Margalla Hills, offering panoramic views of lush green valleys and the city skyline. Located minutes from Faisal Mosque, Daman-e-Koh viewpoint, and the Centaurus Mall, these fully furnished service apartments provide the perfect blend of urban convenience and natural tranquility.
+                            Our Islamabad properties are nestled in the foothills of the majestic Margalla Hills, offering panoramic views of Margalla and Murree. Located minutes from Faisal Mosque and the Centaurus Mall, these fully furnished service apartments provide the perfect blend of urban convenience and natural tranquility.
                         </p>
                         <p class="text-slate-600 text-sm leading-relaxed font-light mb-6">
                             Ideal for business professionals, diplomatic delegates, medical tourists visiting PIMS or Shifa Hospital, and families seeking a luxurious staycation near Margalla Hills National Park hiking trails.
@@ -709,15 +682,18 @@
         // Drawer Menu Functions handled by shared.js
 
         // Render Featured Rooms
-        async function loadFeaturedRooms() {
+        async function loadFeaturedRooms(category = 'all') {
             const rooms = await KaghanDB.getRooms();
             const container = document.getElementById('featured-rooms');
             
             // Load all available published rooms
-            const featuredList = rooms.filter(r => r.status === 'available');
+            let featuredList = rooms.filter(r => r.status === 'available');
+            if (category !== 'all') {
+                featuredList = featuredList.filter(r => r.type === category);
+            }
             
             container.innerHTML = featuredList.map(room => `
-                <div class="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-lg hover-lift group">
+                <div onclick="window.location.href='booking.html?room=${room.id}'" class="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-lg hover-lift group cursor-pointer">
                     <div class="relative h-64 overflow-hidden">
                         <img src="${room.image}" alt="${room.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                         <div class="absolute top-4 right-4 bg-slate-900/80 backdrop-blur-md px-3.5 py-1.5 rounded-full text-[10px] font-bold text-[#D4AF37] border border-white/10 uppercase tracking-widest flex items-center gap-1.5 shadow-lg">
@@ -763,13 +739,27 @@
                                 <span class="text-slate-400 text-[10px] uppercase tracking-wider block font-semibold">${room.isApartment ? 'Rates starting from' : 'Rate Per Night'}</span>
                                 <span class="text-xl font-extrabold text-[#D4AF37] outfit">${KaghanUI.formatPKR(room.price)}</span>
                             </div>
-                            <a href="booking.html?room=${room.id}" class="bg-[#0F172A] text-white text-xs font-bold px-6 py-3.5 rounded-xl hover:bg-[#D4AF37] transition-all shadow-md">
+                            <button onclick="event.stopPropagation(); window.location.href='booking.html?room=${room.id}'" class="bg-[#0F172A] text-white text-xs font-bold px-6 py-3.5 rounded-xl hover:bg-[#D4AF37] transition-all shadow-md">
                                 Reserve Suite
-                            </a>
+                            </button>
                         </div>
                     </div>
                 </div>
             `).join('');
+        }
+
+        // Filter Rooms by Category
+        function filterIndexRooms(category, btnElement) {
+            // Update active state on buttons
+            const buttons = document.querySelectorAll('#index-category-bar button');
+            buttons.forEach(btn => {
+                btn.classList.remove('active-category', 'opacity-100');
+                btn.classList.add('opacity-60');
+            });
+            btnElement.classList.add('active-category', 'opacity-100');
+            btnElement.classList.remove('opacity-60');
+
+            loadFeaturedRooms(category);
         }
 
         // Set minimum check-in and check-out dates
@@ -807,8 +797,56 @@
             const location = document.getElementById('search-location').value;
             
             // Redirect to reservation page with parameters
-            window.location.href = `booking.html?checkIn=${checkIn}&checkOut=${checkOut}&type=${roomType}&location=${location}`;
+            window.location.href = `booking.html?checkIn=${checkIn}&checkOut=${checkOut}&category=${roomType}&location=${location}`;
         });
+
+        // Render Dynamic Categories and Locations
+        async function loadDynamicFilters() {
+            const categories = await KaghanDB.getCategories();
+            const locations = await KaghanDB.getLocations();
+
+            // Populate Locations
+            const searchLocation = document.getElementById('search-location');
+            if (searchLocation) {
+                let currentVal = searchLocation.value;
+                searchLocation.innerHTML = `<option value="all">All Locations</option>` +
+                    locations.map(l => `<option value="${l.id}">${l.label}</option>`).join('');
+                if(locations.find(l => l.id === currentVal)) searchLocation.value = currentVal;
+            }
+
+            // Populate Categories
+            const searchRoomType = document.getElementById('search-room-type');
+            if (searchRoomType) {
+                let currentVal = searchRoomType.value;
+                searchRoomType.innerHTML = `<option value="all">All Categories</option>` +
+                    categories.map(c => `<option value="${c.id}">${c.label}</option>`).join('');
+                if(categories.find(c => c.id === currentVal)) searchRoomType.value = currentVal;
+            }
+
+            const container = document.getElementById('index-categories-container');
+            if (!container) return;
+            
+            let html = `
+                <button data-category="all" class="flex flex-col items-center gap-2 group transition-opacity min-w-[64px] active-category opacity-100" onclick="filterIndexRooms('all', this)">
+                    <div class="w-8 h-8 flex items-center justify-center text-slate-800 text-2xl group-[.active-category]:text-[#D4AF37]"><i class="fa-solid fa-border-all"></i></div>
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 group-[.active-category]:text-slate-900 group-[.active-category]:border-b-2 group-[.active-category]:border-[#D4AF37] pb-1">All</span>
+                </button>
+            `;
+
+            categories.forEach(cat => {
+                const iconOrImg = cat.image 
+                    ? `<img src="${cat.image}" class="w-full h-full object-cover rounded-lg group-[.active-category]:ring-2 ring-[#D4AF37] ring-offset-2">` 
+                    : `<i class="fa-solid ${cat.icon}"></i>`;
+                    
+                html += `
+                    <button data-category="${cat.id}" class="flex flex-col items-center gap-2 group opacity-60 hover:opacity-100 transition-opacity min-w-[64px]" onclick="filterIndexRooms('${cat.id}', this)">
+                        <div class="w-8 h-8 flex items-center justify-center text-slate-800 text-2xl group-[.active-category]:text-[#D4AF37]">${iconOrImg}</div>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 group-[.active-category]:text-slate-900 group-[.active-category]:border-b-2 group-[.active-category]:border-[#D4AF37] pb-1">${cat.label}</span>
+                    </button>
+                `;
+            });
+            container.innerHTML = html;
+        }
 
         // Fetch and Render Dynamic Blog Posts Feed (Hospitality/Stay portal)
         async function loadResortBlogs() {
@@ -859,8 +897,15 @@
             window.addEventListener('kaghan-db-blogs', () => {
                 loadResortBlogs();
             });
+            window.addEventListener('kaghan-db-categories', () => {
+                loadDynamicFilters();
+            });
+            window.addEventListener('kaghan-db-locations', () => {
+                loadDynamicFilters();
+            });
 
             // Trigger initial render from cache/gets
+            loadDynamicFilters();
             loadFeaturedRooms();
             loadResortBlogs();
         });

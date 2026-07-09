@@ -138,6 +138,13 @@ window.switchTab = (tabName) => {
     if (sidebar && !sidebar.classList.contains('-translate-x-full')) {
         sidebar.classList.add('-translate-x-full');
     }
+
+    // Fix for FullCalendar rendering incorrectly in a hidden div
+    if (tabName === 'calendar' && window.AdminBookingsModule && window.AdminBookingsModule.renderCalendar) {
+        setTimeout(() => {
+            window.AdminBookingsModule.renderCalendar();
+        }, 50);
+    }
 };
 
 window.toggleSidebar = () => {
@@ -172,6 +179,76 @@ async function renderMetrics() {
     if (occEl) occEl.innerText = `${occupancyRate}%`;
     if (bkEl) bkEl.innerText = bookings.length;
     if (usrEl) usrEl.innerText = activeUsers.length;
+
+    renderCharts(bookings);
+}
+
+// Global chart variables to allow updates instead of destroying
+let revenueChartInstance = null;
+let statusChartInstance = null;
+
+function renderCharts(bookings) {
+    if (typeof ApexCharts === 'undefined') return;
+
+    // Process data for Revenue Chart (Mocking monthly data for demonstration based on total, normally you group by month)
+    const monthlyRevenue = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    bookings.forEach(b => {
+        if (b.status === 'confirmed' || b.status === 'completed') {
+            const date = new Date(b.createdAt || b.timestamp || Date.now());
+            monthlyRevenue[date.getMonth()] += b.totalPrice;
+        }
+    });
+
+    const revOptions = {
+        series: [{ name: 'Revenue', data: monthlyRevenue }],
+        chart: { type: 'area', height: 320, toolbar: { show: false }, fontFamily: 'Inter, sans-serif' },
+        colors: ['#D4AF37'],
+        fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.4, opacityTo: 0.05, stops: [0, 100] } },
+        dataLabels: { enabled: false },
+        stroke: { curve: 'smooth', width: 3 },
+        xaxis: { categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] },
+        yaxis: { labels: { formatter: (val) => "PKR " + (val / 1000).toFixed(0) + "k" } },
+        theme: { mode: 'light' }
+    };
+
+    if (revenueChartInstance) {
+        revenueChartInstance.updateSeries([{ data: monthlyRevenue }]);
+    } else {
+        const revEl = document.querySelector("#revenue-chart");
+        if (revEl) {
+            revenueChartInstance = new ApexCharts(revEl, revOptions);
+            revenueChartInstance.render();
+        }
+    }
+
+    // Process data for Booking Status Donut Chart
+    let confirmed = 0, pending = 0, cancelled = 0, completed = 0;
+    bookings.forEach(b => {
+        if (b.status === 'confirmed') confirmed++;
+        else if (b.status === 'pending') pending++;
+        else if (b.status === 'cancelled') cancelled++;
+        else if (b.status === 'completed') completed++;
+    });
+
+    const statusOptions = {
+        series: [confirmed, pending, cancelled, completed],
+        labels: ['Confirmed', 'Pending', 'Cancelled', 'Completed'],
+        chart: { type: 'donut', height: 320, fontFamily: 'Inter, sans-serif' },
+        colors: ['#10B981', '#F59E0B', '#EF4444', '#3B82F6'],
+        plotOptions: { donut: { size: '75%' } },
+        dataLabels: { enabled: false },
+        legend: { position: 'bottom' }
+    };
+
+    if (statusChartInstance) {
+        statusChartInstance.updateSeries([confirmed, pending, cancelled, completed]);
+    } else {
+        const statEl = document.querySelector("#status-chart");
+        if (statEl) {
+            statusChartInstance = new ApexCharts(statEl, statusOptions);
+            statusChartInstance.render();
+        }
+    }
 }
 
 // Render Overview tab list of stays

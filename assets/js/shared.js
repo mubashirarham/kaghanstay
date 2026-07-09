@@ -30,6 +30,28 @@ fdb.enablePersistence().catch((err) => {
 });
 
 // Default Seeding Data (used if Firestore is empty)
+const DEFAULT_CATEGORIES = [
+    { id: 'studio', label: 'Studio', icon: 'fa-cube', image: '' },
+    { id: '1bed', label: '1 Bed', icon: 'fa-bed', image: '' },
+    { id: '2bed', label: '2 Bed', icon: 'fa-door-open', image: '' },
+    { id: '3bed', label: '3 Bed', icon: 'fa-house-chimney', image: '' },
+    { id: '4bed', label: '4 Bed', icon: 'fa-building', image: '' },
+    { id: '5marla', label: '5 Marla', icon: 'fa-house', image: '' },
+    { id: '10marla', label: '10 Marla', icon: 'fa-house-user', image: '' },
+    { id: '1kanal', label: '1 Kanal', icon: 'fa-hotel', image: '' },
+    { id: 'farmhouse', label: 'Farmhouse', icon: 'fa-tree', image: '' }
+];
+
+const DEFAULT_LOCATIONS = [
+    { id: 'islamabad', label: 'Islamabad' },
+    { id: 'murree', label: 'Murree' },
+    { id: 'nathia-gali', label: 'Nathia Gali' }
+];
+
+const DEFAULT_COUPONS = [
+    { id: 'WELCOME10', code: 'WELCOME10', discountPercentage: 10, isActive: true },
+    { id: 'SUMMER20', code: 'SUMMER20', discountPercentage: 20, isActive: false }
+];
 const DEFAULT_ROOMS = [
     {
         id: 'apt-studio-101',
@@ -41,6 +63,7 @@ const DEFAULT_ROOMS = [
         priceMonthly: 180000,
         isApartment: true,
         image: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80',
+        images: ['https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80', 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=800&q=80', 'https://images.unsplash.com/photo-1584132967334-10e028bd69f7?auto=format&fit=crop&w=800&q=80'],
         amenities: ['King Bed', '1 Bathroom', 'Balcony', 'Equipped Kitchen', '24-Hour Reception', 'Near to Market', 'High-Speed Wi-Fi', '24/7 Security'],
         status: 'available',
         description: 'Cozy and modern Studio Apartment at Bahria Enclave Islamabad. Features a king-sized bed, fully equipped kitchen, private balcony, and 24-hour reception access. Perfect for single business travelers or couples.',
@@ -59,6 +82,7 @@ const DEFAULT_ROOMS = [
         priceMonthly: 270000,
         isApartment: true,
         image: 'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80',
+        images: ['https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80'],
         amenities: ['King Bed', '1 Bedroom', 'Living Room', 'Equipped Kitchen', 'High-Speed Wi-Fi', '24/7 Security', 'Housekeeping'],
         status: 'available',
         description: 'Elegant one-bedroom apartment featuring fully furnished, home-like living spaces. Comes equipped with a kitchen, spacious living room, high-speed Wi-Fi, and round-the-clock security.',
@@ -77,6 +101,7 @@ const DEFAULT_ROOMS = [
         priceMonthly: 400000,
         isApartment: true,
         image: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80',
+        images: ['https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80'],
         amenities: ['2 Bedrooms', '3 Bathrooms', 'Living Room', 'Kitchen', 'Store Room', 'High-Speed Wi-Fi', '24/7 Security', 'Housekeeping'],
         status: 'available',
         description: 'Spacious two-bedroom apartment overlooking the majestic hills. Ideal for family travel or extended stays. Features two premium bedrooms, three bathrooms, a comfortable living room, equipped kitchen, and store room.',
@@ -95,6 +120,7 @@ const DEFAULT_ROOMS = [
         priceMonthly: 550000,
         isApartment: true,
         image: 'https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=800&q=80',
+        images: ['https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=800&q=80'],
         amenities: ['3 Bedrooms', '3 Bathrooms', 'Spacious Lounge', 'Kitchen', 'Balcony', 'High-Speed Wi-Fi', '24/7 Security', 'Housekeeping'],
         status: 'available',
         description: 'Luxurious and extremely spacious three-bedroom apartment in the heart of Alpine landscape. Fully furnished with high-end appliances, a spacious living area, and premium home-like comfort.',
@@ -113,6 +139,7 @@ const DEFAULT_ROOMS = [
         priceMonthly: 700000,
         isApartment: true,
         image: 'https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=800&q=80',
+        images: ['https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=800&q=80'],
         amenities: ['4 Bedrooms', '4 Bathrooms', 'Huge Lounge', 'Equipped Kitchen', 'Terrace', 'High-Speed Wi-Fi', '24/7 Security', 'Butler Service'],
         status: 'available',
         description: 'Stunning four-bedroom apartment designed for maximum comfort and style. Includes four master bedrooms, four bathrooms, a massive family lounge, equipped kitchen, and a private terrace overlooking Bahria Enclave.',
@@ -131,6 +158,7 @@ const DEFAULT_ROOMS = [
         priceMonthly: 2400000,
         isApartment: true,
         image: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80',
+        images: ['https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80'],
         amenities: ['3 Master Suites', 'Private Pool', '24/7 Personal Butler', 'Private Dining Hall', 'Smart Automation', 'Retreat Gardens'],
         status: 'available',
         description: 'The pinnacle of luxury retreat. Our Fully Furnished Farmhouse features beautiful garden landscapes, a private swimming pool, personal chef, and high-end smart security. Located in the scenic hills of Murree.',
@@ -148,7 +176,6 @@ const DEFAULT_USERS = [
         email: 'tanzilminhas2007@gmail.com',
         password: 'tanzil@minhas2007',
         role: 'admin',
-        loyaltyPoints: 0,
         phone: '+92 334 0091127'
     },
     {
@@ -157,7 +184,6 @@ const DEFAULT_USERS = [
         email: 'guest@kphstay.com',
         password: 'guest123',
         role: 'user',
-        loyaltyPoints: 350,
         phone: '+92 300 1234567'
     }
 ];
@@ -212,6 +238,33 @@ async function initializeFirestore() {
         }
         console.log("Firestore rooms collection fully synchronized with new categories.");
 
+        // Seed Categories
+        const categoriesSnap = await fdb.collection('categories').limit(1).get();
+        if (categoriesSnap.empty) {
+            for (const cat of DEFAULT_CATEGORIES) {
+                await fdb.collection('categories').doc(cat.id).set(cat);
+            }
+            console.log("Firestore categories seeded.");
+        }
+
+        // Seed Locations
+        const locationsSnap = await fdb.collection('locations').limit(1).get();
+        if (locationsSnap.empty) {
+            for (const loc of DEFAULT_LOCATIONS) {
+                await fdb.collection('locations').doc(loc.id).set(loc);
+            }
+            console.log("Firestore locations seeded.");
+        }
+
+        // Seed Coupons
+        const couponsSnap = await fdb.collection('coupons').limit(1).get();
+        if (couponsSnap.empty) {
+            for (const cp of DEFAULT_COUPONS) {
+                await fdb.collection('coupons').doc(cp.id).set(cp);
+            }
+            console.log("Firestore coupons seeded.");
+        }
+
         // Seed Users
         const usersSnap = await fdb.collection('users').limit(1).get();
         if (usersSnap.empty) {
@@ -229,7 +282,6 @@ async function initializeFirestore() {
                     email: 'tanzilminhas2007@gmail.com',
                     password: 'tanzil@minhas2007',
                     role: 'admin',
-                    loyaltyPoints: 0,
                     phone: '+92 51 8461975'
                 }, { merge: true });
                 console.log("Admin credentials updated in database.");
@@ -267,7 +319,10 @@ window.KaghanDB_Cache = {
     reviews: null,
     blogs: null,
     users: null,
-    newsletter: null
+    newsletter: null,
+    categories: null,
+    locations: null,
+    coupons: null
 };
 
 window.KaghanDB_Listeners = {
@@ -277,7 +332,10 @@ window.KaghanDB_Listeners = {
     blogs: null,
     users: null,
     newsletter: null,
-    currentUser: null
+    currentUser: null,
+    categories: null,
+    locations: null,
+    coupons: null
 };
 
 function startActiveListeners() {
@@ -309,10 +367,32 @@ function startActiveListeners() {
         window.dispatchEvent(new CustomEvent('kaghan-db-reviews', { detail: sorted }));
     }, err => console.warn("Reviews listener error:", err));
 
+    // Settings Listeners (Public)
+    window.KaghanDB_Listeners.categories = fdb.collection('categories').onSnapshot(snap => {
+        const list = [];
+        snap.forEach(doc => list.push(doc.data()));
+        window.KaghanDB_Cache.categories = list;
+        window.dispatchEvent(new CustomEvent('kaghan-db-categories', { detail: list }));
+    }, err => console.warn("Categories listener error:", err));
+
+    window.KaghanDB_Listeners.locations = fdb.collection('locations').onSnapshot(snap => {
+        const list = [];
+        snap.forEach(doc => list.push(doc.data()));
+        window.KaghanDB_Cache.locations = list;
+        window.dispatchEvent(new CustomEvent('kaghan-db-locations', { detail: list }));
+    }, err => console.warn("Locations listener error:", err));
+
+    window.KaghanDB_Listeners.coupons = fdb.collection('coupons').onSnapshot(snap => {
+        const list = [];
+        snap.forEach(doc => list.push(doc.data()));
+        window.KaghanDB_Cache.coupons = list;
+        window.dispatchEvent(new CustomEvent('kaghan-db-coupons', { detail: list }));
+    }, err => console.warn("Coupons listener error:", err));
+
     // 4. Authenticated User Listeners
     const user = JSON.parse(localStorage.getItem(DB_KEYS.SESSION));
     if (user) {
-        // Sync active user profile details/loyalty points
+        // Sync active user profile details
         window.KaghanDB_Listeners.currentUser = fdb.collection('users').doc(user.id).onSnapshot(doc => {
             if (doc.exists) {
                 const uData = doc.data();
@@ -378,7 +458,10 @@ function stopActiveListeners() {
         reviews: null,
         blogs: null,
         users: null,
-        newsletter: null
+        newsletter: null,
+        categories: null,
+        locations: null,
+        coupons: null
     };
 }
 
@@ -387,6 +470,60 @@ startActiveListeners();
 
 // DB Firestore Implementation
 const db = {
+    // Categories CRUD
+    getCategories: async () => {
+        if (window.KaghanDB_Cache.categories) return window.KaghanDB_Cache.categories;
+        const snap = await fdb.collection('categories').get();
+        const list = [];
+        snap.forEach(doc => list.push(doc.data()));
+        window.KaghanDB_Cache.categories = list;
+        return list;
+    },
+    saveCategory: async (category) => {
+        await fdb.collection('categories').doc(category.id).set(category);
+        return true;
+    },
+    deleteCategory: async (id) => {
+        await fdb.collection('categories').doc(id).delete();
+        return true;
+    },
+
+    // Locations CRUD
+    getLocations: async () => {
+        if (window.KaghanDB_Cache.locations) return window.KaghanDB_Cache.locations;
+        const snap = await fdb.collection('locations').get();
+        const list = [];
+        snap.forEach(doc => list.push(doc.data()));
+        window.KaghanDB_Cache.locations = list;
+        return list;
+    },
+    saveLocation: async (location) => {
+        await fdb.collection('locations').doc(location.id).set(location);
+        return true;
+    },
+    deleteLocation: async (id) => {
+        await fdb.collection('locations').doc(id).delete();
+        return true;
+    },
+
+    // Coupons CRUD
+    getCoupons: async () => {
+        if (window.KaghanDB_Cache.coupons) return window.KaghanDB_Cache.coupons;
+        const snap = await fdb.collection('coupons').get();
+        const list = [];
+        snap.forEach(doc => list.push(doc.data()));
+        window.KaghanDB_Cache.coupons = list;
+        return list;
+    },
+    saveCoupon: async (coupon) => {
+        await fdb.collection('coupons').doc(coupon.id).set(coupon);
+        return true;
+    },
+    deleteCoupon: async (id) => {
+        await fdb.collection('coupons').doc(id).delete();
+        return true;
+    },
+
     // Rooms CRUD
     getRooms: async () => {
         if (window.KaghanDB_Cache.rooms) {
@@ -427,16 +564,9 @@ const db = {
         window.KaghanDB_Cache.bookings = sorted;
         return sorted;
     },
-    addBooking: async (booking) => {
+    addBooking: async (booking, pdfBase64 = null) => {
         await fdb.collection('bookings').doc(booking.id).set(booking);
         
-        // Update user loyalty points
-        const session = db.getCurrentUser();
-        if (session && session.role === 'user') {
-            const pointsEarned = Math.floor(booking.totalPrice / 1000);
-            await db.updateUserPoints(session.id, pointsEarned);
-        }
-
         // Dispatch invoice receipts
         try {
             const room = await db.getRoomById(booking.roomId);
@@ -446,7 +576,7 @@ const db = {
             fetch('/.netlify/functions/booking-email', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ booking: bookingWithRoom })
+                body: JSON.stringify({ booking: bookingWithRoom, pdfAttachment: pdfBase64 })
             }).catch(e => console.warn("Email function dispatch failed:", e));
         } catch (err) {
             console.error("Receipts dispatcher error:", err);
@@ -597,22 +727,6 @@ const db = {
             localStorage.setItem(DB_KEYS.SESSION, JSON.stringify(snap.data()));
         }
         return true;
-    },
-    updateUserPoints: async (id, points) => {
-        const userRef = fdb.collection('users').doc(id);
-        const doc = await userRef.get();
-        if (doc.exists) {
-            const currentPoints = doc.data().loyaltyPoints || 0;
-            const newPoints = Math.max(0, currentPoints + points);
-            await userRef.update({ loyaltyPoints: newPoints });
-
-            // Sync active user session
-            const session = db.getCurrentUser();
-            if (session && session.id === id) {
-                const updatedUser = { ...doc.data(), loyaltyPoints: newPoints };
-                localStorage.setItem(DB_KEYS.SESSION, JSON.stringify(updatedUser));
-            }
-        }
     },
 
     // Authentication / Session
@@ -1194,6 +1308,108 @@ document.addEventListener('click', function(e) {
 });
 
 
+
+// --- PDF INVOICE GENERATOR ---
+window.downloadPDFInvoice = async function(bookingId) {
+    try {
+        const bookings = await KaghanDB.getBookings();
+        const booking = bookings.find(b => b.id === bookingId);
+        if (!booking) {
+            KaghanUI.showToast('Booking not found', 'error');
+            return;
+        }
+
+        const rooms = await KaghanDB.getRooms();
+        const room = rooms.find(r => r.id === booking.roomId);
+
+        // Calculate nights
+        const inDate = new Date(booking.checkIn);
+        const outDate = new Date(booking.checkOut);
+        const nights = Math.max(1, Math.ceil((outDate - inDate) / (1000 * 3600 * 24)));
+
+        // Generate Invoice HTML
+        const html = `
+        <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; padding: 40px; color: #0F172A; width: 800px;">
+            <div style="border-bottom: 2px solid #D4AF37; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: flex-start;">
+                <div>
+                    <h1 style="margin: 0; font-size: 28px; font-weight: 900; color: #0F172A;">Kaghan Stay</h1>
+                    <p style="margin: 5px 0 0; font-size: 11px; color: #D4AF37; letter-spacing: 2px; text-transform: uppercase; font-weight: bold;">Premium Resort & Spa</p>
+                </div>
+                <div style="text-align: right;">
+                    <h2 style="margin: 0; font-size: 20px; font-weight: 700;">INVOICE</h2>
+                    <p style="margin: 5px 0 0; font-size: 12px; color: #64748B;">Date: ${new Date().toLocaleDateString()}</p>
+                    <p style="margin: 2px 0 0; font-size: 12px; color: #64748B;">Booking Ref: <strong>${booking.id}</strong></p>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; margin-bottom: 40px; font-size: 13px;">
+                <div>
+                    <p style="margin: 0; font-weight: bold; color: #64748B; text-transform: uppercase; font-size: 10px;">Billed To</p>
+                    <p style="margin: 5px 0 0; font-weight: bold; font-size: 15px;">${booking.guestName}</p>
+                    <p style="margin: 3px 0 0; color: #475569;">${booking.guestEmail}</p>
+                    <p style="margin: 3px 0 0; color: #475569;">${booking.guestPhone}</p>
+                </div>
+                <div style="text-align: right;">
+                    <p style="margin: 0; font-weight: bold; color: #64748B; text-transform: uppercase; font-size: 10px;">Stay Details</p>
+                    <p style="margin: 5px 0 0; font-weight: bold; font-size: 13px;">Check-in: ${booking.checkIn}</p>
+                    <p style="margin: 3px 0 0; font-weight: bold; font-size: 13px;">Check-out: ${booking.checkOut}</p>
+                </div>
+            </div>
+
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 30px;">
+                <thead>
+                    <tr style="background-color: #F8FAFC; border-bottom: 2px solid #E2E8F0;">
+                        <th style="padding: 12px; text-align: left; font-size: 11px; text-transform: uppercase; color: #64748B;">Description</th>
+                        <th style="padding: 12px; text-align: center; font-size: 11px; text-transform: uppercase; color: #64748B;">Nights</th>
+                        <th style="padding: 12px; text-align: right; font-size: 11px; text-transform: uppercase; color: #64748B;">Total Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-bottom: 1px solid #E2E8F0;">
+                        <td style="padding: 16px 12px; font-weight: bold;">
+                            ${room ? room.name : 'Luxury Accommodation'}
+                            <span style="display: block; font-weight: normal; font-size: 11px; color: #64748B; margin-top: 4px;">Accommodation</span>
+                        </td>
+                        <td style="padding: 16px 12px; text-align: center;">${nights}</td>
+                        <td style="padding: 16px 12px; text-align: right; font-weight: bold;">${KaghanUI.formatPKR(booking.totalPrice)}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div style="width: 300px; margin-left: auto;">
+                <div style="display: flex; justify-content: space-between; padding: 12px 0; font-size: 18px; font-weight: 900; color: #D4AF37; border-top: 2px solid #E2E8F0; margin-top: 5px;">
+                    <span>TOTAL:</span>
+                    <span>${KaghanUI.formatPKR(booking.totalPrice)}</span>
+                </div>
+            </div>
+
+            <div style="margin-top: 60px; border-top: 1px solid #E2E8F0; padding-top: 20px; font-size: 10px; color: #94A3B8; text-align: center;">
+                <p>Thank you for choosing Kaghan Stay! If you have any questions concerning this invoice, please contact support@kaghanstay.com.</p>
+            </div>
+        </div>
+        `;
+
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = html;
+        document.body.appendChild(tempDiv);
+        
+        const opt = {
+            margin:       0,
+            filename:     `Kaghan-Stay-Invoice-${booking.id}.pdf`,
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2 },
+            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+
+        KaghanUI.showToast('Generating PDF Invoice...', 'success');
+        await html2pdf().set(opt).from(tempDiv).save();
+        document.body.removeChild(tempDiv);
+
+    } catch (e) {
+        console.error("PDF generation failed:", e);
+        KaghanUI.showToast('Failed to generate PDF', 'error');
+    }
+};
 
 // Register Service Worker for offline PWA capabilities
 if ('serviceWorker' in navigator) {

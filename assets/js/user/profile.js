@@ -8,30 +8,9 @@
         const nameGreeting = document.getElementById('user-greeting-name');
         const nameMeta = document.getElementById('user-meta-name');
         const emailMeta = document.getElementById('user-meta-email');
-        const loyaltyPointsVal = document.getElementById('loyalty-points-val');
-        const loyaltyTier = document.getElementById('loyalty-tier');
-
         if (nameGreeting) nameGreeting.innerText = user.name;
         if (nameMeta) nameMeta.innerText = user.name;
         if (emailMeta) emailMeta.innerText = user.email;
-        if (loyaltyPointsVal) loyaltyPointsVal.innerText = user.loyaltyPoints || 0;
-        
-        // Calculated loyalty level (e.g. Standard, Gold, Elite)
-        const points = user.loyaltyPoints || 0;
-        let tier = 'Silver Stay Circle';
-        let tierColor = 'text-slate-400';
-        if (points >= 500) {
-            tier = 'Elite VIP Gold Stay (10% Disc.)';
-            tierColor = 'text-[#D4AF37]';
-        } else if (points >= 200) {
-            tier = 'Executive Gold Stay (5% Disc.)';
-            tierColor = 'text-amber-500';
-        }
-        
-        if (loyaltyTier) {
-            loyaltyTier.className = `text-xs uppercase tracking-wider font-extrabold ${tierColor}`;
-            loyaltyTier.innerText = tier;
-        }
 
         // Fill inputs
         const nameInput = document.getElementById('profile-name');

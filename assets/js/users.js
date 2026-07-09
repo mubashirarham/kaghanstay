@@ -35,7 +35,6 @@
             email: email.toLowerCase().trim(),
             password,
             role: 'user',
-            loyaltyPoints: 100, // Signup loyalty bonus
             phone
         };
         await fdb.collection('users').doc(userId).set(newUser);
@@ -90,23 +89,7 @@
         return true;
     };
 
-    // Adjust user loyalty balance
-    db.updateUserPoints = async (id, points) => {
-        const userRef = fdb.collection('users').doc(id);
-        const doc = await userRef.get();
-        if (doc.exists) {
-            const currentPoints = doc.data().loyaltyPoints || 0;
-            const newPoints = Math.max(0, currentPoints + points);
-            await userRef.update({ loyaltyPoints: newPoints });
 
-            // Sync active user session
-            const session = db.getCurrentUser();
-            if (session && session.id === id) {
-                const updatedUser = { ...doc.data(), loyaltyPoints: newPoints };
-                localStorage.setItem('kaghan_hotel_session', JSON.stringify(updatedUser));
-            }
-        }
-    };
 
     // List system guests
     db.getUsers = async () => {

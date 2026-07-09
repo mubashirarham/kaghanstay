@@ -9,6 +9,7 @@ exports.handler = async (event, context) => {
     try {
         const body = JSON.parse(event.body || '{}');
         const booking = body.booking;
+        const pdfAttachment = body.pdfAttachment; // base64 string
 
         if (!booking) {
             return {
@@ -207,13 +208,29 @@ exports.handler = async (event, context) => {
             auth: { user, pass }
         });
 
-        // Send Email
-        await transporter.sendMail({
+        const mailOptions = {
             from: `"KPH Stay Lobby" <${user}>`,
             to: guestEmail,
             subject: `Resort Booking Confirmation Slip - ${bookingId}`,
             html: htmlContent
-        });
+        };
+
+        if (pdfAttachment) {
+            // pdfAttachment is a data URI, we need to split it
+            const base64Data = pdfAttachment.split('base64,')[1];
+            if (base64Data) {
+                mailOptions.attachments = [
+                    {
+                        filename: `Invoice-${booking.id}.pdf`,
+                        content: base64Data,
+                        encoding: 'base64'
+                    }
+                ];
+            }
+        }
+
+        // Send Email
+        await transporter.sendMail(mailOptions);
 
         console.log(`[Invoice Emailer] Invoice email sent successfully to ${guestEmail} for booking ${bookingId}`);
         return {

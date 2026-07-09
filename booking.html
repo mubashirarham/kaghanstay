@@ -93,150 +93,188 @@
             <!-- Booking Form Column (Left) -->
             <div class="w-full lg:w-2/3 space-y-8">
                 
-                <!-- Guest Information -->
-                <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md">
-                    <h2 class="text-xl font-bold outfit text-slate-900 mb-6 flex items-center gap-3">
-                        <span class="w-8 h-8 bg-[#D4AF37]/10 text-[#D4AF37] rounded-full flex items-center justify-center text-sm font-bold">1</span>
-                        Guest Details
-                    </h2>
-                    
-                    <div id="guest-login-promo" class="mb-6 p-4 bg-[#D4AF37]/10 border border-[#D4AF37]/20 rounded-2xl text-xs flex justify-between items-center text-slate-700">
-                        <span><i class="fa-solid fa-gift text-[#D4AF37] mr-1.5"></i> Are you a registered member? Log in to earn & redeem loyalty points on this booking!</span>
-                        <a href="login.html?redirect=booking.html" class="font-bold text-[#D4AF37] hover:underline whitespace-nowrap ml-4">Login Now →</a>
-                    </div>
-
-                    <form id="booking-form" class="space-y-6">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-xs uppercase tracking-wider text-slate-500 font-semibold mb-2">Full Name</label>
-                                <input type="text" id="guest-name" required class="w-full border border-slate-200 rounded-xl px-4 py-3 outline-none focus:border-[#D4AF37] text-sm bg-slate-50 text-slate-800">
-                            </div>
-                            <div>
-                                <label class="block text-xs uppercase tracking-wider text-slate-500 font-semibold mb-2">Phone Number</label>
-                                <input type="tel" id="guest-phone" required class="w-full border border-slate-200 rounded-xl px-4 py-3 outline-none focus:border-[#D4AF37] text-sm bg-slate-50 text-slate-800">
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-xs uppercase tracking-wider text-slate-500 font-semibold mb-2">Email Address</label>
-                            <input type="email" id="guest-email" required class="w-full border border-slate-200 rounded-xl px-4 py-3 outline-none focus:border-[#D4AF37] text-sm bg-slate-50 text-slate-800">
-                        </div>
-                    </form>
-                </div>
-
-                <!-- Stay Details -->
-                <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md">
-                    <h2 class="text-xl font-bold outfit text-slate-900 mb-6 flex items-center gap-3">
-                        <span class="w-8 h-8 bg-[#D4AF37]/10 text-[#D4AF37] rounded-full flex items-center justify-center text-sm font-bold">2</span>
-                        Stay & Room Details
+                <!-- Stay Details (Calendar & Room) -->
+                <div class="bg-white rounded-[2rem] border border-slate-100 p-6 md:p-8 shadow-xl shadow-slate-200/50 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#D4AF37]/10 to-transparent rounded-bl-full pointer-events-none"></div>
+                    <h2 class="text-xl font-bold outfit text-slate-900 mb-8 flex items-center gap-3">
+                        <span class="w-10 h-10 bg-gradient-to-br from-[#D4AF37] to-[#B38D22] text-white rounded-full flex items-center justify-center text-sm font-black shadow-lg shadow-[#D4AF37]/30">1</span>
+                        Stay & Suite Selection
                     </h2>
                     
                     <!-- Interactive Calendar -->
-                    <div class="mb-6">
-                        <label class="block text-xs uppercase tracking-wider text-slate-500 font-semibold mb-3">Choose Stay Dates on Calendar</label>
-                        <div class="bg-slate-50 border border-slate-100 rounded-2xl p-5">
-                            <div class="flex justify-between items-center mb-4">
-                                <button type="button" onclick="changeCalendarMonth(-1)" class="w-8 h-8 rounded-full hover:bg-slate-200 flex items-center justify-center text-slate-600 transition-colors"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-                                <span id="calendar-month-year" class="font-bold text-sm outfit text-slate-800 uppercase tracking-wider"></span>
-                                <button type="button" onclick="changeCalendarMonth(1)" class="w-8 h-8 rounded-full hover:bg-slate-200 flex items-center justify-center text-slate-600 transition-colors"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                    <div class="mb-8">
+                        <label class="block text-[10px] uppercase tracking-widest text-[#D4AF37] font-black mb-3 ml-1">Choose Stay Dates on Calendar</label>
+                        <div class="bg-slate-50 border border-slate-100 rounded-3xl p-5 md:p-6 shadow-inner">
+                            <div class="flex justify-between items-center mb-6">
+                                <button type="button" onclick="changeCalendarMonth(-1)" class="w-10 h-10 rounded-2xl bg-white border border-slate-200 shadow-sm hover:border-[#D4AF37] hover:text-[#D4AF37] flex items-center justify-center text-slate-500 transition-all active:scale-95"><i class="fa-solid fa-chevron-left text-sm"></i></button>
+                                <span id="calendar-month-year" class="font-black text-sm outfit text-slate-800 uppercase tracking-[0.1em]"></span>
+                                <button type="button" onclick="changeCalendarMonth(1)" class="w-10 h-10 rounded-2xl bg-white border border-slate-200 shadow-sm hover:border-[#D4AF37] hover:text-[#D4AF37] flex items-center justify-center text-slate-500 transition-all active:scale-95"><i class="fa-solid fa-chevron-right text-sm"></i></button>
                             </div>
                             
-                            <div class="grid grid-cols-7 gap-1 text-center text-[10px] uppercase font-bold text-slate-400 mb-2">
-                                <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+                            <div class="grid grid-cols-7 gap-1 text-center text-[10px] uppercase font-bold text-slate-400 mb-3">
+                                <span class="text-rose-400">Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span class="text-[#D4AF37]">Sa</span>
                             </div>
                             
-                            <div id="calendar-days-grid" class="grid grid-cols-7 gap-1">
+                            <div id="calendar-days-grid" class="grid grid-cols-7 gap-1.5 md:gap-2">
                                 <!-- Loaded dynamically via JS -->
                             </div>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                         <div>
-                            <label class="block text-xs uppercase tracking-wider text-slate-500 font-semibold mb-2">Check In Date</label>
-                            <input type="date" id="book-check-in" required readonly class="w-full border border-slate-200 rounded-xl px-4 py-3 outline-none text-sm bg-slate-100 text-slate-500 cursor-not-allowed">
+                            <label class="block text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 ml-1">Check In Date</label>
+                            <div class="relative">
+                                <i class="fa-regular fa-calendar absolute left-4 top-4 text-slate-400"></i>
+                                <input type="date" id="book-check-in" required readonly class="w-full border border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none text-sm bg-slate-50 text-slate-600 font-medium cursor-not-allowed">
+                            </div>
                         </div>
                         <div>
-                            <label class="block text-xs uppercase tracking-wider text-slate-500 font-semibold mb-2">Check Out Date</label>
-                            <input type="date" id="book-check-out" required readonly class="w-full border border-slate-200 rounded-xl px-4 py-3 outline-none text-sm bg-slate-100 text-slate-500 cursor-not-allowed">
+                            <label class="block text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 ml-1">Check Out Date</label>
+                            <div class="relative">
+                                <i class="fa-regular fa-calendar-check absolute left-4 top-4 text-slate-400"></i>
+                                <input type="date" id="book-check-out" required readonly class="w-full border border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none text-sm bg-slate-50 text-slate-600 font-medium cursor-not-allowed">
+                            </div>
                         </div>
                     </div>
 
-                    <div class="mb-6">
-                        <label class="block text-xs uppercase tracking-wider text-slate-500 font-semibold mb-2">Select Location</label>
+                    <div class="mb-8">
+                        <label class="block text-[10px] uppercase tracking-widest text-[#D4AF37] font-black mb-2 ml-1">Select Location</label>
                         <div class="relative">
-                            <select id="book-location" onchange="filterRoomsByLocation()" class="w-full border border-slate-200 rounded-xl pl-4 pr-11 py-3.5 outline-none focus:border-[#D4AF37] text-sm bg-slate-50 text-slate-800 cursor-pointer appearance-none">
+                            <i class="fa-solid fa-map-location-dot absolute left-4 top-4 text-slate-400"></i>
+                            <select id="book-location" onchange="filterRoomsByLocation()" class="w-full border border-slate-200 rounded-2xl pl-11 pr-11 py-3.5 outline-none focus:border-[#D4AF37] focus:ring-4 focus:ring-[#D4AF37]/10 text-sm bg-slate-50 text-slate-800 font-semibold cursor-pointer appearance-none transition-all">
                                 <option value="all">All Locations</option>
-                                <option value="Islamabad">Islamabad</option>
-                                <option value="Nathia Gali">Nathia Gali</option>
+                                <!-- Dynamically loaded -->
                             </select>
                             <i class="fa-solid fa-chevron-down absolute right-4 top-4.5 text-slate-400 pointer-events-none text-xs"></i>
                         </div>
                     </div>
 
                     <div class="mb-6">
-                        <label class="block text-xs uppercase tracking-wider text-slate-500 font-semibold mb-3">Select Your Suite</label>
+                        <label class="block text-[10px] uppercase tracking-widest text-[#D4AF37] font-black mb-3 ml-1">Select Your Suite</label>
                         <!-- Hidden select for form compatibility -->
                         <select id="book-room-id" onchange="onRoomChange()" class="hidden">
                             <!-- Loaded via JS -->
                         </select>
                         <!-- Dynamic Cards Grid -->
-                        <div id="book-rooms-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[350px] overflow-y-auto pr-2">
+                        <div id="book-rooms-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                             <!-- Loaded via JS dynamically -->
                         </div>
                     </div>
 
                     <!-- Rent Billing Cycle (Visible/Enabled for Apartments) -->
-                    <div id="billing-cycle-box" class="mt-6 hidden">
-                        <label class="block text-xs uppercase tracking-wider text-slate-500 font-semibold mb-2">Rent Billing Cycle</label>
-                        <div class="relative">
-                            <select id="book-billing-cycle" onchange="calculatePrice()" class="w-full border border-slate-200 rounded-xl pl-4 pr-11 py-3.5 outline-none focus:border-[#D4AF37] text-sm bg-slate-50 text-slate-800 cursor-pointer appearance-none">
+                    <div id="billing-cycle-box" class="mt-8 hidden p-5 bg-gradient-to-r from-slate-50 to-white rounded-2xl border border-slate-100">
+                        <label class="block text-[10px] uppercase tracking-widest text-[#D4AF37] font-black mb-3">Rent Billing Cycle</label>
+                        <div class="relative mb-2">
+                            <i class="fa-solid fa-clock-rotate-left absolute left-4 top-4 text-slate-400"></i>
+                            <select id="book-billing-cycle" onchange="calculatePrice()" class="w-full border border-slate-200 rounded-xl pl-11 pr-11 py-3.5 outline-none focus:border-[#D4AF37] text-sm bg-white text-slate-800 font-semibold cursor-pointer appearance-none">
                                 <option value="daily">Daily Basis</option>
                                 <option value="weekly">Weekly Basis</option>
                                 <option value="monthly">Monthly Basis</option>
                             </select>
                             <i class="fa-solid fa-chevron-down absolute right-4 top-4.5 text-slate-400 pointer-events-none text-xs"></i>
                         </div>
-                        <p class="text-slate-400 text-[10px] mt-1 font-light">Select daily, weekly, or monthly cycle to unlock discounted rates for longer stays.</p>
+                        <p class="text-slate-500 text-[10px] font-medium leading-relaxed"><i class="fa-solid fa-circle-info text-[#D4AF37] mr-1"></i> Select daily, weekly, or monthly cycle to unlock discounted rates for longer stays.</p>
                     </div>
                     <!-- Upcoming Reserved Dates Box -->
-                    <div id="reserved-dates-box" class="mt-5 hidden bg-slate-50 border border-slate-100 p-5 rounded-2xl">
-                        <span class="block text-[10px] uppercase tracking-widest text-[#D4AF37] font-bold mb-2.5">Suite Reserved Dates:</span>
+                    <div id="reserved-dates-box" class="mt-6 hidden bg-rose-50/50 border border-rose-100 p-5 rounded-2xl">
+                        <span class="block text-[10px] uppercase tracking-widest text-rose-500 font-bold mb-3 flex items-center gap-2"><i class="fa-solid fa-calendar-xmark text-sm"></i> Suite Reserved Dates:</span>
                         <div id="reserved-dates-list" class="flex flex-wrap gap-2 text-xs"></div>
                     </div>
                 </div>
 
-                <!-- Payment Details -->
-                <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md">
+                <!-- Guest Information -->
+                <div class="bg-white rounded-[2rem] border border-slate-100 p-6 md:p-8 shadow-xl shadow-slate-200/50 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#D4AF37]/10 to-transparent rounded-bl-full pointer-events-none"></div>
                     <h2 class="text-xl font-bold outfit text-slate-900 mb-6 flex items-center gap-3">
-                        <span class="w-8 h-8 bg-[#D4AF37]/10 text-[#D4AF37] rounded-full flex items-center justify-center text-sm font-bold">3</span>
+                        <span class="w-10 h-10 bg-slate-900 text-[#D4AF37] rounded-full flex items-center justify-center text-sm font-black shadow-lg">2</span>
+                        Guest Details
+                    </h2>
+                    
+                    <div id="guest-login-promo" class="mb-8 p-5 bg-gradient-to-r from-[#D4AF37]/10 to-transparent border-l-4 border-[#D4AF37] rounded-r-2xl text-xs flex flex-col md:flex-row justify-between items-center text-slate-700 gap-4">
+                        <span class="font-medium leading-relaxed"><i class="fa-solid fa-gift text-[#D4AF37] mr-2 text-lg"></i> Are you a registered member? Log in to easily manage your stay!</span>
+                        <a href="login.html?redirect=booking.html" class="font-black text-white bg-[#D4AF37] px-6 py-2.5 rounded-xl hover:bg-slate-900 whitespace-nowrap transition-all shadow-md">Login Now</a>
+                    </div>
+
+                    <form id="booking-form" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 ml-1">Full Name</label>
+                                <div class="relative">
+                                    <i class="fa-solid fa-user absolute left-4 top-4 text-slate-400"></i>
+                                    <input type="text" id="guest-name" required placeholder="John Doe" class="w-full border border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none focus:border-[#D4AF37] focus:ring-4 focus:ring-[#D4AF37]/10 text-sm bg-slate-50 focus:bg-white text-slate-800 transition-all font-medium">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 ml-1">Phone Number</label>
+                                <div class="relative">
+                                    <i class="fa-solid fa-phone absolute left-4 top-4 text-slate-400"></i>
+                                    <input type="tel" id="guest-phone" required placeholder="+92 300 1234567" class="w-full border border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none focus:border-[#D4AF37] focus:ring-4 focus:ring-[#D4AF37]/10 text-sm bg-slate-50 focus:bg-white text-slate-800 transition-all font-medium">
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 ml-1">Email Address</label>
+                            <div class="relative">
+                                <i class="fa-solid fa-envelope absolute left-4 top-4 text-slate-400"></i>
+                                <input type="email" id="guest-email" required placeholder="john@example.com" class="w-full border border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none focus:border-[#D4AF37] focus:ring-4 focus:ring-[#D4AF37]/10 text-sm bg-slate-50 focus:bg-white text-slate-800 transition-all font-medium">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Payment Details -->
+                <div class="bg-white rounded-[2rem] border border-slate-100 p-6 md:p-8 shadow-xl shadow-slate-200/50 relative overflow-hidden">
+                    <h2 class="text-xl font-bold outfit text-slate-900 mb-6 flex items-center gap-3">
+                        <span class="w-10 h-10 bg-slate-900 text-[#D4AF37] rounded-full flex items-center justify-center text-sm font-black shadow-lg">3</span>
                         Payment Selection
                     </h2>
 
-                    <div class="bg-slate-50 border border-slate-150 rounded-2xl p-5 flex items-start gap-4">
-                        <div class="w-10 h-10 rounded-full bg-[#D4AF37]/10 text-[#D4AF37] flex items-center justify-center text-lg shrink-0 mt-0.5">
+                    <div class="bg-gradient-to-r from-slate-50 to-white border border-slate-200 rounded-2xl p-5 md:p-6 flex items-start gap-5 group cursor-pointer hover:border-[#D4AF37] transition-all">
+                        <div class="w-12 h-12 rounded-full bg-[#D4AF37]/10 text-[#D4AF37] flex items-center justify-center text-xl shrink-0 mt-0.5 group-hover:scale-110 transition-transform">
                             <i class="fa-solid fa-hotel"></i>
                         </div>
                         <div>
-                            <h4 class="font-bold text-slate-800 text-sm">Pay on Check-in (Cash / Card)</h4>
-                            <p class="text-slate-400 text-xs mt-1 leading-relaxed">Secure reservation today. No prepayment or credit card required. You will complete your full payment directly at the reception counter during check-in.</p>
+                            <h4 class="font-bold text-slate-900 text-base mb-1">Pay on Check-in (Cash / Card)</h4>
+                            <p class="text-slate-500 text-xs leading-relaxed font-medium">Secure reservation today. No prepayment or credit card required. You will complete your full payment directly at the reception counter during check-in.</p>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Guest Reviews -->
+                <div class="bg-white rounded-[2rem] border border-slate-100 p-6 md:p-8 shadow-xl shadow-slate-200/50 relative overflow-hidden hidden" id="booking-reviews-section">
+                    <h2 class="text-xl font-bold outfit text-slate-900 mb-6 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="w-10 h-10 bg-slate-100 text-[#D4AF37] rounded-full flex items-center justify-center text-sm font-black shadow-inner"><i class="fa-solid fa-star"></i></span>
+                            Verified Guest Reviews
+                        </div>
+                        <div class="flex items-center gap-2 text-sm bg-[#D4AF37]/10 px-3 py-1.5 rounded-xl border border-[#D4AF37]/20 text-[#D4AF37]">
+                            <span class="font-black" id="avg-rating-display">5.0</span>
+                        </div>
+                    </h2>
+
+                    <div id="room-reviews-list" class="space-y-4 max-h-80 overflow-y-auto pr-2 custom-scrollbar">
+                        <!-- Reviews injected here -->
                     </div>
                 </div>
             </div>
 
             <!-- Price Summary Sidebar (Right) -->
             <div class="w-full lg:w-1/3">
-                <div class="bg-white rounded-3xl border border-slate-100 shadow-lg p-6 md:p-8 space-y-6 sticky top-28">
-                    <h3 class="font-bold text-lg outfit text-slate-900">Stay Summary</h3>
+                <div class="bg-white rounded-[2rem] border border-slate-100 shadow-2xl shadow-slate-200/50 p-6 md:p-8 space-y-7 sticky top-28">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                        <h3 class="font-bold text-xl outfit text-slate-900">Stay Summary</h3>
+                        <i class="fa-solid fa-receipt text-slate-300 text-xl"></i>
+                    </div>
                     
                     <!-- Selected Room Card Preview -->
-                    <div id="room-preview-box" class="flex gap-4 border-b border-slate-100 pb-6">
-                        <img id="preview-room-img" src="" alt="Suite Preview" class="w-20 h-20 object-cover rounded-2xl">
+                    <div id="room-preview-box" class="flex gap-5 border-b border-dashed border-slate-200 pb-6">
+                        <img id="preview-room-img" src="" alt="Suite Preview" class="w-24 h-24 object-cover rounded-2xl shadow-md">
                         <div class="flex flex-col justify-center">
-                            <h4 id="preview-room-name" class="font-bold text-slate-900 outfit text-sm leading-tight">Deluxe Alpine Room</h4>
-                            <span id="preview-room-location" class="text-[10px] text-slate-400 font-bold mt-0.5 flex items-center gap-1"><i class="fa-solid fa-location-dot text-[#D4AF37]"></i> Islamabad</span>
-                            <span id="preview-room-price" class="text-xs font-semibold text-[#D4AF37] mt-1">25,000 PKR / Night</span>
-                            <span id="preview-room-guests" class="text-[10px] text-slate-400 mt-0.5">Capacity: Max 2 guests</span>
+                            <h4 id="preview-room-name" class="font-bold text-slate-900 outfit text-base leading-tight">Deluxe Alpine Room</h4>
+                            <span id="preview-room-location" class="text-[10px] uppercase tracking-widest text-slate-400 font-bold mt-1.5 flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-[#D4AF37]"></i> Islamabad</span>
+                            <span id="preview-room-price" class="text-sm font-black text-[#D4AF37] mt-1.5 bg-[#D4AF37]/10 inline-block px-2 py-0.5 rounded-lg w-max">25,000 PKR / Night</span>
+                            <span id="preview-room-guests" class="text-[10px] text-slate-500 font-medium mt-1">Capacity: Max 2 guests</span>
                         </div>
                     </div>
 
@@ -259,22 +297,7 @@
                             <span id="calc-tax">PKR 0</span>
                         </div>
                         <!-- Tier Discount Row -->
-                        <div id="tier-discount-row" class="hidden justify-between text-emerald-600 font-bold text-xs">
-                            <span id="tier-discount-lbl">Tier Discount (0%)</span>
-                            <span id="calc-tier-discount">-PKR 0</span>
-                        </div>
-                        
-                        <!-- Loyalty Program Row -->
-                        <div id="loyalty-box" class="hidden border-t border-dashed border-slate-200 pt-4 flex flex-col gap-2">
-                            <div class="flex justify-between items-center text-slate-500">
-                                <span>Redeem Loyalty Points</span>
-                                <span id="loyalty-balance" class="text-[#D4AF37] text-xs font-bold">Balance: 350 pts</span>
-                            </div>
-                            <div class="flex items-center gap-2 mt-1">
-                                <input type="checkbox" id="redeem-points" onchange="calculatePrice()" class="w-4 h-4 accent-[#D4AF37] cursor-pointer">
-                                <label for="redeem-points" class="text-xs text-slate-600 font-semibold cursor-pointer">Apply points as discount (1pt = 1PKR)</label>
-                            </div>
-                        </div>
+
 
                         <div class="border-t border-slate-100 pt-4 flex justify-between items-center font-extrabold text-lg text-slate-900">
                             <span>Total (PKR)</span>
@@ -287,7 +310,7 @@
                         Confirm Stay
                     </button>
                     <p class="text-[10px] text-center text-slate-400">
-                        Secured SSL checkout powered by KPH Stay. Cancellation charges may apply in accordance to company policy.
+                        Secured SSL checkout powered by KPH Stay. <br><span class="font-bold text-[#D4AF37]">48-Hour Refund Policy:</span> Cancellations made within 48 hours of booking are eligible for a full refund.
                     </p>
                 </div>
             </div>
@@ -330,6 +353,13 @@
                 </div>
             </div>
 
+            <button id="whatsapp-share-btn" class="w-full bg-[#25D366] text-white font-bold py-3.5 rounded-xl hover:bg-[#128C7E] transition-all text-sm shadow-md mb-4 flex items-center justify-center gap-2">
+                <i class="fa-brands fa-whatsapp text-lg"></i> Share Itinerary on WhatsApp
+            </button>
+            <button onclick="downloadPDFReceipt()" class="w-full border border-slate-200 text-slate-800 font-bold py-3.5 rounded-xl hover:bg-slate-100 transition-all text-sm mb-6 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-file-pdf"></i> Download PDF Receipt
+            </button>
+
             <div class="flex gap-4">
                 <a href="index.html" class="w-1/2 border border-slate-200 text-slate-800 font-bold py-3.5 rounded-xl hover:bg-slate-100 transition-all text-sm">
                     Go Home
@@ -342,6 +372,7 @@
     </div>
 
     <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -366,29 +397,37 @@
                 document.getElementById('guest-email').value = user.email;
                 document.getElementById('guest-phone').value = user.phone || '';
                 
-                // Hide prompt and show loyalty discount
+                // Hide prompt
                 if (promo) promo.style.display = 'none';
-                if (user.role === 'user') {
-                    loyaltyBox.classList.remove('hidden');
-                    document.getElementById('loyalty-balance').innerText = `Balance: ${user.loyaltyPoints || 0} pts`;
-                }
             }
         }
 
         let allAvailableRooms = [];
 
-        // Load Rooms in Select
+        // Load Rooms and Locations in Select
         async function loadRoomSelector() {
             const allRooms = await KaghanDB.getRooms();
             allAvailableRooms = allRooms.filter(r => r.status === 'available');
             
+            // Populate Dynamic Locations
+            const locations = await KaghanDB.getLocations();
+            const locationSelect = document.getElementById('book-location');
+            if (locationSelect) {
+                let currentVal = locationSelect.value;
+                locationSelect.innerHTML = `<option value="all">All Locations</option>` +
+                    locations.map(l => `<option value="${l.id}">${l.label}</option>`).join('');
+            }
+
             // Read URL query parameters
             const urlParams = new URLSearchParams(window.location.search);
             const queryLocation = urlParams.get('location');
             const queryRoomId = urlParams.get('room');
 
-            if (queryLocation && ['Islamabad', 'Nathia Gali'].includes(queryLocation)) {
-                document.getElementById('book-location').value = queryLocation;
+            if (queryLocation && locationSelect) {
+                const found = locations.find(l => l.id === queryLocation);
+                if (found) {
+                    locationSelect.value = queryLocation;
+                }
             }
 
             await filterRoomsByLocation(queryRoomId);
@@ -490,11 +529,27 @@
                 const billingBox = document.getElementById('billing-cycle-box');
                 const billingCycleSelect = document.getElementById('book-billing-cycle');
                 
-                if (selectedRoom.isApartment) {
+                if (selectedRoom.isApartment || selectedRoom.priceWeekly || selectedRoom.priceMonthly) {
                     billingBox.classList.remove('hidden');
-                    document.getElementById('preview-room-price').innerText = `${KaghanUI.formatPKR(selectedRoom.priceDaily || selectedRoom.price)}/N | ${KaghanUI.formatPKR(selectedRoom.priceWeekly)}/W | ${KaghanUI.formatPKR(selectedRoom.priceMonthly)}/M`;
+                    
+                    // Build pricing text
+                    let pText = `${KaghanUI.formatPKR(selectedRoom.priceDaily || selectedRoom.price)}/N`;
+                    if (selectedRoom.priceWeekly) pText += ` | ${KaghanUI.formatPKR(selectedRoom.priceWeekly)}/W`;
+                    if (selectedRoom.priceMonthly) pText += ` | ${KaghanUI.formatPKR(selectedRoom.priceMonthly)}/M`;
+                    document.getElementById('preview-room-price').innerText = pText;
+
+                    // Update dropdown options
+                    billingCycleSelect.innerHTML = `<option value="daily">Daily Basis</option>`;
+                    if (selectedRoom.priceWeekly) {
+                        billingCycleSelect.innerHTML += `<option value="weekly">Weekly Basis</option>`;
+                    }
+                    if (selectedRoom.priceMonthly) {
+                        billingCycleSelect.innerHTML += `<option value="monthly">Monthly Basis</option>`;
+                    }
+                    billingCycleSelect.value = 'daily';
                 } else {
                     billingBox.classList.add('hidden');
+                    billingCycleSelect.innerHTML = `<option value="daily">Daily Basis</option>`;
                     billingCycleSelect.value = 'daily';
                     document.getElementById('preview-room-price').innerText = `${KaghanUI.formatPKR(selectedRoom.price)} / Night`;
                 }
@@ -516,6 +571,51 @@
                 } else {
                     reservedBox.classList.remove('hidden');
                     reservedList.innerHTML = `<span class="text-emerald-650 font-semibold bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded">Suite is wide open - no reservations!</span>`;
+                }
+
+                // Load Reviews
+                const reviewsSection = document.getElementById('booking-reviews-section');
+                const reviewsList = document.getElementById('room-reviews-list');
+                const avgRatingDisplay = document.getElementById('avg-rating-display');
+                
+                const reviews = await KaghanDB.getReviewsByRoomId(selectedRoom.id);
+                
+                if (reviews && reviews.length > 0) {
+                    reviewsSection.classList.remove('hidden');
+                    
+                    let totalRating = 0;
+                    reviewsList.innerHTML = reviews.map(r => {
+                        totalRating += r.rating;
+                        const dateStr = KaghanUI.formatDate(r.createdAt || new Date().toISOString());
+                        
+                        let starsHtml = '';
+                        for(let i=1; i<=5; i++) {
+                            starsHtml += `<i class="fa-solid fa-star ${i <= r.rating ? 'text-amber-400' : 'text-slate-200'}"></i>`;
+                        }
+
+                        return `
+                            <div class="border-b border-slate-100 pb-4 last:border-0 last:pb-0">
+                                <div class="flex justify-between items-start mb-2">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-bold text-xs uppercase">
+                                            ${(r.userName || 'G').charAt(0)}
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-slate-800 text-xs">${r.userName || 'Guest'}</div>
+                                            <div class="text-[9px] text-slate-400">${dateStr}</div>
+                                        </div>
+                                    </div>
+                                    <div class="text-[10px] flex gap-0.5">${starsHtml}</div>
+                                </div>
+                                <p class="text-slate-600 text-xs leading-relaxed italic pl-11">"${r.comment}"</p>
+                            </div>
+                        `;
+                    }).join('');
+
+                    const avg = (totalRating / reviews.length).toFixed(1);
+                    avgRatingDisplay.innerText = avg;
+                } else {
+                    reviewsSection.classList.add('hidden');
                 }
 
                 await updateBookedDates();
@@ -716,71 +816,50 @@
             let subtotal = rate * stayNights;
             
             const billingCycle = document.getElementById('book-billing-cycle').value;
-            if (selectedRoom.isApartment) {
-                if (billingCycle === 'weekly' && selectedRoom.priceWeekly) {
-                    rate = selectedRoom.priceWeekly;
-                    cycleText = 'Week';
-                    subtotal = Math.round((rate / 7) * stayNights);
-                } else if (billingCycle === 'monthly' && selectedRoom.priceMonthly) {
-                    rate = selectedRoom.priceMonthly;
-                    cycleText = 'Month';
-                    subtotal = Math.round((rate / 30) * stayNights);
-                } else {
-                    rate = selectedRoom.priceDaily || selectedRoom.price;
-                    cycleText = 'Night';
-                    subtotal = rate * stayNights;
-                }
+            if (billingCycle === 'weekly' && selectedRoom.priceWeekly) {
+                rate = selectedRoom.priceWeekly;
+                cycleText = 'Week';
+                subtotal = Math.round((rate / 7) * stayNights);
+            } else if (billingCycle === 'monthly' && selectedRoom.priceMonthly) {
+                rate = selectedRoom.priceMonthly;
+                cycleText = 'Month';
+                subtotal = Math.round((rate / 30) * stayNights);
+            } else {
+                rate = selectedRoom.priceDaily || selectedRoom.price;
+                cycleText = 'Night';
+                subtotal = rate * stayNights;
             }
             
             const tax = Math.round(subtotal * 0.15); // 15% GST
             
-            let pointsDiscount = 0;
-            let tierDiscount = 0;
-            const user = KaghanDB.getCurrentUser();
 
-            // Tier discount row elements
-            const tierRow = document.getElementById('tier-discount-row');
-            const tierLbl = document.getElementById('tier-discount-lbl');
-            const tierVal = document.getElementById('calc-tier-discount');
 
-            if (user && user.role === 'user') {
-                const points = user.loyaltyPoints || 0;
-                let tierDiscountPct = 0;
-                let tierName = '';
-                if (points >= 500) {
-                    tierDiscountPct = 0.10;
-                    tierName = 'Elite VIP (10%)';
-                } else if (points >= 200) {
-                    tierDiscountPct = 0.05;
-                    tierName = 'Executive (5%)';
-                }
+            let couponDiscount = 0;
+            const couponRow = document.getElementById('coupon-discount-row');
+            const couponLbl = document.getElementById('coupon-discount-lbl');
+            const couponVal = document.getElementById('calc-coupon-discount');
 
-                if (tierDiscountPct > 0) {
-                    tierDiscount = Math.round(subtotal * tierDiscountPct);
-                    if (tierRow) {
-                        tierRow.classList.remove('hidden');
-                        tierRow.classList.add('flex');
-                        tierLbl.innerText = `Tier Discount (${tierName})`;
-                        tierVal.innerText = `-${KaghanUI.formatPKR(tierDiscount)}`;
-                    }
-                } else {
-                    if (tierRow) {
-                        tierRow.classList.add('hidden');
-                        tierRow.classList.remove('flex');
-                    }
-                }
+            if (appliedCoupon) {
+                // Coupons now strictly use discountPercentage based on admin schema
+                couponDiscount = Math.round(subtotal * ((appliedCoupon.discountPercentage || 0) / 100));
 
-                if (document.getElementById('redeem-points').checked) {
-                    pointsDiscount = Math.min((user.loyaltyPoints || 0), (subtotal + tax - tierDiscount));
+                // Make sure coupon doesn't exceed subtotal
+                couponDiscount = Math.min(couponDiscount, subtotal);
+
+                if (couponRow) {
+                    couponRow.classList.remove('hidden');
+                    couponRow.classList.add('flex');
+                    couponLbl.innerText = `Coupon (${appliedCoupon.code})`;
+                    couponVal.innerText = `-${KaghanUI.formatPKR(couponDiscount)}`;
                 }
             } else {
-                if (tierRow) {
-                    tierRow.classList.add('hidden');
-                    tierRow.classList.remove('flex');
+                if (couponRow) {
+                    couponRow.classList.add('hidden');
+                    couponRow.classList.remove('flex');
                 }
             }
             
-            finalPrice = (subtotal + tax) - tierDiscount - pointsDiscount;
+            finalPrice = (subtotal + tax) - couponDiscount;
             
             document.getElementById('calc-rate').innerText = `${KaghanUI.formatPKR(rate)} / ${cycleText}`;
             document.getElementById('calc-nights').innerText = `${stayNights} Night${stayNights > 1 ? 's' : ''}`;
@@ -845,7 +924,41 @@
             });
         }
 
-        // Submit Booking
+        // Global variables
+        let appliedCoupon = null;
+
+        // Coupon Logic
+        window.validateAndApplyCoupon = async () => {
+            const input = document.getElementById('coupon-code-input');
+            const msg = document.getElementById('coupon-message');
+            const code = input.value.trim().toUpperCase();
+
+            if (!code) {
+                appliedCoupon = null;
+                calculatePrice();
+                msg.classList.remove('hidden', 'text-emerald-500', 'text-rose-500');
+                return;
+            }
+
+            const coupons = await KaghanDB.getCoupons();
+            const validCoupon = coupons.find(c => c.code === code && c.isActive === true);
+
+            if (validCoupon) {
+                appliedCoupon = validCoupon;
+                msg.innerText = "Coupon applied successfully!";
+                msg.classList.remove('hidden', 'text-rose-500');
+                msg.classList.add('text-emerald-500');
+                calculatePrice();
+            } else {
+                appliedCoupon = null;
+                msg.innerText = "Invalid or expired coupon.";
+                msg.classList.remove('hidden', 'text-emerald-500');
+                msg.classList.add('text-rose-500');
+                calculatePrice();
+            }
+        };
+
+        // Form Submit Booking
         // Luhn Algorithm Card Validator
         function checkLuhn(cardNo) {
             let nDigits = cardNo.length;
@@ -876,6 +989,20 @@
                 return;
             }
 
+            // Email validation regex
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                KaghanUI.showToast('Please enter a valid email address.', 'error');
+                return;
+            }
+
+            // Phone validation (must start with 03 and have 11 digits minimum)
+            const cleanPhone = phone.replace(/\D/g, '');
+            if (!cleanPhone.startsWith('03') || cleanPhone.length < 11) {
+                KaghanUI.showToast('Please enter a valid Pakistani phone number starting with 03.', 'error');
+                return;
+            }
+
             // Check availability one final time to avoid race conditions
             const isAvailable = await KaghanDB.isRoomAvailable(selectedRoom.id, checkIn, checkOut);
             if (!isAvailable) {
@@ -896,9 +1023,10 @@
                 checkIn: checkIn,
                 checkOut: checkOut,
                 totalPrice: finalPrice,
+                couponUsed: appliedCoupon ? appliedCoupon.code : null,
                 status: 'confirmed', // Instant confirmation simulation
                 billingCycle: selectedRoom.isApartment ? document.getElementById('book-billing-cycle').value : 'daily',
-                createdAt: new Date().toISOString().split('T')[0]
+                createdAt: new Date().toISOString()
             };
 
             // Start animated multi-phase mock transaction state
@@ -924,14 +1052,24 @@
             }, 800);
 
             async function completeBooking() {
-                // Deduct Points if applied
-                if (user && user.role === 'user' && document.getElementById('redeem-points').checked) {
-                    const pointsUsed = Math.min(user.loyaltyPoints, (selectedRoom.price * stayNights + Math.round(selectedRoom.price * stayNights * 0.15)));
-                    await KaghanDB.updateUserPoints(user.id, -pointsUsed);
-                }
 
-                // Save booking (handles loyalty addition automatically in shared.js)
-                await KaghanDB.addBooking(booking);
+
+                // Generate PDF Base64
+                const pdfBase64 = await generatePDFBase64(booking);
+
+                // Save booking
+                await KaghanDB.addBooking(booking, pdfBase64);
+
+                // Trigger Admin Notification Email & Customer Email
+                try {
+                    await fetch('/.netlify/functions/admin-notify', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ booking: booking, pdfAttachment: pdfBase64 })
+                    });
+                } catch(e) {
+                    console.error('Failed to send admin notification:', e);
+                }
 
                 // Trigger Confirmation Popup
                 document.getElementById('receipt-id').innerText = booking.id;
@@ -957,6 +1095,15 @@
                     modal.firstElementChild.classList.remove('scale-95');
                 }, 10);
                 
+                // Set WhatsApp share link
+                const waBtn = document.getElementById('whatsapp-share-btn');
+                if (waBtn) {
+                    const text = `*Booking Confirmed at Kaghan Stay!*\n\nID: ${booking.id}\nRoom: ${selectedRoom.name}\nDates: ${KaghanUI.formatDate(booking.checkIn)} to ${KaghanUI.formatDate(booking.checkOut)}\nTotal Paid: ${KaghanUI.formatPKR(booking.totalPrice)}\n\nThank you for choosing us!`;
+                    waBtn.onclick = () => {
+                        window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+                    };
+                }
+
                 KaghanUI.showToast('Your reservation has been processed!', 'success');
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalBtnHtml;
@@ -966,12 +1113,137 @@
         // Dialog Navigation
         function goToDashboard() {
             const user = KaghanDB.getCurrentUser();
-            if (user) {
-                window.location.href = user.role === 'admin' ? 'admin/index.html' : 'user/index.html';
-            } else {
-                window.location.href = 'login.html?register=true';
-            }
+            window.location.href = user && user.role === 'admin' ? 'admin/index.html' : 'user/index.html';
         }
+
+        // --- PDF GENERATOR LOGIC ---
+        function getInvoiceHTML(bookingData) {
+            return `
+            <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; padding: 40px; color: #0F172A; width: 800px;">
+                <div style="border-bottom: 2px solid #D4AF37; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div>
+                        <h1 style="margin: 0; font-size: 28px; font-weight: 900; color: #0F172A;">Kaghan Stay</h1>
+                        <p style="margin: 5px 0 0; font-size: 11px; color: #D4AF37; letter-spacing: 2px; text-transform: uppercase; font-weight: bold;">Premium Resort & Spa</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <h2 style="margin: 0; font-size: 20px; font-weight: 700;">INVOICE</h2>
+                        <p style="margin: 5px 0 0; font-size: 12px; color: #64748B;">Date: ${new Date().toLocaleDateString()}</p>
+                        <p style="margin: 2px 0 0; font-size: 12px; color: #64748B;">Booking Ref: <strong>${bookingData.id || document.getElementById('receipt-id').innerText}</strong></p>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; margin-bottom: 40px; font-size: 13px;">
+                    <div>
+                        <p style="margin: 0; font-weight: bold; color: #64748B; text-transform: uppercase; font-size: 10px;">Billed To</p>
+                        <p style="margin: 5px 0 0; font-weight: bold; font-size: 15px;">${bookingData.guestName || document.getElementById('guest-name').value}</p>
+                        <p style="margin: 3px 0 0; color: #475569;">${bookingData.guestEmail || document.getElementById('guest-email').value}</p>
+                        <p style="margin: 3px 0 0; color: #475569;">${bookingData.guestPhone || document.getElementById('guest-phone').value}</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <p style="margin: 0; font-weight: bold; color: #64748B; text-transform: uppercase; font-size: 10px;">Stay Details</p>
+                        <p style="margin: 5px 0 0; font-weight: bold; font-size: 13px;">Check-in: ${bookingData.checkIn || document.getElementById('book-check-in').value}</p>
+                        <p style="margin: 3px 0 0; font-weight: bold; font-size: 13px;">Check-out: ${bookingData.checkOut || document.getElementById('book-check-out').value}</p>
+                    </div>
+                </div>
+
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 30px;">
+                    <thead>
+                        <tr style="background-color: #F8FAFC; border-bottom: 2px solid #E2E8F0;">
+                            <th style="padding: 12px; text-align: left; font-size: 11px; text-transform: uppercase; color: #64748B;">Description</th>
+                            <th style="padding: 12px; text-align: center; font-size: 11px; text-transform: uppercase; color: #64748B;">Nights</th>
+                            <th style="padding: 12px; text-align: right; font-size: 11px; text-transform: uppercase; color: #64748B;">Total Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #E2E8F0;">
+                            <td style="padding: 16px 12px; font-weight: bold;">
+                                ${selectedRoom ? selectedRoom.name : 'Luxury Suite'}
+                                <span style="display: block; font-weight: normal; font-size: 11px; color: #64748B; margin-top: 4px;">Accommodation</span>
+                            </td>
+                            <td style="padding: 16px 12px; text-align: center;">${stayNights}</td>
+                            <td style="padding: 16px 12px; text-align: right; font-weight: bold;">${document.getElementById('calc-subtotal').innerText}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div style="width: 300px; margin-left: auto;">
+                    <div style="display: flex; justify-content: space-between; padding: 8px 0; font-size: 13px; color: #64748B;">
+                        <span>Subtotal:</span>
+                        <span>${document.getElementById('calc-subtotal').innerText}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 8px 0; font-size: 13px; color: #64748B;">
+                        <span>Taxes (15%):</span>
+                        <span>${document.getElementById('calc-tax').innerText}</span>
+                    </div>
+                    ${appliedCoupon ? `
+                    <div style="display: flex; justify-content: space-between; padding: 8px 0; font-size: 13px; color: #10B981; font-weight: bold;">
+                        <span>Discount (${appliedCoupon.code}):</span>
+                        <span>${document.getElementById('calc-coupon-discount').innerText}</span>
+                    </div>
+                    ` : ''}
+                    <div style="display: flex; justify-content: space-between; padding: 12px 0; font-size: 18px; font-weight: 900; color: #D4AF37; border-top: 2px solid #E2E8F0; margin-top: 5px;">
+                        <span>TOTAL:</span>
+                        <span>${document.getElementById('calc-total').innerText}</span>
+                    </div>
+                </div>
+
+                <div style="margin-top: 60px; border-top: 1px solid #E2E8F0; padding-top: 20px; font-size: 10px; color: #94A3B8; text-align: center;">
+                    <p>Thank you for choosing Kaghan Stay! If you have any questions concerning this invoice, please contact support@kaghanstay.com.</p>
+                </div>
+            </div>
+            `;
+        }
+
+        async function generatePDFBase64(bookingData) {
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = getInvoiceHTML(bookingData);
+            document.body.appendChild(tempDiv);
+            
+            const opt = {
+                margin:       0,
+                filename:     `Kaghan-Stay-${bookingData.id}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+
+            const pdfBase64 = await html2pdf().set(opt).from(tempDiv).outputPdf('datauristring');
+            document.body.removeChild(tempDiv);
+            return pdfBase64;
+        }
+
+        async function downloadPDFReceipt() {
+            const btn = document.querySelector('button[onclick="downloadPDFReceipt()"]');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generating PDF...';
+            btn.disabled = true;
+
+            const tempDiv = document.createElement('div');
+            // Assuming receipt-id is the booking ID
+            const mockBooking = { id: document.getElementById('receipt-id').innerText };
+            tempDiv.innerHTML = getInvoiceHTML(mockBooking);
+            
+            const opt = {
+                margin:       0,
+                filename:     `Kaghan-Stay-Invoice-${mockBooking.id}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+
+            await html2pdf().set(opt).from(tempDiv).save();
+            
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+
+        // Mock Email Receipt
+        window.mockSendEmailReceipt = () => {
+            KaghanUI.showToast('Sending email via EmailJS (Mocked for Demo)...', 'info');
+            setTimeout(() => {
+                KaghanUI.showToast('Receipt successfully sent to your email!', 'success');
+            }, 1500);
+        };
 
         // Drawer handled by shared.js
 

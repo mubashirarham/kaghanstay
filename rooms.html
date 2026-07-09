@@ -12,6 +12,10 @@
     <link rel="apple-touch-icon" href="assets/images/logo.png">
     <meta name="theme-color" content="#0F172A">
 
+    <!-- Leaflet CSS & JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://kphstay.com/rooms">
@@ -276,63 +280,12 @@
                             </div>
                         </div>
 
-                        <!-- Room Category Custom Buttons -->
+                        <!-- Hidden Room Category Select -->
                         <div>
-                            <label class="block text-xs uppercase tracking-wider text-slate-500 font-semibold mb-3">Room Category</label>
                             <select id="filter-category" onchange="applyFilters()" class="hidden">
                                 <option value="all">All Categories</option>
-                                <option value="studio">Studio Furnished Apartment</option>
-                                <option value="1bed">1 Bed Furnished Apartment</option>
-                                <option value="2bed">2 Bed Furnished Apartment</option>
-                                <option value="3bed">3 Bed Furnished Apartment</option>
-                                <option value="4bed">4 Bed Furnished Apartment</option>
-                                <option value="5marla">5 Marla Furnished House</option>
-                                <option value="10marla">10 Marla Furnished House</option>
-                                <option value="1kanal">1 Kanal Furnished House</option>
-                                <option value="farmhouse">Fully Furnished Farmhouse</option>
+                                <!-- Dynamically loaded categories -->
                             </select>
-                            <div class="flex flex-col gap-1.5" id="custom-category-filters">
-                                <button data-value="all" type="button" class="category-filter-btn active w-full flex items-center justify-between px-4 py-3 rounded-2xl border text-xs font-semibold tracking-wider transition-all">
-                                    <span class="flex items-center gap-2.5"><i class="fa-solid fa-border-all text-[#D4AF37]"></i> All Accommodations</span>
-                                    <i class="fa-solid fa-chevron-right text-[10px] opacity-0 transition-all"></i>
-                                </button>
-                                <button data-value="studio" type="button" class="category-filter-btn w-full flex items-center justify-between px-4 py-3 rounded-2xl border text-xs font-semibold tracking-wider transition-all">
-                                    <span class="flex items-center gap-2.5"><i class="fa-solid fa-cube text-[#D4AF37]"></i> Studio Furnished Apartment</span>
-                                    <i class="fa-solid fa-chevron-right text-[10px] opacity-0 transition-all"></i>
-                                </button>
-                                <button data-value="1bed" type="button" class="category-filter-btn w-full flex items-center justify-between px-4 py-3 rounded-2xl border text-xs font-semibold tracking-wider transition-all">
-                                    <span class="flex items-center gap-2.5"><i class="fa-solid fa-bed text-[#D4AF37]"></i> 1 Bed Furnished Apartment</span>
-                                    <i class="fa-solid fa-chevron-right text-[10px] opacity-0 transition-all"></i>
-                                </button>
-                                <button data-value="2bed" type="button" class="category-filter-btn w-full flex items-center justify-between px-4 py-3 rounded-2xl border text-xs font-semibold tracking-wider transition-all">
-                                    <span class="flex items-center gap-2.5"><i class="fa-solid fa-door-open text-[#D4AF37]"></i> 2 Bed Furnished Apartment</span>
-                                    <i class="fa-solid fa-chevron-right text-[10px] opacity-0 transition-all"></i>
-                                </button>
-                                <button data-value="3bed" type="button" class="category-filter-btn w-full flex items-center justify-between px-4 py-3 rounded-2xl border text-xs font-semibold tracking-wider transition-all">
-                                    <span class="flex items-center gap-2.5"><i class="fa-solid fa-house-chimney text-[#D4AF37]"></i> 3 Bed Furnished Apartment</span>
-                                    <i class="fa-solid fa-chevron-right text-[10px] opacity-0 transition-all"></i>
-                                </button>
-                                <button data-value="4bed" type="button" class="category-filter-btn w-full flex items-center justify-between px-4 py-3 rounded-2xl border text-xs font-semibold tracking-wider transition-all">
-                                    <span class="flex items-center gap-2.5"><i class="fa-solid fa-building text-[#D4AF37]"></i> 4 Bed Furnished Apartment</span>
-                                    <i class="fa-solid fa-chevron-right text-[10px] opacity-0 transition-all"></i>
-                                </button>
-                                <button data-value="5marla" type="button" class="category-filter-btn w-full flex items-center justify-between px-4 py-3 rounded-2xl border text-xs font-semibold tracking-wider transition-all">
-                                    <span class="flex items-center gap-2.5"><i class="fa-solid fa-house text-[#D4AF37]"></i> 5 Marla Furnished House</span>
-                                    <i class="fa-solid fa-chevron-right text-[10px] opacity-0 transition-all"></i>
-                                </button>
-                                <button data-value="10marla" type="button" class="category-filter-btn w-full flex items-center justify-between px-4 py-3 rounded-2xl border text-xs font-semibold tracking-wider transition-all">
-                                    <span class="flex items-center gap-2.5"><i class="fa-solid fa-house-user text-[#D4AF37]"></i> 10 Marla Furnished House</span>
-                                    <i class="fa-solid fa-chevron-right text-[10px] opacity-0 transition-all"></i>
-                                </button>
-                                <button data-value="1kanal" type="button" class="category-filter-btn w-full flex items-center justify-between px-4 py-3 rounded-2xl border text-xs font-semibold tracking-wider transition-all">
-                                    <span class="flex items-center gap-2.5"><i class="fa-solid fa-hotel text-[#D4AF37]"></i> 1 Kanal Furnished House</span>
-                                    <i class="fa-solid fa-chevron-right text-[10px] opacity-0 transition-all"></i>
-                                </button>
-                                <button data-value="farmhouse" type="button" class="category-filter-btn w-full flex items-center justify-between px-4 py-3 rounded-2xl border text-xs font-semibold tracking-wider transition-all">
-                                    <span class="flex items-center gap-2.5"><i class="fa-solid fa-tree text-[#D4AF37]"></i> Fully Furnished Farmhouse</span>
-                                    <i class="fa-solid fa-chevron-right text-[10px] opacity-0 transition-all"></i>
-                                </button>
-                            </div>
                         </div>
 
                         <!-- Room Location -->
@@ -341,9 +294,7 @@
                             <div class="relative">
                                 <select id="filter-location" onchange="applyFilters()" class="w-full border border-slate-200 rounded-xl pl-4 pr-11 py-2.5 outline-none focus:border-[#D4AF37] text-sm bg-slate-50 text-slate-800 cursor-pointer appearance-none">
                                     <option value="all">All Locations</option>
-                                    <option value="Islamabad">Islamabad</option>
-                                    <option value="Murree">Murree</option>
-                                    <option value="Nathia Gali">Nathia Gali</option>
+                                    <!-- Dynamically loaded locations -->
                                 </select>
                                 <i class="fa-solid fa-chevron-down absolute right-4 top-3.5 text-slate-400 pointer-events-none text-xs"></i>
                             </div>
@@ -383,12 +334,30 @@
 
             <!-- Rooms Grid -->
             <main class="flex-1 min-w-0">
-                <div class="hidden lg:flex justify-between items-center mb-6">
-                    <p class="text-slate-400 text-sm font-medium"><span id="results-count" class="text-slate-900 font-bold text-lg">—</span> properties matching</p>
+                <!-- Category Filter Bar (Airbnb Style) -->
+                <div class="w-full overflow-x-auto no-scrollbar mb-8 pb-4 border-b border-slate-200">
+                    <div class="flex gap-8 min-w-max items-center px-2" id="custom-category-filters">
+                        <!-- Dynamically loaded categories -->
+                    </div>
                 </div>
 
-                <div id="rooms-grid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-2 gap-6" data-animate-group>
-                    <!-- Loaded dynamically via JS -->
+                <div class="hidden lg:flex justify-between items-center mb-6">
+                    <p class="text-slate-400 text-sm font-medium"><span id="results-count" class="text-slate-900 font-bold text-lg">—</span> properties matching</p>
+                    <button id="toggle-map-btn" onclick="toggleMapMode()" class="bg-white border border-slate-200 text-slate-800 text-xs font-bold px-4 py-2 rounded-xl shadow-sm hover:border-[#D4AF37] hover:text-[#D4AF37] transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-map-location-dot"></i> <span id="toggle-map-text">Show Map</span>
+                    </button>
+                </div>
+
+                <div id="rooms-layout-wrapper" class="flex gap-6 relative">
+                    <div id="rooms-grid-container" class="w-full transition-all duration-300">
+                        <div id="rooms-grid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-2 gap-6" data-animate-group>
+                            <!-- Loaded dynamically via JS -->
+                        </div>
+                    </div>
+                    
+                    <div id="rooms-map-container" class="w-0 opacity-0 overflow-hidden transition-all duration-300 rounded-3xl sticky top-24 h-[calc(100vh-120px)] border border-slate-200 shadow-inner z-10 hidden lg:block">
+                        <div id="rooms-map" class="w-full h-full"></div>
+                    </div>
                 </div>
 
                 <div id="no-rooms-fallback" class="hidden text-center py-20 bg-white border border-slate-100 rounded-3xl shadow-sm" data-animate="fade-in">
@@ -396,6 +365,11 @@
                     <h3 class="text-lg font-bold outfit text-slate-900 mb-1">No Properties Found</h3>
                     <p class="text-slate-400 text-xs mb-4">Try adjusting your filters or keyword query.</p>
                     <button onclick="clearFilters()" class="text-xs font-bold text-[#D4AF37] border border-[#D4AF37] px-4 py-2 rounded-xl hover:bg-[#D4AF37] hover:text-white transition-all">Clear Filters</button>
+                </div>
+                
+                <!-- Pagination Controls -->
+                <div id="rooms-pagination" class="flex justify-center items-center gap-2 mt-12 hidden">
+                    <!-- Buttons injected by JS -->
                 </div>
             </main>
 
