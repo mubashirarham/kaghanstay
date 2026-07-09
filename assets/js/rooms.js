@@ -255,6 +255,10 @@
         if (priceSlider) priceSlider.value = 150000;
         if (sortSelect) sortSelect.value = 'default';
 
+        // Uncheck all amenity checkboxes
+        const amenityCheckboxes = document.querySelectorAll('input[name="filter-amenity"]');
+        amenityCheckboxes.forEach(cb => cb.checked = false);
+
         if (priceSlider) {
             document.getElementById('price-val').innerText = KaghanUI.formatPKR(priceSlider.value);
         }
@@ -291,6 +295,10 @@
             });
         }
 
+        // Get selected amenities
+        const checkedAmenities = document.querySelectorAll('input[name="filter-amenity"]:checked');
+        const selectedAmenities = Array.from(checkedAmenities).map(cb => cb.value.toLowerCase());
+
         let filtered = rooms.filter(room => {
             const matchesKeyword = !keyword || 
                                    room.name.toLowerCase().includes(keyword) || 
@@ -299,7 +307,13 @@
             const matchesCategory = category === 'all' || room.type === category;
             const matchesLocation = location === 'all' || room.location === location;
             const matchesPrice = room.price <= maxPrice;
-            return matchesKeyword && matchesCategory && matchesLocation && matchesPrice;
+            
+            // Room must contain all selected amenities
+            const matchesAmenities = selectedAmenities.every(selectedA => 
+                room.amenities.some(roomA => roomA.toLowerCase().includes(selectedA))
+            );
+
+            return matchesKeyword && matchesCategory && matchesLocation && matchesPrice && matchesAmenities;
         });
 
         // Sorting

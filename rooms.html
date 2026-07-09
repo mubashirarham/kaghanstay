@@ -310,6 +310,33 @@
                             <input type="range" id="filter-price" min="8000" max="150000" step="5000" value="150000" oninput="updatePriceLabel(); applyFilters()" class="w-full cursor-pointer">
                         </div>
 
+                        <!-- Amenities -->
+                        <div>
+                            <label class="block text-xs uppercase tracking-wider text-slate-500 font-semibold mb-2">Amenities</label>
+                            <div class="space-y-2 mt-2">
+                                <label class="flex items-center gap-2.5 text-xs text-slate-700 font-semibold cursor-pointer group">
+                                    <input type="checkbox" name="filter-amenity" value="Fast WiFi" onchange="applyFilters()" class="w-4 h-4 rounded border-slate-300 text-[#D4AF37] focus:ring-[#D4AF37] cursor-pointer">
+                                    <span class="group-hover:text-[#D4AF37] transition-colors">Fast WiFi</span>
+                                </label>
+                                <label class="flex items-center gap-2.5 text-xs text-slate-700 font-semibold cursor-pointer group">
+                                    <input type="checkbox" name="filter-amenity" value="Mountain View" onchange="applyFilters()" class="w-4 h-4 rounded border-slate-300 text-[#D4AF37] focus:ring-[#D4AF37] cursor-pointer">
+                                    <span class="group-hover:text-[#D4AF37] transition-colors">Mountain View</span>
+                                </label>
+                                <label class="flex items-center gap-2.5 text-xs text-slate-700 font-semibold cursor-pointer group">
+                                    <input type="checkbox" name="filter-amenity" value="Kitchen" onchange="applyFilters()" class="w-4 h-4 rounded border-slate-300 text-[#D4AF37] focus:ring-[#D4AF37] cursor-pointer">
+                                    <span class="group-hover:text-[#D4AF37] transition-colors">Kitchen</span>
+                                </label>
+                                <label class="flex items-center gap-2.5 text-xs text-slate-700 font-semibold cursor-pointer group">
+                                    <input type="checkbox" name="filter-amenity" value="Private Pool" onchange="applyFilters()" class="w-4 h-4 rounded border-slate-300 text-[#D4AF37] focus:ring-[#D4AF37] cursor-pointer">
+                                    <span class="group-hover:text-[#D4AF37] transition-colors">Private Pool</span>
+                                </label>
+                                <label class="flex items-center gap-2.5 text-xs text-slate-700 font-semibold cursor-pointer group">
+                                    <input type="checkbox" name="filter-amenity" value="Spa Access" onchange="applyFilters()" class="w-4 h-4 rounded border-slate-300 text-[#D4AF37] focus:ring-[#D4AF37] cursor-pointer">
+                                    <span class="group-hover:text-[#D4AF37] transition-colors">Spa Access</span>
+                                </label>
+                            </div>
+                        </div>
+
                         <!-- Sorting (hidden on mobile, shown in mobile bar) -->
                         <div class="hidden lg:block">
                             <label class="block text-xs uppercase tracking-wider text-slate-500 font-semibold mb-2">Sort Results By</label>
