@@ -73,9 +73,12 @@ h1,h2,h3,h4,h5,h6 { font-family: var(--font-display); letter-spacing: -0.02em; l
 .hover-lift:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
 
 /* Forms */
+input[type="text"],input[type="email"],input[type="password"],input[type="date"],input[type="tel"],input[type="number"],input[type="search"],select,textarea {
+    border: 1.5px solid #cbd5e1;
+}
 :where(input[type="text"],input[type="email"],input[type="password"],input[type="date"],input[type="tel"],input[type="number"],input[type="search"],select,textarea) {
     display:block; width:100%; padding:0.75rem 1rem; font-size:0.875rem; font-family:var(--font-sans);
-    color:var(--brand-dark); background-color:#ffffff; border:1.5px solid #e2e8f0;
+    color:var(--brand-dark); background-color:#ffffff;
     border-radius:var(--radius-md); outline:none; box-shadow:var(--shadow-sm);
     transition:all var(--duration-base) var(--ease-spring);
     -webkit-appearance:none; -moz-appearance:none; appearance:none;
@@ -110,9 +113,9 @@ select:hover:not(:focus):not([disabled]),
 textarea:hover:not(:focus):not([disabled]) { border-color:#cbd5e1; box-shadow:0 4px 12px 0 rgba(15,23,42,0.03); }
 
 body.bg-\[\#0F172A\] input[type="text"],body.bg-\[\#0F172A\] input[type="email"],body.bg-\[\#0F172A\] input[type="password"],body.bg-\[\#0F172A\] input[type="date"],body.bg-\[\#0F172A\] input[type="tel"],body.bg-\[\#0F172A\] select,body.bg-\[\#0F172A\] textarea,.glass-dark input,.glass-dark select,.glass-dark textarea {
-    background-color:rgba(15,23,42,0.6) !important; border-color:rgba(255,255,255,0.1) !important; color:#ffffff !important; box-shadow:0 4px 20px rgba(0,0,0,0.2);
+    background-color:rgba(15,23,42,0.6) !important; border-color:rgba(255,255,255,0.25) !important; color:#ffffff !important; box-shadow:0 4px 20px rgba(0,0,0,0.2);
 }
-body.bg-\[\#0F172A\] input::placeholder,body.bg-\[\#0F172A\] textarea::placeholder,.glass-dark input::placeholder,.glass-dark textarea::placeholder { color:#64748b !important; }
+body.bg-\[\#0F172A\] input::placeholder,body.bg-\[\#0F172A\] textarea::placeholder,.glass-dark input::placeholder,.glass-dark textarea::placeholder { color:#94a3b8 !important; }
 body.bg-\[\#0F172A\] select option,.glass-dark select option { background-color:#0f172a; color:#ffffff; }
 body.bg-\[\#0F172A\] input:focus,body.bg-\[\#0F172A\] select:focus,body.bg-\[\#0F172A\] textarea:focus,.glass-dark input:focus,.glass-dark select:focus,.glass-dark textarea:focus {
     background-color:rgba(15,23,42,0.85) !important; border-color:var(--brand-gold) !important;
