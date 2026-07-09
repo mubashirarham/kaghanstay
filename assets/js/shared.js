@@ -1318,6 +1318,15 @@ window.downloadPDFInvoice = async function(bookingId) {
         const outDate = new Date(booking.checkOut);
         const nights = Math.max(1, Math.ceil((outDate - inDate) / (1000 * 3600 * 24)));
 
+        // Retrieve coupons to obtain the discount percentage
+        const coupons = await KaghanDB.getCoupons();
+        const coupon = booking.couponUsed ? coupons.find(c => c.id === booking.couponUsed || c.code === booking.couponUsed) : null;
+        const discountPercent = coupon ? (coupon.discountPercentage || 0) : 0;
+
+        const subtotal = Math.round(booking.totalPrice / (1.15 - (discountPercent / 100)));
+        const tax = Math.round(subtotal * 0.15);
+        const discount = Math.round(subtotal * (discountPercent / 100));
+
         // Generate Invoice HTML
         const html = `
         <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; padding: 40px; color: #0F172A; width: 800px;">
@@ -1362,12 +1371,26 @@ window.downloadPDFInvoice = async function(bookingId) {
                             <span style="display: block; font-weight: normal; font-size: 11px; color: #64748B; margin-top: 4px;">Accommodation</span>
                         </td>
                         <td style="padding: 16px 12px; text-align: center;">${nights}</td>
-                        <td style="padding: 16px 12px; text-align: right; font-weight: bold;">${KaghanUI.formatPKR(booking.totalPrice)}</td>
+                        <td style="padding: 16px 12px; text-align: right; font-weight: bold;">${KaghanUI.formatPKR(subtotal)}</td>
                     </tr>
                 </tbody>
             </table>
 
             <div style="width: 300px; margin-left: auto;">
+                <div style="display: flex; justify-content: space-between; padding: 8px 0; font-size: 13px; color: #64748B;">
+                    <span>Subtotal:</span>
+                    <span>${KaghanUI.formatPKR(subtotal)}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 8px 0; font-size: 13px; color: #64748B;">
+                    <span>Taxes (15%):</span>
+                    <span>${KaghanUI.formatPKR(tax)}</span>
+                </div>
+                ${booking.couponUsed ? `
+                <div style="display: flex; justify-content: space-between; padding: 8px 0; font-size: 13px; color: #10B981; font-weight: bold;">
+                    <span>Discount (${booking.couponUsed}):</span>
+                    <span>-${KaghanUI.formatPKR(discount)}</span>
+                </div>
+                ` : ''}
                 <div style="display: flex; justify-content: space-between; padding: 12px 0; font-size: 18px; font-weight: 900; color: #D4AF37; border-top: 2px solid #E2E8F0; margin-top: 5px;">
                     <span>TOTAL:</span>
                     <span>${KaghanUI.formatPKR(booking.totalPrice)}</span>
