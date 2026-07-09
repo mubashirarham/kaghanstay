@@ -296,7 +296,25 @@
                             <span>GST (15%)</span>
                             <span id="calc-tax">PKR 0</span>
                         </div>
-                        <!-- Tier Discount Row -->
+                        
+                        <!-- Coupon Input Box -->
+                        <div class="border-t border-slate-100 pt-4 pb-1 mt-2">
+                            <label class="block text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 ml-1">Have a Coupon Code?</label>
+                            <div class="flex gap-2">
+                                <div class="relative flex-grow">
+                                    <i class="fa-solid fa-ticket absolute left-3 top-3 text-slate-400 text-xs"></i>
+                                    <input type="text" id="coupon-code-input" placeholder="Enter code" class="w-full border border-slate-200 rounded-xl pl-8 pr-3 py-2 outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/10 text-xs bg-slate-50 focus:bg-white text-slate-800 transition-all font-medium uppercase">
+                                </div>
+                                <button onclick="validateAndApplyCoupon()" class="bg-[#0F172A] text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-[#D4AF37] transition-all shadow-md">Apply</button>
+                            </div>
+                            <p id="coupon-message" class="text-[9px] font-semibold mt-2 hidden ml-1"></p>
+                        </div>
+
+                        <!-- Coupon Discount Row -->
+                        <div id="coupon-discount-row" class="hidden justify-between text-emerald-500 font-bold">
+                            <span id="coupon-discount-lbl">Coupon</span>
+                            <span id="calc-coupon-discount">-PKR 0</span>
+                        </div>
 
 
                         <div class="border-t border-slate-100 pt-4 flex justify-between items-center font-extrabold text-lg text-slate-900">
