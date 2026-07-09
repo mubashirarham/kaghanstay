@@ -73,7 +73,7 @@ h1,h2,h3,h4,h5,h6 { font-family: var(--font-display); letter-spacing: -0.02em; l
 .hover-lift:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
 
 /* Forms */
-input[type="text"],input[type="email"],input[type="password"],input[type="date"],input[type="tel"],input[type="number"],input[type="search"],select,textarea {
+:where(input[type="text"],input[type="email"],input[type="password"],input[type="date"],input[type="tel"],input[type="number"],input[type="search"],select,textarea) {
     display:block; width:100%; padding:0.75rem 1rem; font-size:0.875rem; font-family:var(--font-sans);
     color:var(--brand-dark); background-color:#ffffff; border:1.5px solid #e2e8f0;
     border-radius:var(--radius-md); outline:none; box-shadow:var(--shadow-sm);
