@@ -269,7 +269,12 @@
                     
                     <!-- Selected Room Card Preview -->
                     <div id="room-preview-box" class="flex gap-5 border-b border-dashed border-slate-200 pb-6">
-                        <img id="preview-room-img" src="" alt="Suite Preview" class="w-24 h-24 object-cover rounded-2xl shadow-md">
+                        <div class="relative group cursor-pointer w-24 h-24 flex-shrink-0" onclick="openBookingLightbox()" title="View full gallery">
+                            <img id="preview-room-img" src="" alt="Suite Preview" class="w-full h-full object-cover rounded-2xl shadow-md">
+                            <div class="absolute inset-0 bg-black/40 rounded-2xl opacity-0 group-hover:opacity-100 flex items-center justify-center text-white transition-opacity duration-300">
+                                <i class="fa-solid fa-magnifying-glass-plus text-base"></i>
+                            </div>
+                        </div>
                         <div class="flex flex-col justify-center">
                             <h4 id="preview-room-name" class="font-bold text-slate-900 outfit text-base leading-tight">Deluxe Alpine Room</h4>
                             <span id="preview-room-location" class="text-[10px] uppercase tracking-widest text-slate-400 font-bold mt-1.5 flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-[#D4AF37]"></i> Islamabad</span>
@@ -437,6 +442,94 @@
                 }, 500);
             }, 3000);
         }
+
+        let lightboxImageIdx = 0;
+        window.openBookingLightbox = () => {
+            if (!selectedRoom) return;
+            const images = selectedRoom.images && selectedRoom.images.length > 0 ? selectedRoom.images : [selectedRoom.image];
+            
+            lightboxImageIdx = currentImageIdx; // Synchronize with the currently playing slideshow slide
+
+            const lightbox = document.createElement('div');
+            lightbox.id = 'booking-lightbox';
+            lightbox.className = 'fixed inset-0 z-[1000] bg-black/90 backdrop-blur-md flex items-center justify-center p-4 opacity-0 transition-opacity duration-300';
+            
+            lightbox.innerHTML = `
+                <button onclick="closeBookingLightbox(event)" class="absolute top-6 right-6 bg-white/10 hover:bg-white/20 text-white w-10 h-10 rounded-full flex items-center justify-center transition-colors text-lg focus:outline-none" aria-label="Close Gallery">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+
+                <div class="relative max-w-4xl w-full flex items-center justify-center group/nav select-none">
+                    <!-- Prev button -->
+                    <button onclick="changeLightboxImage(-1, event)" class="absolute left-4 bg-black/40 hover:bg-black/60 text-[#D4AF37] w-12 h-12 rounded-full flex items-center justify-center transition-all opacity-0 group-hover/nav:opacity-100 text-lg focus:outline-none z-10 hover:scale-105 border border-white/10">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+
+                    <!-- Main Image Frame -->
+                    <div class="relative overflow-hidden rounded-2xl max-h-[80vh] flex items-center justify-center">
+                        <img id="lightbox-img" src="${images[lightboxImageIdx]}" class="max-w-full max-h-[80vh] rounded-2xl shadow-2xl object-contain transition-all duration-300">
+                    </div>
+
+                    <!-- Next button -->
+                    <button onclick="changeLightboxImage(1, event)" class="absolute right-4 bg-black/40 hover:bg-black/60 text-[#D4AF37] w-12 h-12 rounded-full flex items-center justify-center transition-all opacity-0 group-hover/nav:opacity-100 text-lg focus:outline-none z-10 hover:scale-105 border border-white/10">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+
+                    <!-- Info Counter -->
+                    <div class="absolute bottom-4 bg-black/60 backdrop-blur-sm px-4 py-1.5 rounded-full text-xs font-bold text-white border border-white/10 tracking-widest">
+                        <span id="lightbox-counter">${lightboxImageIdx + 1}</span> / ${images.length}
+                    </div>
+                </div>
+            `;
+            
+            lightbox.onclick = (e) => {
+                if (e.target === lightbox) {
+                    window.closeBookingLightbox(e);
+                }
+            };
+
+            document.body.appendChild(lightbox);
+            setTimeout(() => lightbox.classList.remove('opacity-0'), 10);
+
+            window.lightboxKeydownHandler = (e) => {
+                if (e.key === 'ArrowRight') changeLightboxImage(1, e);
+                if (e.key === 'ArrowLeft') changeLightboxImage(-1, e);
+                if (e.key === 'Escape') closeBookingLightbox(e);
+            };
+            document.addEventListener('keydown', window.lightboxKeydownHandler);
+        };
+
+        window.closeBookingLightbox = (event) => {
+            if (event) event.stopPropagation();
+            const lightbox = document.getElementById('booking-lightbox');
+            if (lightbox) {
+                lightbox.classList.add('opacity-0');
+                document.removeEventListener('keydown', window.lightboxKeydownHandler);
+                setTimeout(() => lightbox.remove(), 300);
+            }
+        };
+
+        window.changeLightboxImage = (direction, event) => {
+            if (event) event.stopPropagation();
+            if (!selectedRoom) return;
+            const images = selectedRoom.images && selectedRoom.images.length > 0 ? selectedRoom.images : [selectedRoom.image];
+            
+            lightboxImageIdx = (lightboxImageIdx + direction + images.length) % images.length;
+            
+            const imgEl = document.getElementById('lightbox-img');
+            const counterEl = document.getElementById('lightbox-counter');
+            
+            if (imgEl) {
+                imgEl.classList.add('opacity-0');
+                setTimeout(() => {
+                    imgEl.src = images[lightboxImageIdx];
+                    imgEl.classList.remove('opacity-0');
+                }, 150);
+            }
+            if (counterEl) {
+                counterEl.innerText = lightboxImageIdx + 1;
+            }
+        };
 
         // Render Navbar
         function renderNavbar() {
