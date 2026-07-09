@@ -401,6 +401,42 @@
         let selectedRoom = null;
         let stayNights = 1;
         let finalPrice = 0;
+        let slideshowInterval = null;
+        let currentImageIdx = 0;
+
+        function startImageSlideshow(images) {
+            if (slideshowInterval) {
+                clearInterval(slideshowInterval);
+                slideshowInterval = null;
+            }
+
+            const imgEl = document.getElementById('preview-room-img');
+            if (!imgEl || !images || images.length <= 1) {
+                if (imgEl && images && images.length > 0) {
+                    imgEl.src = images[0];
+                }
+                return;
+            }
+
+            currentImageIdx = 0;
+            imgEl.src = images[0];
+
+            if (!imgEl.classList.contains('transition-all')) {
+                imgEl.classList.add('transition-all', 'duration-500');
+            }
+
+            slideshowInterval = setInterval(() => {
+                currentImageIdx = (currentImageIdx + 1) % images.length;
+                const nextSrc = images[currentImageIdx];
+
+                imgEl.classList.add('opacity-0');
+
+                setTimeout(() => {
+                    imgEl.src = nextSrc;
+                    imgEl.classList.remove('opacity-0');
+                }, 500);
+            }, 3000);
+        }
 
         // Render Navbar
         function renderNavbar() {
@@ -539,7 +575,8 @@
                     activeCard.className = "border rounded-2xl p-4 flex gap-4 cursor-pointer transition-all bg-[#D4AF37]/5 border-[#D4AF37] ring-2 ring-[#D4AF37] shadow-md";
                 }
 
-                document.getElementById('preview-room-img').src = selectedRoom.image;
+                const galleryImages = selectedRoom.images && selectedRoom.images.length > 0 ? selectedRoom.images : [selectedRoom.image];
+                startImageSlideshow(galleryImages);
                 document.getElementById('preview-room-name').innerText = selectedRoom.name;
                 document.getElementById('preview-room-location').innerHTML = `<i class="fa-solid fa-location-dot text-[#D4AF37] text-[9px] mr-1"></i> ${selectedRoom.location || 'Islamabad'}`;
                 document.getElementById('preview-room-guests').innerText = `Capacity: Max ${selectedRoom.maxGuests} guests`;
