@@ -132,6 +132,7 @@
                 if(window.KaghanUI) KaghanUI.showToast("Cloudinary widget not loaded.", "error");
                 return;
             }
+            let uploadedUrls = [];
             cloudinary.openUploadWidget({
                 cloudName: 'dis1ptaip',
                 uploadPreset: 'mubashir',
@@ -140,12 +141,19 @@
                 cropping: false,
                 defaultSource: 'local'
             }, (error, result) => {
-                if (!error && result && result.event === "success") {
-                    const dataInput = document.getElementById(dataInputId);
-                    const currentUrls = JSON.parse(dataInput.value || '[]');
-                    currentUrls.push(result.info.secure_url);
-                    renderGalleryPreview(containerId, dataInputId, currentUrls);
-                    if(window.KaghanUI) KaghanUI.showToast("Image added to gallery!", "success");
+                if (!error && result) {
+                    if (result.event === "success") {
+                        uploadedUrls.push(result.info.secure_url);
+                    } else if (result.event === "queues-end") {
+                        if (uploadedUrls.length > 0) {
+                            const dataInput = document.getElementById(dataInputId);
+                            const currentUrls = JSON.parse(dataInput.value || '[]');
+                            const newUrls = [...currentUrls, ...uploadedUrls];
+                            renderGalleryPreview(containerId, dataInputId, newUrls);
+                            if(window.KaghanUI) KaghanUI.showToast(`${uploadedUrls.length} image(s) added to gallery!`, "success");
+                            uploadedUrls = [];
+                        }
+                    }
                 }
             });
         });
