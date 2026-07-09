@@ -126,14 +126,14 @@
                             <label class="block text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 ml-1">Check In Date</label>
                             <div class="relative">
                                 <i class="fa-regular fa-calendar absolute left-4 top-4 text-slate-400"></i>
-                                <input type="date" id="book-check-in" required readonly class="w-full border border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none text-sm bg-slate-50 text-slate-600 font-medium cursor-not-allowed">
+                                <input type="date" id="book-check-in" required class="w-full border border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none text-sm bg-white text-slate-800 font-medium focus:border-[#D4AF37] focus:ring-4 focus:ring-[#D4AF37]/10 transition-all cursor-pointer">
                             </div>
                         </div>
                         <div>
                             <label class="block text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 ml-1">Check Out Date</label>
                             <div class="relative">
                                 <i class="fa-regular fa-calendar-check absolute left-4 top-4 text-slate-400"></i>
-                                <input type="date" id="book-check-out" required readonly class="w-full border border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none text-sm bg-slate-50 text-slate-600 font-medium cursor-not-allowed">
+                                <input type="date" id="book-check-out" required class="w-full border border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none text-sm bg-white text-slate-800 font-medium focus:border-[#D4AF37] focus:ring-4 focus:ring-[#D4AF37]/10 transition-all cursor-pointer">
                             </div>
                         </div>
                     </div>
@@ -167,7 +167,7 @@
                         <label class="block text-[10px] uppercase tracking-widest text-[#D4AF37] font-black mb-3">Rent Billing Cycle</label>
                         <div class="relative mb-2">
                             <i class="fa-solid fa-clock-rotate-left absolute left-4 top-4 text-slate-400"></i>
-                            <select id="book-billing-cycle" onchange="calculatePrice()" class="w-full border border-slate-200 rounded-xl pl-11 pr-11 py-3.5 outline-none focus:border-[#D4AF37] text-sm bg-white text-slate-800 font-semibold cursor-pointer appearance-none">
+                            <select id="book-billing-cycle" onchange="onBillingCycleChange()" class="w-full border border-slate-200 rounded-xl pl-11 pr-11 py-3.5 outline-none focus:border-[#D4AF37] text-sm bg-white text-slate-800 font-semibold cursor-pointer appearance-none">
                                 <option value="daily">Daily Basis</option>
                                 <option value="weekly">Weekly Basis</option>
                                 <option value="monthly">Monthly Basis</option>
@@ -280,6 +280,29 @@
                             <span id="preview-room-location" class="text-[10px] uppercase tracking-widest text-slate-400 font-bold mt-1.5 flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-[#D4AF37]"></i> Islamabad</span>
                             <span id="preview-room-price" class="text-sm font-black text-[#D4AF37] mt-1.5 bg-[#D4AF37]/10 inline-block px-2 py-0.5 rounded-lg w-max">25,000 PKR / Night</span>
                             <span id="preview-room-guests" class="text-[10px] text-slate-500 font-medium mt-1">Capacity: Max 2 guests</span>
+                        </div>
+                    </div>
+
+                    <!-- Advanced Pricing Strategy Noticeable Graphics -->
+                    <div id="pricing-breakdown-graphics" class="hidden bg-slate-50 border border-slate-100 rounded-2xl p-4 space-y-3">
+                        <div class="text-[10px] uppercase tracking-wider text-slate-400 font-bold mb-1 flex items-center gap-1"><i class="fa-solid fa-tags text-[#D4AF37]"></i> Pricing Advantage Available</div>
+                        <div id="graphics-daily-row" class="flex justify-between items-center text-xs">
+                            <span class="text-slate-600 font-medium">Standard Daily</span>
+                            <span id="graphics-daily-val" class="font-bold text-slate-800">PKR 0 / day</span>
+                        </div>
+                        <div id="graphics-weekly-row" class="hidden justify-between items-center text-xs">
+                            <div class="flex flex-col">
+                                <span class="text-slate-650 font-medium">Weekly Deal</span>
+                                <span id="graphics-weekly-per-day" class="text-[9px] text-emerald-600 font-bold"></span>
+                            </div>
+                            <span id="graphics-weekly-val" class="font-black text-slate-900 bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded border border-emerald-100"></span>
+                        </div>
+                        <div id="graphics-monthly-row" class="hidden justify-between items-center text-xs">
+                            <div class="flex flex-col">
+                                <span class="text-slate-650 font-medium">Monthly Deal</span>
+                                <span id="graphics-monthly-per-day" class="text-[9px] text-indigo-600 font-bold"></span>
+                            </div>
+                            <span id="graphics-monthly-val" class="font-black text-slate-900 bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded border border-indigo-100"></span>
                         </div>
                     </div>
 
@@ -681,10 +704,14 @@
                     billingBox.classList.remove('hidden');
                     
                     // Build pricing text
-                    let pText = `${KaghanUI.formatPKR(selectedRoom.priceDaily || selectedRoom.price)}/N`;
+                    let pText = "";
+                    if (selectedRoom.originalPrice) {
+                        pText += `<span class="line-through text-slate-400 mr-1.5 text-[10px] font-semibold">${KaghanUI.formatPKR(selectedRoom.originalPrice)}/N</span>`;
+                    }
+                    pText += `${KaghanUI.formatPKR(selectedRoom.priceDaily || selectedRoom.price)}/N`;
                     if (selectedRoom.priceWeekly) pText += ` | ${KaghanUI.formatPKR(selectedRoom.priceWeekly)}/W`;
                     if (selectedRoom.priceMonthly) pText += ` | ${KaghanUI.formatPKR(selectedRoom.priceMonthly)}/M`;
-                    document.getElementById('preview-room-price').innerText = pText;
+                    document.getElementById('preview-room-price').innerHTML = pText;
 
                     // Update dropdown options
                     billingCycleSelect.innerHTML = `<option value="daily">Daily Basis</option>`;
@@ -699,7 +726,54 @@
                     billingBox.classList.add('hidden');
                     billingCycleSelect.innerHTML = `<option value="daily">Daily Basis</option>`;
                     billingCycleSelect.value = 'daily';
-                    document.getElementById('preview-room-price').innerText = `${KaghanUI.formatPKR(selectedRoom.price)} / Night`;
+                    
+                    let basePriceText = "";
+                    if (selectedRoom.originalPrice) {
+                        basePriceText += `<span class="line-through text-slate-400 mr-1.5 text-xs font-semibold">${KaghanUI.formatPKR(selectedRoom.originalPrice)}</span>`;
+                    }
+                    basePriceText += `${KaghanUI.formatPKR(selectedRoom.price)} / Night`;
+                    document.getElementById('preview-room-price').innerHTML = basePriceText;
+                }
+
+                // Populate Noticeable Graphics Breakdown
+                const breakdownBox = document.getElementById('pricing-breakdown-graphics');
+                const dailyRowVal = document.getElementById('graphics-daily-val');
+                const weeklyRow = document.getElementById('graphics-weekly-row');
+                const weeklyPerDay = document.getElementById('graphics-weekly-per-day');
+                const weeklyVal = document.getElementById('graphics-weekly-val');
+                const monthlyRow = document.getElementById('graphics-monthly-row');
+                const monthlyPerDay = document.getElementById('graphics-monthly-per-day');
+                const monthlyVal = document.getElementById('graphics-monthly-val');
+
+                if (selectedRoom.priceWeekly || selectedRoom.priceMonthly) {
+                    breakdownBox.classList.remove('hidden');
+                    dailyRowVal.innerText = `${KaghanUI.formatPKR(selectedRoom.priceDaily || selectedRoom.price)} / day`;
+                    
+                    if (selectedRoom.priceWeekly) {
+                        weeklyRow.classList.remove('hidden');
+                        weeklyRow.classList.add('flex');
+                        const perDay = Math.round(selectedRoom.priceWeekly / 7);
+                        const savingsPercent = Math.round((1 - (perDay / (selectedRoom.priceDaily || selectedRoom.price))) * 100);
+                        weeklyPerDay.innerText = `${KaghanUI.formatPKR(perDay)} per day`;
+                        weeklyVal.innerHTML = `${KaghanUI.formatPKR(selectedRoom.priceWeekly)} <span class="text-[9px] bg-emerald-500 text-white font-black px-1.5 py-0.5 rounded-full ml-1.5 uppercase tracking-wide">Save ${savingsPercent}%</span>`;
+                    } else {
+                        weeklyRow.classList.add('hidden');
+                        weeklyRow.classList.remove('flex');
+                    }
+                    
+                    if (selectedRoom.priceMonthly) {
+                        monthlyRow.classList.remove('hidden');
+                        monthlyRow.classList.add('flex');
+                        const perDay = Math.round(selectedRoom.priceMonthly / 30);
+                        const savingsPercent = Math.round((1 - (perDay / (selectedRoom.priceDaily || selectedRoom.price))) * 100);
+                        monthlyPerDay.innerText = `${KaghanUI.formatPKR(perDay)} per day`;
+                        monthlyVal.innerHTML = `${KaghanUI.formatPKR(selectedRoom.priceMonthly)} <span class="text-[9px] bg-indigo-500 text-white font-black px-1.5 py-0.5 rounded-full ml-1.5 uppercase tracking-wide">Save ${savingsPercent}%</span>`;
+                    } else {
+                        monthlyRow.classList.add('hidden');
+                        monthlyRow.classList.remove('flex');
+                    }
+                } else {
+                    breakdownBox.classList.add('hidden');
                 }
 
                 // Load upcoming reserved dates
@@ -944,7 +1018,64 @@
                 checkOutInput.value = checkOutInput.min;
                 selectedEndDate = checkOutInput.min;
             }
+
+            // Hook manual change event listeners
+            checkInInput.addEventListener('change', (e) => {
+                const val = e.target.value;
+                if (val) {
+                    selectedStartDate = val;
+                    if (checkOutInput.value && checkOutInput.value <= val) {
+                        const nextDay = new Date(val);
+                        nextDay.setDate(nextDay.getDate() + 1);
+                        selectedEndDate = nextDay.toISOString().split('T')[0];
+                        checkOutInput.value = selectedEndDate;
+                    }
+                    renderCalendar();
+                    calculatePrice();
+                }
+            });
+
+            checkOutInput.addEventListener('change', (e) => {
+                const val = e.target.value;
+                if (val) {
+                    if (checkInInput.value && val <= checkInInput.value) {
+                        KaghanUI.showToast("Check-out date must be after check-in date.", "error");
+                        const nextDay = new Date(checkInInput.value);
+                        nextDay.setDate(nextDay.getDate() + 1);
+                        selectedEndDate = nextDay.toISOString().split('T')[0];
+                        e.target.value = selectedEndDate;
+                    } else {
+                        selectedEndDate = val;
+                    }
+                    renderCalendar();
+                    calculatePrice();
+                }
+            });
         }
+
+        window.onBillingCycleChange = () => {
+            const cycle = document.getElementById('book-billing-cycle').value;
+            const checkInVal = document.getElementById('book-check-in').value;
+            if (!checkInVal) return;
+
+            const checkInDate = new Date(checkInVal);
+            const checkOutDate = new Date(checkInVal);
+
+            if (cycle === 'weekly') {
+                checkOutDate.setDate(checkInDate.getDate() + 7);
+                selectedEndDate = checkOutDate.toISOString().split('T')[0];
+                document.getElementById('book-check-out').value = selectedEndDate;
+                KaghanUI.showToast("Dates auto-adjusted to 7 nights (Weekly Cycle)!", "success");
+            } else if (cycle === 'monthly') {
+                checkOutDate.setDate(checkInDate.getDate() + 30);
+                selectedEndDate = checkOutDate.toISOString().split('T')[0];
+                document.getElementById('book-check-out').value = selectedEndDate;
+                KaghanUI.showToast("Dates auto-adjusted to 30 nights (Monthly Cycle)!", "success");
+            }
+            
+            renderCalendar();
+            calculatePrice();
+        };
 
         // Live calculation logic
         async function calculatePrice() {

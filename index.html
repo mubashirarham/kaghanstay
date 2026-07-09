@@ -737,7 +737,10 @@
                         <div class="border-t border-slate-100 pt-6 flex justify-between items-center">
                             <div>
                                 <span class="text-slate-400 text-[10px] uppercase tracking-wider block font-semibold">${room.isApartment ? 'Rates starting from' : 'Rate Per Night'}</span>
-                                <span class="text-xl font-extrabold text-[#D4AF37] outfit">${KaghanUI.formatPKR(room.price)}</span>
+                                <div class="flex items-center gap-1.5 mt-0.5">
+                                    ${room.originalPrice ? `<span class="line-through text-slate-400 font-semibold text-xs">${KaghanUI.formatPKR(room.originalPrice)}</span>` : ''}
+                                    <span class="text-xl font-extrabold text-[#D4AF37] outfit">${KaghanUI.formatPKR(room.price)}</span>
+                                </div>
                             </div>
                             <button onclick="event.stopPropagation(); window.location.href='booking.html?room=${room.id}'" class="bg-[#0F172A] text-white text-xs font-bold px-6 py-3.5 rounded-xl hover:bg-[#D4AF37] transition-all shadow-md">
                                 Reserve Suite

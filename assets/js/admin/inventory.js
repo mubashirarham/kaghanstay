@@ -176,6 +176,7 @@
         }, 50);
 
         document.getElementById('edit-room-price').value = room.price;
+        document.getElementById('edit-room-price-original').value = room.originalPrice || '';
         document.getElementById('edit-room-price-weekly').value = room.priceWeekly || '';
         document.getElementById('edit-room-price-monthly').value = room.priceMonthly || '';
         document.getElementById('edit-room-guests').value = room.maxGuests || 2;
@@ -254,6 +255,7 @@
                 const type = document.getElementById('edit-room-type').value;
                 const location = document.getElementById('edit-room-location').value;
                 const price = parseInt(document.getElementById('edit-room-price').value);
+                const originalPrice = parseInt(document.getElementById('edit-room-price-original').value);
                 const priceWeekly = parseInt(document.getElementById('edit-room-price-weekly').value);
                 const priceMonthly = parseInt(document.getElementById('edit-room-price-monthly').value);
                 const maxGuests = parseInt(document.getElementById('edit-room-guests').value);
@@ -277,6 +279,7 @@
                     name,
                     type,
                     price,
+                    originalPrice: isNaN(originalPrice) ? null : originalPrice,
                     isApartment: true,
                     priceWeekly: isNaN(priceWeekly) ? null : priceWeekly,
                     priceMonthly: isNaN(priceMonthly) ? null : priceMonthly,
@@ -382,6 +385,7 @@
                 const type = document.getElementById('add-room-type').value;
                 const location = document.getElementById('add-room-location').value;
                 const price = parseInt(document.getElementById('add-room-price').value);
+                const originalPrice = parseInt(document.getElementById('add-room-price-original').value);
                 const priceWeekly = parseInt(document.getElementById('add-room-price-weekly').value);
                 const priceMonthly = parseInt(document.getElementById('add-room-price-monthly').value);
                 const maxGuests = parseInt(document.getElementById('add-room-guests').value);
@@ -410,6 +414,7 @@
                     name,
                     type,
                     price,
+                    originalPrice: isNaN(originalPrice) ? null : originalPrice,
                     isApartment: true,
                     priceWeekly: isNaN(priceWeekly) ? null : priceWeekly,
                     priceMonthly: isNaN(priceMonthly) ? null : priceMonthly,
