@@ -220,23 +220,14 @@ const DEFAULT_BOOKINGS = [
 // Initialize and Seed Firestore collections
 async function initializeFirestore() {
     try {
-        // Synchronize rooms database collection
-        const allDbRooms = await fdb.collection('rooms').get();
-        const defaultIds = DEFAULT_ROOMS.map(r => r.id);
-        
-        // Remove obsolete rooms that do not exist in default list
-        allDbRooms.forEach(async doc => {
-            if (!defaultIds.includes(doc.id)) {
-                await fdb.collection('rooms').doc(doc.id).delete();
-                console.log(`Deleted obsolete room: ${doc.id}`);
+        // Seed rooms database collection only if empty
+        const allDbRooms = await fdb.collection('rooms').limit(1).get();
+        if (allDbRooms.empty) {
+            for (const r of DEFAULT_ROOMS) {
+                await fdb.collection('rooms').doc(r.id).set(r);
             }
-        });
-        
-        // Set/Merge default rooms
-        for (const r of DEFAULT_ROOMS) {
-            await fdb.collection('rooms').doc(r.id).set(r, { merge: true });
+            console.log("Firestore rooms collection seeded.");
         }
-        console.log("Firestore rooms collection fully synchronized with new categories.");
 
         // Seed Categories
         const categoriesSnap = await fdb.collection('categories').limit(1).get();
