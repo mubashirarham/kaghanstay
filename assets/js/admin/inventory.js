@@ -133,7 +133,7 @@
                 return;
             }
             cloudinary.openUploadWidget({
-                cloudName: 'kaghan-properties',
+                cloudName: 'dis1ptaip',
                 uploadPreset: 'mubashir',
                 sources: ['local', 'url', 'camera'],
                 multiple: true,
