@@ -1,5 +1,23 @@
-require('dotenv').config();
+const admin = require('firebase-admin');
 const nodemailer = require('nodemailer');
+
+// Initialize Firebase Admin SDK
+if (!admin.apps.length) {
+    try {
+        admin.initializeApp({
+            credential: admin.credential.cert({
+                projectId: process.env.FIREBASE_PROJECT_ID,
+                clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+                privateKey: process.env.FIREBASE_PRIVATE_KEY ? process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n') : undefined
+            })
+        });
+    } catch (e) {
+        console.error("Firebase Admin SDK initialization failed in reminders:", e);
+    }
+}
+
+const fdb = admin.apps.length ? admin.firestore() : null;
+const auth = admin.apps.length ? admin.auth() : null;
 
 exports.handler = async (event, context) => {
     if (event.httpMethod !== 'POST') {
@@ -8,12 +26,52 @@ exports.handler = async (event, context) => {
 
     try {
         const body = JSON.parse(event.body || '{}');
+        const internalSecret = body.internalSecret;
+        let isAuthorized = false;
+
+        // Check internal API secret first
+        if (internalSecret && internalSecret === process.env.INTERNAL_API_SECRET) {
+            isAuthorized = true;
+        }
+
+        // Check Firebase token if not authorized by secret
+        if (!isAuthorized && auth && fdb) {
+            const authHeader = event.headers.authorization || event.headers.Authorization;
+            if (authHeader && authHeader.startsWith('Bearer ')) {
+                try {
+                    const token = authHeader.split('Bearer ')[1];
+                    const decodedToken = await auth.verifyIdToken(token);
+                    const userDoc = await fdb.collection('users').doc(decodedToken.uid).get();
+                    if (userDoc.exists && userDoc.data().role === 'admin') {
+                        isAuthorized = true;
+                    }
+                } catch (authErr) {
+                    console.warn("Reminders auth token verification failed:", authErr);
+                }
+            }
+        }
+
+        if (!isAuthorized) {
+            return {
+                statusCode: 401,
+                body: JSON.stringify({ error: 'Unauthorized direct execution.' })
+            };
+        }
+
         const { bookings, type } = body;
 
         if (!bookings || !Array.isArray(bookings) || bookings.length === 0) {
             return {
                 statusCode: 400,
                 body: JSON.stringify({ error: 'No bookings provided.' })
+            };
+        }
+
+        // Cap reminders to prevent email flood vector (M-03)
+        if (bookings.length > 50) {
+            return {
+                statusCode: 400,
+                body: JSON.stringify({ error: 'Payload exceeds maximum limit of 50 bookings per call.' })
             };
         }
 
@@ -106,7 +164,7 @@ exports.handler = async (event, context) => {
         console.error('Error sending customer reminders:', error);
         return {
             statusCode: 500,
-            body: JSON.stringify({ error: 'Internal Server Error', details: error.message })
+            body: JSON.stringify({ error: 'Internal Server Error' })
         };
     }
 };

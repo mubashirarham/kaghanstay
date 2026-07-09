@@ -9,42 +9,60 @@
     const db = window.KaghanDB;
     const fdb = firebase.firestore();
 
-    // Session cache getter
+// Session cache getter
     db.getCurrentUser = () => JSON.parse(localStorage.getItem('kaghan_hotel_session'));
     
     // Login procedure
     db.login = async (email, password) => {
-        const user = await db.getUserByEmail(email);
-        if (user && user.password === password) {
-            localStorage.setItem('kaghan_hotel_session', JSON.stringify(user));
-            return { success: true, user };
+        try {
+            const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+            const firebaseUser = userCredential.user;
+            
+            // Get user profile from Firestore using uid
+            const userDoc = await fdb.collection('users').doc(firebaseUser.uid).get();
+            if (userDoc.exists) {
+                const userData = userDoc.data();
+                localStorage.setItem('kaghan_hotel_session', JSON.stringify(userData));
+                return { success: true, user: userData };
+            }
+            return { success: false, message: 'User profile not found in database.' };
+        } catch (err) {
+            console.error("Login error:", err);
+            return { success: false, message: err.message };
         }
-        return { success: false, message: 'Invalid email or password.' };
     };
 
     // Registration procedure
     db.register = async (name, email, password, phone = '') => {
-        const existing = await db.getUserByEmail(email);
-        if (existing) {
-            return { success: false, message: 'An account with this email already exists.' };
+        try {
+            const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
+            const firebaseUser = userCredential.user;
+            
+            const newUser = {
+                id: firebaseUser.uid,
+                name,
+                email: email.toLowerCase().trim(),
+                role: 'user',
+                phone,
+                loyaltyPoints: 100
+            };
+            
+            // Save profile to Firestore under uid
+            await fdb.collection('users').doc(firebaseUser.uid).set(newUser);
+            localStorage.setItem('kaghan_hotel_session', JSON.stringify(newUser));
+            return { success: true, user: newUser };
+        } catch (err) {
+            console.error("Registration error:", err);
+            return { success: false, message: err.message };
         }
-        const userId = 'usr-' + Date.now();
-        const newUser = {
-            id: userId,
-            name,
-            email: email.toLowerCase().trim(),
-            password,
-            role: 'user',
-            phone
-        };
-        await fdb.collection('users').doc(userId).set(newUser);
-        localStorage.setItem('kaghan_hotel_session', JSON.stringify(newUser));
-        return { success: true, user: newUser };
     };
 
     // Logout and redirect
     db.logout = () => {
         localStorage.removeItem('kaghan_hotel_session');
+        if (typeof firebase !== 'undefined' && firebase.auth) {
+            firebase.auth().signOut().catch(console.error);
+        }
         const currentPath = window.location.pathname;
         if (currentPath.includes('/admin/') || currentPath.includes('/user/')) {
             window.location.href = '../login.html';
@@ -78,6 +96,8 @@
 
     // Profile updates
     db.updateUser = async (id, updatedData) => {
+        // Exclude password modifications from client
+        delete updatedData.password;
         await fdb.collection('users').doc(id).update(updatedData);
         
         // Sync active user session
@@ -89,9 +109,7 @@
         return true;
     };
 
-
-
-    // List system guests
+    // List system guests (restricted to admin)
     db.getUsers = async () => {
         const snap = await fdb.collection('users').get();
         const list = [];
@@ -99,10 +117,9 @@
         return list;
     };
 
-    // Search by email address key
-    db.getUserByEmail = async (email) => {
-        const snap = await fdb.collection('users').where('email', '==', email.toLowerCase().trim()).get();
-        if (snap.empty) return null;
-        return snap.docs[0].data();
+    // Fetch user by UID directly instead of querying all
+    db.getUserById = async (uid) => {
+        const doc = await fdb.collection('users').doc(uid).get();
+        return doc.exists ? doc.data() : null;
     };
 })();

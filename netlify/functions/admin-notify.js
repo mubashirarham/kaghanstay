@@ -8,6 +8,15 @@ exports.handler = async (event, context) => {
 
     try {
         const body = JSON.parse(event.body || '{}');
+        const internalSecret = body.internalSecret;
+
+        if (!internalSecret || internalSecret !== process.env.INTERNAL_API_SECRET) {
+            return {
+                statusCode: 403,
+                body: JSON.stringify({ error: 'Forbidden: Unauthorized direct api execution.' })
+            };
+        }
+
         const booking = body.booking;
         const pdfAttachment = body.pdfAttachment; // base64 string
 
@@ -65,7 +74,7 @@ exports.handler = async (event, context) => {
 
         const mailOptions = {
             from: `"Kaghan Stay Alerts" <${process.env.SMTP_USER}>`,
-            to: 'tanzilminhas2007@gmail.com',
+            to: process.env.ADMIN_EMAIL || 'tanzilminhas2007@gmail.com',
             subject: `New Booking Confirmed: ${booking.id}`,
             html: htmlContent
         };
@@ -95,7 +104,7 @@ exports.handler = async (event, context) => {
         console.error('Error sending admin alert:', error);
         return {
             statusCode: 500,
-            body: JSON.stringify({ error: 'Internal Server Error', details: error.message })
+            body: JSON.stringify({ error: 'Internal Server Error' })
         };
     }
 };

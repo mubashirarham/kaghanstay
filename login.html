@@ -351,18 +351,17 @@
                     const result = await firebase.auth().signInWithPopup(provider);
                     const user = result.user;
                     if (user) {
-                        let dbUser = await KaghanDB.getUserByEmail(user.email);
+                        let dbUser = await KaghanDB.getUserById(user.uid);
                         if (!dbUser) {
-                            const userId = 'usr-' + Date.now();
                             dbUser = {
-                                id: userId,
+                                id: user.uid,
                                 name: user.displayName || 'Google Guest',
                                 email: user.email.toLowerCase().trim(),
                                 role: 'user',
                                 loyaltyPoints: 100,
                                 phone: user.phoneNumber || ''
                             };
-                            await firebase.firestore().collection('users').doc(userId).set(dbUser);
+                            await firebase.firestore().collection('users').doc(user.uid).set(dbUser);
                         }
                         localStorage.setItem('kaghan_hotel_session', JSON.stringify(dbUser));
                         KaghanUI.showToast(`Welcome, ${dbUser.name}! (Google)`, 'success');
@@ -371,30 +370,9 @@
                     }
                 }
             } catch(err) {
-                console.warn("Firebase Auth Google sign-in failed, using fallback authentication:", err);
+                console.error("Firebase Auth Google sign-in failed:", err);
+                KaghanUI.showToast(`Google Sign-In failed: ${err.message}`, 'error');
             }
-            
-            // Standard premium simulated Google login
-            const email = prompt("Enter your Google Account Email:", "guest@kphstay.com");
-            if (!email) return;
-            
-            let dbUser = await KaghanDB.getUserByEmail(email);
-            if (!dbUser) {
-                const name = email.split('@')[0].split('.').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-                const userId = 'usr-' + Date.now();
-                dbUser = {
-                    id: userId,
-                    name: name || 'Google Guest',
-                    email: email.toLowerCase().trim(),
-                    role: 'user',
-                    loyaltyPoints: 120,
-                    phone: ''
-                };
-                await firebase.firestore().collection('users').doc(userId).set(dbUser);
-            }
-            localStorage.setItem('kaghan_hotel_session', JSON.stringify(dbUser));
-            KaghanUI.showToast(`Welcome, ${dbUser.name}! (Authenticated via Google Account)`, 'success');
-            setTimeout(() => redirectUser(dbUser), 800);
         }
 
         // Set Tab from URL Param

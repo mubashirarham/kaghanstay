@@ -26,6 +26,8 @@ fdb.enablePersistence().catch((err) => {
         console.warn('Firestore persistence deferred: Multiple tabs open.');
     } else if (err.code === 'unimplemented') {
         console.warn('Firestore persistence not supported in this browser.');
+    } else {
+        console.warn('Firestore persistence error:', err);
     }
 });
 
@@ -169,24 +171,7 @@ const DEFAULT_ROOMS = [
     }
 ];
 
-const DEFAULT_USERS = [
-    {
-        id: 'usr-admin',
-        name: 'KPH Admin',
-        email: 'tanzilminhas2007@gmail.com',
-        password: 'tanzil@minhas2007',
-        role: 'admin',
-        phone: '+92 334 0091127'
-    },
-    {
-        id: 'usr-guest',
-        name: 'Mubashir Arham',
-        email: 'guest@kphstay.com',
-        password: 'guest123',
-        role: 'user',
-        phone: '+92 300 1234567'
-    }
-];
+
 
 const DEFAULT_BOOKINGS = [
     {
@@ -217,91 +202,7 @@ const DEFAULT_BOOKINGS = [
     }
 ];
 
-// Initialize and Seed Firestore collections
-async function initializeFirestore() {
-    try {
-        // Seed rooms database collection only if empty
-        const allDbRooms = await fdb.collection('rooms').limit(1).get();
-        if (allDbRooms.empty) {
-            for (const r of DEFAULT_ROOMS) {
-                await fdb.collection('rooms').doc(r.id).set(r);
-            }
-            console.log("Firestore rooms collection seeded.");
-        }
 
-        // Seed Categories
-        const categoriesSnap = await fdb.collection('categories').limit(1).get();
-        if (categoriesSnap.empty) {
-            for (const cat of DEFAULT_CATEGORIES) {
-                await fdb.collection('categories').doc(cat.id).set(cat);
-            }
-            console.log("Firestore categories seeded.");
-        }
-
-        // Seed Locations
-        const locationsSnap = await fdb.collection('locations').limit(1).get();
-        if (locationsSnap.empty) {
-            for (const loc of DEFAULT_LOCATIONS) {
-                await fdb.collection('locations').doc(loc.id).set(loc);
-            }
-            console.log("Firestore locations seeded.");
-        }
-
-        // Seed Coupons
-        const couponsSnap = await fdb.collection('coupons').limit(1).get();
-        if (couponsSnap.empty) {
-            for (const cp of DEFAULT_COUPONS) {
-                await fdb.collection('coupons').doc(cp.id).set(cp);
-            }
-            console.log("Firestore coupons seeded.");
-        }
-
-        // Seed Users
-        const usersSnap = await fdb.collection('users').limit(1).get();
-        if (usersSnap.empty) {
-            for (const u of DEFAULT_USERS) {
-                await fdb.collection('users').doc(u.id).set(u);
-            }
-            console.log("Firestore users collection seeded.");
-        } else {
-            // Migrate/Update default admin to tanzilminhas2007@gmail.com and tanzil@minhas2007
-            const adminDoc = await fdb.collection('users').doc('usr-admin').get();
-            if (!adminDoc.exists || adminDoc.data().email !== 'tanzilminhas2007@gmail.com' || adminDoc.data().password !== 'tanzil@minhas2007') {
-                await fdb.collection('users').doc('usr-admin').set({
-                    id: 'usr-admin',
-                    name: 'KPH Admin',
-                    email: 'tanzilminhas2007@gmail.com',
-                    password: 'tanzil@minhas2007',
-                    role: 'admin',
-                    phone: '+92 51 8461975'
-                }, { merge: true });
-                console.log("Admin credentials updated in database.");
-            }
-            const guestDoc = await fdb.collection('users').doc('usr-guest').get();
-            if (guestDoc.exists && guestDoc.data().email === 'guest@kaghan.com') {
-                await fdb.collection('users').doc('usr-guest').update({
-                    email: 'guest@kphstay.com',
-                    name: 'Mubashir Arham'
-                });
-                console.log("Migrated default guest email to guest@kphstay.com");
-            }
-        }
-
-        // Seed Bookings
-        const bookingsSnap = await fdb.collection('bookings').limit(1).get();
-        if (bookingsSnap.empty) {
-            for (const b of DEFAULT_BOOKINGS) {
-                await fdb.collection('bookings').doc(b.id).set(b);
-            }
-            console.log("Firestore bookings collection seeded.");
-        }
-    } catch (error) {
-        console.error("Firestore seeding error:", error);
-    }
-}
-
-// Trigger Seeding (fails silently on page load, runs async)
-initializeFirestore();
 
 // Global memory cache and active listeners setup
 window.KaghanDB_Cache = {
@@ -556,23 +457,36 @@ const db = {
         return sorted;
     },
     addBooking: async (booking, pdfBase64 = null) => {
-        await fdb.collection('bookings').doc(booking.id).set(booking);
-        
-        // Dispatch invoice receipts
-        try {
-            const room = await db.getRoomById(booking.roomId);
-            const bookingWithRoom = { ...booking, roomName: room ? room.name : 'Luxury Accommodation' };
-
-            // 1. Send Email Invoice via Netlify Function
-            fetch('/.netlify/functions/booking-email', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ booking: bookingWithRoom, pdfAttachment: pdfBase64 })
-            }).catch(e => console.warn("Email function dispatch failed:", e));
-        } catch (err) {
-            console.error("Receipts dispatcher error:", err);
+        let idToken = null;
+        if (typeof firebase !== 'undefined' && firebase.auth && firebase.auth().currentUser) {
+            idToken = await firebase.auth().currentUser.getIdToken();
         }
 
+        const res = await fetch('/.netlify/functions/create-booking', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                roomId: booking.roomId,
+                checkIn: booking.checkIn,
+                checkOut: booking.checkOut,
+                guestName: booking.guestName,
+                guestEmail: booking.guestEmail,
+                guestPhone: booking.guestPhone,
+                couponCode: booking.couponUsed,
+                billingCycle: booking.billingCycle,
+                pdfBase64: pdfBase64,
+                idToken: idToken
+            })
+        });
+
+        if (!res.ok) {
+            const data = await res.json();
+            throw new Error(data.error || 'Failed to confirm reservation.');
+        }
+
+        const data = await res.json();
+        booking.id = data.booking.id;
+        booking.totalPrice = data.booking.totalPrice;
         return true;
     },
     updateBookingStatus: async (id, status) => {
@@ -699,16 +613,12 @@ const db = {
         window.KaghanDB_Cache.users = list;
         return list;
     },
-    getUserByEmail: async (email) => {
-        if (window.KaghanDB_Cache.users) {
-            const match = window.KaghanDB_Cache.users.find(u => u.email.toLowerCase() === email.toLowerCase().trim());
-            if (match) return match;
-        }
-        const snap = await fdb.collection('users').where('email', '==', email.toLowerCase().trim()).get();
-        if (snap.empty) return null;
-        return snap.docs[0].data();
+    getUserById: async (uid) => {
+        const doc = await fdb.collection('users').doc(uid).get();
+        return doc.exists ? doc.data() : null;
     },
     updateUser: async (id, updatedData) => {
+        delete updatedData.password;
         await fdb.collection('users').doc(id).update(updatedData);
         
         // Sync active user session
@@ -723,37 +633,51 @@ const db = {
     // Authentication / Session
     getCurrentUser: () => JSON.parse(localStorage.getItem(DB_KEYS.SESSION)),
     login: async (email, password) => {
-        const user = await db.getUserByEmail(email);
-        if (user && user.password === password) {
-            localStorage.setItem(DB_KEYS.SESSION, JSON.stringify(user));
-            startActiveListeners();
-            return { success: true, user };
+        try {
+            const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+            const firebaseUser = userCredential.user;
+            
+            const userDoc = await fdb.collection('users').doc(firebaseUser.uid).get();
+            if (userDoc.exists) {
+                const userData = userDoc.data();
+                localStorage.setItem(DB_KEYS.SESSION, JSON.stringify(userData));
+                startActiveListeners();
+                return { success: true, user: userData };
+            }
+            return { success: false, message: 'User profile not found in database.' };
+        } catch (err) {
+            console.error("Login error:", err);
+            return { success: false, message: err.message };
         }
-        return { success: false, message: 'Invalid email or password.' };
     },
     register: async (name, email, password, phone = '') => {
-        const existing = await db.getUserByEmail(email);
-        if (existing) {
-            return { success: false, message: 'An account with this email already exists.' };
+        try {
+            const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
+            const firebaseUser = userCredential.user;
+            
+            const newUser = {
+                id: firebaseUser.uid,
+                name,
+                email: email.toLowerCase().trim(),
+                role: 'user',
+                loyaltyPoints: 100, // Signup loyalty bonus
+                phone
+            };
+            await fdb.collection('users').doc(firebaseUser.uid).set(newUser);
+            localStorage.setItem(DB_KEYS.SESSION, JSON.stringify(newUser));
+            startActiveListeners();
+            return { success: true, user: newUser };
+        } catch (err) {
+            console.error("Registration error:", err);
+            return { success: false, message: err.message };
         }
-        const userId = 'usr-' + Date.now();
-        const newUser = {
-            id: userId,
-            name,
-            email: email.toLowerCase().trim(),
-            password,
-            role: 'user',
-            loyaltyPoints: 100, // Signup loyalty bonus
-            phone
-        };
-        await fdb.collection('users').doc(userId).set(newUser);
-        localStorage.setItem(DB_KEYS.SESSION, JSON.stringify(newUser));
-        startActiveListeners();
-        return { success: true, user: newUser };
     },
     logout: () => {
         stopActiveListeners();
         localStorage.removeItem(DB_KEYS.SESSION);
+        if (typeof firebase !== 'undefined' && firebase.auth) {
+            firebase.auth().signOut().catch(console.error);
+        }
         const currentPath = window.location.pathname;
         if (currentPath.includes('/admin/') || currentPath.includes('/user/')) {
             window.location.href = '../login.html';

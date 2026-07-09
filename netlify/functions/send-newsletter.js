@@ -1,44 +1,32 @@
-require('dotenv').config();
+const admin = require('firebase-admin');
 const nodemailer = require('nodemailer');
 
-// Convert Firestore REST values to JSON
-function parseFirestoreValue(value) {
-    if (!value) return null;
-    if ('stringValue' in value) return value.stringValue;
-    if ('integerValue' in value) return parseInt(value.integerValue, 10);
-    if ('doubleValue' in value) return parseFloat(value.doubleValue);
-    if ('booleanValue' in value) return value.booleanValue;
-    if ('arrayValue' in value) {
-        return (value.arrayValue.values || []).map(v => parseFirestoreValue(v));
+// Initialize Firebase Admin SDK
+if (!admin.apps.length) {
+    try {
+        admin.initializeApp({
+            credential: admin.credential.cert({
+                projectId: process.env.FIREBASE_PROJECT_ID,
+                clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+                privateKey: process.env.FIREBASE_PRIVATE_KEY ? process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n') : undefined
+            })
+        });
+    } catch (e) {
+        console.error("Firebase Admin SDK initialization failed in newsletter:", e);
     }
-    if ('mapValue' in value) {
-        const obj = {};
-        const fields = value.mapValue.fields || {};
-        for (const k in fields) {
-            obj[k] = parseFirestoreValue(fields[k]);
-        }
-        return obj;
-    }
-    return null;
 }
 
-function parseFirestoreDoc(doc) {
-    const fields = doc.fields || {};
-    const obj = {};
-    for (const key in fields) {
-        obj[key] = parseFirestoreValue(fields[key]);
-    }
-    return obj;
-}
+const fdb = admin.apps.length ? admin.firestore() : null;
+const auth = admin.apps.length ? admin.auth() : null;
 
 exports.handler = async (event, context) => {
-    // Enable CORS for dashboard testing
+    // Enable CORS for production origin only
     if (event.httpMethod === 'OPTIONS') {
         return {
             statusCode: 200,
             headers: {
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Origin': 'https://kphstay.com',
+                'Access-Control-Allow-Headers': 'Content-Type, Authorization',
                 'Access-Control-Allow-Methods': 'POST, OPTIONS'
             },
             body: ''
@@ -49,7 +37,36 @@ exports.handler = async (event, context) => {
         return { statusCode: 405, body: 'Method Not Allowed' };
     }
 
+    if (!fdb || !auth) {
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ error: 'Database service is currently unavailable.' })
+        };
+    }
+
     try {
+        // Authenticate Caller
+        const authHeader = event.headers.authorization || event.headers.Authorization;
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return {
+                statusCode: 401,
+                headers: { 'Access-Control-Allow-Origin': 'https://kphstay.com' },
+                body: JSON.stringify({ error: 'Unauthorized: Missing Authorization token.' })
+            };
+        }
+
+        const token = authHeader.split('Bearer ')[1];
+        const decodedToken = await auth.verifyIdToken(token);
+        const userDoc = await fdb.collection('users').doc(decodedToken.uid).get();
+
+        if (!userDoc.exists || userDoc.data().role !== 'admin') {
+            return {
+                statusCode: 403,
+                headers: { 'Access-Control-Allow-Origin': 'https://kphstay.com' },
+                body: JSON.stringify({ error: 'Forbidden: Admin authorization required.' })
+            };
+        }
+
         const body = JSON.parse(event.body || '{}');
         const subject = body.subject;
         const htmlBody = body.htmlBody;
@@ -57,39 +74,39 @@ exports.handler = async (event, context) => {
         if (!subject || !htmlBody) {
             return {
                 statusCode: 400,
-                headers: { 'Access-Control-Allow-Origin': '*' },
+                headers: { 'Access-Control-Allow-Origin': 'https://kphstay.com' },
                 body: JSON.stringify({ error: 'Subject and campaign content are required.' })
             };
         }
 
         // Retrieve SMTP settings
-        const host = process.env.SMTP_HOST;
-        const port = process.env.SMTP_PORT || 587;
-        const user = process.env.SMTP_USER;
-        const pass = process.env.SMTP_PASS;
+        const smtpHost = process.env.SMTP_HOST;
+        const smtpPort = process.env.SMTP_PORT || 587;
+        const smtpUser = process.env.SMTP_USER;
+        const smtpPass = process.env.SMTP_PASS;
 
-        if (!host || !user || !pass) {
+        if (!smtpHost || !smtpUser || !smtpPass) {
             return {
                 statusCode: 500,
-                headers: { 'Access-Control-Allow-Origin': '*' },
-                body: JSON.stringify({ error: 'SMTP credentials are not configured in Netlify environment variables.' })
+                headers: { 'Access-Control-Allow-Origin': 'https://kphstay.com' },
+                body: JSON.stringify({ error: 'SMTP credentials are not configured in environment variables.' })
             };
         }
 
-        // Fetch subscribers from Firestore REST API
-        const firestoreUrl = 'https://firestore.googleapis.com/v1/projects/kaghan-properties/databases/(default)/documents/newsletter?pageSize=300';
-        const dbRes = await fetch(firestoreUrl);
-        if (!dbRes.ok) {
-            throw new Error(`Failed to load subscribers from database: ${await dbRes.text()}`);
-        }
-        const dbData = await dbRes.json();
-        const docs = dbData.documents || [];
-        const subscribers = docs.map(parseFirestoreDoc).filter(s => s && s.email);
+        // Fetch subscribers from Firestore via Admin SDK
+        const newsletterSnap = await fdb.collection('newsletter').get();
+        const subscribers = [];
+        newsletterSnap.forEach(doc => {
+            const data = doc.data();
+            if (data && data.email) {
+                subscribers.push(data);
+            }
+        });
 
         if (subscribers.length === 0) {
             return {
                 statusCode: 200,
-                headers: { 'Access-Control-Allow-Origin': '*' },
+                headers: { 'Access-Control-Allow-Origin': 'https://kphstay.com' },
                 body: JSON.stringify({ message: 'No subscribers found in database. Broadcast canceled.', sentCount: 0 })
             };
         }
@@ -154,7 +171,7 @@ exports.handler = async (event, context) => {
         return {
             statusCode: 200,
             headers: {
-                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Origin': 'https://kphstay.com',
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ message: `Newsletter sent successfully to ${recipientEmails.length} subscribers.`, sentCount: recipientEmails.length })
@@ -164,8 +181,8 @@ exports.handler = async (event, context) => {
         console.error('[Newsletter Broadcast Error]:', err);
         return {
             statusCode: 500,
-            headers: { 'Access-Control-Allow-Origin': '*' },
-            body: JSON.stringify({ error: err.message })
+            headers: { 'Access-Control-Allow-Origin': 'https://kphstay.com' },
+            body: JSON.stringify({ error: 'Failed to broadcast newsletter campaign.' })
         };
     }
 };

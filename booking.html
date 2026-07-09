@@ -1331,61 +1331,53 @@
             }, 800);
 
             async function completeBooking() {
-
-
-                // Generate PDF Base64
-                const pdfBase64 = await generatePDFBase64(booking);
-
-                // Save booking
-                await KaghanDB.addBooking(booking, pdfBase64);
-
-                // Trigger Admin Notification Email & Customer Email
                 try {
-                    await fetch('/.netlify/functions/admin-notify', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ booking: booking, pdfAttachment: pdfBase64 })
-                    });
-                } catch(e) {
-                    console.error('Failed to send admin notification:', e);
-                }
+                    // Generate PDF Base64
+                    const pdfBase64 = await generatePDFBase64(booking);
 
-                // Trigger Confirmation Popup
-                document.getElementById('receipt-id').innerText = booking.id;
-                document.getElementById('receipt-name').innerText = booking.guestName;
-                document.getElementById('receipt-room').innerText = selectedRoom.name;
-                document.getElementById('receipt-dates').innerText = `${KaghanUI.formatDate(booking.checkIn)} - ${KaghanUI.formatDate(booking.checkOut)}`;
-                document.getElementById('receipt-total').innerText = KaghanUI.formatPKR(booking.totalPrice);
+                    // Save booking via secure Netlify Function
+                    await KaghanDB.addBooking(booking, pdfBase64);
 
-                // Adjust the account/dashboard button dynamically for walk-in guest checkouts
-                const receiptDashboardBtn = document.getElementById('receipt-dashboard-btn');
-                if (receiptDashboardBtn) {
-                    if (user) {
-                        receiptDashboardBtn.innerText = 'My Account';
-                    } else {
-                        receiptDashboardBtn.innerText = 'Register Account';
+                    // Trigger Confirmation Popup
+                    document.getElementById('receipt-id').innerText = booking.id;
+                    document.getElementById('receipt-name').innerText = booking.guestName;
+                    document.getElementById('receipt-room').innerText = selectedRoom.name;
+                    document.getElementById('receipt-dates').innerText = `${KaghanUI.formatDate(booking.checkIn)} - ${KaghanUI.formatDate(booking.checkOut)}`;
+                    document.getElementById('receipt-total').innerText = KaghanUI.formatPKR(booking.totalPrice);
+
+                    // Adjust the account/dashboard button dynamically for walk-in guest checkouts
+                    const receiptDashboardBtn = document.getElementById('receipt-dashboard-btn');
+                    if (receiptDashboardBtn) {
+                        if (user) {
+                            receiptDashboardBtn.innerText = 'My Account';
+                        } else {
+                            receiptDashboardBtn.innerText = 'Register Account';
+                        }
                     }
-                }
 
-                const modal = document.getElementById('confirmation-modal');
-                modal.classList.remove('hidden');
-                setTimeout(() => {
-                    modal.classList.remove('opacity-0');
-                    modal.firstElementChild.classList.remove('scale-95');
-                }, 10);
-                
-                // Set WhatsApp share link
-                const waBtn = document.getElementById('whatsapp-share-btn');
-                if (waBtn) {
-                    const text = `*Booking Confirmed at Kaghan Stay!*\n\nID: ${booking.id}\nRoom: ${selectedRoom.name}\nDates: ${KaghanUI.formatDate(booking.checkIn)} to ${KaghanUI.formatDate(booking.checkOut)}\nTotal Paid: ${KaghanUI.formatPKR(booking.totalPrice)}\n\nThank you for choosing us!`;
-                    waBtn.onclick = () => {
-                        window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
-                    };
-                }
+                    const modal = document.getElementById('confirmation-modal');
+                    modal.classList.remove('hidden');
+                    setTimeout(() => {
+                        modal.classList.remove('opacity-0');
+                        modal.firstElementChild.classList.remove('scale-95');
+                    }, 10);
+                    
+                    // Set WhatsApp share link
+                    const waBtn = document.getElementById('whatsapp-share-btn');
+                    if (waBtn) {
+                        const text = `*Booking Confirmed at Kaghan Stay!*\n\nID: ${booking.id}\nRoom: ${selectedRoom.name}\nDates: ${KaghanUI.formatDate(booking.checkIn)} to ${KaghanUI.formatDate(booking.checkOut)}\nTotal Paid: ${KaghanUI.formatPKR(booking.totalPrice)}\n\nThank you for choosing us!`;
+                        waBtn.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+                    }
 
-                KaghanUI.showToast('Your reservation has been processed!', 'success');
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalBtnHtml;
+                    KaghanUI.showToast('Your reservation has been processed!', 'success');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnHtml;
+                } catch (err) {
+                    console.error("Booking creation failed:", err);
+                    KaghanUI.showToast(err.message || 'Failed to complete reservation.', 'error');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnHtml;
+                }
             }
         }
 

@@ -21,7 +21,10 @@
         if (nameInput) nameInput.value = user.name;
         if (phoneInput) phoneInput.value = user.phone || '';
         if (emailInput) emailInput.value = user.email;
-        if (passInput) passInput.value = user.password;
+        if (passInput) {
+            passInput.value = '';
+            passInput.placeholder = '•••••••• (Leave blank to keep current)';
+        }
     }
 
     function setupProfileForm() {
@@ -37,23 +40,36 @@
             const updatedPhone = document.getElementById('profile-phone').value.trim();
             const updatedPass = document.getElementById('profile-pass').value.trim();
 
-            if (!updatedName || !updatedPass) {
-                KaghanUI.showToast('Name and password cannot be empty.', 'error');
+            if (!updatedName) {
+                KaghanUI.showToast('Name cannot be empty.', 'error');
                 return;
             }
 
-            const success = await KaghanDB.updateUser(user.id, {
+            const updatePayload = {
                 name: updatedName,
-                phone: updatedPhone,
-                password: updatedPass
-            });
+                phone: updatedPhone
+            };
 
-            if (success) {
+            let success = await KaghanDB.updateUser(user.id, updatePayload);
+
+            if (updatedPass && success) {
+                try {
+                    const authUser = firebase.auth().currentUser;
+                    if (authUser) {
+                        await authUser.updatePassword(updatedPass);
+                        KaghanUI.showToast('Profile and password updated successfully!', 'success');
+                    } else {
+                        KaghanUI.showToast('Profile updated, but password change requires recent login.', 'warning');
+                    }
+                } catch (authErr) {
+                    console.error("Password update error:", authErr);
+                    KaghanUI.showToast('Profile updated, but password change failed: ' + authErr.message, 'error');
+                }
+            } else if (success) {
                 KaghanUI.showToast('Profile configuration updated!', 'success');
-                renderUserProfile();
-            } else {
-                KaghanUI.showToast('Failed to update profile.', 'error');
             }
+            
+            renderUserProfile();
         });
     }
 

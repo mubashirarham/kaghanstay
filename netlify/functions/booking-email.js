@@ -8,6 +8,15 @@ exports.handler = async (event, context) => {
 
     try {
         const body = JSON.parse(event.body || '{}');
+        const internalSecret = body.internalSecret;
+
+        if (!internalSecret || internalSecret !== process.env.INTERNAL_API_SECRET) {
+            return {
+                statusCode: 403,
+                body: JSON.stringify({ error: 'Forbidden: Unauthorized direct api execution.' })
+            };
+        }
+
         const booking = body.booking;
         const pdfAttachment = body.pdfAttachment; // base64 string
 
@@ -138,13 +147,13 @@ exports.handler = async (event, context) => {
         <body>
             <div class="container">
                 <div class="header">
-                    <div class="logo-text">KPH</div>
-                    <div class="logo-sub">Stay Resort & Apartments</div>
+                    <div class="logo-text">KAGHAN STAY</div>
+                    <div class="logo-sub">Resort & Apartments</div>
                 </div>
                 <div class="content">
                     <h1>Booking Confirmation Slip</h1>
                     <p>Dear ${guestName},</p>
-                    <p>Thank you for choosing KPH Stay. We are pleased to confirm your reservation. Your accommodation details and financial summary are detailed below:</p>
+                    <p>Thank you for choosing Kaghan Stay. We are pleased to confirm your reservation. Your accommodation details and financial summary are detailed below:</p>
                     
                     <div class="ledger-card">
                         <div class="ledger-row">
@@ -165,16 +174,16 @@ exports.handler = async (event, context) => {
                         </div>
                         <div class="ledger-row">
                             <span class="label">Total Price Paid</span>
-                            <span class="value total-value">PKR ${totalPrice.toLocaleString()}</span>
+                            <span class="value total-value">PKR ${Number(totalPrice || 0).toLocaleString()}</span>
                         </div>
                     </div>
 
                     <p>If you have any questions or require check-in assistance or custom airport shuttle pickups, please contact our lobby support line at +92 51 8461975.</p>
                     <p>We look forward to welcoming you soon.</p>
-                    <p style="margin-top: 30px; font-weight: 500; color: #0F172A;">Warmest regards,<br><span style="color: #D4AF37; font-size: 13px;">KPH Resort Concierge</span></p>
+                    <p style="margin-top: 30px; font-weight: 500; color: #0F172A;">Warmest regards,<br><span style="color: #D4AF37; font-size: 13px;">Kaghan Stay Concierge</span></p>
                 </div>
                 <div class="footer">
-                    &copy; 2026 KPH Stay. Islamabad & Nathia Gali, Pakistan.<br>
+                    &copy; 2026 Kaghan Stay. Islamabad & Nathia Gali, Pakistan.<br>
                     Need assistance? <a href="https://kphstay.com/contact">Contact Lobby</a>
                 </div>
             </div>
@@ -209,7 +218,7 @@ exports.handler = async (event, context) => {
         });
 
         const mailOptions = {
-            from: `"KPH Stay Lobby" <${user}>`,
+            from: `"Kaghan Stay Lobby" <${user}>`,
             to: guestEmail,
             subject: `Resort Booking Confirmation Slip - ${bookingId}`,
             html: htmlContent
@@ -243,7 +252,7 @@ exports.handler = async (event, context) => {
         console.error("[Invoice Emailer Error]:", err);
         return {
             statusCode: 500,
-            body: JSON.stringify({ error: err.message })
+            body: JSON.stringify({ error: 'Internal Server Error' })
         };
     }
 };

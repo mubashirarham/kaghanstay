@@ -1,77 +1,34 @@
-require('dotenv').config();
-const FIRESTORE_BASE_URL = 'https://firestore.googleapis.com/v1/projects/kaghan-properties/databases/(default)/documents';
+const admin = require('firebase-admin');
 
-// Fallback Groq API Key provided by user
-const FALLBACK_GROQ_KEY = '';
-
-// Helper to convert Firestore REST values to JSON objects
-function parseFirestoreValue(value) {
-    if (!value) return null;
-    if ('stringValue' in value) return value.stringValue;
-    if ('integerValue' in value) return parseInt(value.integerValue, 10);
-    if ('doubleValue' in value) return parseFloat(value.doubleValue);
-    if ('booleanValue' in value) return value.booleanValue;
-    if ('arrayValue' in value) {
-        return (value.arrayValue.values || []).map(v => parseFirestoreValue(v));
-    }
-    if ('mapValue' in value) {
-        const obj = {};
-        const fields = value.mapValue.fields || {};
-        for (const k in fields) {
-            obj[k] = parseFirestoreValue(fields[k]);
-        }
-        return obj;
-    }
-    return null;
-}
-
-function parseFirestoreDoc(doc) {
-    const fields = doc.fields || {};
-    const obj = {};
-    for (const key in fields) {
-        obj[key] = parseFirestoreValue(fields[key]);
-    }
-    const parts = doc.name.split('/');
-    obj.id = parts[parts.length - 1];
-    return obj;
-}
-
-// Convert JSON objects to Firestore REST document values
-function convertToFirestoreValue(val) {
-    if (typeof val === 'string') return { stringValue: val };
-    if (typeof val === 'number') {
-        if (Number.isInteger(val)) return { integerValue: val.toString() };
-        return { doubleValue: val };
-    }
-    if (typeof val === 'boolean') return { booleanValue: val };
-    if (Array.isArray(val)) {
-        return { arrayValue: { values: val.map(convertToFirestoreValue) } };
-    }
-    if (typeof val === 'object' && val !== null) {
-        const fields = {};
-        for (const k in val) {
-            fields[k] = convertToFirestoreValue(val[k]);
-        }
-        return { mapValue: { fields } };
-    }
-    return { nullValue: null };
-}
-
-function convertToFirestoreDoc(obj) {
-    const fields = {};
-    for (const key in obj) {
-        fields[key] = convertToFirestoreValue(obj[key]);
-    }
-    return { fields };
-}
-
-// Firestore REST calls
-async function fetchCollection(collectionName) {
+// Initialize Firebase Admin SDK
+if (!admin.apps.length) {
     try {
-        const res = await fetch(`${FIRESTORE_BASE_URL}/${collectionName}`);
-        if (!res.ok) return [];
-        const data = await res.json();
-        return (data.documents || []).map(doc => parseFirestoreDoc(doc));
+        admin.initializeApp({
+            credential: admin.credential.cert({
+                projectId: process.env.FIREBASE_PROJECT_ID,
+                clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+                privateKey: process.env.FIREBASE_PRIVATE_KEY ? process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n') : undefined
+            })
+        });
+    } catch (e) {
+        console.error("Firebase Admin SDK initialization failed in chatbot:", e);
+    }
+}
+
+const fdb = admin.apps.length ? admin.firestore() : null;
+
+// Helper to load collection via Admin SDK
+async function fetchCollection(collectionName) {
+    if (!fdb) return [];
+    try {
+        const snap = await fdb.collection(collectionName).get();
+        const list = [];
+        snap.forEach(doc => {
+            const data = doc.data();
+            data.id = doc.id;
+            list.push(data);
+        });
+        return list;
     } catch (err) {
         console.error(`Error loading collection ${collectionName}:`, err);
         return [];
@@ -79,16 +36,8 @@ async function fetchCollection(collectionName) {
 }
 
 async function writeDocument(collectionName, docId, obj) {
-    const body = convertToFirestoreDoc(obj);
-    const res = await fetch(`${FIRESTORE_BASE_URL}/${collectionName}/${docId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-    });
-    if (!res.ok) {
-        const err = await res.text();
-        throw new Error(`Firestore REST write error: ${err}`);
-    }
+    if (!fdb) throw new Error("Database service unavailable.");
+    await fdb.collection(collectionName).doc(docId).set(obj);
     return true;
 }
 
@@ -179,8 +128,8 @@ async function bookRoomTool(roomId, guestName, guestEmail, guestPhone, checkIn, 
             }).catch(e => console.warn("Chatbot failed to dispatch email receipt:", e));
         }
 
-        if (guestPhone) {
-            fetch('http://localhost:3000/send-whatsapp', {
+        if (guestPhone && process.env.WHATSAPP_API_URL) {
+            fetch(process.env.WHATSAPP_API_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -192,7 +141,9 @@ async function bookRoomTool(roomId, guestName, guestEmail, guestPhone, checkIn, 
                     checkOut,
                     totalPrice
                 })
-            }).catch(e => console.warn("WhatsApp service offline or unreachable locally:", e));
+            }).catch(e => console.warn("WhatsApp service unreachable:", e));
+        } else if (guestPhone) {
+            console.log(`[Mock WhatsApp Alert] Would send notification to ${guestPhone} (WHATSAPP_API_URL env variable not configured).`);
         }
     } catch (notifierErr) {
         console.error("Chatbot receipts dispatcher error:", notifierErr);
@@ -222,12 +173,36 @@ async function readBlogsTool() {
 }
 
 exports.handler = async (event, context) => {
+    const origin = event.headers.origin || event.headers.Origin || '';
+    let allowedOrigin = 'https://kphstay.com';
+    if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
+        allowedOrigin = origin;
+    }
+
+    if (event.httpMethod === 'OPTIONS') {
+        return {
+            statusCode: 200,
+            headers: {
+                'Access-Control-Allow-Origin': allowedOrigin,
+                'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+                'Access-Control-Allow-Methods': 'POST, OPTIONS'
+            },
+            body: ''
+        };
+    }
+
     if (event.httpMethod !== 'POST') {
         return { statusCode: 405, body: 'Method Not Allowed' };
     }
 
-    // Use environment variable or fallback provided key
-    const API_KEY = process.env.GROQ_API_KEY || FALLBACK_GROQ_KEY;
+    const API_KEY = process.env.GROQ_API_KEY;
+    if (!API_KEY) {
+        return {
+            statusCode: 500,
+            headers: { 'Access-Control-Allow-Origin': allowedOrigin },
+            body: JSON.stringify({ error: 'Concierge bot key configuration missing.' })
+        };
+    }
 
     try {
         const body = JSON.parse(event.body || '{}');
@@ -391,7 +366,7 @@ exports.handler = async (event, context) => {
             statusCode: 200,
             headers: {
                 'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*' // support local widgets testing
+                'Access-Control-Allow-Origin': allowedOrigin
             },
             body: JSON.stringify({ response: finalResponseText })
         };
@@ -400,8 +375,11 @@ exports.handler = async (event, context) => {
         console.error('[Concierge AI Server Error]:', error);
         return {
             statusCode: 500,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ error: error.message })
+            headers: { 
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': allowedOrigin
+            },
+            body: JSON.stringify({ error: 'An internal error occurred in the concierge service.' })
         };
     }
 };

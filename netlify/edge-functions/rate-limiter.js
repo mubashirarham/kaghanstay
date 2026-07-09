@@ -10,9 +10,7 @@ const MAX_REQUESTS_PER_WINDOW = 20;
 
 export default async (request, context) => {
   // Retrieve client connection IP
-  const clientIp = request.headers.get("x-nf-client-connection-ip") || 
-                   request.headers.get("x-forwarded-for") || 
-                   "unknown-ip";
+  const clientIp = request.headers.get("x-nf-client-connection-ip") || "unknown-ip";
 
   const now = Date.now();
   
@@ -38,7 +36,7 @@ export default async (request, context) => {
         status: 429,
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Origin": "https://kphstay.com",
           "Retry-After": "60"
         }
       }
