@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kph-stay-cache-v4';
+const CACHE_NAME = 'kph-stay-cache-v5';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -69,6 +69,21 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // Bypass all external CDN requests — let browser handle them directly (avoids CSP SW violations)
+  const BYPASS_ORIGINS = [
+    'unpkg.com',
+    'cdn.jsdelivr.net',
+    'cdnjs.cloudflare.com',
+    'fonts.googleapis.com',
+    'fonts.gstatic.com',
+    'cdn.quilljs.com',
+    'widget.cloudinary.com',
+    'www.gstatic.com',
+  ];
+  if (BYPASS_ORIGINS.some(domain => url.origin.includes(domain))) {
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       if (cachedResponse) {
@@ -97,8 +112,10 @@ self.addEventListener('fetch', (event) => {
         .catch(() => {
           // Offline fallback for navigation requests
           if (event.request.mode === 'navigate') {
-            return caches.match('/index.html');
+            return caches.match('/index.html').then(r => r || new Response('Offline', { status: 503 }));
           }
+          // For non-navigation requests (scripts, styles, images) return empty 503
+          return new Response('', { status: 503 });
         });
     })
   );
