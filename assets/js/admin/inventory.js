@@ -5,8 +5,6 @@
     let editRoomMarker = null;
     let addRoomMap = null;
     let addRoomMarker = null;
-    let editQuill = null;
-    let addQuill = null;
 
     async function populateSelects() {
         const typeSelects = [document.getElementById('add-room-type'), document.getElementById('edit-room-type')];
@@ -180,8 +178,9 @@
         document.getElementById('edit-room-price-weekly').value = room.priceWeekly || '';
         document.getElementById('edit-room-price-monthly').value = room.priceMonthly || '';
         document.getElementById('edit-room-guests').value = room.maxGuests || 2;
-        if(editQuill) {
-            editQuill.root.innerHTML = room.description || '';
+        const editDescEl = document.getElementById('edit-room-desc');
+        if (editDescEl) {
+            editDescEl.value = room.description || '';
         }
         document.getElementById('edit-room-amenities').value = room.amenities.join(', ');
 
@@ -259,7 +258,8 @@
                 const priceWeekly = parseInt(document.getElementById('edit-room-price-weekly').value);
                 const priceMonthly = parseInt(document.getElementById('edit-room-price-monthly').value);
                 const maxGuests = parseInt(document.getElementById('edit-room-guests').value);
-                const description = editQuill ? editQuill.root.innerHTML.trim() : '';
+                const descEl = document.getElementById('edit-room-desc');
+                const description = descEl ? descEl.value.trim() : '';
                 const amenitiesInput = document.getElementById('edit-room-amenities').value.trim();
                 const imagesStr = document.getElementById('edit-room-images-data').value;
                 const imagesArray = JSON.parse(imagesStr || '[]');
@@ -321,8 +321,9 @@
             const modal = document.getElementById('add-room-modal');
             modal.classList.remove('hidden');
             modal.classList.add('flex');
-            if (addQuill) {
-                addQuill.root.innerHTML = '';
+            const addDescEl = document.getElementById('add-room-desc');
+            if (addDescEl) {
+                addDescEl.value = '';
             }
             setTimeout(() => {
                 modal.classList.remove('opacity-0');
@@ -389,7 +390,8 @@
                 const priceWeekly = parseInt(document.getElementById('add-room-price-weekly').value);
                 const priceMonthly = parseInt(document.getElementById('add-room-price-monthly').value);
                 const maxGuests = parseInt(document.getElementById('add-room-guests').value);
-                const description = addQuill ? addQuill.root.innerHTML.trim() : '';
+                const addDescEl = document.getElementById('add-room-desc');
+                const description = addDescEl ? addDescEl.value.trim() : '';
                 const amenitiesInput = document.getElementById('add-room-amenities').value.trim();
                 
                 const imagesStr = document.getElementById('add-room-images-data').value;
@@ -467,33 +469,7 @@
             setupCloudinaryGallery('upload-edit-room-img-btn', 'edit-room-gallery-preview', 'edit-room-images-data');
             setupCloudinaryGallery('upload-add-room-img-btn', 'add-room-gallery-preview', 'add-room-images-data');
             
-            // Initialize Quill
-            if (typeof Quill !== 'undefined') {
-                const toolbarOptions = [
-                    ['bold', 'italic', 'underline', 'strike'],        
-                    ['blockquote', 'code-block'],
-                    [{ 'header': 1 }, { 'header': 2 }],               
-                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                    [{ 'color': [] }, { 'background': [] }],          
-                    ['clean']                                         
-                ];
-                
-                if (document.getElementById('edit-room-desc-quill')) {
-                    editQuill = new Quill('#edit-room-desc-quill', {
-                        theme: 'snow',
-                        placeholder: 'Write a comprehensive suite description...',
-                        modules: { toolbar: toolbarOptions }
-                    });
-                }
-                
-                if (document.getElementById('add-room-desc-quill')) {
-                    addQuill = new Quill('#add-room-desc-quill', {
-                        theme: 'snow',
-                        placeholder: 'Write a comprehensive suite description...',
-                        modules: { toolbar: toolbarOptions }
-                    });
-                }
-            }
+            // No Quill initialization needed — description uses plain textarea
         }
     };
 })();

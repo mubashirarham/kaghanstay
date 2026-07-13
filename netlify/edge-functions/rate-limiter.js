@@ -5,6 +5,24 @@ const RATE_LIMIT_WINDOW_MS = 60000;
 const MAX_REQUESTS_PER_WINDOW = 20;
 
 export default async (request, context) => {
+  // Bypass and handle preflight OPTIONS requests directly at the edge
+  if (request.method === "OPTIONS") {
+    const origin = request.headers.get("origin") || "";
+    let allowedOrigin = "https://kphstay.com";
+    if (origin.includes("localhost") || origin.includes("127.0.0.1")) {
+      allowedOrigin = origin;
+    }
+    return new Response(null, {
+      status: 204,
+      headers: {
+        "Access-Control-Allow-Origin": allowedOrigin,
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
+        "Access-Control-Max-Age": "86400"
+      }
+    });
+  }
+
   // Retrieve client connection IP (trust only Netlify's x-nf-client-connection-ip to prevent spoofing)
   const clientIp = request.headers.get("x-nf-client-connection-ip") || "unknown-ip";
   const url = new URL(request.url);
