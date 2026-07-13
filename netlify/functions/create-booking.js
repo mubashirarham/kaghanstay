@@ -1,6 +1,20 @@
 require('dotenv').config();
 const adminModule = require('firebase-admin');
 const admin = adminModule.default || adminModule;
+const { z } = require('zod');
+
+const BookingSchema = z.object({
+    roomId: z.string().min(1, "Room ID is required"),
+    checkIn: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid check-in date format. Use YYYY-MM-DD."),
+    checkOut: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid check-out date format. Use YYYY-MM-DD."),
+    guestName: z.string().min(1, "Guest name is required"),
+    guestEmail: z.string().email("Invalid email address."),
+    guestPhone: z.string().optional().nullable(),
+    couponCode: z.string().optional().nullable(),
+    billingCycle: z.string().optional().nullable(),
+    pdfBase64: z.string().optional().nullable(),
+    idToken: z.string().optional().nullable()
+});
 
 // Initialize Firebase Admin SDK
 try {
@@ -29,12 +43,18 @@ try {
 }
 
 exports.handler = async (event, context) => {
+    const origin = event.headers.origin || event.headers.Origin || '';
+    let allowedOrigin = 'https://kphstay.com';
+    if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
+        allowedOrigin = origin;
+    }
+
     // Enable CORS
     if (event.httpMethod === 'OPTIONS') {
         return {
             statusCode: 200,
             headers: {
-                'Access-Control-Allow-Origin': 'https://kphstay.com', // Restrict to production origin
+                'Access-Control-Allow-Origin': allowedOrigin,
                 'Access-Control-Allow-Headers': 'Content-Type, Authorization',
                 'Access-Control-Allow-Methods': 'POST, OPTIONS'
             },
@@ -49,32 +69,35 @@ exports.handler = async (event, context) => {
     if (!fdb) {
         return {
             statusCode: 500,
+            headers: { 'Access-Control-Allow-Origin': allowedOrigin },
             body: JSON.stringify({ error: 'Database service is currently unavailable.' })
         };
     }
 
     try {
         const body = JSON.parse(event.body || '{}');
-        const { roomId, checkIn, checkOut, guestName, guestEmail, guestPhone, couponCode, billingCycle, pdfBase64, idToken } = body;
-
-        // 1. Basic validation
-        if (!roomId || !checkIn || !checkOut || !guestName || !guestEmail) {
+        
+        // Zod validation
+        const validation = BookingSchema.safeParse(body);
+        if (!validation.success) {
             return {
                 statusCode: 400,
-                headers: { 'Access-Control-Allow-Origin': 'https://kphstay.com' },
-                body: JSON.stringify({ error: 'Missing required reservation fields.' })
+                headers: { 'Access-Control-Allow-Origin': allowedOrigin },
+                body: JSON.stringify({ error: 'Validation failed: ' + validation.error.errors.map(e => e.message).join(', ') })
             };
         }
+
+        const { roomId, checkIn, checkOut, guestName, guestEmail, guestPhone, couponCode, billingCycle, pdfBase64, idToken } = validation.data;
 
         const searchIn = new Date(checkIn);
         const searchOut = new Date(checkOut);
         const today = new Date();
         today.setHours(0,0,0,0);
 
-        if (isNaN(searchIn.getTime()) || isNaN(searchOut.getTime()) || searchIn >= searchOut || searchIn < today) {
+        if (searchIn >= searchOut || searchIn < today) {
             return {
                 statusCode: 400,
-                headers: { 'Access-Control-Allow-Origin': 'https://kphstay.com' },
+                headers: { 'Access-Control-Allow-Origin': allowedOrigin },
                 body: JSON.stringify({ error: 'Invalid check-in or check-out date parameters.' })
             };
         }
@@ -218,7 +241,7 @@ exports.handler = async (event, context) => {
         return {
             statusCode: 200,
             headers: {
-                'Access-Control-Allow-Origin': 'https://kphstay.com',
+                'Access-Control-Allow-Origin': allowedOrigin,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
@@ -229,13 +252,14 @@ exports.handler = async (event, context) => {
 
     } catch (err) {
         console.error("Reservation creation error:", err);
+        const isExpected = ['Requested accommodation style not found.', 'Suite is already reserved for the selected dates.'].includes(err.message);
         return {
-            statusCode: 500,
+            statusCode: isExpected ? 400 : 500,
             headers: {
-                'Access-Control-Allow-Origin': 'https://kphstay.com',
+                'Access-Control-Allow-Origin': allowedOrigin,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ error: err.message || 'Failed to complete reservation.' })
+            body: JSON.stringify({ error: isExpected ? err.message : 'Failed to complete reservation.' })
         };
     }
 };

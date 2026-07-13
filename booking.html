@@ -1219,18 +1219,29 @@
                 return;
             }
 
-            const coupons = await KaghanDB.getCoupons();
-            const validCoupon = coupons.find(c => c.code === code && c.isActive === true);
-
-            if (validCoupon) {
-                appliedCoupon = validCoupon;
-                msg.innerText = "Coupon applied successfully!";
-                msg.classList.remove('hidden', 'text-rose-500');
-                msg.classList.add('text-emerald-500');
-                calculatePrice();
-            } else {
+            try {
+                const couponDoc = await firebase.firestore().collection('coupons').doc(code).get();
+                if (couponDoc.exists) {
+                    const validCoupon = couponDoc.data();
+                    if (validCoupon && validCoupon.isActive === true) {
+                        appliedCoupon = validCoupon;
+                        msg.innerText = "Coupon applied successfully!";
+                        msg.classList.remove('hidden', 'text-rose-500');
+                        msg.classList.add('text-emerald-500');
+                        calculatePrice();
+                        return;
+                    }
+                }
+                
                 appliedCoupon = null;
                 msg.innerText = "Invalid or expired coupon.";
+                msg.classList.remove('hidden', 'text-emerald-500');
+                msg.classList.add('text-rose-500');
+                calculatePrice();
+            } catch (err) {
+                console.error("Coupon validation error:", err);
+                appliedCoupon = null;
+                msg.innerText = "Failed to validate coupon.";
                 msg.classList.remove('hidden', 'text-emerald-500');
                 msg.classList.add('text-rose-500');
                 calculatePrice();

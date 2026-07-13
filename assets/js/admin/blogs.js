@@ -22,11 +22,11 @@
             return `
                 <tr class="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
                     <td class="px-6 py-4">
-                        <img src="${img}" alt="${blog.title}" class="w-16 h-10 object-cover rounded-lg border border-slate-200 shadow" onerror="this.src='../assets/images/logo.png'">
+                        <img src="${KaghanSafe.escapeHTML(img)}" alt="${KaghanSafe.escapeHTML(blog.title)}" class="w-16 h-10 object-cover rounded-lg border border-slate-200 shadow" onerror="this.src='../assets/images/logo.png'">
                     </td>
                     <td class="px-6 py-4">
-                        <span class="font-bold text-slate-800 text-xs block">${blog.title}</span>
-                        <span class="text-[9px] text-[#D4AF37] uppercase font-bold tracking-wider">${blog.category} | By ${blog.author}</span>
+                        <span class="font-bold text-slate-800 text-xs block">${KaghanSafe.escapeHTML(blog.title)}</span>
+                        <span class="text-[9px] text-[#D4AF37] uppercase font-bold tracking-wider">${KaghanSafe.escapeHTML(blog.category)} | By ${KaghanSafe.escapeHTML(blog.author)}</span>
                     </td>
                     <td class="px-6 py-4 text-xs text-slate-500">
                         ${KaghanUI.formatDate(blog.createdAt)}

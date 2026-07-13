@@ -36,11 +36,11 @@ function renderCategories() {
         <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-100">
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 rounded-lg bg-slate-200 flex items-center justify-center text-slate-600 overflow-hidden">
-                    ${cat.image ? `<img src="${cat.image}" class="w-full h-full object-cover">` : `<i class="fa-solid ${cat.icon} text-sm"></i>`}
+                    ${cat.image ? `<img src="${KaghanSafe.escapeHTML(cat.image)}" class="w-full h-full object-cover">` : `<i class="fa-solid ${KaghanSafe.escapeHTML(cat.icon)} text-sm"></i>`}
                 </div>
                 <div>
-                    <h4 class="text-xs font-bold text-slate-900">${cat.label}</h4>
-                    <span class="text-[9px] text-slate-400 font-mono">ID: ${cat.id}</span>
+                    <h4 class="text-xs font-bold text-slate-900">${KaghanSafe.escapeHTML(cat.label)}</h4>
+                    <span class="text-[9px] text-slate-400 font-mono">ID: ${KaghanSafe.escapeHTML(cat.id)}</span>
                 </div>
             </div>
             <button onclick="deleteCategory('${cat.id}')" class="text-slate-400 hover:text-rose-500 transition-colors p-1.5" title="Delete">
@@ -62,8 +62,8 @@ function renderLocations() {
     list.innerHTML = currentLocations.map(loc => `
         <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-100">
             <div>
-                <h4 class="text-xs font-bold text-slate-900">${loc.label}</h4>
-                <span class="text-[9px] text-slate-400 font-mono">ID: ${loc.id}</span>
+                <h4 class="text-xs font-bold text-slate-900">${KaghanSafe.escapeHTML(loc.label)}</h4>
+                <span class="text-[9px] text-slate-400 font-mono">ID: ${KaghanSafe.escapeHTML(loc.id)}</span>
             </div>
             <button onclick="deleteLocation('${loc.id}')" class="text-slate-400 hover:text-rose-500 transition-colors p-1.5" title="Delete">
                 <i class="fa-solid fa-trash-can text-sm"></i>

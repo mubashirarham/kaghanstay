@@ -56,13 +56,13 @@
             return `
                 <tr class="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
                     <td class="px-4 py-4"><input type="checkbox" value="${booking.id}" onclick="updateBulkActionBar()" class="booking-row-checkbox rounded border-slate-300 text-[#D4AF37] focus:ring-[#D4AF37] cursor-pointer"></td>
-                    <td class="px-6 py-4 text-xs font-bold text-[#D4AF37] uppercase">${booking.id}</td>
+                    <td class="px-6 py-4 text-xs font-bold text-[#D4AF37] uppercase">${KaghanSafe.escapeHTML(booking.id)}</td>
                     <td class="px-6 py-4">
-                        <span class="font-bold text-slate-800 text-sm block">${booking.guestName}</span>
-                        <span class="text-slate-400 text-[10px] block mt-0.5">${booking.guestEmail} | ${booking.guestPhone}</span>
+                        <span class="font-bold text-slate-800 text-sm block">${KaghanSafe.escapeHTML(booking.guestName)}</span>
+                        <span class="text-slate-400 text-[10px] block mt-0.5">${KaghanSafe.escapeHTML(booking.guestEmail)} | ${KaghanSafe.escapeHTML(booking.guestPhone || '')}</span>
                         ${guestBadge}
                     </td>
-                    <td class="px-6 py-4 text-xs font-semibold text-slate-600">${room.name}</td>
+                    <td class="px-6 py-4 text-xs font-semibold text-slate-600">${KaghanSafe.escapeHTML(room.name)}</td>
                     <td class="px-6 py-4 text-xs text-slate-600">
                         ${KaghanUI.formatDate(booking.checkIn)} to ${KaghanUI.formatDate(booking.checkOut)}
                     </td>

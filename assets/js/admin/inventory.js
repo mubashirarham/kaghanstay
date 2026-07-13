@@ -36,7 +36,7 @@
             <div class="bg-white border border-slate-100 rounded-3xl p-5 flex flex-col justify-between hover:border-[#D4AF37] transition-all shadow-md group">
                 <div>
                     <div class="relative h-44 overflow-hidden rounded-2xl mb-4 bg-slate-100">
-                        <img src="${room.image || (room.images && room.images.length ? room.images[0] : '')}" alt="${room.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <img src="${KaghanSafe.escapeHTML(room.image || (room.images && room.images.length ? room.images[0] : ''))}" alt="${KaghanSafe.escapeHTML(room.name)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                         <div class="absolute top-3 right-3">
                             <select onchange="changeRoomStatus('${room.id}', this.value)" class="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full border outline-none cursor-pointer shadow-sm ${
                                 room.status === 'available' ? 'bg-emerald-500 text-white border-transparent' : 'bg-amber-500 text-white border-transparent'
@@ -48,18 +48,18 @@
                         ${room.images && room.images.length > 1 ? `<div class="absolute bottom-3 right-3 bg-black/60 backdrop-blur-sm text-white text-[9px] px-2 py-1 rounded-lg font-bold"><i class="fa-solid fa-images"></i> +${room.images.length - 1}</div>` : ''}
                     </div>
                     <div class="flex justify-between items-start mb-2">
-                        <h4 class="font-bold text-[#0F172A] outfit text-sm leading-tight">${room.name}</h4>
+                        <h4 class="font-bold text-[#0F172A] outfit text-sm leading-tight">${KaghanSafe.escapeHTML(room.name)}</h4>
                     </div>
                     <div class="text-[10px] text-[#D4AF37] font-bold mb-3 flex items-center gap-1">
                         <i class="fa-solid fa-location-dot text-[9px]"></i>
-                        <span>${room.location || 'Islamabad'}</span>
+                        <span>${KaghanSafe.escapeHTML(room.location || 'Islamabad')}</span>
                     </div>
                     <p class="text-slate-400 text-xs line-clamp-2 mb-4 font-light leading-relaxed">
                         ${room.description}
                     </p>
                     <div class="flex flex-wrap gap-1 mb-4">
                         ${room.amenities.slice(0, 3).map(a => `
-                            <span class="bg-slate-50 text-slate-500 text-[8px] uppercase font-bold px-2 py-0.5 rounded border border-slate-100">${a}</span>
+                            <span class="bg-slate-50 text-slate-500 text-[8px] uppercase font-bold px-2 py-0.5 rounded border border-slate-100">${KaghanSafe.escapeHTML(a)}</span>
                         `).join('')}
                         ${room.amenities.length > 3 ? `<span class="bg-slate-50 text-[#D4AF37] text-[8px] font-bold px-2 py-0.5 rounded border border-slate-100">+${room.amenities.length - 3}</span>` : ''}
                     </div>

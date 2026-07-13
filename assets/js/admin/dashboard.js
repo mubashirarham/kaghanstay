@@ -341,17 +341,12 @@ window.removeSubscriber = async (email) => {
     if (!confirm(`Are you sure you want to remove "${email}" from the newsletter subscription list?`)) return;
 
     try {
-        const snap = await firebase.firestore().collection('newsletter').where('email', '==', email).get();
-        if (!snap.empty) {
-            await snap.docs[0].ref.delete();
-            KaghanUI.showToast('Subscriber removed successfully.', 'success');
-            await renderNewsletter();
-        } else {
-            KaghanUI.showToast('Subscriber not found.', 'error');
-        }
+        await KaghanDB.deleteNewsletterSubscriber(email);
+        KaghanUI.showToast('Subscriber removed successfully.', 'success');
+        await renderNewsletter();
     } catch (err) {
         console.error("Error removing subscriber:", err);
-        KaghanUI.showToast('Failed to remove subscriber.', 'error');
+        KaghanUI.showToast(err.message || 'Failed to remove subscriber.', 'error');
     }
 };
 
@@ -382,7 +377,7 @@ window.sendNewsletterBroadcast = async (event) => {
             submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xs"></i> Broadcasting Campaign...`;
         }
 
-        const res = await fetch('/.netlify/functions/send-newsletter', {
+        const res = await window.safeFetch('/.netlify/functions/send-newsletter', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ subject, htmlBody })

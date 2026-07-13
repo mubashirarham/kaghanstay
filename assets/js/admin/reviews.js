@@ -33,12 +33,12 @@
             return `
                 <tr class="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
                     <td class="px-6 py-4">
-                        <span class="font-bold text-slate-800 text-xs block">${review.userName}</span>
+                        <span class="font-bold text-slate-800 text-xs block">${KaghanSafe.escapeHTML(review.userName)}</span>
                     </td>
-                    <td class="px-6 py-4 text-xs font-semibold text-slate-600">${room.name}</td>
+                    <td class="px-6 py-4 text-xs font-semibold text-slate-600">${KaghanSafe.escapeHTML(room.name)}</td>
                     <td class="px-6 py-4 text-xs font-bold text-[#D4AF37]">${stars} (${review.rating}/5)</td>
-                    <td class="px-6 py-4 text-xs text-slate-500 max-w-xs truncate" title="${review.comment}">
-                        ${review.comment}
+                    <td class="px-6 py-4 text-xs text-slate-500 max-w-xs truncate" title="${KaghanSafe.escapeHTML(review.comment)}">
+                        ${KaghanSafe.escapeHTML(review.comment)}
                     </td>
                     <td class="px-6 py-4 text-[10px] text-slate-400">
                         ${KaghanUI.formatDate(review.createdAt)}

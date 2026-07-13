@@ -23,9 +23,9 @@ function renderCoupons() {
     }
 
     tbody.innerHTML = currentCoupons.map(cp => `
-        <tr class="border-b border-slate-50 hover:bg-slate-50 transition-colors">
+        <tr class="border-b border-slate-55 hover:bg-slate-50 transition-colors">
             <td class="px-6 py-4">
-                <span class="text-xs font-bold font-mono bg-[#D4AF37]/10 text-[#D4AF37] px-2 py-1 rounded">${cp.code}</span>
+                <span class="text-xs font-bold font-mono bg-[#D4AF37]/10 text-[#D4AF37] px-2 py-1 rounded">${KaghanSafe.escapeHTML(cp.code)}</span>
             </td>
             <td class="px-6 py-4">
                 <span class="text-xs text-slate-800 font-semibold">${cp.discountPercentage}% OFF</span>

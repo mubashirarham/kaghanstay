@@ -48,36 +48,32 @@
                         button.textContent = '...';
 
                         try {
-                            const fdb = firebase.firestore();
-                            
-                            // Check if already subscribed
-                            const existing = await fdb.collection('newsletter').where('email', '==', email.toLowerCase()).get();
-                            if (!existing.empty) {
-                                if (window.KaghanUI) {
-                                    KaghanUI.showToast('This email is already subscribed!', 'amber');
-                                } else {
-                                    alert('This email is already subscribed!');
-                                }
-                                return;
-                            }
-
-                            await fdb.collection('newsletter').add({
-                                email: email.toLowerCase(),
-                                subscribedAt: new Date().toISOString()
+                            const res = await window.safeFetch('/.netlify/functions/subscribe-newsletter', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ email })
                             });
 
+                            if (!res.ok) {
+                                const data = await res.json();
+                                throw new Error(data.error || 'Failed to subscribe.');
+                            }
+
+                            const data = await res.json();
+
                             if (window.KaghanUI) {
-                                KaghanUI.showToast('Thank you for subscribing to our newsletter!', 'success');
+                                KaghanUI.showToast(data.message || 'Thank you for subscribing!', 'success');
                             } else {
-                                alert('Thank you for subscribing to our newsletter!');
+                                alert(data.message || 'Thank you for subscribing!');
                             }
                             input.value = '';
                         } catch (error) {
                             console.error('Newsletter subscription error:', error);
+                            const msg = error.message || 'Error subscribing. Please try again.';
                             if (window.KaghanUI) {
-                                KaghanUI.showToast('Error subscribing. Please try again.', 'error');
+                                KaghanUI.showToast(msg, 'error');
                             } else {
-                                alert('Error subscribing. Please try again.');
+                                alert(msg);
                             }
                         } finally {
                             button.disabled = false;

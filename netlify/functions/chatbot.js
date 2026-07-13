@@ -19,8 +19,10 @@ try {
 }
 
 let fdb = null;
+let auth = null;
 try {
     fdb = admin.firestore();
+    auth = admin.auth();
 } catch (e) {
     console.error("Firebase services retrieval failed in chatbot:", e);
 }
@@ -88,97 +90,149 @@ async function checkAvailabilityTool(roomId, checkIn, checkOut) {
     return { available: true };
 }
 
-async function bookRoomTool(roomId, guestName, guestEmail, guestPhone, checkIn, checkOut, host) {
-    // 1. Double check availability
-    const avail = await checkAvailabilityTool(roomId, checkIn, checkOut);
-    if (!avail.available) {
-        return { success: false, error: avail.reason || 'Room is unavailable.' };
+async function bookRoomTool(roomId, guestName, guestEmail, guestPhone, checkIn, checkOut, host, userId) {
+    if (!userId) {
+        return { success: false, error: 'Authentication required. Please sign in or register to complete bookings via the AI concierge.' };
+    }
+    const searchIn = new Date(checkIn);
+    const searchOut = new Date(checkOut);
+    
+    if (isNaN(searchIn.getTime()) || isNaN(searchOut.getTime()) || searchIn >= searchOut) {
+        return { success: false, error: 'Invalid check-in or check-out dates.' };
     }
 
-    // 2. Fetch room details to compute total cost
-    const rooms = await listRoomsTool();
-    const room = rooms.find(r => r.id === roomId);
-    if (!room) {
-        return { success: false, error: 'Room style not found in catalog.' };
-    }
-
-    const inDate = new Date(checkIn);
-    const outDate = new Date(checkOut);
-    const nights = Math.max(1, Math.ceil((outDate - inDate) / (1000 * 3600 * 24)));
-    const totalPrice = room.price * nights;
-
-    // 3. Create reservation ledger
     const bookingId = 'BK-' + Math.floor(1000 + Math.random() * 9000);
-    const newBooking = {
-        id: bookingId,
-        userId: 'usr-guest-chatbot',
-        roomId: roomId,
-        guestName,
-        guestEmail: guestEmail.toLowerCase().trim(),
-        guestPhone,
-        checkIn,
-        checkOut,
-        totalPrice,
-        status: 'confirmed',
-        createdAt: new Date().toISOString()
-    };
+    let totalPrice = 0;
+    let roomName = '';
 
-    await writeDocument('bookings', bookingId, newBooking);
-
-    // Trigger Email & WhatsApp invoices and await them to prevent container freezing
     try {
-        const dispatches = [];
-        if (host) {
-            const scheme = host.includes('localhost') ? 'http' : 'https';
-            dispatches.push(
-                fetch(`${scheme}://${host}/.netlify/functions/booking-email`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ booking: { ...newBooking, roomName: room.name } })
-                }).then(res => {
-                    if (!res.ok) console.error(`Chatbot email function returned status ${res.status}`);
-                }).catch(e => console.warn("Chatbot failed to dispatch email receipt:", e))
-            );
+        await fdb.runTransaction(async (transaction) => {
+            // 1. Fetch Room detail
+            const roomRef = fdb.collection('rooms').doc(roomId);
+            const roomDoc = await transaction.get(roomRef);
+            if (!roomDoc.exists) {
+                throw new Error('Room style not found in catalog.');
+            }
+            const room = roomDoc.data();
+            roomName = room.name;
+
+            // Compute stay duration
+            const stayNights = Math.max(1, Math.ceil((searchOut - searchIn) / (1000 * 3600 * 24)));
+            totalPrice = room.price * stayNights;
+
+            // 2. Overlap check inside transaction (M-04)
+            const query = fdb.collection('bookings').where('roomId', '==', roomId);
+            const bookingsSnap = await transaction.get(query);
+            for (const doc of bookingsSnap.docs) {
+                const b = doc.data();
+                if (b.status !== 'cancelled') {
+                    const bIn = new Date(b.checkIn);
+                    const bOut = new Date(b.checkOut);
+                    if (searchIn < bOut && searchOut > bIn) {
+                        throw new Error('Room is occupied or reserved on these dates.');
+                    }
+                }
+            }
+
+            // 3. Create Booking
+            const newBooking = {
+                id: bookingId,
+                userId: userId,
+                roomId: roomId,
+                guestName,
+                guestEmail: guestEmail.toLowerCase().trim(),
+                guestPhone,
+                checkIn,
+                checkOut,
+                totalPrice,
+                status: 'confirmed',
+                createdAt: new Date().toISOString()
+            };
+
+            const bookingRef = fdb.collection('bookings').doc(bookingId);
+            transaction.set(bookingRef, newBooking);
+        });
+
+        // Trigger Email & WhatsApp invoices and await them to prevent container freezing (C-04)
+        try {
+            const dispatches = [];
+            const payload = {
+                booking: {
+                    id: bookingId,
+                    guestName,
+                    guestEmail,
+                    guestPhone,
+                    roomId,
+                    roomName,
+                    checkIn,
+                    checkOut,
+                    totalPrice
+                },
+                internalSecret: process.env.INTERNAL_API_SECRET
+            };
+
+            if (host) {
+                const scheme = host.includes('localhost') ? 'http' : 'https';
+                dispatches.push(
+                    fetch(`${scheme}://${host}/.netlify/functions/booking-email`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    }).then(res => {
+                        if (!res.ok) console.error(`Chatbot email function returned status ${res.status}`);
+                    }).catch(e => console.warn("Chatbot failed to dispatch email receipt:", e)),
+
+                    fetch(`${scheme}://${host}/.netlify/functions/admin-notify`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    }).then(res => {
+                        if (!res.ok) console.error(`Chatbot admin alert function returned status ${res.status}`);
+                    }).catch(e => console.warn("Chatbot failed to dispatch admin alert:", e))
+                );
+            }
+
+            if (guestPhone && process.env.WHATSAPP_API_URL) {
+                dispatches.push(
+                    fetch(process.env.WHATSAPP_API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            phone: guestPhone,
+                            guestName,
+                            bookingId,
+                            roomName,
+                            checkIn,
+                            checkOut,
+                            totalPrice
+                        })
+                    }).then(res => {
+                        if (!res.ok) console.error(`Chatbot WhatsApp service returned status ${res.status}`);
+                    }).catch(e => console.warn("WhatsApp service unreachable:", e))
+                );
+            }
+
+            if (dispatches.length > 0) {
+                await Promise.all(dispatches);
+            }
+        } catch (notifierErr) {
+            console.error("Chatbot receipts dispatcher error:", notifierErr);
         }
 
-        if (guestPhone && process.env.WHATSAPP_API_URL) {
-            dispatches.push(
-                fetch(process.env.WHATSAPP_API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        phone: guestPhone,
-                        guestName,
-                        bookingId,
-                        roomName: room.name,
-                        checkIn,
-                        checkOut,
-                        totalPrice
-                    })
-                }).then(res => {
-                    if (!res.ok) console.error(`Chatbot WhatsApp service returned status ${res.status}`);
-                }).catch(e => console.warn("WhatsApp service unreachable:", e))
-            );
-        } else if (guestPhone) {
-            console.log(`[Mock WhatsApp Alert] Would send notification to ${guestPhone} (WHATSAPP_API_URL env variable not configured).`);
-        }
+        return {
+            success: true,
+            bookingId,
+            totalPrice,
+            nights: Math.max(1, Math.ceil((searchOut - searchIn) / (1000 * 3600 * 24))),
+            guestName,
+            checkIn,
+            checkOut
+        };
 
-        if (dispatches.length > 0) {
-            await Promise.all(dispatches);
-        }
-    } catch (notifierErr) {
-        console.error("Chatbot receipts dispatcher error:", notifierErr);
+    } catch (txErr) {
+        console.error("Chatbot booking transaction failed:", txErr);
+        return { success: false, error: txErr.message || 'Failed to make reservation.' };
     }
-
-    return {
-        success: true,
-        bookingId,
-        totalPrice,
-        nights,
-        guestName,
-        checkIn,
-        checkOut
-    };
 }
 
 async function readBlogsTool() {
@@ -228,6 +282,17 @@ exports.handler = async (event, context) => {
     try {
         const body = JSON.parse(event.body || '{}');
         let clientMessages = body.messages || [];
+        const idToken = body.idToken;
+
+        let userId = null;
+        if (idToken && auth) {
+            try {
+                const decodedToken = await auth.verifyIdToken(idToken);
+                userId = decodedToken.uid;
+            } catch (authErr) {
+                console.warn("Chatbot ID token verification failed:", authErr);
+            }
+        }
 
         // Format history for Groq messages array (System instruction + conversation logs)
         const systemMessage = {
@@ -357,7 +422,7 @@ exports.handler = async (event, context) => {
                         toolResult = await checkAvailabilityTool(args.roomId, args.checkIn, args.checkOut);
                     } else if (toolName === 'book_room') {
                         const requestHost = event.headers.host || 'kphstay.com';
-                        toolResult = await bookRoomTool(args.roomId, args.guestName, args.guestEmail, args.guestPhone, args.checkIn, args.checkOut, requestHost);
+                        toolResult = await bookRoomTool(args.roomId, args.guestName, args.guestEmail, args.guestPhone, args.checkIn, args.checkOut, requestHost, userId);
                     } else if (toolName === 'read_blogs') {
                         toolResult = await readBlogsTool();
                     } else {

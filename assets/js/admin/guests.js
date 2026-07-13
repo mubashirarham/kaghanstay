@@ -30,11 +30,12 @@
             return `
                 <tr class="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
                     <td class="px-6 py-4">
-                        <span class="font-bold text-slate-800 text-sm block">${guest.name}</span>
+                        <span class="font-bold text-slate-800 text-sm block">${KaghanSafe.escapeHTML(guest.name)}</span>
                     </td>
-                    <td class="px-6 py-4 text-xs font-semibold text-slate-600">${guest.email}</td>
-                    <td class="px-6 py-4 text-xs font-semibold text-slate-600">${guest.phone || 'N/A'}</td>
-                        <button onclick="deleteGuestAccount('${guest.id}', '${guest.name}')" class="text-rose-500 hover:text-rose-700 p-1.5 rounded hover:bg-rose-50 transition-colors" title="Delete Guest Account">
+                    <td class="px-6 py-4 text-xs font-semibold text-slate-600">${KaghanSafe.escapeHTML(guest.email)}</td>
+                    <td class="px-6 py-4 text-xs font-semibold text-slate-600">${KaghanSafe.escapeHTML(guest.phone || 'N/A')}</td>
+                    <td class="px-6 py-4 text-right">
+                        <button onclick="deleteGuestAccount('${guest.id}', '${KaghanSafe.escapeHTML(guest.name)}')" class="text-rose-500 hover:text-rose-700 p-1.5 rounded hover:bg-rose-50 transition-colors" title="Delete Guest Account">
                             <i class="fa-solid fa-trash-can text-sm"></i>
                         </button>
                     </td>

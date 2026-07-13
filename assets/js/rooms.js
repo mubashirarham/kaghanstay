@@ -370,18 +370,18 @@
                 return `
                 <div onclick="window.location.href='booking.html?room=${room.id}'" class="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-md hover-lift group cursor-pointer flex flex-col h-full">
                     <div class="relative h-56 overflow-hidden bg-slate-100 shrink-0">
-                        <img src="${mainImg}" alt="${room.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <img src="${KaghanSafe.escapeHTML(mainImg)}" alt="${KaghanSafe.escapeHTML(room.name)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                         <div class="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl shadow-sm border border-white/20 text-[10px] font-bold uppercase tracking-wider text-[#D4AF37] flex items-center gap-1.5">
                             ${room.originalPrice ? `<span class="line-through text-slate-400 font-semibold text-[9px]">${KaghanUI.formatPKR(room.originalPrice)}</span>` : ''}
                             <span>${KaghanUI.formatPKR(room.priceDaily || room.price)} <span class="text-slate-500 lowercase font-medium">/night</span></span>
                         </div>
                         <div class="absolute top-4 right-4 bg-slate-900/80 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-[#D4AF37] border border-white/10 uppercase tracking-widest room-cat-label" data-cat="${room.type}">
-                            ${room.type}
+                            ${KaghanSafe.escapeHTML(room.type)}
                         </div>
                     </div>
                     <div class="p-6 flex-1 flex flex-col">
                         <div class="flex justify-between items-start mb-2">
-                            <h3 class="text-lg font-bold outfit text-[#0F172A] leading-tight">${room.name}</h3>
+                            <h3 class="text-lg font-bold outfit text-[#0F172A] leading-tight">${KaghanSafe.escapeHTML(room.name)}</h3>
                             <div class="flex items-center gap-1 text-[#D4AF37] font-bold text-xs bg-[#D4AF37]/10 px-2 py-1 rounded-lg">
                                 <i class="fa-solid fa-star"></i>
                                 <span>${room.rating || '5.0'}</span>
@@ -389,7 +389,7 @@
                         </div>
                         <div class="text-[10px] text-slate-400 font-bold mb-3 flex items-center gap-1 uppercase tracking-widest">
                             <i class="fa-solid fa-location-dot text-[#D4AF37] text-[9px]"></i>
-                            <span>${room.locationName || room.location || 'Islamabad'}</span>
+                            <span>${KaghanSafe.escapeHTML(room.locationName || room.location || 'Islamabad')}</span>
                         </div>
                         <p class="text-slate-500 text-xs line-clamp-2 font-light leading-relaxed mb-4">
                             ${room.description}
@@ -397,7 +397,7 @@
                         <div class="flex flex-wrap gap-1.5 mb-6 mt-auto">
                             ${(room.amenities || []).slice(0, 3).map(a => `
                                 <span class="bg-slate-50 text-slate-500 text-[9px] uppercase font-bold tracking-wider px-2 py-1 rounded border border-slate-100 flex items-center gap-1">
-                                    <i class="fa-solid fa-check text-[#D4AF37]"></i> ${a}
+                                    <i class="fa-solid fa-check text-[#D4AF37]"></i> ${KaghanSafe.escapeHTML(a)}
                                 </span>
                             `).join('')}
                             ${(room.amenities || []).length > 3 ? `<span class="bg-slate-50 text-[#D4AF37] text-[9px] uppercase font-bold px-2 py-1 rounded border border-slate-100">+${room.amenities.length - 3}</span>` : ''}

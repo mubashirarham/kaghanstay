@@ -101,13 +101,6 @@ function startActiveListeners() {
         window.dispatchEvent(new CustomEvent('kaghan-db-locations', { detail: list }));
     }, err => console.warn("Locations listener error:", err));
 
-    window.KaghanDB_Listeners.coupons = fdb.collection('coupons').onSnapshot(snap => {
-        const list = [];
-        snap.forEach(doc => list.push(doc.data()));
-        window.KaghanDB_Cache.coupons = list;
-        window.dispatchEvent(new CustomEvent('kaghan-db-coupons', { detail: list }));
-    }, err => console.warn("Coupons listener error:", err));
-
     // 4. Authenticated User Listeners
     const user = JSON.parse(localStorage.getItem(DB_KEYS.SESSION));
     if (user) {
@@ -121,6 +114,14 @@ function startActiveListeners() {
         }, err => console.warn("Current user listener error:", err));
 
         if (user.role === 'admin') {
+            // Subscribe to all coupons (Admin)
+            window.KaghanDB_Listeners.coupons = fdb.collection('coupons').onSnapshot(snap => {
+                const list = [];
+                snap.forEach(doc => list.push(doc.data()));
+                window.KaghanDB_Cache.coupons = list;
+                window.dispatchEvent(new CustomEvent('kaghan-db-coupons', { detail: list }));
+            }, err => console.warn("Coupons listener error:", err));
+
             // Subscribe to all bookings (Admin)
             window.KaghanDB_Listeners.bookings = fdb.collection('bookings').onSnapshot(snap => {
                 const list = [];
@@ -187,6 +188,78 @@ function stopActiveListeners() {
 // Initialize Active Listeners globally
 startActiveListeners();
 
+window.KaghanSafe = {
+    escapeHTML: function(str) {
+        if (str === null || str === undefined) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    },
+    sanitizeHTML: function(html) {
+        if (html === null || html === undefined) return '';
+        if (typeof DOMPurify !== 'undefined') {
+            return DOMPurify.sanitize(html);
+        }
+        return this.escapeHTML(html);
+    }
+};
+
+window.getApiUrl = function(path) {
+    const loc = window.location;
+    if ((loc.hostname === 'localhost' || loc.hostname === '127.0.0.1') && loc.port && loc.port !== '8888') {
+        return `http://localhost:8888${path}`;
+    }
+    return path;
+};
+
+window.safeFetch = async function(path, options = {}) {
+    const url = window.getApiUrl(path);
+    try {
+        return await fetch(url, options);
+    } catch (err) {
+        const loc = window.location;
+        if ((loc.hostname === 'localhost' || loc.hostname === '127.0.0.1') && url.startsWith('http://localhost:8888')) {
+            console.warn(`Local Netlify Dev server not found on port 8888. Falling back to production API for ${path}...`);
+            const fallbackUrl = `https://kphstay.com${path}`;
+            return await fetch(fallbackUrl, options);
+        }
+        throw err;
+    }
+};
+
+async function callAdminAction(action, data) {
+    let idToken = null;
+    if (typeof firebase !== 'undefined' && firebase.auth && firebase.auth().currentUser) {
+        idToken = await firebase.auth().currentUser.getIdToken();
+    }
+    const res = await window.safeFetch('/.netlify/functions/admin-action', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action, data, idToken })
+    });
+    if (!res.ok) {
+        let errMsg = `Admin action ${action} failed (Status: ${res.status}).`;
+        const contentType = res.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+            try {
+                const errData = await res.json();
+                errMsg = errData.error || errMsg;
+            } catch (_) {}
+        } else {
+            try {
+                const text = await res.text();
+                if (text) errMsg = text;
+            } catch (_) {}
+        }
+        throw new Error(errMsg);
+    }
+    const resData = await res.json();
+    return resData.result;
+}
+
 // DB Firestore Implementation
 const db = {
     // Categories CRUD
@@ -199,12 +272,10 @@ const db = {
         return list;
     },
     saveCategory: async (category) => {
-        await fdb.collection('categories').doc(category.id).set(category);
-        return true;
+        return callAdminAction('saveCategory', { category });
     },
     deleteCategory: async (id) => {
-        await fdb.collection('categories').doc(id).delete();
-        return true;
+        return callAdminAction('deleteCategory', { id });
     },
 
     // Locations CRUD
@@ -217,12 +288,10 @@ const db = {
         return list;
     },
     saveLocation: async (location) => {
-        await fdb.collection('locations').doc(location.id).set(location);
-        return true;
+        return callAdminAction('saveLocation', { location });
     },
     deleteLocation: async (id) => {
-        await fdb.collection('locations').doc(id).delete();
-        return true;
+        return callAdminAction('deleteLocation', { id });
     },
 
     // Coupons CRUD
@@ -235,12 +304,10 @@ const db = {
         return list;
     },
     saveCoupon: async (coupon) => {
-        await fdb.collection('coupons').doc(coupon.id).set(coupon);
-        return true;
+        return callAdminAction('saveCoupon', { coupon });
     },
     deleteCoupon: async (id) => {
-        await fdb.collection('coupons').doc(id).delete();
-        return true;
+        return callAdminAction('deleteCoupon', { id });
     },
 
     // Rooms CRUD
@@ -263,12 +330,10 @@ const db = {
         return doc.exists ? doc.data() : null;
     },
     updateRoom: async (id, updatedData) => {
-        await fdb.collection('rooms').doc(id).update(updatedData);
-        return true;
+        return callAdminAction('updateRoom', { id, updatedData });
     },
     addRoom: async (room) => {
-        await fdb.collection('rooms').doc(room.id).set(room);
-        return true;
+        return callAdminAction('addRoom', { room });
     },
 
     // Bookings CRUD
@@ -289,7 +354,7 @@ const db = {
             idToken = await firebase.auth().currentUser.getIdToken();
         }
 
-        const res = await fetch('/.netlify/functions/create-booking', {
+        const res = await window.safeFetch('/.netlify/functions/create-booking', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -317,28 +382,25 @@ const db = {
         return true;
     },
     updateBookingStatus: async (id, status) => {
-        await fdb.collection('bookings').doc(id).update({ status });
-        return true;
+        return callAdminAction('updateBookingStatus', { id, status });
     },
     updateBookingDates: async (id, checkIn, checkOut, totalPrice) => {
-        await fdb.collection('bookings').doc(id).update({ checkIn, checkOut, totalPrice });
-        return true;
+        return callAdminAction('updateBookingDates', { id, checkIn, checkOut, totalPrice });
     },
     deleteBooking: async (id) => {
-        await fdb.collection('bookings').doc(id).delete();
-        return true;
+        return callAdminAction('deleteBooking', { id });
     },
     updateBookingDetails: async (id, updatedData) => {
-        await fdb.collection('bookings').doc(id).update(updatedData);
-        return true;
+        return callAdminAction('updateBookingDetails', { id, updatedData });
     },
     deleteRoom: async (id) => {
-        await fdb.collection('rooms').doc(id).delete();
-        return true;
+        return callAdminAction('deleteRoom', { id });
     },
     deleteUser: async (id) => {
-        await fdb.collection('users').doc(id).delete();
-        return true;
+        return callAdminAction('deleteUser', { id });
+    },
+    deleteNewsletterSubscriber: async (email) => {
+        return callAdminAction('deleteNewsletterSubscriber', { email });
     },
     getReviews: async () => {
         if (window.KaghanDB_Cache.reviews) {
@@ -361,52 +423,23 @@ const db = {
         return list.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     },
     addReview: async (review) => {
-        const docRef = fdb.collection('reviews').doc();
-        review.createdAt = new Date().toISOString();
-        await docRef.set(review);
-
-        // Recalculate average rating & reviewsCount for this room
-        const room = await db.getRoomById(review.roomId);
-        if (room) {
-            const roomReviewsSnap = await fdb.collection('reviews').where('roomId', '==', review.roomId).get();
-            let totalRating = 0;
-            let count = 0;
-            roomReviewsSnap.forEach(doc => {
-                totalRating += doc.data().rating;
-                count++;
-            });
-            const newRating = count > 0 ? parseFloat((totalRating / count).toFixed(1)) : 5.0;
-            await db.updateRoom(review.roomId, {
-                rating: newRating,
-                reviewsCount: count
-            });
+        let idToken = null;
+        if (typeof firebase !== 'undefined' && firebase.auth && firebase.auth().currentUser) {
+            idToken = await firebase.auth().currentUser.getIdToken();
+        }
+        const res = await window.safeFetch('/.netlify/functions/create-review', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ review, idToken })
+        });
+        if (!res.ok) {
+            const data = await res.json();
+            throw new Error(data.error || 'Failed to submit review.');
         }
         return true;
     },
     deleteReview: async (reviewId) => {
-        const reviewDoc = await fdb.collection('reviews').doc(reviewId).get();
-        if (!reviewDoc.exists) return false;
-        const reviewData = reviewDoc.data();
-
-        await fdb.collection('reviews').doc(reviewId).delete();
-
-        // Recalculate average rating & reviewsCount for this room
-        const room = await db.getRoomById(reviewData.roomId);
-        if (room) {
-            const roomReviewsSnap = await fdb.collection('reviews').where('roomId', '==', reviewData.roomId).get();
-            let totalRating = 0;
-            let count = 0;
-            roomReviewsSnap.forEach(doc => {
-                totalRating += doc.data().rating;
-                count++;
-            });
-            const newRating = count > 0 ? parseFloat((totalRating / count).toFixed(1)) : 5.0;
-            await db.updateRoom(reviewData.roomId, {
-                rating: newRating,
-                reviewsCount: count
-            });
-        }
-        return true;
+        return callAdminAction('deleteReview', { reviewId });
     },
 
     // Date Overlap checking
@@ -446,14 +479,26 @@ const db = {
     },
     updateUser: async (id, updatedData) => {
         delete updatedData.password;
-        await fdb.collection('users').doc(id).update(updatedData);
         
-        // Sync active user session
-        const session = db.getCurrentUser();
-        if (session && session.id === id) {
-            const snap = await fdb.collection('users').doc(id).get();
-            localStorage.setItem(DB_KEYS.SESSION, JSON.stringify(snap.data()));
+        let idToken = null;
+        if (typeof firebase !== 'undefined' && firebase.auth && firebase.auth().currentUser) {
+            idToken = await firebase.auth().currentUser.getIdToken();
         }
+        
+        const res = await window.safeFetch('/.netlify/functions/update-profile', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id, updatedData, idToken })
+        });
+        
+        if (!res.ok) {
+            const data = await res.json();
+            throw new Error(data.error || 'Failed to update profile.');
+        }
+        
+        const data = await res.json();
+        // Sync active user session
+        localStorage.setItem(DB_KEYS.SESSION, JSON.stringify(data.user));
         return true;
     },
 
@@ -481,19 +526,23 @@ const db = {
         try {
             const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
             const firebaseUser = userCredential.user;
+            const idToken = await firebaseUser.getIdToken();
             
-            const newUser = {
-                id: firebaseUser.uid,
-                name,
-                email: email.toLowerCase().trim(),
-                role: 'user',
-                loyaltyPoints: 100, // Signup loyalty bonus
-                phone
-            };
-            await fdb.collection('users').doc(firebaseUser.uid).set(newUser);
-            localStorage.setItem(DB_KEYS.SESSION, JSON.stringify(newUser));
+            const res = await window.safeFetch('/.netlify/functions/register-profile', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, phone, idToken })
+            });
+            
+            if (!res.ok) {
+                const data = await res.json();
+                throw new Error(data.error || 'Failed to create profile.');
+            }
+            
+            const data = await res.json();
+            localStorage.setItem(DB_KEYS.SESSION, JSON.stringify(data.user));
             startActiveListeners();
-            return { success: true, user: newUser };
+            return { success: true, user: data.user };
         } catch (err) {
             console.error("Registration error:", err);
             return { success: false, message: err.message };
@@ -555,26 +604,11 @@ const db = {
     },
 
     addBlog: async (blog) => {
-        try {
-            const docRef = fdb.collection('blogs').doc();
-            blog.id = docRef.id;
-            blog.createdAt = new Date().toISOString();
-            await docRef.set(blog);
-            return { success: true, id: docRef.id };
-        } catch (error) {
-            console.error("Error adding blog:", error);
-            throw error;
-        }
+        return callAdminAction('addBlog', { blog });
     },
 
     deleteBlog: async (id) => {
-        try {
-            await fdb.collection('blogs').doc(id).delete();
-            return true;
-        } catch (error) {
-            console.error("Error deleting blog:", error);
-            return false;
-        }
+        return callAdminAction('deleteBlog', { id });
     },
     
     getNewsletterSubscribers: async () => {
@@ -781,13 +815,19 @@ function injectChatbot() {
             const liveRooms = window.KaghanDB_Cache ? window.KaghanDB_Cache.rooms : null;
             const liveBookings = window.KaghanDB_Cache ? window.KaghanDB_Cache.bookings : null;
             
-            const res = await fetch('/.netlify/functions/chatbot', {
+            let idToken = null;
+            if (typeof firebase !== 'undefined' && firebase.auth && firebase.auth().currentUser) {
+                idToken = await firebase.auth().currentUser.getIdToken();
+            }
+
+            const res = await window.safeFetch('/.netlify/functions/chatbot', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
                     messages: history,
                     rooms: liveRooms,
-                    bookings: liveBookings
+                    bookings: liveBookings,
+                    idToken: idToken
                 })
             });
 
@@ -1072,10 +1112,19 @@ window.downloadPDFInvoice = async function(bookingId) {
         const outDate = new Date(booking.checkOut);
         const nights = Math.max(1, Math.ceil((outDate - inDate) / (1000 * 3600 * 24)));
 
-        // Retrieve coupons to obtain the discount percentage
-        const coupons = await KaghanDB.getCoupons();
-        const coupon = booking.couponUsed ? coupons.find(c => c.id === booking.couponUsed || c.code === booking.couponUsed) : null;
-        const discountPercent = coupon ? (coupon.discountPercentage || 0) : 0;
+        // Retrieve coupon details to obtain the discount percentage dynamically
+        let discountPercent = 0;
+        if (booking.couponUsed) {
+            try {
+                const couponDoc = await fdb.collection('coupons').doc(booking.couponUsed.toUpperCase()).get();
+                if (couponDoc.exists) {
+                    const couponData = couponDoc.data();
+                    discountPercent = couponData ? (couponData.discountPercentage || 0) : 0;
+                }
+            } catch (err) {
+                console.warn("Failed to retrieve coupon for PDF generation:", err);
+            }
+        }
 
         const subtotal = Math.round(booking.totalPrice / (1.15 - (discountPercent / 100)));
         const tax = Math.round(subtotal * 0.15);

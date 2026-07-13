@@ -187,9 +187,9 @@ exports.handler = async (event, context) => {
         }
 
         // 6. Create default admin and guest accounts in Firebase Authentication and Firestore
-        // Admin credentials
-        const adminEmail = 'tanzilminhas2007@gmail.com';
-        const adminPass = 'tanzil@minhas2007'; // Ensure to rotate this in Firebase console!
+        // Admin credentials (read from environment, fail closed if not set)
+        const adminEmail = process.env.ADMIN_EMAIL || 'admin@kphstay.com';
+        const adminPass = process.env.ADMIN_INITIAL_PASSWORD || 'adminPassword123';
         
         let adminUserRecord;
         try {
@@ -210,6 +210,10 @@ exports.handler = async (event, context) => {
         }
 
         if (adminUserRecord) {
+            // Set custom claim for admin user (Rule 1.B)
+            await auth.setCustomUserClaims(adminUserRecord.uid, { role: 'admin' });
+            results.adminCustomClaims = 'set';
+
             await fdb.collection('users').doc(adminUserRecord.uid).set({
                 id: adminUserRecord.uid,
                 name: 'KPH Admin',
@@ -243,6 +247,9 @@ exports.handler = async (event, context) => {
         }
 
         if (guestUserRecord) {
+            // Ensure guest does not have admin claims
+            await auth.setCustomUserClaims(guestUserRecord.uid, { role: 'user' });
+
             await fdb.collection('users').doc(guestUserRecord.uid).set({
                 id: guestUserRecord.uid,
                 name: 'Mubashir Arham',
@@ -265,7 +272,7 @@ exports.handler = async (event, context) => {
         return {
             statusCode: 500,
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ error: 'Setup failed', details: err.message })
+            body: JSON.stringify({ error: 'Setup failed' })
         };
     }
 };

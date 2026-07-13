@@ -74,7 +74,7 @@ exports.handler = async (event, context) => {
 
         const mailOptions = {
             from: `"Kaghan Stay Alerts" <${process.env.SMTP_USER}>`,
-            to: process.env.ADMIN_EMAIL || 'tanzilminhas2007@gmail.com',
+            to: process.env.ADMIN_EMAIL || process.env.SMTP_USER,
             subject: `New Booking Confirmed: ${booking.id}`,
             html: htmlContent
         };

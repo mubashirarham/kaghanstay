@@ -37,20 +37,22 @@
         try {
             const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
             const firebaseUser = userCredential.user;
+            const idToken = await firebaseUser.getIdToken();
             
-            const newUser = {
-                id: firebaseUser.uid,
-                name,
-                email: email.toLowerCase().trim(),
-                role: 'user',
-                phone,
-                loyaltyPoints: 100
-            };
+            const res = await window.safeFetch('/.netlify/functions/register-profile', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, phone, idToken })
+            });
             
-            // Save profile to Firestore under uid
-            await fdb.collection('users').doc(firebaseUser.uid).set(newUser);
-            localStorage.setItem('kaghan_hotel_session', JSON.stringify(newUser));
-            return { success: true, user: newUser };
+            if (!res.ok) {
+                const data = await res.json();
+                throw new Error(data.error || 'Failed to create profile.');
+            }
+            
+            const data = await res.json();
+            localStorage.setItem('kaghan_hotel_session', JSON.stringify(data.user));
+            return { success: true, user: data.user };
         } catch (err) {
             console.error("Registration error:", err);
             return { success: false, message: err.message };
@@ -98,14 +100,26 @@
     db.updateUser = async (id, updatedData) => {
         // Exclude password modifications from client
         delete updatedData.password;
-        await fdb.collection('users').doc(id).update(updatedData);
         
-        // Sync active user session
-        const session = db.getCurrentUser();
-        if (session && session.id === id) {
-            const snap = await fdb.collection('users').doc(id).get();
-            localStorage.setItem('kaghan_hotel_session', JSON.stringify(snap.data()));
+        let idToken = null;
+        if (typeof firebase !== 'undefined' && firebase.auth && firebase.auth().currentUser) {
+            idToken = await firebase.auth().currentUser.getIdToken();
         }
+        
+        const res = await window.safeFetch('/.netlify/functions/update-profile', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id, updatedData, idToken })
+        });
+        
+        if (!res.ok) {
+            const data = await res.json();
+            throw new Error(data.error || 'Failed to update profile.');
+        }
+        
+        const data = await res.json();
+        // Sync active user session
+        localStorage.setItem('kaghan_hotel_session', JSON.stringify(data.user));
         return true;
     };
 
