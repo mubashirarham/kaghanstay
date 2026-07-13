@@ -1,8 +1,10 @@
 require('dotenv').config();
-const admin = require('firebase-admin');
+const adminModule = require('firebase-admin');
+const admin = adminModule.default || adminModule;
 
 // Initialize Firebase Admin SDK
-if (!admin.apps.length) {
+const apps = admin.apps || [];
+if (!apps.length) {
     try {
         admin.initializeApp({
             credential: admin.credential.cert({
@@ -17,8 +19,8 @@ if (!admin.apps.length) {
     }
 }
 
-const fdb = admin.apps.length ? admin.firestore() : null;
-const auth = admin.apps.length ? admin.auth() : null;
+const fdb = (admin.apps && admin.apps.length) ? admin.firestore() : null;
+const auth = (admin.apps && admin.apps.length) ? admin.auth() : null;
 
 const DEFAULT_CATEGORIES = [
     { id: 'studio', label: 'Studio', icon: 'fa-cube', image: '' },

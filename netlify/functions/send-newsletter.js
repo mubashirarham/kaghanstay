@@ -1,8 +1,10 @@
-const admin = require('firebase-admin');
+const adminModule = require('firebase-admin');
+const admin = adminModule.default || adminModule;
 const nodemailer = require('nodemailer');
 
 // Initialize Firebase Admin SDK
-if (!admin.apps.length) {
+const apps = admin.apps || [];
+if (!apps.length) {
     try {
         admin.initializeApp({
             credential: admin.credential.cert({
@@ -16,8 +18,8 @@ if (!admin.apps.length) {
     }
 }
 
-const fdb = admin.apps.length ? admin.firestore() : null;
-const auth = admin.apps.length ? admin.auth() : null;
+const fdb = (admin.apps && admin.apps.length) ? admin.firestore() : null;
+const auth = (admin.apps && admin.apps.length) ? admin.auth() : null;
 
 exports.handler = async (event, context) => {
     // Enable CORS for production origin only
@@ -116,10 +118,13 @@ exports.handler = async (event, context) => {
 
         // Setup Nodemailer
         const transporter = nodemailer.createTransport({
-            host: host,
-            port: parseInt(port, 10),
-            secure: parseInt(port, 10) === 465,
-            auth: { user, pass }
+            host: smtpHost,
+            port: parseInt(smtpPort, 10),
+            secure: parseInt(smtpPort, 10) === 465,
+            auth: {
+                user: smtpUser,
+                pass: smtpPass
+            }
         });
 
         // Broadcast layout styling template wrapper
@@ -160,8 +165,8 @@ exports.handler = async (event, context) => {
 
         // Send via BCC to avoid leaking user list
         await transporter.sendMail({
-            from: `"KPH Stay Lobby" <${user}>`,
-            to: user, // send copy to self
+            from: `"KPH Stay Lobby" <${smtpUser}>`,
+            to: smtpUser, // send copy to self
             bcc: recipientEmails.join(', '),
             subject: subject,
             html: htmlFormatted

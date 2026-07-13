@@ -1,7 +1,9 @@
-const admin = require('firebase-admin');
+const adminModule = require('firebase-admin');
+const admin = adminModule.default || adminModule;
 
 // Initialize Firebase Admin SDK
-if (!admin.apps.length) {
+const apps = admin.apps || [];
+if (!apps.length) {
     try {
         admin.initializeApp({
             credential: admin.credential.cert({
@@ -15,7 +17,7 @@ if (!admin.apps.length) {
     }
 }
 
-const fdb = admin.apps.length ? admin.firestore() : null;
+const fdb = (admin.apps && admin.apps.length) ? admin.firestore() : null;
 
 // Helper to load collection via Admin SDK
 async function fetchCollection(collectionName) {
@@ -117,33 +119,46 @@ async function bookRoomTool(roomId, guestName, guestEmail, guestPhone, checkIn, 
 
     await writeDocument('bookings', bookingId, newBooking);
 
-    // Trigger Email & WhatsApp invoices asynchronously
+    // Trigger Email & WhatsApp invoices and await them to prevent container freezing
     try {
+        const dispatches = [];
         if (host) {
             const scheme = host.includes('localhost') ? 'http' : 'https';
-            fetch(`${scheme}://${host}/.netlify/functions/booking-email`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ booking: { ...newBooking, roomName: room.name } })
-            }).catch(e => console.warn("Chatbot failed to dispatch email receipt:", e));
+            dispatches.push(
+                fetch(`${scheme}://${host}/.netlify/functions/booking-email`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ booking: { ...newBooking, roomName: room.name } })
+                }).then(res => {
+                    if (!res.ok) console.error(`Chatbot email function returned status ${res.status}`);
+                }).catch(e => console.warn("Chatbot failed to dispatch email receipt:", e))
+            );
         }
 
         if (guestPhone && process.env.WHATSAPP_API_URL) {
-            fetch(process.env.WHATSAPP_API_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    phone: guestPhone,
-                    guestName,
-                    bookingId,
-                    roomName: room.name,
-                    checkIn,
-                    checkOut,
-                    totalPrice
-                })
-            }).catch(e => console.warn("WhatsApp service unreachable:", e));
+            dispatches.push(
+                fetch(process.env.WHATSAPP_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        phone: guestPhone,
+                        guestName,
+                        bookingId,
+                        roomName: room.name,
+                        checkIn,
+                        checkOut,
+                        totalPrice
+                    })
+                }).then(res => {
+                    if (!res.ok) console.error(`Chatbot WhatsApp service returned status ${res.status}`);
+                }).catch(e => console.warn("WhatsApp service unreachable:", e))
+            );
         } else if (guestPhone) {
             console.log(`[Mock WhatsApp Alert] Would send notification to ${guestPhone} (WHATSAPP_API_URL env variable not configured).`);
+        }
+
+        if (dispatches.length > 0) {
+            await Promise.all(dispatches);
         }
     } catch (notifierErr) {
         console.error("Chatbot receipts dispatcher error:", notifierErr);

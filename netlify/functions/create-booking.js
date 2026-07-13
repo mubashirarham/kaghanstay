@@ -1,8 +1,10 @@
 require('dotenv').config();
-const admin = require('firebase-admin');
+const adminModule = require('firebase-admin');
+const admin = adminModule.default || adminModule;
 
 // Initialize Firebase Admin SDK
-if (!admin.apps.length) {
+const apps = admin.apps || [];
+if (!apps.length) {
     try {
         admin.initializeApp({
             credential: admin.credential.cert({
@@ -16,8 +18,8 @@ if (!admin.apps.length) {
     }
 }
 
-const fdb = admin.apps.length ? admin.firestore() : null;
-const auth = admin.apps.length ? admin.auth() : null;
+const fdb = (admin.apps && admin.apps.length) ? admin.firestore() : null;
+const auth = (admin.apps && admin.apps.length) ? admin.auth() : null;
 
 exports.handler = async (event, context) => {
     // Enable CORS
@@ -131,7 +133,8 @@ exports.handler = async (event, context) => {
             calculatedPrice = (subtotal + tax) - couponDiscount;
 
             // B. Overlap check
-            const bookingsSnap = await fdb.collection('bookings').where('roomId', '==', roomId).get();
+            const query = fdb.collection('bookings').where('roomId', '==', roomId);
+            const bookingsSnap = await transaction.get(query);
             for (const doc of bookingsSnap.docs) {
                 const b = doc.data();
                 if (b.status !== 'cancelled') {
@@ -164,7 +167,7 @@ exports.handler = async (event, context) => {
             transaction.set(bookingRef, newBooking);
         });
 
-        // 4. Asynchronously Dispatch Notifications (booking-email & admin-notify)
+        // 4. Dispatch Notifications (booking-email & admin-notify) and await them to prevent container freezing (502 Gateway errors)
         const host = event.headers.host || 'kphstay.com';
         const scheme = host.includes('localhost') ? 'http' : 'https';
         const payload = {
@@ -183,18 +186,27 @@ exports.handler = async (event, context) => {
             internalSecret: process.env.INTERNAL_API_SECRET
         };
 
-        // Fire and forget requests internally
-        fetch(`${scheme}://${host}/.netlify/functions/booking-email`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        }).catch(err => console.error("Async booking email dispatch failure:", err));
+        try {
+            await Promise.all([
+                fetch(`${scheme}://${host}/.netlify/functions/booking-email`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                }).then(res => {
+                    if (!res.ok) console.error(`Booking email function returned status ${res.status}`);
+                }).catch(err => console.error("Async booking email dispatch failure:", err)),
 
-        fetch(`${scheme}://${host}/.netlify/functions/admin-notify`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        }).catch(err => console.error("Async admin alert dispatch failure:", err));
+                fetch(`${scheme}://${host}/.netlify/functions/admin-notify`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                }).then(res => {
+                    if (!res.ok) console.error(`Admin notify function returned status ${res.status}`);
+                }).catch(err => console.error("Async admin alert dispatch failure:", err))
+            ]);
+        } catch (dispatchErr) {
+            console.error("Notification dispatch failed:", dispatchErr);
+        }
 
         return {
             statusCode: 200,

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
     <title>KPH Stay | Luxury Service Apartments & Hotel Suites in Islamabad & Nathia Gali</title>
     <meta name="description" content="KPH Stay offers premium luxury service apartments, fully furnished suites, and mountain-view hotel rooms in Islamabad near Margalla Hills and Nathia Gali near Ayubia National Park. Book 1BHK to 3BHK apartments with 24/7 concierge, equipped kitchens, and world-class hospitality. Best rates guaranteed.">
     <meta name="keywords" content="luxury hotel islamabad, service apartments islamabad, nathia gali hotel, margalla hills resort, best hotel islamabad, furnished apartments islamabad, mountain view rooms pakistan, staycation islamabad, KPH Stay, kaghan properties hospitality">
@@ -140,13 +140,13 @@
 
     <!-- Header / Navigation -->
     <nav id="hotel-navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-5 px-6 md:px-12 flex justify-between items-center text-white bg-[#0F172A]/90 backdrop-blur-md border-b border-white/10">
-        <div class="flex items-center gap-3">
+        <a href="index.html" class="flex items-center gap-3 hover:opacity-90 transition-opacity">
             <img src="assets/images/logo.png" alt="KPH Stay Logo" class="h-10 w-auto object-contain">
             <div class="flex flex-col">
                 <span class="text-lg font-bold tracking-wider uppercase outfit leading-none">KPH</span>
                 <span class="text-xs text-[#D4AF37] tracking-[0.2em] uppercase font-semibold">Stay</span>
             </div>
-        </div>
+        </a>
 
         <!-- Navigation Links -->
         <div class="hidden md:flex gap-8 items-center font-medium">
@@ -754,7 +754,7 @@
         // Filter Rooms by Category
         function filterIndexRooms(category, btnElement) {
             // Update active state on buttons
-            const buttons = document.querySelectorAll('#index-category-bar button');
+            const buttons = document.querySelectorAll('#index-categories-container button');
             buttons.forEach(btn => {
                 btn.classList.remove('active-category', 'opacity-100');
                 btn.classList.add('opacity-60');
