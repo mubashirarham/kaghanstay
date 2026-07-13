@@ -3,9 +3,8 @@ const adminModule = require('firebase-admin');
 const admin = adminModule.default || adminModule;
 
 // Initialize Firebase Admin SDK
-const apps = admin.apps || [];
-if (!apps.length) {
-    try {
+try {
+    if (!admin.apps || !admin.apps.length) {
         admin.initializeApp({
             credential: admin.credential.cert({
                 projectId: process.env.FIREBASE_PROJECT_ID,
@@ -14,13 +13,21 @@ if (!apps.length) {
             })
         });
         console.log("Firebase Admin SDK initialized successfully in setup-db.");
-    } catch (e) {
+    }
+} catch (e) {
+    if (e.code !== 'app/duplicate-app') {
         console.error("Firebase Admin SDK initialization failed:", e);
     }
 }
 
-const fdb = (admin.apps && admin.apps.length) ? admin.firestore() : null;
-const auth = (admin.apps && admin.apps.length) ? admin.auth() : null;
+let fdb = null;
+let auth = null;
+try {
+    fdb = admin.firestore();
+    auth = admin.auth();
+} catch (e) {
+    console.error("Firebase services retrieval failed:", e);
+}
 
 const DEFAULT_CATEGORIES = [
     { id: 'studio', label: 'Studio', icon: 'fa-cube', image: '' },

@@ -2,9 +2,8 @@ const adminModule = require('firebase-admin');
 const admin = adminModule.default || adminModule;
 
 // Initialize Firebase Admin SDK
-const apps = admin.apps || [];
-if (!apps.length) {
-    try {
+try {
+    if (!admin.apps || !admin.apps.length) {
         admin.initializeApp({
             credential: admin.credential.cert({
                 projectId: process.env.FIREBASE_PROJECT_ID,
@@ -12,12 +11,19 @@ if (!apps.length) {
                 privateKey: process.env.FIREBASE_PRIVATE_KEY ? process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n') : undefined
             })
         });
-    } catch (e) {
+    }
+} catch (e) {
+    if (e.code !== 'app/duplicate-app') {
         console.error("Firebase Admin SDK initialization failed in chatbot:", e);
     }
 }
 
-const fdb = (admin.apps && admin.apps.length) ? admin.firestore() : null;
+let fdb = null;
+try {
+    fdb = admin.firestore();
+} catch (e) {
+    console.error("Firebase services retrieval failed in chatbot:", e);
+}
 
 // Helper to load collection via Admin SDK
 async function fetchCollection(collectionName) {

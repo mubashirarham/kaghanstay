@@ -61,6 +61,15 @@ This file serves as the persistence memory for AI agents working on the Kaghan S
   * **Category Navigation Bug:** Fixed selector in `filterIndexRooms` in `index.html`. It was querying `#index-category-bar button` which did not exist, preventing category active highlights. Corrected it to target `#index-categories-container button`.
   * **Mock Data Removal:** Removed unused fallback/mock arrays (`DEFAULT_CATEGORIES`, `DEFAULT_LOCATIONS`, `DEFAULT_COUPONS`, `DEFAULT_ROOMS`, and `DEFAULT_BOOKINGS`) from `assets/js/shared.js` to ensure the application relies purely on active database synchronizations rather than client-side mock leaks.
 
+### 6. Admin Panel Map & Rich-Text Editor Fix (2026-07-13)
+* **Resolved Issues:**
+  * **Leaflet Map and Quill Editor blocked by CSP:** Found that Leaflet map files (`https://unpkg.com`) and Quill rich text editor resources (`https://cdn.quilljs.com`) were being blocked from loading by the Content-Security-Policy header, causing maps to hide and descriptions to be uneditable.
+  * **CSP Fix:** Updated the CSP inside `netlify.toml` to:
+    * Allow `https://unpkg.com` and `https://cdn.quilljs.com` inside `script-src` and `style-src` directives.
+    * Allow `https://cdn.quilljs.com` in `font-src` directive for editor icons/fonts.
+    * Allow `https://*.basemaps.cartocdn.com` in `img-src` directive to permit map tiles from rendering.
+  * **Service Worker CORS Caching Error:** Fixed a fetch failure in `service-worker.js` during the `install` event when pre-caching Tailwind CDN and other third-party assets. Rewrote the install event handler to fetch external resources individually with `mode: 'no-cors'` to avoid CORS blockages, and bumped the cache identifier to `kph-stay-cache-v4` to force immediate registration updates.
+
 ## Active / Next Tasks
 1. Continue executing the security remediation loop from [fixing.md](file:///d:/Kaghan%20Stay/fixing.md).
 2. Begin with **C-02 & C-03**: Remove hard-coded credentials/plain-text passwords, set up Firebase Auth.

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kph-stay-cache-v3';
+const CACHE_NAME = 'kph-stay-cache-v4';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -25,7 +25,16 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       console.log('[Service Worker] Pre-caching static app shell assets...');
-      return cache.addAll(ASSETS_TO_CACHE);
+      const promises = ASSETS_TO_CACHE.map((url) => {
+        const isExternal = url.startsWith('http');
+        const request = isExternal ? new Request(url, { mode: 'no-cors' }) : url;
+        return fetch(request).then((response) => {
+          return cache.put(url, response);
+        }).catch((err) => {
+          console.warn(`[Service Worker] Failed to cache: ${url}`, err);
+        });
+      });
+      return Promise.all(promises);
     }).then(() => self.skipWaiting())
   );
 });
