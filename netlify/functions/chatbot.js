@@ -1,5 +1,4 @@
-const adminModule = require('firebase-admin');
-const admin = adminModule.default || adminModule;
+const { fdb, auth } = require('./_admin-init');
 
 // Helper to load collection via Admin SDK
 async function fetchCollection(collectionName) {

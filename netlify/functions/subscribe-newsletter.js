@@ -1,12 +1,5 @@
-const { admin, fdb, auth } = require('./_admin-init');
+const { fdb } = require('./_admin-init');
 const { z } = require('zod');
-
-let fdb = null;
-try {
-    fdb = admin.firestore();
-} catch (e) {
-    console.error("Firebase services retrieval failed in subscribe-newsletter:", e);
-}
 
 const RequestSchema = z.object({
     email: z.string().email("Invalid email address format.")

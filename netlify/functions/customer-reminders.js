@@ -1,7 +1,5 @@
-const adminModule = require('firebase-admin');
-const admin = adminModule.default || adminModule;
+const { fdb, auth } = require('./_admin-init');
 const nodemailer = require('nodemailer');
-
 exports.handler = async (event, context) => {
     if (event.httpMethod !== 'POST') {
         return { statusCode: 405, body: 'Method Not Allowed' };
