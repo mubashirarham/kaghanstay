@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kph-stay-cache-v6';
+const CACHE_NAME = 'kph-stay-cache-v7';
 // Only cache same-origin static assets.
 // External CDN resources must NOT be pre-cached: the SW fetch() runs under the
 // page CSP and any cross-origin fetch is blocked, causing install failures.
@@ -79,14 +79,16 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       if (cachedResponse) {
-        // Serve from cache immediately, and fetch updated asset in the background
+        // Only revalidate same-origin assets in the background.
+        // Cross-origin requests (CDN tiles, etc.) are bypassed above, so this
+        // branch is only reached for same-origin URLs — safe to re-fetch.
         fetch(event.request)
           .then((networkResponse) => {
-            if (networkResponse.status === 200) {
+            if (networkResponse && networkResponse.status === 200) {
               caches.open(CACHE_NAME).then((cache) => cache.put(event.request, networkResponse));
             }
           })
-          .catch((err) => console.log('[Service Worker] Background fetch failed (offline state):', err));
+          .catch(() => { /* offline — ignore background revalidation failure */ });
         
         return cachedResponse;
       }
