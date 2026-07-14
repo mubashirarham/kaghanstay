@@ -11,9 +11,15 @@
   "workspace": {
     "packageJson": {
       "dependencies": [
+        "npm:@netlify/blobs@^10.7.9",
         "npm:dotenv@^16.4.5",
-        "npm:nodemailer@^6.9.13"
-      ]
+        "npm:firebase-admin@^14.1.0",
+        "npm:nodemailer@^9.0.3",
+        "npm:zod@^3.22.4"
+      ],
+      "overrides": {
+        "jose": "^4.15.9"
+      }
     }
   }
 }

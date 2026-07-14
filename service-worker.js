@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kph-stay-cache-v7';
+const CACHE_NAME = 'kph-stay-cache-v8';
 // Only cache same-origin static assets.
 // External CDN resources must NOT be pre-cached: the SW fetch() runs under the
 // page CSP and any cross-origin fetch is blocked, causing install failures.
@@ -66,6 +66,11 @@ self.addEventListener('fetch', (event) => {
 
   // Bypass Google Firestore API endpoints and external analytics (handled natively or ignored)
   if (url.origin.includes('firestore.googleapis.com') || url.origin.includes('google-analytics.com')) {
+    return;
+  }
+
+  // Bypass all admin panel pages and assets from caching to prevent out-of-sync dashboard issues
+  if (url.pathname.includes('/admin/') || url.pathname.includes('/admin')) {
     return;
   }
 

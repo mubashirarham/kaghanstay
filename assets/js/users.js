@@ -102,8 +102,39 @@
         delete updatedData.password;
         
         let idToken = null;
-        if (typeof firebase !== 'undefined' && firebase.auth && firebase.auth().currentUser) {
-            idToken = await firebase.auth().currentUser.getIdToken();
+        if (typeof firebase !== 'undefined' && firebase.auth) {
+            if (firebase.auth().currentUser) {
+                idToken = await firebase.auth().currentUser.getIdToken();
+            } else {
+                // Wait up to 1 second for Firebase Auth state to initialize
+                await new Promise(resolve => {
+                    const unsubscribe = firebase.auth().onAuthStateChanged(() => {
+                        unsubscribe();
+                        resolve();
+                    });
+                    setTimeout(resolve, 1000);
+                });
+                if (firebase.auth().currentUser) {
+                    idToken = await firebase.auth().currentUser.getIdToken();
+                }
+            }
+        }
+        
+        if (!idToken) {
+            if (typeof KaghanUI !== 'undefined') {
+                KaghanUI.showToast("Your session has expired. Redirecting to login...", "error");
+            } else {
+                alert("Your session has expired. Redirecting to login...");
+            }
+            setTimeout(() => {
+                const currentPath = window.location.pathname;
+                if (currentPath.includes('/admin/') || currentPath.includes('/user/')) {
+                    window.location.href = '../login.html';
+                } else {
+                    window.location.href = 'login.html';
+                }
+            }, 1500);
+            throw new Error("Session expired. Please log in again.");
         }
         
         const res = await window.safeFetch('/.netlify/functions/update-profile', {
