@@ -391,9 +391,9 @@
                             <i class="fa-solid fa-location-dot text-[#D4AF37] text-[9px]"></i>
                             <span>${KaghanSafe.escapeHTML(room.locationName || room.location || 'Islamabad')}</span>
                         </div>
-                        <p class="text-slate-500 text-xs line-clamp-2 font-light leading-relaxed mb-4">
-                            ${room.description}
-                        </p>
+                        <div class="text-slate-500 text-xs line-clamp-2 font-light leading-relaxed mb-4">
+                            ${KaghanSafe.sanitizeHTML(room.description)}
+                        </div>
                         <div class="flex flex-wrap gap-1.5 mb-6 mt-auto">
                             ${(room.amenities || []).slice(0, 3).map(a => `
                                 <span class="bg-slate-50 text-slate-500 text-[9px] uppercase font-bold tracking-wider px-2 py-1 rounded border border-slate-100 flex items-center gap-1">
@@ -518,9 +518,9 @@
                         </div>
                     </div>
                     
-                    <p class="text-slate-600 text-sm leading-relaxed mb-6 font-light">
-                        ${room.description}
-                    </p>
+                    <div class="text-slate-600 text-sm leading-relaxed mb-6 font-light">
+                        ${KaghanSafe.sanitizeHTML(room.description)}
+                    </div>
 
                     <h4 class="text-xs uppercase tracking-widest text-[#D4AF37] font-bold mb-3">Premium Amenities Included</h4>
                     <div class="grid grid-cols-2 gap-2 mb-8">

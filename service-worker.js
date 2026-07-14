@@ -79,6 +79,8 @@ self.addEventListener('fetch', (event) => {
     'cdn.quilljs.com',
     'widget.cloudinary.com',
     'www.gstatic.com',
+    'tiny.cloud',
+    'tinymce.com',
   ];
   if (BYPASS_ORIGINS.some(domain => url.origin.includes(domain))) {
     return;

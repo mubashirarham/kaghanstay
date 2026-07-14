@@ -52,9 +52,9 @@
                         <i class="fa-solid fa-location-dot text-[9px]"></i>
                         <span>${KaghanSafe.escapeHTML(room.location || 'Islamabad')}</span>
                     </div>
-                    <p class="text-slate-400 text-xs line-clamp-2 mb-4 font-light leading-relaxed">
-                        ${room.description}
-                    </p>
+                    <div class="text-slate-400 text-xs line-clamp-2 mb-4 font-light leading-relaxed">
+                        ${KaghanSafe.sanitizeHTML(room.description)}
+                    </div>
                     <div class="flex flex-wrap gap-1 mb-4">
                         ${room.amenities.slice(0, 3).map(a => `
                             <span class="bg-slate-50 text-slate-500 text-[8px] uppercase font-bold px-2 py-0.5 rounded border border-slate-100">${KaghanSafe.escapeHTML(a)}</span>
@@ -182,6 +182,9 @@
         if (editDescEl) {
             editDescEl.value = room.description || '';
         }
+        if (typeof tinymce !== 'undefined' && tinymce.get('edit-room-desc')) {
+            tinymce.get('edit-room-desc').setContent(room.description || '');
+        }
         document.getElementById('edit-room-amenities').value = room.amenities.join(', ');
 
         const imagesArray = room.images || (room.image ? [room.image] : []);
@@ -243,6 +246,10 @@
         editForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!activeEditRoomId) return;
+
+            if (typeof tinymce !== 'undefined') {
+                tinymce.triggerSave();
+            }
 
             const btn = editForm.querySelector('button[type="submit"]');
             const originalText = btn.innerHTML;
@@ -325,6 +332,9 @@
             if (addDescEl) {
                 addDescEl.value = '';
             }
+            if (typeof tinymce !== 'undefined' && tinymce.get('add-room-desc')) {
+                tinymce.get('add-room-desc').setContent('');
+            }
             setTimeout(() => {
                 modal.classList.remove('opacity-0');
                 
@@ -375,6 +385,10 @@
 
         newForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+
+            if (typeof tinymce !== 'undefined') {
+                tinymce.triggerSave();
+            }
             
             const btn = newForm.querySelector('button[type="submit"]');
             const originalText = btn.innerHTML;
@@ -469,7 +483,22 @@
             setupCloudinaryGallery('upload-edit-room-img-btn', 'edit-room-gallery-preview', 'edit-room-images-data');
             setupCloudinaryGallery('upload-add-room-img-btn', 'add-room-gallery-preview', 'add-room-images-data');
             
-            // No Quill initialization needed — description uses plain textarea
+            // Initialize TinyMCE editors
+            if (typeof tinymce !== 'undefined') {
+                tinymce.init({
+                    selector: '#add-room-desc, #edit-room-desc',
+                    plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+                    toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+                    height: 300,
+                    promotion: false,
+                    branding: false,
+                    setup: function (editor) {
+                        editor.on('change', function () {
+                            editor.save();
+                        });
+                    }
+                });
+            }
         }
     };
 })();
