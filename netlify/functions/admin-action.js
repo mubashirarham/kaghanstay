@@ -3,6 +3,24 @@ const adminModule = require('firebase-admin');
 const admin = adminModule.default || adminModule;
 const { z } = require('zod');
 
+// ── Startup diagnostics ─────────────────────────────────────────────────────
+// Log which Firebase Admin credentials are present so Netlify function logs
+// immediately reveal configuration problems without needing to inspect code.
+const MISSING_VARS = [
+    'FIREBASE_PROJECT_ID',
+    'FIREBASE_CLIENT_EMAIL',
+    'FIREBASE_PRIVATE_KEY'
+].filter(v => !process.env[v]);
+
+if (MISSING_VARS.length > 0) {
+    console.error(
+        '[admin-action] FATAL: Missing required environment variables:',
+        MISSING_VARS.join(', '),
+        '— Set them in Netlify Dashboard → Site Configuration → Environment Variables'
+    );
+}
+// ────────────────────────────────────────────────────────────────────────────
+
 // Initialize Firebase Admin SDK
 try {
     if (!admin.apps || !admin.apps.length) {
@@ -59,10 +77,14 @@ exports.handler = async (event, context) => {
     }
 
     if (!fdb || !auth) {
+        const hint = MISSING_VARS.length > 0
+            ? ` Missing env vars: ${MISSING_VARS.join(', ')}. Add them in Netlify → Environment Variables.`
+            : '';
+        console.error('[admin-action] fdb/auth not initialised.' + hint);
         return {
             statusCode: 500,
             headers: { 'Access-Control-Allow-Origin': allowedOrigin },
-            body: JSON.stringify({ error: 'Database service is currently unavailable.' })
+            body: JSON.stringify({ error: 'Database service is currently unavailable.' + hint })
         };
     }
 
