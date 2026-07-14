@@ -1,4 +1,7 @@
-const CACHE_NAME = 'kph-stay-cache-v5';
+const CACHE_NAME = 'kph-stay-cache-v6';
+// Only cache same-origin static assets.
+// External CDN resources must NOT be pre-cached: the SW fetch() runs under the
+// page CSP and any cross-origin fetch is blocked, causing install failures.
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -14,10 +17,7 @@ const ASSETS_TO_CACHE = [
   '/assets/css/style.css',
   '/assets/js/shared.js',
   '/assets/js/rooms.js',
-  '/assets/images/logo.png',
-  'https://cdn.tailwindcss.com',
-  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css',
-  'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap'
+  '/assets/images/logo.png'
 ];
 
 // Install Event - Pre-cache core shell resources
@@ -69,20 +69,10 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Bypass all external CDN requests — let browser handle them directly (avoids CSP SW violations)
-  const BYPASS_ORIGINS = [
-    'unpkg.com',
-    'cdn.jsdelivr.net',
-    'cdnjs.cloudflare.com',
-    'fonts.googleapis.com',
-    'fonts.gstatic.com',
-    'cdn.quilljs.com',
-    'widget.cloudinary.com',
-    'www.gstatic.com',
-    'tiny.cloud',
-    'tinymce.com',
-  ];
-  if (BYPASS_ORIGINS.some(domain => url.origin.includes(domain))) {
+  // Bypass ALL external / cross-origin requests — let the browser handle them
+  // directly. The SW fetch() runs under the page CSP so any cross-origin fetch
+  // that is not in connect-src will be blocked and produce a TypeError.
+  if (url.origin !== self.location.origin) {
     return;
   }
 
