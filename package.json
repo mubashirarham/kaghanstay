@@ -4,6 +4,7 @@
   "description": "Kaghan Stay resort platform service wrapper",
   "main": "netlify/functions/booking-email.js",
   "dependencies": {
+    "@netlify/blobs": "^10.7.9",
     "dotenv": "^16.4.5",
     "firebase-admin": "^14.1.0",
     "nodemailer": "^9.0.3",
