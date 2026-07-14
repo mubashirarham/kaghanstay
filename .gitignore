@@ -3,4 +3,6 @@ node_modules/
 dist/
 .DS_Store
 .env
+*.json.key
+*-firebase-adminsdk-*.json
 
