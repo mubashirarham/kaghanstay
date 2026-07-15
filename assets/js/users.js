@@ -15,6 +15,9 @@
     // Login procedure
     db.login = async (email, password) => {
         try {
+            if (typeof firebase !== 'undefined' && firebase.auth) {
+                await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+            }
             const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
             const firebaseUser = userCredential.user;
             
@@ -35,6 +38,9 @@
     // Registration procedure
     db.register = async (name, email, password, phone = '') => {
         try {
+            if (typeof firebase !== 'undefined' && firebase.auth) {
+                await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+            }
             const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
             const firebaseUser = userCredential.user;
             const idToken = await firebaseUser.getIdToken();

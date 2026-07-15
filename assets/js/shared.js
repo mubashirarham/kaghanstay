@@ -292,10 +292,12 @@ const db = {
         return list;
     },
     saveCategory: async (category) => {
-        return callAdminAction('saveCategory', { category });
+        await fdb.collection('categories').doc(category.id).set(category);
+        return true;
     },
     deleteCategory: async (id) => {
-        return callAdminAction('deleteCategory', { id });
+        await fdb.collection('categories').doc(id).delete();
+        return true;
     },
 
     // Locations CRUD
@@ -308,10 +310,12 @@ const db = {
         return list;
     },
     saveLocation: async (location) => {
-        return callAdminAction('saveLocation', { location });
+        await fdb.collection('locations').doc(location.id).set(location);
+        return true;
     },
     deleteLocation: async (id) => {
-        return callAdminAction('deleteLocation', { id });
+        await fdb.collection('locations').doc(id).delete();
+        return true;
     },
 
     // Coupons CRUD
@@ -324,10 +328,12 @@ const db = {
         return list;
     },
     saveCoupon: async (coupon) => {
-        return callAdminAction('saveCoupon', { coupon });
+        await fdb.collection('coupons').doc(coupon.id).set(coupon);
+        return true;
     },
     deleteCoupon: async (id) => {
-        return callAdminAction('deleteCoupon', { id });
+        await fdb.collection('coupons').doc(id).delete();
+        return true;
     },
 
     // Rooms CRUD
@@ -350,10 +356,12 @@ const db = {
         return doc.exists ? doc.data() : null;
     },
     updateRoom: async (id, updatedData) => {
-        return callAdminAction('updateRoom', { id, updatedData });
+        await fdb.collection('rooms').doc(id).update(updatedData);
+        return true;
     },
     addRoom: async (room) => {
-        return callAdminAction('addRoom', { room });
+        await fdb.collection('rooms').doc(room.id).set(room);
+        return true;
     },
 
     // Bookings CRUD
@@ -402,25 +410,36 @@ const db = {
         return true;
     },
     updateBookingStatus: async (id, status) => {
-        return callAdminAction('updateBookingStatus', { id, status });
+        await fdb.collection('bookings').doc(id).update({ status });
+        return true;
     },
     updateBookingDates: async (id, checkIn, checkOut, totalPrice) => {
-        return callAdminAction('updateBookingDates', { id, checkIn, checkOut, totalPrice });
+        await fdb.collection('bookings').doc(id).update({ checkIn, checkOut, totalPrice });
+        return true;
     },
     deleteBooking: async (id) => {
-        return callAdminAction('deleteBooking', { id });
+        await fdb.collection('bookings').doc(id).delete();
+        return true;
     },
     updateBookingDetails: async (id, updatedData) => {
-        return callAdminAction('updateBookingDetails', { id, updatedData });
+        await fdb.collection('bookings').doc(id).update(updatedData);
+        return true;
     },
     deleteRoom: async (id) => {
-        return callAdminAction('deleteRoom', { id });
+        await fdb.collection('rooms').doc(id).delete();
+        return true;
     },
     deleteUser: async (id) => {
-        return callAdminAction('deleteUser', { id });
+        await fdb.collection('users').doc(id).delete();
+        return true;
     },
     deleteNewsletterSubscriber: async (email) => {
-        return callAdminAction('deleteNewsletterSubscriber', { email });
+        const snap = await fdb.collection('newsletter').where('email', '==', email.toLowerCase().trim()).get();
+        if (!snap.empty) {
+            await snap.docs[0].ref.delete();
+            return true;
+        }
+        throw new Error("Subscriber not found.");
     },
     getReviews: async () => {
         if (window.KaghanDB_Cache.reviews) {
@@ -459,7 +478,39 @@ const db = {
         return true;
     },
     deleteReview: async (reviewId) => {
-        return callAdminAction('deleteReview', { reviewId });
+        await fdb.runTransaction(async (transaction) => {
+            const reviewRef = fdb.collection('reviews').doc(reviewId);
+            const reviewDoc = await transaction.get(reviewRef);
+            if (!reviewDoc.exists) {
+                throw new Error("Review document not found.");
+            }
+            const reviewData = reviewDoc.data();
+            const roomId = reviewData.roomId;
+
+            transaction.delete(reviewRef);
+
+            // Re-calculate room ratings
+            const reviewsQuery = fdb.collection('reviews').where('roomId', '==', roomId);
+            const reviewsSnap = await transaction.get(reviewsQuery);
+            
+            let totalRating = 0;
+            let count = 0;
+            
+            reviewsSnap.forEach(doc => {
+                if (doc.id !== reviewId) {
+                    totalRating += doc.data().rating;
+                    count++;
+                }
+            });
+
+            const newRating = count > 0 ? parseFloat((totalRating / count).toFixed(1)) : 5.0;
+            const roomRef = fdb.collection('rooms').doc(roomId);
+            transaction.update(roomRef, {
+                rating: newRating,
+                reviewsCount: count
+            });
+        });
+        return true;
     },
 
     // Date Overlap checking
@@ -526,6 +577,9 @@ const db = {
     getCurrentUser: () => JSON.parse(localStorage.getItem(DB_KEYS.SESSION)),
     login: async (email, password) => {
         try {
+            if (typeof firebase !== 'undefined' && firebase.auth) {
+                await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+            }
             const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
             const firebaseUser = userCredential.user;
             
@@ -544,6 +598,9 @@ const db = {
     },
     register: async (name, email, password, phone = '') => {
         try {
+            if (typeof firebase !== 'undefined' && firebase.auth) {
+                await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+            }
             const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
             const firebaseUser = userCredential.user;
             const idToken = await firebaseUser.getIdToken();
@@ -624,11 +681,16 @@ const db = {
     },
 
     addBlog: async (blog) => {
-        return callAdminAction('addBlog', { blog });
+        const docRef = fdb.collection('blogs').doc();
+        blog.id = docRef.id;
+        blog.createdAt = new Date().toISOString();
+        await docRef.set(blog);
+        return { success: true, id: docRef.id };
     },
 
     deleteBlog: async (id) => {
-        return callAdminAction('deleteBlog', { id });
+        await fdb.collection('blogs').doc(id).delete();
+        return true;
     },
     
     getNewsletterSubscribers: async () => {

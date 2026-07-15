@@ -8,12 +8,11 @@
     <link rel="icon" type="image/png" href="../assets/images/logo.png">
     <link rel="apple-touch-icon" href="../assets/images/logo.png">
     <meta name="theme-color" content="#0B0F19">
-    <!-- Tailwind CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.17/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Tailwind CSS (Play CDN with JIT) -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Cloudinary Widget -->
-    <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
+    <!-- Cloudinary Widget loaded at bottom of body -->
     <!-- TinyMCE Rich Text Editor -->
     <script src="https://cdn.tiny.cloud/1/7ljj288xo7ekxabldpx0j9gmxvzw7l3ao5riv578q9vi1c9s/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
     <!-- ApexCharts -->
@@ -26,8 +25,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <!-- Global CSS -->
     <link rel="stylesheet" href="../assets/css/style.css?v=3">
-    <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Leaflet JS loaded at bottom of body -->
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -37,23 +35,8 @@
         }
         .sidebar-active {
             color: #D4AF37 !important;
-            background-color: rgba(212, 175, 55, 0.05) !important;
-            border-left: 4px solid #DC2626 !important; /* Crimson Red active border to match the swoosh */
-        }
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 3px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(212, 175, 55, 0.04) 100%) !important;
+            border-left: 3px solid #D4AF37 !important;
         }
     </style>
 </head>
@@ -745,7 +728,6 @@
                             <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Location</label>
                             <select id="edit-room-location" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]"></select>
                         </div>
-                    </div>
 
                         <div class="grid grid-cols-2 gap-4 mb-4">
                             <div>
@@ -876,7 +858,6 @@
                                 <option value="Nathia Gali">Nathia Gali</option>
                             </select>
                         </div>
-                    </div>
 
                         <div class="grid grid-cols-2 gap-4 mb-4">
                             <div>
@@ -942,7 +923,7 @@
 
     <!-- MODAL: ADD BOOKING -->
     <div id="add-booking-modal" class="fixed inset-0 bg-[#0F172A]/70 z-[100] flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
-        <div class="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl relative border border-slate-100 transform scale-95 transition-transform duration-300 p-8 text-slate-805">
+        <div class="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl relative border border-slate-100 transform scale-95 transition-transform duration-300 p-8 text-slate-800">
             <button type="button" onclick="closeAddBookingModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700">
                 <i class="fa-solid fa-times text-lg"></i>
             </button>
@@ -1014,7 +995,7 @@
 
     <!-- MODAL: EDIT BOOKING -->
     <div id="edit-booking-modal" class="fixed inset-0 bg-[#0F172A]/70 z-[100] flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
-        <div class="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl relative border border-slate-100 transform scale-95 transition-transform duration-300 p-8 text-slate-805">
+        <div class="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl relative border border-slate-100 transform scale-95 transition-transform duration-300 p-8 text-slate-800">
             <button type="button" onclick="closeEditBookingModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700">
                 <i class="fa-solid fa-times text-lg"></i>
             </button>
@@ -1088,7 +1069,7 @@
 
     <!-- MODAL: ADD CATEGORY -->
     <div id="add-category-modal" class="fixed inset-0 bg-[#0F172A]/70 z-[100] flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
-        <div class="bg-white rounded-3xl max-w-sm w-full overflow-hidden shadow-2xl relative border border-slate-100 transform scale-95 transition-transform duration-300 p-8 text-slate-850">
+        <div class="bg-white rounded-3xl max-w-sm w-full overflow-hidden shadow-2xl relative border border-slate-100 transform scale-95 transition-transform duration-300 p-8 text-slate-800">
             <button onclick="closeAddCategoryModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700">
                 <i class="fa-solid fa-times text-lg"></i>
             </button>
@@ -1125,7 +1106,7 @@
 
     <!-- MODAL: ADD LOCATION -->
     <div id="add-location-modal" class="fixed inset-0 bg-[#0F172A]/70 z-[100] flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
-        <div class="bg-white rounded-3xl max-w-sm w-full overflow-hidden shadow-2xl relative border border-slate-100 transform scale-95 transition-transform duration-300 p-8 text-slate-850">
+        <div class="bg-white rounded-3xl max-w-sm w-full overflow-hidden shadow-2xl relative border border-slate-100 transform scale-95 transition-transform duration-300 p-8 text-slate-800">
             <button onclick="closeAddLocationModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700">
                 <i class="fa-solid fa-times text-lg"></i>
             </button>
@@ -1149,7 +1130,7 @@
 
     <!-- MODAL: ADD COUPON -->
     <div id="add-coupon-modal" class="fixed inset-0 bg-[#0F172A]/70 z-[100] flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
-        <div class="bg-white rounded-3xl max-w-sm w-full overflow-hidden shadow-2xl relative border border-slate-100 transform scale-95 transition-transform duration-300 p-8 text-slate-850">
+        <div class="bg-white rounded-3xl max-w-sm w-full overflow-hidden shadow-2xl relative border border-slate-100 transform scale-95 transition-transform duration-300 p-8 text-slate-800">
             <button onclick="closeAddCouponModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700">
                 <i class="fa-solid fa-times text-lg"></i>
             </button>

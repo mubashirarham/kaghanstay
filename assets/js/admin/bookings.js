@@ -39,8 +39,8 @@
             
             let statusSelect = `
                 <select onchange="changeBookingStatus('${booking.id}', this.value)" class="bg-slate-50 border border-slate-200 rounded-lg text-[11px] px-2 py-1 outline-none font-bold cursor-pointer ${
-                    booking.status === 'confirmed' ? 'text-emerald-600 border-emerald-250 bg-emerald-50/20' :
-                    booking.status === 'completed' ? 'text-blue-600 border-blue-250 bg-blue-50/20' : 'text-rose-600 border-rose-250 bg-rose-50/20'
+                    booking.status === 'confirmed' ? 'text-emerald-600 border-emerald-200 bg-emerald-50/20' :
+                    booking.status === 'completed' ? 'text-blue-600 border-blue-200 bg-blue-50/20' : 'text-rose-600 border-rose-200 bg-rose-50/20'
                 }">
                     <option value="confirmed" ${booking.status === 'confirmed' ? 'selected' : ''}>Confirmed</option>
                     <option value="completed" ${booking.status === 'completed' ? 'selected' : ''}>Completed</option>
@@ -50,8 +50,8 @@
 
             const isWalkin = booking.userId === 'usr-guest-walkin';
             const guestBadge = isWalkin 
-                ? `<span class="bg-slate-150 text-slate-700 border border-slate-300 rounded-full px-2.5 py-0.5 text-[9px] font-bold tracking-wide uppercase inline-block mt-1">Walk-in Guest</span>`
-                : `<span class="bg-indigo-50 text-indigo-700 border border-indigo-150 rounded-full px-2.5 py-0.5 text-[9px] font-bold tracking-wide uppercase inline-block mt-1">Kaghan Member</span>`;
+                ? `<span class="bg-slate-200 text-slate-700 border border-slate-300 rounded-full px-2.5 py-0.5 text-[9px] font-bold tracking-wide uppercase inline-block mt-1">Walk-in Guest</span>`
+                : `<span class="bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-full px-2.5 py-0.5 text-[9px] font-bold tracking-wide uppercase inline-block mt-1">Kaghan Member</span>`;
 
             return `
                 <tr class="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">

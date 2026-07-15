@@ -13,7 +13,11 @@ if (window.KaghanUI && !window.KaghanUI.showToast) {
         const icons = { success: 'fa-check-circle', error: 'fa-circle-xmark', info: 'fa-circle-info', warning: 'fa-triangle-exclamation' };
         const toast = document.createElement('div');
         toast.className = `${colors[type] || colors.info} text-white text-xs font-semibold px-4 py-3 rounded-xl shadow-lg flex items-center gap-2 pointer-events-auto animate-fade-up`;
-        toast.innerHTML = `<i class="fa-solid ${icons[type] || icons.info}"></i> ${message}`;
+        const icon = document.createElement('i');
+        icon.className = `fa-solid ${icons[type] || icons.info}`;
+        toast.appendChild(icon);
+        const text = document.createTextNode(` ${message}`);
+        toast.appendChild(text);
         container.appendChild(toast);
         setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateY(8px)'; toast.style.transition = 'all 0.4s ease'; setTimeout(() => toast.remove(), 400); }, 3500);
     };
@@ -270,28 +274,28 @@ async function renderOverviewBookings() {
         
         let statusBadge = '';
         if (booking.status === 'confirmed') {
-            statusBadge = '<span class="bg-emerald-50 text-emerald-700 text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider border border-emerald-150">Confirmed</span>';
+            statusBadge = '<span class="bg-emerald-50 text-emerald-700 text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider border border-emerald-200">Confirmed</span>';
         } else if (booking.status === 'completed') {
-            statusBadge = '<span class="bg-blue-50 text-blue-700 text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider border border-blue-150">Completed</span>';
+            statusBadge = '<span class="bg-blue-50 text-blue-700 text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider border border-blue-200">Completed</span>';
         } else {
-            statusBadge = '<span class="bg-rose-50 text-rose-700 text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider border border-rose-150">Cancelled</span>';
+            statusBadge = '<span class="bg-rose-50 text-rose-700 text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider border border-rose-200">Cancelled</span>';
         }
 
         const isWalkin = booking.userId === 'usr-guest-walkin';
         const guestBadge = isWalkin 
-            ? `<span class="bg-slate-100 text-slate-700 border border-slate-350 rounded px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wider ml-2">Walk-in</span>`
-            : `<span class="bg-indigo-50 text-indigo-700 border border-indigo-150 rounded px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wider ml-2">Member</span>`;
+            ? `<span class="bg-slate-100 text-slate-700 border border-slate-300 rounded px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wider ml-2">Walk-in</span>`
+            : `<span class="bg-indigo-50 text-indigo-700 border border-indigo-200 rounded px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wider ml-2">Member</span>`;
 
         return `
             <tr class="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
-                <td class="px-6 py-4 text-xs font-bold text-[#D4AF37] uppercase">${booking.id}</td>
+                <td class="px-6 py-4 text-xs font-bold text-[#D4AF37] uppercase">${KaghanSafe.escapeHTML(booking.id)}</td>
                 <td class="px-6 py-4">
                     <span class="font-bold text-slate-800 text-xs flex items-center">
-                        ${booking.guestName}
+                        ${KaghanSafe.escapeHTML(booking.guestName)}
                         ${guestBadge}
                     </span>
                 </td>
-                <td class="px-6 py-4 text-xs text-slate-600 font-medium">${room.name}</td>
+                <td class="px-6 py-4 text-xs text-slate-600 font-medium">${KaghanSafe.escapeHTML(room.name)}</td>
                 <td class="px-6 py-4 text-[11px] text-slate-500">
                     ${KaghanUI.formatDate(booking.checkIn)} to ${KaghanUI.formatDate(booking.checkOut)}
                 </td>
@@ -323,12 +327,13 @@ async function renderNewsletter(searchKeyword = '') {
 
     if (emptyState) emptyState.classList.add('hidden');
     tbody.innerHTML = filtered.map(sub => {
+        const escapedEmail = KaghanSafe.escapeHTML(sub.email);
         return `
             <tr class="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
-                <td class="px-6 py-4 text-sm font-semibold text-slate-800">${sub.email}</td>
+                <td class="px-6 py-4 text-sm font-semibold text-slate-800">${escapedEmail}</td>
                 <td class="px-6 py-4 text-xs text-slate-500">${KaghanUI.formatDate(sub.subscribedAt)}</td>
                 <td class="px-6 py-4 flex gap-2">
-                    <button onclick="removeSubscriber('${sub.email}')" class="bg-rose-50 border border-rose-100 text-rose-600 text-[10px] font-bold px-3 py-1.5 rounded-lg hover:bg-rose-600 hover:text-white transition-all flex items-center gap-1.5">
+                    <button data-email="${escapedEmail}" onclick="removeSubscriber(this.dataset.email)" class="bg-rose-50 border border-rose-100 text-rose-600 text-[10px] font-bold px-3 py-1.5 rounded-lg hover:bg-rose-600 hover:text-white transition-all flex items-center gap-1.5">
                         <i class="fa-solid fa-trash-can text-[9px]"></i> Remove
                     </button>
                 </td>
