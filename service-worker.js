@@ -1,7 +1,9 @@
-const CACHE_NAME = 'kph-stay-cache-v8';
+const CACHE_NAME = 'kph-stay-cache-v9';
 // Only cache same-origin static assets.
 // External CDN resources must NOT be pre-cached: the SW fetch() runs under the
 // page CSP and any cross-origin fetch is blocked, causing install failures.
+// NOTE: shared.js is NOT listed here because HTML loads it as shared.js?v=3
+// (different cache key). It will be cached on first visit by the fetch handler.
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -15,7 +17,6 @@ const ASSETS_TO_CACHE = [
   '/privacy.html',
   '/manifest.json',
   '/assets/css/style.css',
-  '/assets/js/shared.js',
   '/assets/js/rooms.js',
   '/assets/images/logo.png'
 ];

@@ -13,8 +13,8 @@
         const categories = await KaghanDB.getCategories();
         const locations = await KaghanDB.getLocations();
 
-        const catOptions = categories.map(c => `<option value="${c.id}">${c.label}</option>`).join('');
-        const locOptions = locations.map(l => `<option value="${l.id}">${l.label}</option>`).join('');
+        const catOptions = categories.map(c => `<option value="${KaghanSafe.escapeHTML(c.id)}">${KaghanSafe.escapeHTML(c.label)}</option>`).join('');
+        const locOptions = locations.map(l => `<option value="${KaghanSafe.escapeHTML(l.id)}">${KaghanSafe.escapeHTML(l.label)}</option>`).join('');
 
         typeSelects.forEach(select => {
             if (select) select.innerHTML = catOptions;
@@ -108,7 +108,7 @@
 
         container.innerHTML = imageUrls.map((url, idx) => `
             <div class="relative w-16 h-16 shrink-0 rounded-lg overflow-hidden border border-slate-200 group">
-                <img src="${url}" class="w-full h-full object-cover">
+                <img src="${KaghanSafe.escapeHTML(url)}" class="w-full h-full object-cover">
                 <button type="button" onclick="removeGalleryImage('${containerId}', '${dataInputId}', ${idx})" class="absolute top-1 right-1 bg-white rounded-full w-5 h-5 flex items-center justify-center text-rose-500 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity">
                     <i class="fa-solid fa-times text-[10px]"></i>
                 </button>

@@ -20,16 +20,9 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const fdb = firebase.firestore();
 
-// Enable Firestore Offline Persistence
-fdb.enablePersistence().catch((err) => {
-    if (err.code === 'failed-precondition') {
-        console.warn('Firestore persistence deferred: Multiple tabs open.');
-    } else if (err.code === 'unimplemented') {
-        console.warn('Firestore persistence not supported in this browser.');
-    } else {
-        console.warn('Firestore persistence error:', err);
-    }
-});
+// Firestore offline persistence is enabled by default in Firebase compat SDK v10.x.
+// The deprecated fdb.enablePersistence() call has been removed to suppress the
+// console warning: "enableIndexedDbPersistence() will be deprecated in the future".
 
 // Global memory cache and active listeners setup
 window.KaghanDB_Cache = {
