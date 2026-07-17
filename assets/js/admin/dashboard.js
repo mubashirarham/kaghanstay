@@ -184,17 +184,19 @@ async function renderMetrics() {
     if (bkEl) bkEl.innerText = bookings.length;
     if (usrEl) usrEl.innerText = activeUsers.length;
 
-    renderCharts(bookings);
+    renderCharts(bookings, rooms);
 }
 
 // Global chart variables to allow updates instead of destroying
 let revenueChartInstance = null;
 let statusChartInstance = null;
+let suiteRevenueChartInstance = null;
+let occupancyTrendChartInstance = null;
 
-function renderCharts(bookings) {
+function renderCharts(bookings, rooms) {
     if (typeof ApexCharts === 'undefined') return;
 
-    // Process data for Revenue Chart (Mocking monthly data for demonstration based on total, normally you group by month)
+    // 1. REVENUE TREND (AREA CHART)
     const monthlyRevenue = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     bookings.forEach(b => {
         if (b.status === 'confirmed' || b.status === 'completed') {
@@ -225,7 +227,7 @@ function renderCharts(bookings) {
         }
     }
 
-    // Process data for Booking Status Donut Chart
+    // 2. BOOKING STATUS (DONUT CHART)
     let confirmed = 0, pending = 0, cancelled = 0, completed = 0;
     bookings.forEach(b => {
         if (b.status === 'confirmed') confirmed++;
@@ -251,6 +253,85 @@ function renderCharts(bookings) {
         if (statEl) {
             statusChartInstance = new ApexCharts(statEl, statusOptions);
             statusChartInstance.render();
+        }
+    }
+
+    // 3. SUITE REVENUE CONTRIBUTION (HORIZONTAL BAR CHART)
+    const roomMap = {};
+    rooms.forEach(r => { roomMap[r.id] = r.type || 'Standard Suite'; });
+
+    const typeRevenue = {};
+    bookings.forEach(b => {
+        if (b.status === 'confirmed' || b.status === 'completed') {
+            const rType = roomMap[b.roomId] || 'Other Suite';
+            typeRevenue[rType] = (typeRevenue[rType] || 0) + b.totalPrice;
+        }
+    });
+
+    const categories = Object.keys(typeRevenue);
+    const revenueValues = Object.values(typeRevenue);
+
+    const suiteRevOptions = {
+        series: [{ name: 'Revenue Contribution', data: revenueValues }],
+        chart: { type: 'bar', height: 320, toolbar: { show: false }, fontFamily: 'Inter, sans-serif' },
+        plotOptions: { bar: { horizontal: true, borderRadius: 8, barHeight: '55%' } },
+        colors: ['#D4AF37'],
+        dataLabels: { enabled: true, formatter: (val) => "PKR " + (val / 1000).toFixed(0) + "k", style: { colors: ['#fff'], fontSize: '10px' } },
+        xaxis: { categories: categories, labels: { formatter: (val) => "PKR " + (val / 1000).toFixed(0) + "k" } },
+        grid: { borderColor: '#f1f1f1' }
+    };
+
+    if (suiteRevenueChartInstance) {
+        suiteRevenueChartInstance.updateSeries([{ data: revenueValues }]);
+        suiteRevenueChartInstance.updateOptions({ xaxis: { categories: categories } });
+    } else {
+        const suiteEl = document.querySelector("#room-revenue-chart");
+        if (suiteEl) {
+            suiteRevenueChartInstance = new ApexCharts(suiteEl, suiteRevOptions);
+            suiteRevenueChartInstance.render();
+        }
+    }
+
+    // 4. OCCUPANCY RATE TIMELINE (AREA CHART)
+    const days = [];
+    const occupancyRates = [];
+    const today = new Date();
+
+    for (let i = 6; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(today.getDate() - i);
+        const dateStr = d.toISOString().split('T')[0];
+        days.push(d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }));
+
+        let occupiedRooms = 0;
+        bookings.forEach(b => {
+            if (b.status === 'confirmed' && dateStr >= b.checkIn && dateStr <= b.checkOut) {
+                occupiedRooms++;
+            }
+        });
+        const rate = rooms.length > 0 ? Math.round((occupiedRooms / rooms.length) * 100) : 0;
+        occupancyRates.push(rate);
+    }
+
+    const occTrendOptions = {
+        series: [{ name: 'Occupancy Rate', data: occupancyRates }],
+        chart: { type: 'area', height: 320, toolbar: { show: false }, fontFamily: 'Inter, sans-serif' },
+        colors: ['#3B82F6'],
+        fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.3, opacityTo: 0.02, stops: [0, 100] } },
+        stroke: { curve: 'smooth', width: 3 },
+        xaxis: { categories: days },
+        yaxis: { min: 0, max: 100, labels: { formatter: (val) => val + "%" } },
+        grid: { borderColor: '#f1f1f1' }
+    };
+
+    if (occupancyTrendChartInstance) {
+        occupancyTrendChartInstance.updateSeries([{ data: occupancyRates }]);
+        occupancyTrendChartInstance.updateOptions({ xaxis: { categories: days } });
+    } else {
+        const occTrendEl = document.querySelector("#occupancy-trend-chart");
+        if (occTrendEl) {
+            occupancyTrendChartInstance = new ApexCharts(occTrendEl, occTrendOptions);
+            occupancyTrendChartInstance.render();
         }
     }
 }

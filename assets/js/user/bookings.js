@@ -340,13 +340,14 @@
             return;
         }
 
-        const success = await KaghanDB.updateBookingDates(activeRescheduleBooking.id, checkInVal, checkOutVal, newReschedulePrice);
-        if (success) {
+        try {
+            await KaghanDB.updateBookingDates(activeRescheduleBooking.id, checkInVal, checkOutVal);
             KaghanUI.showToast("Reservation rescheduled successfully!", "success");
             await renderUserBookings();
             closeRescheduleModal();
-        } else {
-            KaghanUI.showToast("Could not save new schedule details.", "error");
+        } catch (error) {
+            console.error("Reschedule error:", error);
+            KaghanUI.showToast(error.message || "Could not save new schedule details.", "error");
         }
     };
 

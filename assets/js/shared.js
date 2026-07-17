@@ -34,7 +34,8 @@ window.KaghanDB_Cache = {
     newsletter: null,
     categories: null,
     locations: null,
-    coupons: null
+    coupons: null,
+    upgrades: null
 };
 
 window.KaghanDB_Listeners = {
@@ -47,7 +48,8 @@ window.KaghanDB_Listeners = {
     currentUser: null,
     categories: null,
     locations: null,
-    coupons: null
+    coupons: null,
+    upgrades: null
 };
 
 function startActiveListeners() {
@@ -93,6 +95,13 @@ function startActiveListeners() {
         window.KaghanDB_Cache.locations = list;
         window.dispatchEvent(new CustomEvent('kaghan-db-locations', { detail: list }));
     }, err => console.warn("Locations listener error:", err));
+
+    window.KaghanDB_Listeners.upgrades = fdb.collection('upgrades').onSnapshot(snap => {
+        const list = [];
+        snap.forEach(doc => list.push(doc.data()));
+        window.KaghanDB_Cache.upgrades = list;
+        window.dispatchEvent(new CustomEvent('kaghan-db-upgrades', { detail: list }));
+    }, err => console.warn("Upgrades listener error:", err));
 
     // 4. Authenticated User Listeners
     const user = JSON.parse(localStorage.getItem(DB_KEYS.SESSION));
@@ -174,7 +183,8 @@ function stopActiveListeners() {
         newsletter: null,
         categories: null,
         locations: null,
-        coupons: null
+        coupons: null,
+        upgrades: null
     };
 }
 
@@ -336,6 +346,22 @@ const db = {
         return true;
     },
 
+    // Upgrades CRUD
+    getUpgrades: async () => {
+        if (window.KaghanDB_Cache.upgrades) return window.KaghanDB_Cache.upgrades;
+        const snap = await fdb.collection('upgrades').get();
+        const list = [];
+        snap.forEach(doc => list.push(doc.data()));
+        window.KaghanDB_Cache.upgrades = list;
+        return list;
+    },
+    saveUpgrade: async (upgrade) => {
+        return await callAdminAction('saveUpgrade', { upgrade });
+    },
+    deleteUpgrade: async (id) => {
+        return await callAdminAction('deleteUpgrade', { id });
+    },
+
     // Rooms CRUD
     getRooms: async () => {
         if (window.KaghanDB_Cache.rooms) {
@@ -356,12 +382,10 @@ const db = {
         return doc.exists ? doc.data() : null;
     },
     updateRoom: async (id, updatedData) => {
-        await fdb.collection('rooms').doc(id).update(updatedData);
-        return true;
+        return await callAdminAction('updateRoom', { id, updatedData });
     },
     addRoom: async (room) => {
-        await fdb.collection('rooms').doc(room.id).set(room);
-        return true;
+        return await callAdminAction('addRoom', { room });
     },
 
     // Bookings CRUD
@@ -395,7 +419,9 @@ const db = {
                 couponCode: booking.couponUsed,
                 billingCycle: booking.billingCycle,
                 pdfBase64: pdfBase64,
-                idToken: idToken
+                idToken: idToken,
+                upgrades: (booking.upgrades || []).map(u => typeof u === 'string' ? u : u.id),
+                force: booking.force || false
             })
         });
 
@@ -413,33 +439,41 @@ const db = {
         await fdb.collection('bookings').doc(id).update({ status });
         return true;
     },
-    updateBookingDates: async (id, checkIn, checkOut, totalPrice) => {
-        await fdb.collection('bookings').doc(id).update({ checkIn, checkOut, totalPrice });
+    updateBookingDates: async (id, checkIn, checkOut) => {
+        let idToken = null;
+        if (typeof firebase !== 'undefined' && firebase.auth && firebase.auth().currentUser) {
+            idToken = await firebase.auth().currentUser.getIdToken();
+        }
+
+        const res = await window.safeFetch('/.netlify/functions/reschedule-booking', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ bookingId: id, checkIn, checkOut, idToken })
+        });
+
+        if (!res.ok) {
+            const data = await res.json();
+            throw new Error(data.error || 'Failed to reschedule reservation.');
+        }
         return true;
     },
     deleteBooking: async (id) => {
-        await fdb.collection('bookings').doc(id).delete();
-        return true;
+        return await callAdminAction('deleteBooking', { id });
     },
     updateBookingDetails: async (id, updatedData) => {
-        await fdb.collection('bookings').doc(id).update(updatedData);
-        return true;
+        return await callAdminAction('updateBookingDetails', { id, updatedData });
     },
     deleteRoom: async (id) => {
-        await fdb.collection('rooms').doc(id).delete();
-        return true;
+        return await callAdminAction('deleteRoom', { id });
     },
     deleteUser: async (id) => {
-        await fdb.collection('users').doc(id).delete();
-        return true;
+        return await callAdminAction('deleteUser', { id });
+    },
+    createUser: async (user) => {
+        return await callAdminAction('createUser', user);
     },
     deleteNewsletterSubscriber: async (email) => {
-        const snap = await fdb.collection('newsletter').where('email', '==', email.toLowerCase().trim()).get();
-        if (!snap.empty) {
-            await snap.docs[0].ref.delete();
-            return true;
-        }
-        throw new Error("Subscriber not found.");
+        return await callAdminAction('deleteNewsletterSubscriber', { email });
     },
     getReviews: async () => {
         if (window.KaghanDB_Cache.reviews) {
@@ -478,39 +512,7 @@ const db = {
         return true;
     },
     deleteReview: async (reviewId) => {
-        await fdb.runTransaction(async (transaction) => {
-            const reviewRef = fdb.collection('reviews').doc(reviewId);
-            const reviewDoc = await transaction.get(reviewRef);
-            if (!reviewDoc.exists) {
-                throw new Error("Review document not found.");
-            }
-            const reviewData = reviewDoc.data();
-            const roomId = reviewData.roomId;
-
-            transaction.delete(reviewRef);
-
-            // Re-calculate room ratings
-            const reviewsQuery = fdb.collection('reviews').where('roomId', '==', roomId);
-            const reviewsSnap = await transaction.get(reviewsQuery);
-            
-            let totalRating = 0;
-            let count = 0;
-            
-            reviewsSnap.forEach(doc => {
-                if (doc.id !== reviewId) {
-                    totalRating += doc.data().rating;
-                    count++;
-                }
-            });
-
-            const newRating = count > 0 ? parseFloat((totalRating / count).toFixed(1)) : 5.0;
-            const roomRef = fdb.collection('rooms').doc(roomId);
-            transaction.update(roomRef, {
-                rating: newRating,
-                reviewsCount: count
-            });
-        });
-        return true;
+        return await callAdminAction('deleteReview', { reviewId });
     },
 
     // Date Overlap checking
@@ -681,16 +683,12 @@ const db = {
     },
 
     addBlog: async (blog) => {
-        const docRef = fdb.collection('blogs').doc();
-        blog.id = docRef.id;
-        blog.createdAt = new Date().toISOString();
-        await docRef.set(blog);
-        return { success: true, id: docRef.id };
+        const id = await callAdminAction('addBlog', { blog });
+        return { success: true, id };
     },
 
     deleteBlog: async (id) => {
-        await fdb.collection('blogs').doc(id).delete();
-        return true;
+        return await callAdminAction('deleteBlog', { id });
     },
     
     getNewsletterSubscribers: async () => {
@@ -752,6 +750,180 @@ const UI = {
     formatDate: (dateStr) => {
         const options = { year: 'numeric', month: 'short', day: 'numeric' };
         return new Date(dateStr).toLocaleDateString('en-US', options);
+    },
+    openRoomDetailModal: async (roomId) => {
+        try {
+            const room = await db.getRoomById(roomId);
+            if (!room) {
+                UI.showToast('Room not found', 'error');
+                return;
+            }
+
+            const categories = await db.getCategories();
+            const locations = await db.getLocations();
+            const cat = categories.find(c => c.id === room.type);
+            const catLabel = cat ? cat.label : room.type;
+            const loc = locations.find(l => l.id === room.location);
+            const locLabel = loc ? loc.label : (room.locationName || room.location || 'Islamabad');
+
+            const images = room.images && room.images.length > 0 ? room.images : [room.image || 'assets/images/logo.png'];
+            let currentImgIdx = 0;
+
+            const modal = document.createElement('div');
+            modal.id = 'room-detail-modal';
+            modal.className = 'fixed inset-0 z-[1000] bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 opacity-0 transition-opacity duration-300';
+            
+            modal.innerHTML = `
+                <div class="relative max-w-3xl w-full bg-white rounded-[2rem] shadow-2xl overflow-hidden border border-slate-100 flex flex-col md:flex-row max-h-[90vh] md:max-h-[80vh] transform scale-95 transition-transform duration-300">
+                    
+                    <!-- Left: Image Slider Column -->
+                    <div class="w-full md:w-1/2 relative bg-slate-100 min-h-[250px] md:min-h-full flex items-center justify-center overflow-hidden">
+                        <img id="detail-modal-img" src="${KaghanSafe.escapeHTML(images[currentImgIdx])}" class="w-full h-full object-cover transition-all duration-300">
+                        
+                        <!-- Nav Arrows -->
+                        ${images.length > 1 ? `
+                            <button id="detail-modal-prev" class="absolute left-4 bg-black/40 hover:bg-black/60 text-[#D4AF37] w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-105 border border-white/10 active:scale-95">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </button>
+                            <button id="detail-modal-next" class="absolute right-4 bg-black/40 hover:bg-black/60 text-[#D4AF37] w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-105 border border-white/10 active:scale-95">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </button>
+                            
+                            <!-- Counter Indicator -->
+                            <div class="absolute bottom-4 bg-black/60 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-bold text-white border border-white/10 tracking-widest">
+                                <span id="detail-modal-counter">1</span> / ${images.length}
+                            </div>
+                        ` : ''}
+                    </div>
+
+                    <!-- Right: Content Details Column -->
+                    <div class="w-full md:w-1/2 p-6 md:p-8 flex flex-col justify-between overflow-y-auto max-h-[50vh] md:max-h-[80vh]">
+                        <!-- Close Button -->
+                        <button id="detail-modal-close" class="absolute top-4 right-4 bg-slate-100/80 hover:bg-slate-200 text-slate-700 hover:text-slate-900 w-9 h-9 rounded-full flex items-center justify-center transition-colors z-10">
+                            <i class="fa-solid fa-xmark text-lg"></i>
+                        </button>
+
+                        <div>
+                            <!-- Category Badge -->
+                            <span class="inline-block bg-[#C5A059]/10 text-[#C5A059] text-[9px] font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-3 border border-[#C5A059]/20">
+                                ${KaghanSafe.escapeHTML(catLabel)}
+                            </span>
+                            
+                            <!-- Title -->
+                            <h2 class="text-2xl font-light outfit text-[#0B0F19] leading-tight mb-2">${KaghanSafe.escapeHTML(room.name)}</h2>
+                            
+                            <!-- Location -->
+                            <div class="text-[9px] text-slate-400 font-bold mb-4 flex items-center gap-1.5 uppercase tracking-widest">
+                                <i class="fa-solid fa-location-dot text-[#C5A059]"></i>
+                                <span>${KaghanSafe.escapeHTML(locLabel)}</span>
+                            </div>
+
+                            <!-- Description -->
+                            <div class="text-slate-500 text-xs font-light leading-relaxed mb-6">
+                                ${KaghanSafe.sanitizeHTML(room.description)}
+                            </div>
+
+                            <!-- Key Amenities -->
+                            <div class="mb-6">
+                                <h4 class="text-[9px] uppercase tracking-widest text-[#C5A059] font-bold mb-3">Suite Features</h4>
+                                <div class="grid grid-cols-2 gap-2.5">
+                                    <span class="text-slate-600 text-xs font-semibold flex items-center gap-2">
+                                        <i class="fa-solid fa-user-group text-[#C5A059] text-xs w-4"></i> Max ${room.maxGuests} Guests
+                                    </span>
+                                    ${(room.amenities || []).slice(0, 5).map(a => `
+                                        <span class="text-slate-650 text-xs font-semibold flex items-center gap-2">
+                                            <i class="fa-solid fa-circle-check text-[#C5A059] text-xs w-4"></i> ${KaghanSafe.escapeHTML(a)}
+                                        </span>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Price & CTA Button -->
+                        <div class="border-t border-slate-100/80 pt-6 mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                            <div>
+                                <span class="text-slate-400 text-[9px] uppercase tracking-widest block font-bold">Price per night</span>
+                                <div class="flex items-center gap-2 mt-1">
+                                    ${room.originalPrice ? `<span class="line-through text-slate-400 font-semibold text-[10px]">${UI.formatPKR(room.originalPrice)}</span>` : ''}
+                                    <span class="text-2xl font-bold text-[#C5A059] outfit tracking-tight">${UI.formatPKR(room.priceDaily || room.price)}</span>
+                                </div>
+                            </div>
+                            <a href="booking.html?room=${KaghanSafe.escapeHTML(room.id)}" class="bg-[#0B0F19] text-white text-center font-bold px-6 py-3.5 rounded-xl hover:bg-[#C5A059] hover:text-white transition-all shadow-md text-xs uppercase tracking-wider whitespace-nowrap">
+                                Book Stay
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modal.querySelector('.transform').classList.remove('scale-95');
+            }, 10);
+
+            const closeModal = () => {
+                modal.classList.add('opacity-0');
+                modal.querySelector('.transform').classList.add('scale-95');
+                setTimeout(() => modal.remove(), 300);
+                document.removeEventListener('keydown', keydownHandler);
+            };
+
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeModal();
+            });
+            modal.querySelector('#detail-modal-close').addEventListener('click', closeModal);
+
+            const keydownHandler = (e) => {
+                if (e.key === 'Escape') closeModal();
+                if (images.length > 1) {
+                    if (e.key === 'ArrowLeft') showPrevImage();
+                    if (e.key === 'ArrowRight') showNextImage();
+                }
+            };
+            document.addEventListener('keydown', keydownHandler);
+
+            const imgEl = modal.querySelector('#detail-modal-img');
+            const counterEl = modal.querySelector('#detail-modal-counter');
+
+            const updateImage = () => {
+                if (imgEl) {
+                    imgEl.classList.add('opacity-0');
+                    setTimeout(() => {
+                        imgEl.src = images[currentImgIdx];
+                        imgEl.classList.remove('opacity-0');
+                    }, 150);
+                }
+                if (counterEl) {
+                    counterEl.innerText = currentImgIdx + 1;
+                }
+            };
+
+            const showPrevImage = () => {
+                currentImgIdx = (currentImgIdx - 1 + images.length) % images.length;
+                updateImage();
+            };
+
+            const showNextImage = () => {
+                currentImgIdx = (currentImgIdx + 1) % images.length;
+                updateImage();
+            };
+
+            if (images.length > 1) {
+                modal.querySelector('#detail-modal-prev').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    showPrevImage();
+                });
+                modal.querySelector('#detail-modal-next').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    showNextImage();
+                });
+            }
+
+        } catch (err) {
+            console.error("Failed to open room details modal:", err);
+            UI.showToast("Failed to load room details.", "error");
+        }
     }
 };
 
@@ -847,6 +1019,13 @@ function injectChatbot() {
     // Toggle actions
     trigger.addEventListener('click', () => {
         if (chatBox.classList.contains('hidden')) {
+            // Close WhatsApp box if open
+            const waBox = document.getElementById('wa-chat-box');
+            if (waBox && !waBox.classList.contains('hidden')) {
+                waBox.classList.add('scale-95', 'opacity-0');
+                setTimeout(() => { waBox.classList.add('hidden'); }, 300);
+            }
+
             chatBox.classList.remove('hidden');
             setTimeout(() => {
                 chatBox.classList.remove('scale-95', 'opacity-0');
@@ -1106,9 +1285,10 @@ function initializeSharedUI() {
     // Automatically sync header auth state
     window.renderNavbar();
 
-    // Trigger chatbot and cookie consent injections
+    // Trigger chatbot, WhatsApp widget, and cookie consent injections
     setTimeout(() => {
         injectChatbot();
+        injectWhatsApp();
         injectCookieBanner();
     }, 500);
 }
@@ -1124,29 +1304,27 @@ if (document.readyState === 'loading') {
 // GLOBAL SCROLL ANIMATION SYSTEM
 // Uses IntersectionObserver to trigger [data-animate] elements
 // ============================================================
-(function initScrollAnimations() {
-    function setupObserver() {
-        const animatedEls = document.querySelectorAll('[data-animate]');
-        if (!animatedEls.length) return;
+window.setupScrollAnimations = function() {
+    const animatedEls = document.querySelectorAll('[data-animate]:not(.animated)');
+    if (!animatedEls.length) return;
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animated');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animated');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.08, rootMargin: '0px 0px -20px 0px' });
 
-        animatedEls.forEach(el => observer.observe(el));
-    }
+    animatedEls.forEach(el => observer.observe(el));
+};
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', setupObserver);
-    } else {
-        setupObserver();
-    }
-})();
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', window.setupScrollAnimations);
+} else {
+    window.setupScrollAnimations();
+}
 
 // ============================================================
 // ROOMS FILTER SIDEBAR TOGGLE (mobile)
@@ -1317,4 +1495,102 @@ if ('serviceWorker' in navigator) {
             .then((reg) => console.log('[KPH Stay] Service Worker registered successfully:', reg.scope))
             .catch((err) => console.error('[KPH Stay] Service Worker registration failed:', err));
     });
+}
+
+// Dynamic WhatsApp Widget Injection
+function injectWhatsApp() {
+    // Do not show WhatsApp on admin dashboard pages
+    if (window.location.pathname.includes('/admin/')) return;
+
+    // Prevent duplicate injection
+    if (document.getElementById('wa-chat-trigger')) return;
+
+    // Create elements
+    const trigger = document.createElement('button');
+    trigger.id = 'wa-chat-trigger';
+    trigger.className = 'fixed bottom-24 right-5 z-[9999] bg-[#25D366] text-white w-14 h-14 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300 border border-white/20';
+    trigger.innerHTML = '<i class="fa-brands fa-whatsapp text-2xl"></i>';
+
+    const chatBox = document.createElement('div');
+    chatBox.id = 'wa-chat-box';
+    chatBox.className = 'fixed bottom-24 right-5 w-80 h-[260px] bg-white border border-slate-100 rounded-3xl shadow-2xl flex flex-col justify-between hidden z-[9999] overflow-hidden transition-all duration-300 transform scale-95 opacity-0';
+
+    chatBox.innerHTML = `
+        <!-- Header -->
+        <div class="bg-[#075E54] px-5 py-4 flex justify-between items-center text-white">
+            <div class="flex items-center gap-3">
+                <div class="relative w-8 h-8 rounded-full bg-white/10 flex items-center justify-center border border-white/25">
+                    <i class="fa-solid fa-headset text-sm text-white"></i>
+                    <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-[#075E54]"></span>
+                </div>
+                <div class="flex flex-col text-left">
+                    <span class="text-xs font-bold outfit tracking-wider leading-none text-white">KPH Support</span>
+                    <span class="text-[9px] text-white/70 font-medium mt-1">Usually replies in minutes</span>
+                </div>
+            </div>
+            <button id="wa-chat-close" class="text-white/70 hover:text-white transition-colors">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+        </div>
+
+        <!-- Chat Area -->
+        <div class="flex-grow p-5 bg-[#E5DDD5] flex flex-col justify-between text-left text-xs">
+            <div class="bg-white text-slate-800 p-3.5 rounded-2xl rounded-tl-none shadow-sm max-w-[90%] relative leading-relaxed">
+                Hi there! 👋 How can we help you plan your luxury getaway today? Click below to chat with our concierge team on WhatsApp.
+            </div>
+            
+            <a href="https://wa.me/923340091127?text=Hi%2C%20I'm%20interested%20in%20booking%20a%20stay%20at%20Kaghan%20Stay." target="_blank" id="wa-chat-btn" class="w-full bg-[#25D366] hover:bg-[#20ba59] text-white font-bold py-2.5 rounded-xl text-center transition-all text-xs flex items-center justify-center gap-2 shadow-md">
+                <i class="fa-brands fa-whatsapp text-sm"></i> Start Chat
+            </a>
+        </div>
+    `;
+
+    document.body.appendChild(trigger);
+    document.body.appendChild(chatBox);
+
+    // Toggle actions
+    trigger.addEventListener('click', () => {
+        const isHidden = chatBox.classList.contains('hidden');
+        if (isHidden) {
+            // Close AI Chatbot box if open
+            const cbBox = document.getElementById('kph-chat-box');
+            const cbTrigger = document.getElementById('kph-chat-trigger');
+            if (cbBox && !cbBox.classList.contains('hidden')) {
+                cbBox.classList.add('scale-95', 'opacity-0');
+                if (cbTrigger) cbTrigger.innerHTML = '<i class="fa-solid fa-comments text-xl"></i>';
+                localStorage.setItem('kph_chat_open', 'false');
+                setTimeout(() => { cbBox.classList.add('hidden'); }, 300);
+            }
+
+            chatBox.classList.remove('hidden');
+            setTimeout(() => {
+                chatBox.classList.remove('scale-95', 'opacity-0');
+            }, 10);
+        } else {
+            chatBox.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                chatBox.classList.add('hidden');
+            }, 300);
+        }
+    });
+
+    const closeBtn = chatBox.querySelector('#wa-chat-close');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            chatBox.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                chatBox.classList.add('hidden');
+            }, 300);
+        });
+    }
+
+    const waBtn = chatBox.querySelector('#wa-chat-btn');
+    if (waBtn) {
+        waBtn.addEventListener('click', () => {
+            chatBox.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                chatBox.classList.add('hidden');
+            }, 300);
+        });
+    }
 }

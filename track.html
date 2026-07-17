@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+    <title>Track Your Reservation | KPH Stay</title>
+    <meta name="description" content="Track your reservation progress, view check-in schedules, download PDF receipts, and configure stay preferences.">
+    <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
+    <link rel="apple-touch-icon" href="assets/images/logo.png">
+    <meta name="theme-color" content="#0B0F19">
+    <meta name="robots" content="noindex, follow">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Global CSS -->
+    <link rel="stylesheet" href="assets/css/style.css?v=3">
+</head>
+<body class="bg-[#FBFBFB] text-[#0B0F19] overflow-x-hidden font-sans pt-24">
+
+    <!-- Header / Navigation -->
+    <nav id="hotel-navbar" class="fixed top-0 left-0 right-0 z-50 py-5 px-6 md:px-12 flex justify-between items-center text-white bg-[#0B0F19] border-b border-white/10">
+        <a href="index.html" class="flex items-center gap-3 hover:opacity-90 transition-opacity">
+            <img src="assets/images/logo.png" alt="KPH Stay Logo" class="h-10 w-auto object-contain">
+            <div class="flex flex-col">
+                <span class="text-lg font-bold tracking-wider uppercase outfit leading-none">KPH</span>
+                <span class="text-xs text-[#C5A059] tracking-[0.2em] uppercase font-semibold">Stay</span>
+            </div>
+        </a>
+
+        <div class="hidden md:flex gap-8 items-center font-medium">
+            <a href="index.html" class="hover:text-[#C5A059] transition-colors">Home</a>
+            <a href="rooms.html" class="hover:text-[#C5A059] transition-colors">Rooms</a>
+            <a href="booking.html" class="hover:text-[#C5A059] transition-colors">Book Stay</a>
+            <a href="track.html" class="text-[#C5A059] hover:text-[#C5A059] transition-colors">Track Stay</a>
+            <div id="auth-links" class="flex gap-4 items-center">
+                <a href="login.html" class="border border-[#C5A059] text-white px-5 py-2 rounded-full hover:bg-[#C5A059] hover:text-white transition-all text-sm font-semibold">Login</a>
+                <a href="login.html?register=true" class="bg-[#C5A059] text-white px-5 py-2 rounded-full hover:bg-white hover:text-slate-900 transition-all text-sm font-semibold luxury-shadow">Register</a>
+            </div>
+        </div>
+
+        <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
+            <i class="fa-solid fa-bars text-2xl"></i>
+        </button>
+    </nav>
+
+    <!-- Mobile Drawer -->
+    <div id="mobile-drawer" class="fixed inset-0 bg-[#0B0F19]/95 z-[60] flex flex-col items-center justify-center gap-8 text-white text-xl font-semibold">
+        <button id="menu-close" class="absolute top-8 right-6 text-white text-3xl w-12 h-12 flex items-center justify-center focus:outline-none active:scale-90 transition-transform" aria-label="Close Menu">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <a href="index.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Home</a>
+        <a href="rooms.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Rooms</a>
+        <a href="booking.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Book Stay</a>
+        <a href="track.html" class="text-[#C5A059]" onclick="toggleDrawer()">Track Stay</a>
+        <div id="auth-links-mobile" class="flex flex-col gap-4 w-64 text-center">
+            <a href="login.html" class="border border-[#C5A059] text-white py-3 rounded-full hover:bg-[#C5A059] transition-all text-base" onclick="toggleDrawer()">Login</a>
+            <a href="login.html?register=true" class="bg-[#C5A059] text-white py-3 rounded-full hover:bg-white hover:text-slate-900 transition-all text-base" onclick="toggleDrawer()">Register</a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="py-12 px-6 md:px-12 max-w-4xl mx-auto min-h-[70vh]">
+        <!-- Title Header -->
+        <div class="text-center mb-12" data-animate="fade-down">
+            <span class="inline-block border border-[#C5A059]/30 bg-[#C5A059]/5 backdrop-blur-md text-[#C5A059] uppercase tracking-[0.2em] text-[10px] md:text-xs font-medium px-4 py-1.5 rounded-full mb-4">
+                Real-time Stay Management
+            </span>
+            <h1 class="text-3xl md:text-5xl font-light outfit text-[#0B0F19]">Track Your Reservation</h1>
+            <p class="text-slate-400 text-xs md:text-sm font-light mt-3 max-w-lg mx-auto leading-relaxed">
+                Enter your booking confirmation reference to monitor room preparations, view itinerary details, and manage check-in checklists.
+            </p>
+        </div>
+
+        <!-- Tracking Form Search Card -->
+        <div class="bg-white/80 backdrop-blur-md rounded-[2.5rem] border border-[#C5A059]/10 shadow-[0_20px_50px_-15px_rgba(11,15,25,0.04)] p-6 md:p-8 mb-8 max-w-2xl mx-auto" data-animate="fade-up">
+            <form id="track-form" onsubmit="handleTrackingSubmit(event)" class="flex flex-col sm:flex-row gap-4 items-center">
+                <div class="relative w-full flex-grow">
+                    <i class="fa-solid fa-receipt absolute left-4 top-4 text-slate-400"></i>
+                    <input type="text" id="tracking-id-input" placeholder="ENTER RESERVATION ID (e.g. BK-1002)" required class="w-full border border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/10 text-xs font-semibold uppercase tracking-wider bg-slate-50 focus:bg-white text-[#0B0F19] transition-all">
+                </div>
+                <button type="submit" class="w-full sm:w-auto bg-[#0B0F19] hover:bg-[#C5A059] text-white text-xs font-bold uppercase tracking-wider py-4 px-8 rounded-2xl transition-all shadow-md active:scale-95 flex items-center justify-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-route"></i> Track Progress
+                </button>
+            </form>
+        </div>
+
+        <!-- Result Container (Hidden on load) -->
+        <div id="tracking-result-box" class="hidden space-y-8" data-animate="fade-up">
+            
+            <!-- Dynamic Progress Stepper Tracker -->
+            <div class="bg-white rounded-[2rem] border border-slate-100 p-8 shadow-xl shadow-slate-200/50 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#C5A059]/5 to-transparent rounded-bl-full pointer-events-none"></div>
+                <h3 class="font-bold text-sm outfit uppercase tracking-widest text-[#0B0F19] mb-8 flex items-center gap-2">
+                    <i class="fa-solid fa-signal text-[#C5A059]"></i> Live Stay Progress
+                </h3>
+
+                <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-6 md:gap-4 mt-6">
+                    <!-- Progress Bar Line -->
+                    <div class="absolute left-5 md:left-0 right-0 top-0 md:top-1/2 bottom-0 md:bottom-auto w-[2px] md:w-full h-full md:h-[2px] bg-slate-100 -translate-y-0 md:-translate-y-1/2 z-0"></div>
+                    <div id="status-line-fill" class="absolute left-5 md:left-0 top-0 md:top-1/2 w-[2px] md:w-1/4 h-0 md:h-[2px] bg-[#C5A059] -translate-y-0 md:-translate-y-1/2 z-0 transition-all duration-700"></div>
+
+                    <!-- Step 1: Confirmed -->
+                    <div class="relative z-10 flex md:flex-col items-center md:text-center gap-4 md:gap-2.5" id="step-confirmed">
+                        <div class="w-10 h-10 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center text-xs font-bold transition-all duration-300">
+                            <i class="fa-solid fa-calendar-check"></i>
+                        </div>
+                        <div class="flex flex-col md:items-center">
+                            <span class="text-[10px] uppercase tracking-wider text-[#0B0F19] font-bold">Confirmed</span>
+                            <span class="text-[8px] text-slate-400 font-light mt-0.5">Booking locked</span>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Room Prepared -->
+                    <div class="relative z-10 flex md:flex-col items-center md:text-center gap-4 md:gap-2.5" id="step-assigned">
+                        <div class="w-10 h-10 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center text-xs font-bold transition-all duration-300">
+                            <i class="fa-solid fa-broom"></i>
+                        </div>
+                        <div class="flex flex-col md:items-center">
+                            <span class="text-[10px] uppercase tracking-wider text-[#0B0F19] font-bold">Suite Ready</span>
+                            <span class="text-[8px] text-slate-400 font-light mt-0.5">Sanitized & setup</span>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Checked In -->
+                    <div class="relative z-10 flex md:flex-col items-center md:text-center gap-4 md:gap-2.5" id="step-checked_in">
+                        <div class="w-10 h-10 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center text-xs font-bold transition-all duration-300">
+                            <i class="fa-solid fa-key"></i>
+                        </div>
+                        <div class="flex flex-col md:items-center">
+                            <span class="text-[10px] uppercase tracking-wider text-[#0B0F19] font-bold">Checked In</span>
+                            <span class="text-[8px] text-slate-400 font-light mt-0.5">Stay active</span>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Completed -->
+                    <div class="relative z-10 flex md:flex-col items-center md:text-center gap-4 md:gap-2.5" id="step-completed">
+                        <div class="w-10 h-10 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center text-xs font-bold transition-all duration-300">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+                        <div class="flex flex-col md:items-center">
+                            <span class="text-[10px] uppercase tracking-wider text-[#0B0F19] font-bold">Completed</span>
+                            <span class="text-[8px] text-slate-400 font-light mt-0.5">Checked out</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Guidance Message Banner -->
+                <div class="mt-8 p-5 bg-[#C5A059]/5 border-l-4 border-[#C5A059] rounded-r-2xl text-xs text-slate-600 font-light leading-relaxed flex items-start gap-3">
+                    <i class="fa-solid fa-circle-info text-[#C5A059] text-base mt-0.5 shrink-0"></i>
+                    <div>
+                        <span class="font-bold text-[#0B0F19] block mb-1">Status Report:</span>
+                        <span id="tracking-status-message"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Booking Summary Details Card -->
+            <div class="bg-white rounded-[2rem] border border-slate-100 p-8 shadow-xl shadow-slate-200/50 flex flex-col md:flex-row gap-8 justify-between items-start md:items-center">
+                <div class="flex gap-5 items-center">
+                    <img id="tracking-room-image" src="" alt="Suite" class="w-20 h-20 object-cover rounded-2xl shadow-md border border-slate-100">
+                    <div>
+                        <span class="text-[9px] uppercase tracking-widest text-[#C5A059] font-bold block" id="tracking-booking-id">BK-1000</span>
+                        <h4 id="tracking-room-name" class="font-bold text-slate-800 outfit text-base leading-tight mt-0.5">Suite Name</h4>
+                        
+                        <div class="flex flex-wrap gap-x-4 gap-y-1.5 mt-2.5 text-xs text-slate-500 font-light">
+                            <span><i class="fa-solid fa-user text-slate-400 mr-1 text-[10px]"></i> Guest: <strong id="tracking-guest-name" class="font-semibold text-slate-700"></strong></span>
+                            <span><i class="fa-solid fa-calendar text-slate-400 mr-1 text-[10px]"></i> Stay: <strong id="tracking-stay-dates" class="font-semibold text-slate-700"></strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row md:flex-col gap-4 w-full md:w-auto items-start md:items-end border-t md:border-t-0 border-slate-100 pt-6 md:pt-0">
+                    <div class="text-left md:text-right">
+                        <span class="text-slate-400 text-[9px] uppercase tracking-widest block font-bold">Total Stay Invoice</span>
+                        <span class="text-xl font-bold text-[#C5A059] outfit tracking-tight mt-0.5 inline-block" id="tracking-total-price">PKR 0</span>
+                    </div>
+                    
+                    <button onclick="downloadPDFReceipt()" class="w-full sm:w-auto border border-slate-200 text-slate-700 text-xs uppercase tracking-wider font-bold py-3 px-5 rounded-xl hover:bg-slate-50 transition-all flex items-center justify-center gap-1.5 active:scale-95">
+                        <i class="fa-solid fa-file-pdf text-[#C5A059]"></i> Get PDF Receipt
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-[#0B0F19] text-white py-12 px-6 md:px-12 border-t border-white/10 mt-20">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-3">
+                <img src="assets/images/logo.png" alt="KPH Stay" class="h-10 w-auto">
+                <div class="flex flex-col text-left">
+                    <span class="text-base font-bold tracking-wider uppercase leading-none">KPH Stay</span>
+                    <span class="text-[10px] text-slate-450 font-light mt-1">Islamabad Luxury Living</span>
+                </div>
+            </div>
+            <p class="text-xs text-slate-400 font-light">
+                &copy; 2026 Kaghan Stay. All rights reserved. Managed under strict secure authorization policies.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="assets/js/shared.js?v=3"></script>
+    <script src="assets/js/newsletter.js"></script>
+    
+    <script>
+        // Track booking data holder
+        let currentBookingData = null;
+
+        // Auto-load booking if ID is passed in URL query param
+        window.addEventListener('DOMContentLoaded', () => {
+            renderBookingNavbar();
+            const urlParams = new URLSearchParams(window.location.search);
+            const queryId = urlParams.get('id');
+            if (queryId) {
+                document.getElementById('tracking-id-input').value = queryId;
+                trackBooking(queryId);
+            }
+        });
+
+        // Search Form Submit Handler
+        function handleTrackingSubmit(event) {
+            event.preventDefault();
+            const inputVal = document.getElementById('tracking-id-input').value;
+            if (!inputVal) return;
+            trackBooking(inputVal);
+        }
+
+        // Fetch tracking information via secure Netlify Function
+        async function trackBooking(bookingId) {
+            const btn = document.querySelector('button[type="submit"]');
+            const originalBtn = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Tracking...';
+            btn.disabled = true;
+
+            try {
+                const res = await window.safeFetch('/.netlify/functions/track-booking', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ bookingId: bookingId })
+                });
+
+                if (!res.ok) {
+                    const errorData = await res.json();
+                    throw new Error(errorData.error || 'Failed to fetch booking details.');
+                }
+
+                const data = await res.json();
+                currentBookingData = data.booking;
+
+                displayTrackingResult(currentBookingData);
+                KaghanUI.showToast("Tracking status synced!", "success");
+
+            } catch (err) {
+                console.error(err);
+                KaghanUI.showToast(err.message || "Failed to locate reservation.", "error");
+                document.getElementById('tracking-result-box').classList.add('hidden');
+            } finally {
+                btn.innerHTML = originalBtn;
+                btn.disabled = false;
+            }
+        }
+
+        // Display retrieved details in UI
+        function displayTrackingResult(booking) {
+            const resultBox = document.getElementById('tracking-result-box');
+            resultBox.classList.remove('hidden');
+
+            // Render summary values
+            document.getElementById('tracking-booking-id').innerText = booking.id;
+            document.getElementById('tracking-room-name').innerText = booking.roomName;
+            document.getElementById('tracking-room-image').src = booking.roomImage || 'assets/images/logo.png';
+            document.getElementById('tracking-guest-name').innerText = booking.guestName;
+            document.getElementById('tracking-stay-dates').innerText = `${KaghanUI.formatDate(booking.checkIn)} to ${KaghanUI.formatDate(booking.checkOut)}`;
+            document.getElementById('tracking-total-price').innerText = KaghanUI.formatPKR(booking.totalPrice);
+            document.getElementById('tracking-status-message').innerText = booking.detailsMessage;
+
+            // Handle progress stages visually
+            const stages = ['confirmed', 'assigned', 'checked_in', 'completed'];
+            const activeIndex = stages.indexOf(booking.stage);
+
+            // Stepper line fill adjustment
+            const fill = document.getElementById('status-line-fill');
+            if (window.innerWidth >= 768) {
+                fill.style.height = '2px';
+                fill.style.width = `${((activeIndex >= 0 ? activeIndex : 0) / 3) * 100}%`;
+            } else {
+                fill.style.width = '2px';
+                fill.style.height = `${((activeIndex >= 0 ? activeIndex : 0) / 3) * 100}%`;
+            }
+
+            // Stepper nodes visual styles reset and fill
+            stages.forEach((stage, idx) => {
+                const node = document.querySelector(`#step-${stage} > div`);
+                if (!node) return;
+                
+                if (booking.status === 'cancelled') {
+                    node.className = "w-10 h-10 rounded-full bg-rose-100 text-rose-500 flex items-center justify-center text-xs font-bold border border-rose-200";
+                } else if (idx <= activeIndex) {
+                    node.className = "w-10 h-10 rounded-full bg-[#C5A059] text-white flex items-center justify-center text-xs font-bold shadow-lg shadow-[#C5A059]/20 transition-all duration-300";
+                } else {
+                    node.className = "w-10 h-10 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center text-xs font-bold border border-slate-200";
+                }
+            });
+        }
+
+        // --- PDF GENERATOR INVOICE MOCK (REPLICATING ORIGINAL INVOICE HTML) ---
+        function getInvoiceHTML(bookingData) {
+            if (!currentBookingData) return '';
+            return `
+            <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; padding: 40px; color: #0F172A; width: 800px;">
+                <div style="border-bottom: 2px solid #C5A059; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div>
+                        <h1 style="margin: 0; font-size: 28px; font-weight: 900; color: #0F172A;">Kaghan Stay</h1>
+                        <p style="margin: 5px 0 0; font-size: 11px; color: #C5A059; letter-spacing: 2px; text-transform: uppercase; font-weight: bold;">Premium Resort & Spa</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <h2 style="margin: 0; font-size: 20px; font-weight: 700;">INVOICE</h2>
+                        <p style="margin: 5px 0 0; font-size: 12px; color: #64748B;">Date: ${new Date(currentBookingData.createdAt || Date.now()).toLocaleDateString()}</p>
+                        <p style="margin: 2px 0 0; font-size: 12px; color: #64748B;">Booking Ref: <strong>${currentBookingData.id}</strong></p>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; margin-bottom: 40px; font-size: 13px;">
+                    <div>
+                        <p style="margin: 0; font-weight: bold; color: #64748B; text-transform: uppercase; font-size: 10px;">Billed To</p>
+                        <p style="margin: 5px 0 0; font-weight: bold; font-size: 15px;">${currentBookingData.guestName}</p>
+                        <p style="margin: 3px 0 0; color: #475569;">Verified Reservation Guest</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <p style="margin: 0; font-weight: bold; color: #64748B; text-transform: uppercase; font-size: 10px;">Stay Details</p>
+                        <p style="margin: 5px 0 0; font-weight: bold; font-size: 13px;">Check-in: ${currentBookingData.checkIn}</p>
+                        <p style="margin: 3px 0 0; font-weight: bold; font-size: 13px;">Check-out: ${currentBookingData.checkOut}</p>
+                    </div>
+                </div>
+
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 30px;">
+                    <thead>
+                        <tr style="background-color: #F8FAFC; border-bottom: 2px solid #E2E8F0;">
+                            <th style="padding: 12px; text-align: left; font-size: 11px; text-transform: uppercase; color: #64748B;">Description</th>
+                            <th style="padding: 12px; text-align: right; font-size: 11px; text-transform: uppercase; color: #64748B;">Total Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #E2E8F0;">
+                            <td style="padding: 16px 12px; font-weight: bold;">
+                                ${currentBookingData.roomName}
+                                <span style="display: block; font-weight: normal; font-size: 11px; color: #64748B; margin-top: 4px;">Accommodation stay package (Billing: ${currentBookingData.billingCycle})</span>
+                            </td>
+                            <td style="padding: 16px 12px; text-align: right; font-weight: bold;">${KaghanUI.formatPKR(currentBookingData.totalPrice)}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div style="width: 300px; margin-left: auto;">
+                    <div style="display: flex; justify-content: space-between; padding: 12px 0; font-size: 18px; font-weight: 900; color: #C5A059; border-top: 2px solid #E2E8F0; margin-top: 5px;">
+                        <span>TOTAL AMOUNT:</span>
+                        <span>${KaghanUI.formatPKR(currentBookingData.totalPrice)}</span>
+                    </div>
+                </div>
+
+                <div style="margin-top: 60px; border-top: 1px solid #E2E8F0; padding-top: 20px; font-size: 10px; color: #94A3B8; text-align: center;">
+                    <p>Thank you for choosing Kaghan Stay! If you have any questions concerning this invoice, please contact support@kaghanstay.com.</p>
+                </div>
+            </div>
+            `;
+        }
+
+        // PDF Generation Trigger
+        async function downloadPDFReceipt() {
+            if (!currentBookingData) return;
+            const btn = document.querySelector('button[onclick="downloadPDFReceipt()"]');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generating PDF...';
+            btn.disabled = true;
+
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = getInvoiceHTML(currentBookingData);
+            
+            const opt = {
+                margin:       0,
+                filename:     `Kaghan-Stay-Invoice-${currentBookingData.id}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+
+            await html2pdf().set(opt).from(tempDiv).save();
+            
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+
+        // Navbar Sync
+        function renderBookingNavbar() {
+            const authLinks = document.getElementById('auth-links');
+            const authLinksMobile = document.getElementById('auth-links-mobile');
+            const user = KaghanDB.getCurrentUser();
+
+            if (user) {
+                const dashboardPath = user.role === 'admin' ? 'admin/index.html' : 'user/index.html';
+                
+                if (authLinks) {
+                    authLinks.innerHTML = `
+                        <a href="${dashboardPath}" class="border border-[#C5A059] text-white px-5 py-2 rounded-full hover:bg-[#C5A059] hover:text-white transition-all text-sm font-semibold flex items-center gap-1.5"><i class="fa-solid fa-circle-user text-xs"></i> Dashboard</a>
+                        <button onclick="KaghanDB.logout()" class="bg-[#C5A059] text-white px-5 py-2 rounded-full hover:bg-white hover:text-slate-900 transition-all text-sm font-semibold luxury-shadow"><i class="fa-solid fa-right-from-bracket text-xs"></i> Logout</button>
+                    `;
+                }
+                if (authLinksMobile) {
+                    authLinksMobile.innerHTML = `
+                        <a href="${dashboardPath}" class="border border-[#C5A059] text-white py-3 rounded-full hover:bg-[#C5A059] transition-all text-base" onclick="toggleDrawer()">Dashboard</a>
+                        <button onclick="KaghanDB.logout(); toggleDrawer()" class="bg-[#C5A059] text-white py-3 rounded-full hover:bg-white hover:text-slate-900 transition-all text-base"><i class="fa-solid fa-right-from-bracket mr-1"></i> Logout</button>
+                    `;
+                }
+            }
+        }
+    </script>
+</body>
+</html>

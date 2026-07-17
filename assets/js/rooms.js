@@ -365,48 +365,51 @@
         const paginatedRooms = roomsList.slice(startIndex, endIndex);
 
         if (container) {
-            container.innerHTML = paginatedRooms.map(room => {
+            container.innerHTML = paginatedRooms.map((room, idx) => {
                 let mainImg = room.image || (room.images && room.images.length ? room.images[0] : '');
                 return `
-                <div onclick="window.location.href='booking.html?room=${room.id}'" class="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-md hover-lift group cursor-pointer flex flex-col h-full">
+                return `
+                <div data-animate="fade-up" style="transition-delay: ${idx * 80}ms;" onclick="KaghanUI.openRoomDetailModal('${room.id}')" class="bg-white/80 backdrop-blur-md rounded-[2.5rem] overflow-hidden border border-[#C5A059]/10 shadow-[0_12px_40px_-15px_rgba(11,15,25,0.05)] hover:border-[#C5A059]/30 transition-all duration-500 group cursor-pointer flex flex-col h-full hover-lift">
                     <div class="relative h-56 overflow-hidden bg-slate-100 shrink-0">
-                        <img src="${KaghanSafe.escapeHTML(mainImg)}" alt="${KaghanSafe.escapeHTML(room.name)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        <div class="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl shadow-sm border border-white/20 text-[10px] font-bold uppercase tracking-wider text-[#D4AF37] flex items-center gap-1.5">
+                        <img src="${KaghanSafe.escapeHTML(mainImg)}" alt="${KaghanSafe.escapeHTML(room.name)}" class="w-full h-full object-cover group-hover:scale-105 group-hover:brightness-95 transition-all duration-700">
+                        <div class="absolute top-4 left-4 bg-white/95 backdrop-blur-md px-3.5 py-1.5 rounded-xl shadow-sm border border-white/20 text-[10px] font-bold uppercase tracking-wider text-[#C5A059] flex items-center gap-1.5">
                             ${room.originalPrice ? `<span class="line-through text-slate-400 font-semibold text-[9px]">${KaghanUI.formatPKR(room.originalPrice)}</span>` : ''}
-                            <span>${KaghanUI.formatPKR(room.priceDaily || room.price)} <span class="text-slate-500 lowercase font-medium">/night</span></span>
+                            <span>${KaghanUI.formatPKR(room.priceDaily || room.price)} <span class="text-slate-400 lowercase font-medium">/night</span></span>
                         </div>
-                        <div class="absolute top-4 right-4 bg-slate-900/80 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-[#D4AF37] border border-white/10 uppercase tracking-widest room-cat-label" data-cat="${room.type}">
+                        <div class="absolute top-4 right-4 backdrop-blur-md bg-[#0B0F19]/65 px-3 py-1.5 rounded-full text-[9px] font-bold text-[#C5A059] border border-white/10 uppercase tracking-widest room-cat-label" data-cat="${room.type}">
                             ${KaghanSafe.escapeHTML(room.type)}
                         </div>
                     </div>
-                    <div class="p-6 flex-1 flex flex-col">
-                        <div class="flex justify-between items-start mb-2">
-                            <h3 class="text-lg font-bold outfit text-[#0F172A] leading-tight">${KaghanSafe.escapeHTML(room.name)}</h3>
-                            <div class="flex items-center gap-1 text-[#D4AF37] font-bold text-xs bg-[#D4AF37]/10 px-2 py-1 rounded-lg">
-                                <i class="fa-solid fa-star"></i>
-                                <span>${room.rating || '5.0'}</span>
+                    <div class="p-6 flex-1 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-lg font-medium outfit text-[#0B0F19] leading-tight group-hover:text-[#C5A059] transition-colors duration-300">${KaghanSafe.escapeHTML(room.name)}</h3>
+                                <div class="flex items-center gap-1 text-[#C5A059] font-bold text-xs bg-[#C5A059]/10 px-2 py-0.5 rounded-lg">
+                                    <i class="fa-solid fa-star"></i>
+                                    <span>${room.rating || '5.0'}</span>
+                                </div>
+                            </div>
+                            <div class="text-[9px] text-slate-400 font-bold mb-3 flex items-center gap-1 uppercase tracking-widest">
+                                <i class="fa-solid fa-location-dot text-[#C5A059] text-[9px]"></i>
+                                <span>${KaghanSafe.escapeHTML(room.locationName || room.location || 'Islamabad')}</span>
+                            </div>
+                            <div class="text-slate-500 text-xs line-clamp-2 font-light leading-relaxed mb-4">
+                                ${KaghanSafe.sanitizeHTML(room.description)}
+                            </div>
+                            <div class="flex flex-wrap gap-1.5 mb-6">
+                                ${(room.amenities || []).slice(0, 3).map(a => `
+                                    <span class="bg-slate-50/50 text-slate-500 text-[9px] uppercase font-bold tracking-wider px-2.5 py-1 rounded border border-slate-100/50 flex items-center gap-1">
+                                        <i class="fa-solid fa-check text-[#C5A059] text-[8px]"></i> ${KaghanSafe.escapeHTML(a)}
+                                    </span>
+                                `).join('')}
+                                ${(room.amenities || []).length > 3 ? `<span class="bg-slate-50/50 text-[#C5A059] text-[9px] uppercase font-bold px-2 py-1 rounded border border-slate-100/50">+${room.amenities.length - 3}</span>` : ''}
                             </div>
                         </div>
-                        <div class="text-[10px] text-slate-400 font-bold mb-3 flex items-center gap-1 uppercase tracking-widest">
-                            <i class="fa-solid fa-location-dot text-[#D4AF37] text-[9px]"></i>
-                            <span>${KaghanSafe.escapeHTML(room.locationName || room.location || 'Islamabad')}</span>
-                        </div>
-                        <div class="text-slate-500 text-xs line-clamp-2 font-light leading-relaxed mb-4">
-                            ${KaghanSafe.sanitizeHTML(room.description)}
-                        </div>
-                        <div class="flex flex-wrap gap-1.5 mb-6 mt-auto">
-                            ${(room.amenities || []).slice(0, 3).map(a => `
-                                <span class="bg-slate-50 text-slate-500 text-[9px] uppercase font-bold tracking-wider px-2 py-1 rounded border border-slate-100 flex items-center gap-1">
-                                    <i class="fa-solid fa-check text-[#D4AF37]"></i> ${KaghanSafe.escapeHTML(a)}
-                                </span>
-                            `).join('')}
-                            ${(room.amenities || []).length > 3 ? `<span class="bg-slate-50 text-[#D4AF37] text-[9px] uppercase font-bold px-2 py-1 rounded border border-slate-100">+${room.amenities.length - 3}</span>` : ''}
-                        </div>
-                        <div class="border-t border-slate-100 pt-4 mt-auto flex justify-between items-center">
+                        <div class="border-t border-slate-100/70 pt-4 mt-auto flex justify-between items-center">
                             <div class="flex items-center gap-1.5 text-slate-500 text-xs font-semibold">
-                                <i class="fa-solid fa-user-group text-[#D4AF37]"></i> Max ${room.maxGuests} Guests
+                                <i class="fa-solid fa-user-group text-[#C5A059] text-xs"></i> Max ${room.maxGuests} Guests
                             </div>
-                            <button onclick="event.stopPropagation(); window.location.href='booking.html?room=${room.id}'" class="bg-[#0F172A] text-white text-xs font-bold px-4 py-2 rounded-xl hover:bg-[#D4AF37] transition-all shadow-sm">
+                            <button onclick="event.stopPropagation(); window.location.href='booking.html?room=${room.id}'" class="bg-[#0B0F19] text-white text-[10px] uppercase tracking-wider font-bold px-4 py-2.5 rounded-xl hover:bg-[#C5A059] transition-all shadow-sm">
                                 Book Now
                             </button>
                         </div>
@@ -424,6 +427,9 @@
             if (typeof updateMapMarkers === 'function') {
                 updateMapMarkers(roomsList);
             }
+
+            // Re-trigger scroll animations observer for the newly loaded rooms
+            if (window.setupScrollAnimations) window.setupScrollAnimations();
 
             // Render Pagination controls
             if (pagination) {

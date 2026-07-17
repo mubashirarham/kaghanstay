@@ -98,6 +98,20 @@ exports.handler = async (event, context) => {
                 result = true;
                 break;
             }
+            case 'saveUpgrade': {
+                const { upgrade } = data;
+                if (!upgrade || !upgrade.id) throw new Error("Upgrade and upgrade.id are required.");
+                await fdb.collection('upgrades').doc(upgrade.id).set(upgrade);
+                result = true;
+                break;
+            }
+            case 'deleteUpgrade': {
+                const { id } = data;
+                if (!id) throw new Error("Upgrade ID is required.");
+                await fdb.collection('upgrades').doc(id).delete();
+                result = true;
+                break;
+            }
             case 'saveLocation': {
                 const { location } = data;
                 if (!location || !location.id) throw new Error("Location and location.id are required.");
@@ -257,6 +271,46 @@ exports.handler = async (event, context) => {
                 result = true;
                 break;
             }
+            case 'createUser': {
+                const { name, email, password, role, phone } = data;
+                if (!email || !password || !role) {
+                    throw new Error("Email, password, and role are required.");
+                }
+                if (!['admin', 'user'].includes(role)) {
+                    throw new Error("Invalid role. Must be 'admin' or 'user'.");
+                }
+                
+                const createData = {
+                    email: email.toLowerCase().trim(),
+                    password: password,
+                    displayName: name || email.split('@')[0]
+                };
+                if (phone) {
+                    createData.phoneNumber = phone;
+                }
+                
+                const userRecord = await auth.createUser(createData);
+                const uid = userRecord.uid;
+                
+                await auth.setCustomUserClaims(uid, { role });
+                
+                const userDoc = {
+                    id: uid,
+                    name: name || email.split('@')[0],
+                    email: email.toLowerCase().trim(),
+                    role,
+                };
+                if (phone) {
+                    userDoc.phone = phone;
+                }
+                if (role === 'user') {
+                    userDoc.loyaltyPoints = 0;
+                }
+                
+                await fdb.collection('users').doc(uid).set(userDoc, { merge: true });
+                result = { uid, email, name, role };
+                break;
+            }
             default:
                 throw new Error(`Action '${action}' is not supported.`);
         }
@@ -276,6 +330,7 @@ exports.handler = async (event, context) => {
         console.error("Admin action execution error:", err);
         const isExpected = [
             "Category and category.id are required.", "Category ID is required.",
+            "Upgrade and upgrade.id are required.", "Upgrade ID is required.",
             "Location and location.id are required.", "Location ID is required.",
             "Coupon and coupon.id are required.", "Coupon ID is required.",
             "Room ID and updatedData are required.", "Room and room.id are required.", "Room ID is required.",
@@ -284,7 +339,8 @@ exports.handler = async (event, context) => {
             "Booking ID is required.", "Booking ID and updatedData are required.",
             "Blog data is required.", "Blog ID is required.",
             "Subscriber email is required.", "Subscriber not found.",
-            "Review ID is required.", "Review document not found."
+            "Review ID is required.", "Review document not found.",
+            "Email, password, and role are required.", "Invalid role. Must be 'admin' or 'user'."
         ].includes(err.message);
         
         return {

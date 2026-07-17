@@ -5,12 +5,12 @@
    ============================================================ */
 
 :root {
-    --brand-gold: #D4AF37;
-    --brand-gold-hover: #C5A028;
-    --brand-gold-light: rgba(212, 175, 55, 0.12);
-    --brand-dark: #0F172A;
-    --brand-dark-light: #1E293B;
-    --brand-light: #F8FAFC;
+    --brand-gold: #C5A059;
+    --brand-gold-hover: #A88443;
+    --brand-gold-light: rgba(197, 160, 89, 0.08);
+    --brand-dark: #0B0F19;
+    --brand-dark-light: #161B26;
+    --brand-light: #FBFBFB;
     --accent-red: #DC2626;
     --font-sans: 'Inter', system-ui, sans-serif;
     --font-display: 'Outfit', var(--font-sans);
@@ -59,42 +59,55 @@ h1,h2,h3,h4,h5,h6 { font-family: var(--font-display); letter-spacing: -0.02em; l
 .responsive-container { width:100%; max-width:var(--container-max); margin:0 auto; padding:0 var(--section-pad-x); }
 .section-spacing { padding-top: var(--section-pad-y); padding-bottom: var(--section-pad-y); }
 
-/* Glassmorphism */
-.glass { background:rgba(255,255,255,0.75); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border:1px solid rgba(255,255,255,0.25); box-shadow:var(--shadow-md); }
-.glass-dark { background:rgba(15,23,42,0.85); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border:1px solid rgba(255,255,255,0.08); box-shadow:0 8px 32px 0 rgba(0,0,0,0.3); }
+/* Glassmorphism & Spatial UI */
+.glass { 
+    background: rgba(255, 255, 255, 0.72); 
+    backdrop-filter: blur(24px) saturate(180%); 
+    -webkit-backdrop-filter: blur(24px) saturate(180%); 
+    border: 1px solid rgba(255, 255, 255, 0.4); 
+    box-shadow: 0 10px 40px -10px rgba(30, 58, 138, 0.05),
+                0 1px 1px 0 rgba(255, 255, 255, 0.6) inset; 
+}
+.glass-dark { 
+    background: rgba(30, 58, 138, 0.78); 
+    backdrop-filter: blur(24px) saturate(160%); 
+    -webkit-backdrop-filter: blur(24px) saturate(160%); 
+    border: 1px solid rgba(255, 255, 255, 0.08); 
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35); 
+}
 
-/* Shadows */
-.luxury-shadow { box-shadow: var(--shadow-gold); }
+/* Shadows & Furnished Design Details */
+.luxury-shadow { box-shadow: 0 10px 30px -10px rgba(161, 98, 7, 0.3); }
 .shadow-premium-sm { box-shadow: var(--shadow-sm); }
-.shadow-premium-lg { box-shadow: var(--shadow-lg); }
+.shadow-premium-lg { box-shadow: 0 25px 50px -12px rgba(30, 58, 138, 0.12); }
 
 /* Hover lift */
-.hover-lift { transition: transform var(--duration-slow) var(--ease-spring), box-shadow var(--duration-slow) var(--ease-spring); }
-.hover-lift:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+.hover-lift { transition: transform 0.5s var(--ease-spring), box-shadow 0.5s var(--ease-spring), border-color 0.5s var(--ease-spring); }
+.hover-lift:hover { transform: translateY(-6px); box-shadow: 0 20px 40px -15px rgba(30, 58, 138, 0.08); }
 
 /* Forms */
 input[type="text"],input[type="email"],input[type="password"],input[type="date"],input[type="tel"],input[type="number"],input[type="search"],select,textarea {
-    border: 1.5px solid #cbd5e1;
+    border: 1px solid rgba(30, 58, 138, 0.12);
 }
 :where(input[type="text"],input[type="email"],input[type="password"],input[type="date"],input[type="tel"],input[type="number"],input[type="search"],select,textarea) {
-    display:block; width:100%; padding:0.75rem 1rem; font-size:0.875rem; font-family:var(--font-sans);
-    color:var(--brand-dark); background-color:#ffffff;
-    border-radius:var(--radius-md); outline:none; box-shadow:var(--shadow-sm);
-    transition:all var(--duration-base) var(--ease-spring);
+    display:block; width:100%; padding:0.875rem 1.25rem; font-size:0.875rem; font-family:var(--font-sans);
+    color:var(--brand-dark); background-color:rgba(255, 255, 255, 0.85);
+    border-radius:1.25rem; outline:none; box-shadow: 0 2px 8px -2px rgba(30, 58, 138, 0.04);
+    transition:all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     -webkit-appearance:none; -moz-appearance:none; appearance:none;
 }
 
 select {
-    background-image:url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23D4AF37' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-    background-repeat:no-repeat; background-position:right 1rem center; background-size:1.15em;
+    background-image:url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23A16207' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat:no-repeat; background-position:right 1.25rem center; background-size:1.15em;
     padding-right:2.75rem !important; cursor:pointer;
 }
 select option { background-color:#ffffff; color:var(--brand-dark); }
 
 input:focus,select:focus,textarea:focus {
     border-color:var(--brand-gold) !important;
-    box-shadow:0 0 0 3px rgba(212,175,55,0.18),var(--shadow-sm) !important;
-    background-color:#ffffff !important; transform:scale(1.005);
+    box-shadow:0 0 0 4px rgba(161, 98, 7, 0.15), 0 4px 12px -2px rgba(161, 98, 7, 0.08) !important;
+    background-color:#ffffff !important; transform:translateY(-1px) scale(1.005);
 }
 input[disabled],input[readonly],select[disabled],textarea[disabled] {
     background-color:#f1f5f9 !important; color:#64748b !important; cursor:not-allowed !important;
@@ -128,10 +141,21 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none; appearance:
 input[type="range"]::-webkit-slider-thumb:hover { transform:scale(1.2); box-shadow:0 4px 16px rgba(212,175,55,0.5); }
 input[type="range"]:focus { box-shadow:none !important; border:none !important; transform:none !important; }
 
-/* Button shimmer */
+/* Button shimmer & Premium Interactions */
 .btn-shimmer { position:relative; overflow:hidden; }
 .btn-shimmer::after { content:''; position:absolute; top:0; left:-100%; width:100%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,0.28),transparent); transition:left 0.7s ease; }
 .btn-shimmer:hover::after { left:100%; }
+
+/* Global buttons premium visual feedback */
+button, .btn, nav a, a.border, a.bg-gold {
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+button:hover, .btn:hover {
+    transform: translateY(-2px);
+}
+button:active, .btn:active {
+    transform: translateY(0) scale(0.98);
+}
 
 /* Scroll animation system */
 [data-animate] { opacity:0; transition:opacity var(--duration-slow) var(--ease-spring),transform var(--duration-slow) var(--ease-spring); will-change:opacity,transform; }
@@ -311,3 +335,75 @@ body {
     max-width: 100vw;
     overflow-x: hidden;
 }
+
+/* ============================================================
+   UI/UX PRO MAX - COLOR PALETTE OVERRIDES FOR TAILWIND PLAY CDN
+   ============================================================ */
+
+/* 1. Gold / Accent / CTA Overrides (#D4AF37 -> #C5A059) */
+.text-\[\#D4AF37\] {
+    color: #C5A059 !important;
+}
+.bg-\[\#D4AF37\] {
+    background-color: #C5A059 !important;
+}
+.border-\[\#D4AF37\] {
+    border-color: #C5A059 !important;
+}
+.hover\:bg-\[\#D4AF37\]:hover {
+    background-color: #C5A059 !important;
+}
+.hover\:text-\[\#D4AF37\]:hover {
+    color: #C5A059 !important;
+}
+.ring-\[\#D4AF37\] {
+    --tw-ring-color: #C5A059 !important;
+    ring-color: #C5A059 !important;
+}
+.shadow-\[\#D4AF37\]\/30 {
+    --tw-shadow-color: rgba(197, 160, 89, 0.3) !important;
+}
+.group-\[\.active-category\]\:text-\[\#D4AF37\]:is(.active-category *) {
+    color: #C5A059 !important;
+}
+.group-\[\.active-category\]\:border-\[\#D4AF37\]:is(.active-category *) {
+    border-color: #C5A059 !important;
+}
+.group-\[\.active-category\]\:ring-\[\#D4AF37\]:is(.active-category *) {
+    --tw-ring-color: #C5A059 !important;
+}
+
+/* 2. Dark Obsidian Overrides (#0F172A -> #0B0F19) */
+.bg-\[\#0F172A\] {
+    background-color: #0B0F19 !important;
+}
+.text-\[\#0F172A\] {
+    color: #0B0F19 !important;
+}
+.border-\[\#0F172A\] {
+    border-color: #0B0F19 !important;
+}
+.hover\:bg-\[\#0F172A\]:hover {
+    background-color: #0B0F19 !important;
+}
+.hover\:text-\[\#0F172A\]:hover {
+    color: #0B0F19 !important;
+}
+
+/* 3. Dark Hover Green/Charcoal Overrides */
+.hover\:bg-slate-900:hover {
+    background-color: #161B26 !important;
+}
+.bg-slate-900 {
+    background-color: #0B0F19 !important;
+}
+
+/* 4. Ambient Pulsing Glow Keyframes */
+@keyframes pulse-slow {
+    0%, 100% { transform: scale(1); opacity: 0.12; }
+    50% { transform: scale(1.08); opacity: 0.22; }
+}
+.animate-pulse-slow {
+    animation: pulse-slow 8s ease-in-out infinite;
+}
+

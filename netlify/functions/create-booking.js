@@ -11,7 +11,9 @@ const BookingSchema = z.object({
     couponCode: z.string().optional().nullable(),
     billingCycle: z.string().optional().nullable(),
     pdfBase64: z.string().optional().nullable(),
-    idToken: z.string().optional().nullable()
+    idToken: z.string().optional().nullable(),
+    upgrades: z.array(z.string()).optional().nullable(),
+    force: z.boolean().optional().nullable()
 });
 
 exports.handler = async (event, context) => {
@@ -59,7 +61,7 @@ exports.handler = async (event, context) => {
             };
         }
 
-        const { roomId, checkIn, checkOut, guestName, guestEmail, guestPhone, couponCode, billingCycle, pdfBase64, idToken } = validation.data;
+        const { roomId, checkIn, checkOut, guestName, guestEmail, guestPhone, couponCode, billingCycle, pdfBase64, idToken, upgrades, force } = validation.data;
 
         const searchIn = new Date(checkIn);
         const searchOut = new Date(checkOut);
@@ -76,10 +78,16 @@ exports.handler = async (event, context) => {
 
         // 2. Authenticate user if token is provided
         let userId = 'usr-guest-walkin';
+        let isAdmin = false;
         if (idToken && auth) {
             try {
                 const decodedToken = await auth.verifyIdToken(idToken);
                 userId = decodedToken.uid;
+                isAdmin = decodedToken.role === 'admin';
+                if (!isAdmin) {
+                    const userDoc = await fdb.collection('users').doc(userId).get();
+                    isAdmin = userDoc.exists && userDoc.data().role === 'admin';
+                }
             } catch (authErr) {
                 console.warn("Invalid ID Token provided, falling back to guest walk-in:", authErr);
             }
@@ -118,6 +126,53 @@ exports.handler = async (event, context) => {
 
             const tax = Math.round(subtotal * 0.15); // 15% GST
 
+            // Fetch upgrades
+            let dbUpgrades = [];
+            const upgradesQuery = fdb.collection('upgrades');
+            const upgradesSnap = await transaction.get(upgradesQuery);
+            upgradesSnap.forEach(doc => dbUpgrades.push({ id: doc.id, ...doc.data() }));
+            if (dbUpgrades.length === 0) {
+                dbUpgrades = [
+                    {
+                        id: 'upgrade-airport-shuttle',
+                        name: 'Airport VIP Transfer',
+                        price: 5000,
+                        priceType: 'flat'
+                    },
+                    {
+                        id: 'upgrade-dining-breakfast',
+                        name: 'In-suite Dining Package',
+                        price: 2500,
+                        priceType: 'night'
+                    },
+                    {
+                        id: 'upgrade-spa-tray',
+                        name: 'Organic Spa Amenities Tray',
+                        price: 1500,
+                        priceType: 'flat'
+                    }
+                ];
+            }
+
+            let addonsTotal = 0;
+            const selectedUpgradesDetails = [];
+            if (upgrades && Array.isArray(upgrades)) {
+                upgrades.forEach(upId => {
+                    const matched = dbUpgrades.find(u => u.id === upId);
+                    if (matched) {
+                        const price = Number(matched.price || 0);
+                        const cost = matched.priceType === 'night' ? price * stayNights : price;
+                        addonsTotal += cost;
+                        selectedUpgradesDetails.push({
+                            id: matched.id,
+                            name: matched.name,
+                            price: price,
+                            priceType: matched.priceType || 'flat'
+                        });
+                    }
+                });
+            }
+
             // Validate coupon
             let couponDiscount = 0;
             if (couponCode) {
@@ -132,18 +187,20 @@ exports.handler = async (event, context) => {
                 }
             }
 
-            calculatedPrice = (subtotal + tax) - couponDiscount;
+            calculatedPrice = (subtotal + tax + addonsTotal) - couponDiscount;
 
-            // B. Overlap check
-            const query = fdb.collection('bookings').where('roomId', '==', roomId);
-            const bookingsSnap = await transaction.get(query);
-            for (const doc of bookingsSnap.docs) {
-                const b = doc.data();
-                if (b.status !== 'cancelled') {
-                    const bIn = new Date(b.checkIn);
-                    const bOut = new Date(b.checkOut);
-                    if (searchIn < bOut && searchOut > bIn) {
-                        throw new Error('Suite is already reserved for the selected dates.');
+            // B. Overlap check (Bypass if forced by admin)
+            if (!force || !isAdmin) {
+                const query = fdb.collection('bookings').where('roomId', '==', roomId);
+                const bookingsSnap = await transaction.get(query);
+                for (const doc of bookingsSnap.docs) {
+                    const b = doc.data();
+                    if (b.status !== 'cancelled') {
+                        const bIn = new Date(b.checkIn);
+                        const bOut = new Date(b.checkOut);
+                        if (searchIn < bOut && searchOut > bIn) {
+                            throw new Error('Suite is already reserved for the selected dates.');
+                        }
                     }
                 }
             }
@@ -160,6 +217,7 @@ exports.handler = async (event, context) => {
                 checkOut,
                 totalPrice: calculatedPrice,
                 couponUsed: couponCode || null,
+                upgrades: selectedUpgradesDetails,
                 status: 'confirmed',
                 billingCycle: billingCycle || 'daily',
                 createdAt: new Date().toISOString()

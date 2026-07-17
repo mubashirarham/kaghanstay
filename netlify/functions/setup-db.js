@@ -23,6 +23,30 @@ const DEFAULT_COUPONS = [
     { id: 'SUMMER20', code: 'SUMMER20', discountPercentage: 20, isActive: false }
 ];
 
+const DEFAULT_UPGRADES = [
+    {
+        id: 'upgrade-airport-shuttle',
+        name: 'Airport VIP Transfer',
+        price: 5000,
+        priceType: 'flat',
+        description: 'Direct one-way pickup or drop-off in a luxury business sedan with personal chauffeur.'
+    },
+    {
+        id: 'upgrade-dining-breakfast',
+        name: 'In-suite Dining Package',
+        price: 2500,
+        priceType: 'night',
+        description: 'Chef-crafted continental breakfast served fresh in your living room each morning.'
+    },
+    {
+        id: 'upgrade-spa-tray',
+        name: 'Organic Spa Amenities Tray',
+        price: 1500,
+        priceType: 'flat',
+        description: 'Assorted dry fruit basket, honey, and organic local chamomile herbal teas delivered on arrival.'
+    }
+];
+
 const DEFAULT_ROOMS = [
     {
         id: 'apt-studio-101',
@@ -135,6 +159,17 @@ exports.handler = async (event, context) => {
             results.coupons = 'already-populated';
         }
 
+        // Seed Upgrades
+        const upgradesSnap = await fdb.collection('upgrades').limit(1).get();
+        if (upgradesSnap.empty) {
+            for (const up of DEFAULT_UPGRADES) {
+                await fdb.collection('upgrades').doc(up.id).set(up);
+            }
+            results.upgrades = 'seeded';
+        } else {
+            results.upgrades = 'already-populated';
+        }
+
         // 4. Seed Rooms
         const roomsSnap = await fdb.collection('rooms').limit(1).get();
         if (roomsSnap.empty) {
@@ -160,12 +195,14 @@ exports.handler = async (event, context) => {
         // 6. Create default admin and guest accounts in Firebase Authentication and Firestore
         // Admin credentials (read from environment, fail closed if not set)
         const adminEmail = process.env.ADMIN_EMAIL || 'admin@kphstay.com';
-        const adminPass = process.env.ADMIN_INITIAL_PASSWORD || 'adminPassword123';
+        const adminPass = process.env.ADMIN_INITIAL_PASSWORD || 'tanzil@minhas2007';
         
         let adminUserRecord;
         try {
             adminUserRecord = await auth.getUserByEmail(adminEmail);
-            results.adminAuth = 'already-exists';
+            // Update password to match
+            await auth.updateUser(adminUserRecord.uid, { password: adminPass });
+            results.adminAuth = 'already-exists-updated-password';
         } catch (e) {
             if (e.code === 'auth/user-not-found') {
                 adminUserRecord = await auth.createUser({
@@ -193,6 +230,37 @@ exports.handler = async (event, context) => {
                 phone: '+923340091127'
             }, { merge: true });
             results.adminDoc = 'seeded';
+        }
+
+        // Configure second admin: tanzilminhas2007@gmail.com (logs in via Google)
+        const googleAdminEmail = 'tanzilminhas2007@gmail.com';
+        let googleAdminUserRecord;
+        try {
+            googleAdminUserRecord = await auth.getUserByEmail(googleAdminEmail);
+            results.googleAdminAuth = 'already-exists';
+        } catch (e) {
+            if (e.code === 'auth/user-not-found') {
+                googleAdminUserRecord = await auth.createUser({
+                    email: googleAdminEmail,
+                    displayName: 'Tanzil Minhas'
+                });
+                results.googleAdminAuth = 'created';
+            } else {
+                throw e;
+            }
+        }
+
+        if (googleAdminUserRecord) {
+            await auth.setCustomUserClaims(googleAdminUserRecord.uid, { role: 'admin' });
+            results.googleAdminCustomClaims = 'set';
+
+            await fdb.collection('users').doc(googleAdminUserRecord.uid).set({
+                id: googleAdminUserRecord.uid,
+                name: 'Tanzil Minhas',
+                email: googleAdminEmail,
+                role: 'admin'
+            }, { merge: true });
+            results.googleAdminDoc = 'seeded';
         }
 
         // Guest credentials

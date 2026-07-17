@@ -48,22 +48,23 @@
 <body class="bg-[#F8FAFC] text-[#0F172A] overflow-x-hidden font-sans pt-24">
 
     <!-- Header / Navigation -->
-    <nav id="hotel-navbar" class="fixed top-0 left-0 right-0 z-50 py-5 px-6 md:px-12 flex justify-between items-center text-white bg-[#0F172A] border-b border-white/10">
+    <nav id="hotel-navbar" class="fixed top-0 left-0 right-0 z-50 py-5 px-6 md:px-12 flex justify-between items-center text-white bg-[#0B0F19] border-b border-white/10">
         <a href="index.html" class="flex items-center gap-3 hover:opacity-90 transition-opacity">
             <img src="assets/images/logo.png" alt="KPH Stay Logo" class="h-10 w-auto object-contain">
             <div class="flex flex-col">
                 <span class="text-lg font-bold tracking-wider uppercase outfit leading-none">KPH</span>
-                <span class="text-xs text-[#D4AF37] tracking-[0.2em] uppercase font-semibold">Stay</span>
+                <span class="text-xs text-[#C5A059] tracking-[0.2em] uppercase font-semibold">Stay</span>
             </div>
         </a>
 
         <div class="hidden md:flex gap-8 items-center font-medium">
-            <a href="index.html" class="hover:text-[#D4AF37] transition-colors">Home</a>
-            <a href="rooms.html" class="hover:text-[#D4AF37] transition-colors">Rooms</a>
-            <a href="booking.html" class="text-[#D4AF37] hover:text-[#D4AF37] transition-colors">Book Stay</a>
+            <a href="index.html" class="hover:text-[#C5A059] transition-colors">Home</a>
+            <a href="rooms.html" class="hover:text-[#C5A059] transition-colors">Rooms</a>
+            <a href="booking.html" class="text-[#C5A059] hover:text-[#C5A059] transition-colors">Book Stay</a>
+            <a href="track.html" class="hover:text-[#C5A059] transition-colors">Track Stay</a>
             <div id="auth-links" class="flex gap-4 items-center">
-                <a href="login.html" class="border border-[#D4AF37] text-white px-5 py-2 rounded-full hover:bg-[#D4AF37] hover:text-white transition-all text-sm font-semibold">Login</a>
-                <a href="login.html?register=true" class="bg-[#D4AF37] text-white px-5 py-2 rounded-full hover:bg-white hover:text-slate-900 transition-all text-sm font-semibold luxury-shadow">Register</a>
+                <a href="login.html" class="border border-[#C5A059] text-white px-5 py-2 rounded-full hover:bg-[#C5A059] hover:text-white transition-all text-sm font-semibold">Login</a>
+                <a href="login.html?register=true" class="bg-[#C5A059] text-white px-5 py-2 rounded-full hover:bg-white hover:text-slate-900 transition-all text-sm font-semibold luxury-shadow">Register</a>
             </div>
         </div>
 
@@ -73,46 +74,89 @@
     </nav>
 
     <!-- Mobile Drawer -->
-    <div id="mobile-drawer" class="fixed inset-0 bg-[#0F172A]/95 z-[60] flex flex-col items-center justify-center gap-8 text-white text-xl font-semibold">
+    <div id="mobile-drawer" class="fixed inset-0 bg-[#0B0F19]/95 z-[60] flex flex-col items-center justify-center gap-8 text-white text-xl font-semibold">
         <button id="menu-close" class="absolute top-8 right-6 text-white text-3xl w-12 h-12 flex items-center justify-center focus:outline-none active:scale-90 transition-transform" aria-label="Close Menu">
             <i class="fa-solid fa-xmark"></i>
         </button>
-        <a href="index.html" class="hover:text-[#D4AF37]" onclick="toggleDrawer()">Home</a>
-        <a href="rooms.html" class="hover:text-[#D4AF37]" onclick="toggleDrawer()">Rooms</a>
-        <a href="booking.html" class="text-[#D4AF37]" onclick="toggleDrawer()">Book Stay</a>
+        <a href="index.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Home</a>
+        <a href="rooms.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Rooms</a>
+        <a href="booking.html" class="text-[#C5A059]" onclick="toggleDrawer()">Book Stay</a>
+        <a href="track.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Track Stay</a>
         <div id="auth-links-mobile" class="flex flex-col gap-4 w-64 text-center">
-            <a href="login.html" class="border border-[#D4AF37] text-white py-3 rounded-full hover:bg-[#D4AF37] transition-all text-base" onclick="toggleDrawer()">Login</a>
-            <a href="login.html?register=true" class="bg-[#D4AF37] text-white py-3 rounded-full hover:bg-white hover:text-slate-900 transition-all text-base" onclick="toggleDrawer()">Register</a>
+            <a href="login.html" class="border border-[#C5A059] text-white py-3 rounded-full hover:bg-[#C5A059] transition-all text-base" onclick="toggleDrawer()">Login</a>
+            <a href="login.html?register=true" class="bg-[#C5A059] text-white py-3 rounded-full hover:bg-white hover:text-slate-900 transition-all text-base" onclick="toggleDrawer()">Register</a>
         </div>
     </div>
 
     <!-- Booking Content -->
-    <main class="py-12 px-6 md:px-12 max-w-7xl mx-auto">
+    <!-- Booking Content -->
+    <main class="py-8 px-6 md:px-12 max-w-7xl mx-auto">
+        <!-- Stepper Indicator -->
+        <div class="mb-10 max-w-3xl mx-auto" data-animate="fade-down">
+            <div class="relative flex items-center justify-between">
+                <!-- Progress Line -->
+                <div class="absolute left-0 right-0 top-1/2 h-[2px] bg-slate-200 -translate-y-1/2 z-0"></div>
+                <div class="absolute left-0 w-1/3 top-1/2 h-[2px] bg-[#C5A059] -translate-y-1/2 z-0 transition-all duration-500" id="stepper-progress-bar"></div>
+                
+                <!-- Step 1 -->
+                <div class="relative z-10 flex flex-col items-center gap-2">
+                    <div class="w-10 h-10 rounded-full bg-[#C5A059] text-white flex items-center justify-center text-xs font-bold shadow-lg shadow-[#C5A059]/20 transition-all duration-300">
+                        <i class="fa-solid fa-calendar-days"></i>
+                    </div>
+                    <span class="text-[9px] uppercase tracking-widest text-[#0B0F19] font-bold">1. Stay Details</span>
+                </div>
+                
+                <!-- Step 2 -->
+                <div class="relative z-10 flex flex-col items-center gap-2">
+                    <div class="w-10 h-10 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center text-xs font-bold transition-all duration-300" id="step-node-2">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <span class="text-[9px] uppercase tracking-widest text-slate-405 font-bold animate-pulse" id="step-text-2">2. Guest Details</span>
+                </div>
+                
+                <!-- Step 3 -->
+                <div class="relative z-10 flex flex-col items-center gap-2">
+                    <div class="w-10 h-10 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center text-xs font-bold transition-all duration-300" id="step-node-3">
+                        <i class="fa-solid fa-cubes"></i>
+                    </div>
+                    <span class="text-[9px] uppercase tracking-widest text-slate-405 font-bold" id="step-text-3">3. Upgrades</span>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="relative z-10 flex flex-col items-center gap-2">
+                    <div class="w-10 h-10 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center text-xs font-bold transition-all duration-300" id="step-node-4">
+                        <i class="fa-solid fa-check"></i>
+                    </div>
+                    <span class="text-[9px] uppercase tracking-widest text-slate-405 font-bold" id="step-text-4">4. Confirm</span>
+                </div>
+            </div>
+        </div>
+
         <div class="flex flex-col lg:flex-row gap-12">
             
             <!-- Booking Form Column (Left) -->
             <div class="w-full lg:w-2/3 space-y-8">
                 
                 <!-- Stay Details (Calendar & Room) -->
-                <div class="bg-white rounded-[2rem] border border-slate-100 p-6 md:p-8 shadow-xl shadow-slate-200/50 relative overflow-hidden group">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#D4AF37]/10 to-transparent rounded-bl-full pointer-events-none"></div>
+                <div data-animate="fade-up" class="bg-white rounded-[2rem] border border-slate-100 p-6 md:p-8 shadow-xl shadow-slate-200/50 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#C5A059]/10 to-transparent rounded-bl-full pointer-events-none"></div>
                     <h2 class="text-xl font-bold outfit text-slate-900 mb-8 flex items-center gap-3">
-                        <span class="w-10 h-10 bg-gradient-to-br from-[#D4AF37] to-[#B38D22] text-white rounded-full flex items-center justify-center text-sm font-black shadow-lg shadow-[#D4AF37]/30">1</span>
+                        <span class="w-10 h-10 bg-gradient-to-br from-[#C5A059] to-[#A88443] text-white rounded-full flex items-center justify-center text-sm font-black shadow-lg shadow-[#C5A059]/30">1</span>
                         Stay & Suite Selection
                     </h2>
                     
                     <!-- Interactive Calendar -->
                     <div class="mb-8">
-                        <label class="block text-[10px] uppercase tracking-widest text-[#D4AF37] font-black mb-3 ml-1">Choose Stay Dates on Calendar</label>
+                        <label class="block text-[10px] uppercase tracking-widest text-[#C5A059] font-black mb-3 ml-1">Choose Stay Dates on Calendar</label>
                         <div class="bg-slate-50 border border-slate-100 rounded-3xl p-5 md:p-6 shadow-inner">
                             <div class="flex justify-between items-center mb-6">
-                                <button type="button" onclick="changeCalendarMonth(-1)" class="w-10 h-10 rounded-2xl bg-white border border-slate-200 shadow-sm hover:border-[#D4AF37] hover:text-[#D4AF37] flex items-center justify-center text-slate-500 transition-all active:scale-95"><i class="fa-solid fa-chevron-left text-sm"></i></button>
+                                <button type="button" onclick="changeCalendarMonth(-1)" class="w-10 h-10 rounded-2xl bg-white border border-slate-200 shadow-sm hover:border-[#C5A059] hover:text-[#C5A059] flex items-center justify-center text-slate-500 transition-all active:scale-95"><i class="fa-solid fa-chevron-left text-sm"></i></button>
                                 <span id="calendar-month-year" class="font-black text-sm outfit text-slate-800 uppercase tracking-[0.1em]"></span>
-                                <button type="button" onclick="changeCalendarMonth(1)" class="w-10 h-10 rounded-2xl bg-white border border-slate-200 shadow-sm hover:border-[#D4AF37] hover:text-[#D4AF37] flex items-center justify-center text-slate-500 transition-all active:scale-95"><i class="fa-solid fa-chevron-right text-sm"></i></button>
+                                <button type="button" onclick="changeCalendarMonth(1)" class="w-10 h-10 rounded-2xl bg-white border border-slate-200 shadow-sm hover:border-[#C5A059] hover:text-[#C5A059] flex items-center justify-center text-slate-500 transition-all active:scale-95"><i class="fa-solid fa-chevron-right text-sm"></i></button>
                             </div>
                             
                             <div class="grid grid-cols-7 gap-1 text-center text-[10px] uppercase font-bold text-slate-400 mb-3">
-                                <span class="text-rose-400">Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span class="text-[#D4AF37]">Sa</span>
+                                <span class="text-rose-400">Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span class="text-[#C5A059]">Sa</span>
                             </div>
                             
                             <div id="calendar-days-grid" class="grid grid-cols-7 gap-1.5 md:gap-2">
@@ -126,32 +170,45 @@
                             <label class="block text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 ml-1">Check In Date</label>
                             <div class="relative">
                                 <i class="fa-regular fa-calendar absolute left-4 top-4 text-slate-400"></i>
-                                <input type="date" id="book-check-in" required class="w-full border border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none text-sm bg-white text-slate-800 font-medium focus:border-[#D4AF37] focus:ring-4 focus:ring-[#D4AF37]/10 transition-all cursor-pointer">
+                                <input type="date" id="book-check-in" required class="w-full border border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none text-sm bg-white text-slate-800 font-medium focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/10 transition-all cursor-pointer">
                             </div>
                         </div>
                         <div>
                             <label class="block text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 ml-1">Check Out Date</label>
                             <div class="relative">
                                 <i class="fa-regular fa-calendar-check absolute left-4 top-4 text-slate-400"></i>
-                                <input type="date" id="book-check-out" required class="w-full border border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none text-sm bg-white text-slate-800 font-medium focus:border-[#D4AF37] focus:ring-4 focus:ring-[#D4AF37]/10 transition-all cursor-pointer">
+                                <input type="date" id="book-check-out" required class="w-full border border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none text-sm bg-white text-slate-800 font-medium focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/10 transition-all cursor-pointer">
                             </div>
                         </div>
                     </div>
 
-                    <div class="mb-8">
-                        <label class="block text-[10px] uppercase tracking-widest text-[#D4AF37] font-black mb-2 ml-1">Select Location</label>
-                        <div class="relative">
-                            <i class="fa-solid fa-map-location-dot absolute left-4 top-4 text-slate-400"></i>
-                            <select id="book-location" onchange="filterRoomsByLocation()" class="w-full border border-slate-200 rounded-2xl pl-11 pr-11 py-3.5 outline-none focus:border-[#D4AF37] focus:ring-4 focus:ring-[#D4AF37]/10 text-sm bg-slate-50 text-slate-800 font-semibold cursor-pointer appearance-none transition-all">
-                                <option value="all">All Locations</option>
-                                <!-- Dynamically loaded -->
-                            </select>
-                            <i class="fa-solid fa-chevron-down absolute right-4 top-4.5 text-slate-400 pointer-events-none text-xs"></i>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-widest text-[#C5A059] font-black mb-2 ml-1">Select Location</label>
+                            <div class="relative">
+                                <i class="fa-solid fa-map-location-dot absolute left-4 top-4 text-slate-400"></i>
+                                <select id="book-location" onchange="filterRoomsByLocation()" class="w-full border border-slate-200 rounded-2xl pl-11 pr-11 py-3.5 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/10 text-sm bg-slate-50 text-slate-800 font-semibold cursor-pointer appearance-none transition-all">
+                                    <option value="all">All Locations</option>
+                                    <!-- Dynamically loaded -->
+                                </select>
+                                <i class="fa-solid fa-chevron-down absolute right-4 top-4.5 text-slate-400 pointer-events-none text-xs"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-widest text-[#C5A059] font-black mb-2 ml-1">Select Category</label>
+                            <div class="relative">
+                                <i class="fa-solid fa-hotel absolute left-4 top-4 text-slate-400"></i>
+                                <select id="book-category" onchange="filterRoomsByLocation()" class="w-full border border-slate-200 rounded-2xl pl-11 pr-11 py-3.5 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/10 text-sm bg-slate-50 text-slate-800 font-semibold cursor-pointer appearance-none transition-all">
+                                    <option value="all">All Categories</option>
+                                    <!-- Dynamically loaded -->
+                                </select>
+                                <i class="fa-solid fa-chevron-down absolute right-4 top-4.5 text-slate-400 pointer-events-none text-xs"></i>
+                            </div>
                         </div>
                     </div>
 
                     <div class="mb-6">
-                        <label class="block text-[10px] uppercase tracking-widest text-[#D4AF37] font-black mb-3 ml-1">Select Your Suite</label>
+                        <label class="block text-[10px] uppercase tracking-widest text-[#C5A059] font-black mb-3 ml-1">Select Your Suite</label>
                         <!-- Hidden select for form compatibility -->
                         <select id="book-room-id" onchange="onRoomChange()" class="hidden">
                             <!-- Loaded via JS -->
@@ -164,17 +221,17 @@
 
                     <!-- Rent Billing Cycle (Visible/Enabled for Apartments) -->
                     <div id="billing-cycle-box" class="mt-8 hidden p-5 bg-gradient-to-r from-slate-50 to-white rounded-2xl border border-slate-100">
-                        <label class="block text-[10px] uppercase tracking-widest text-[#D4AF37] font-black mb-3">Rent Billing Cycle</label>
+                        <label class="block text-[10px] uppercase tracking-widest text-[#C5A059] font-black mb-3">Rent Billing Cycle</label>
                         <div class="relative mb-2">
                             <i class="fa-solid fa-clock-rotate-left absolute left-4 top-4 text-slate-400"></i>
-                            <select id="book-billing-cycle" onchange="onBillingCycleChange()" class="w-full border border-slate-200 rounded-xl pl-11 pr-11 py-3.5 outline-none focus:border-[#D4AF37] text-sm bg-white text-slate-800 font-semibold cursor-pointer appearance-none">
+                            <select id="book-billing-cycle" onchange="onBillingCycleChange()" class="w-full border border-slate-200 rounded-xl pl-11 pr-11 py-3.5 outline-none focus:border-[#C5A059] text-sm bg-white text-slate-800 font-semibold cursor-pointer appearance-none">
                                 <option value="daily">Daily Basis</option>
                                 <option value="weekly">Weekly Basis</option>
                                 <option value="monthly">Monthly Basis</option>
                             </select>
                             <i class="fa-solid fa-chevron-down absolute right-4 top-4.5 text-slate-400 pointer-events-none text-xs"></i>
                         </div>
-                        <p class="text-slate-500 text-[10px] font-medium leading-relaxed"><i class="fa-solid fa-circle-info text-[#D4AF37] mr-1"></i> Select daily, weekly, or monthly cycle to unlock discounted rates for longer stays.</p>
+                        <p class="text-slate-500 text-[10px] font-medium leading-relaxed"><i class="fa-solid fa-circle-info text-[#C5A059] mr-1"></i> Select daily, weekly, or monthly cycle to unlock discounted rates for longer stays.</p>
                     </div>
                     <!-- Upcoming Reserved Dates Box -->
                     <div id="reserved-dates-box" class="mt-6 hidden bg-rose-50/50 border border-rose-100 p-5 rounded-2xl">
@@ -184,16 +241,16 @@
                 </div>
 
                 <!-- Guest Information -->
-                <div class="bg-white rounded-[2rem] border border-slate-100 p-6 md:p-8 shadow-xl shadow-slate-200/50 relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#D4AF37]/10 to-transparent rounded-bl-full pointer-events-none"></div>
+                <div data-animate="fade-up" class="bg-white rounded-[2rem] border border-slate-100 p-6 md:p-8 shadow-xl shadow-slate-200/50 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#C5A059]/10 to-transparent rounded-bl-full pointer-events-none"></div>
                     <h2 class="text-xl font-bold outfit text-slate-900 mb-6 flex items-center gap-3">
-                        <span class="w-10 h-10 bg-slate-900 text-[#D4AF37] rounded-full flex items-center justify-center text-sm font-black shadow-lg">2</span>
+                        <span class="w-10 h-10 bg-slate-900 text-[#C5A059] rounded-full flex items-center justify-center text-sm font-black shadow-lg">2</span>
                         Guest Details
                     </h2>
                     
-                    <div id="guest-login-promo" class="mb-8 p-5 bg-gradient-to-r from-[#D4AF37]/10 to-transparent border-l-4 border-[#D4AF37] rounded-r-2xl text-xs flex flex-col md:flex-row justify-between items-center text-slate-700 gap-4">
-                        <span class="font-medium leading-relaxed"><i class="fa-solid fa-gift text-[#D4AF37] mr-2 text-lg"></i> Are you a registered member? Log in to easily manage your stay!</span>
-                        <a href="login.html?redirect=booking.html" class="font-black text-white bg-[#D4AF37] px-6 py-2.5 rounded-xl hover:bg-slate-900 whitespace-nowrap transition-all shadow-md">Login Now</a>
+                    <div id="guest-login-promo" class="mb-8 p-5 bg-gradient-to-r from-[#C5A059]/10 to-transparent border-l-4 border-[#C5A059] rounded-r-2xl text-xs flex flex-col md:flex-row justify-between items-center text-slate-700 gap-4">
+                        <span class="font-medium leading-relaxed"><i class="fa-solid fa-gift text-[#C5A059] mr-2 text-lg"></i> Are you a registered member? Log in to easily manage your stay!</span>
+                        <a href="login.html?redirect=booking.html" class="font-black text-white bg-[#C5A059] px-6 py-2.5 rounded-xl hover:bg-slate-900 whitespace-nowrap transition-all shadow-md">Login Now</a>
                     </div>
 
                     <form id="booking-form" class="space-y-6">
@@ -202,14 +259,14 @@
                                 <label class="block text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 ml-1">Full Name</label>
                                 <div class="relative">
                                     <i class="fa-solid fa-user absolute left-4 top-4 text-slate-400"></i>
-                                    <input type="text" id="guest-name" required placeholder="John Doe" class="w-full border border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none focus:border-[#D4AF37] focus:ring-4 focus:ring-[#D4AF37]/10 text-sm bg-slate-50 focus:bg-white text-slate-800 transition-all font-medium">
+                                    <input type="text" id="guest-name" required placeholder="John Doe" class="w-full border border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/10 text-sm bg-slate-50 focus:bg-white text-slate-800 transition-all font-medium">
                                 </div>
                             </div>
                             <div>
                                 <label class="block text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 ml-1">Phone Number</label>
                                 <div class="relative">
                                     <i class="fa-solid fa-phone absolute left-4 top-4 text-slate-400"></i>
-                                    <input type="tel" id="guest-phone" required placeholder="+92 300 1234567" class="w-full border border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none focus:border-[#D4AF37] focus:ring-4 focus:ring-[#D4AF37]/10 text-sm bg-slate-50 focus:bg-white text-slate-800 transition-all font-medium">
+                                    <input type="tel" id="guest-phone" required placeholder="+92 300 1234567" class="w-full border border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/10 text-sm bg-slate-50 focus:bg-white text-slate-800 transition-all font-medium">
                                 </div>
                             </div>
                         </div>
@@ -217,20 +274,39 @@
                             <label class="block text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 ml-1">Email Address</label>
                             <div class="relative">
                                 <i class="fa-solid fa-envelope absolute left-4 top-4 text-slate-400"></i>
-                                <input type="email" id="guest-email" required placeholder="john@example.com" class="w-full border border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none focus:border-[#D4AF37] focus:ring-4 focus:ring-[#D4AF37]/10 text-sm bg-slate-50 focus:bg-white text-slate-800 transition-all font-medium">
+                                <input type="email" id="guest-email" required placeholder="john@example.com" class="w-full border border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/10 text-sm bg-slate-50 focus:bg-white text-slate-800 transition-all font-medium">
                             </div>
                         </div>
                     </form>
                 </div>
 
-                <!-- Payment Details -->
+                <!-- Custom Upgrades -->
+                <div data-animate="fade-up" class="bg-white rounded-[2rem] border border-slate-100 p-6 md:p-8 shadow-xl shadow-slate-200/50 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#C5A059]/10 to-transparent rounded-bl-full pointer-events-none"></div>
+                    <h2 class="text-xl font-bold outfit text-slate-900 mb-6 flex items-center gap-3">
+                        <span class="w-10 h-10 bg-slate-900 text-[#C5A059] rounded-full flex items-center justify-center text-sm font-black shadow-lg">3</span>
+                        Luxury Add-ons & Upgrades
+                    </h2>
+                    <p class="text-slate-400 text-xs mb-6 font-light leading-relaxed">
+                        Customize your alpine getaway with our curated premium add-on services. Select any package to include it in your stay.
+                    </p>
+                    
+                    <div id="upgrades-container" class="space-y-4">
+                        <!-- Loaded dynamically from Firestore -->
+                        <div class="text-center py-6 text-slate-400 text-xs">
+                            <i class="fa-solid fa-spinner fa-spin mr-1"></i> Loading premium upgrades...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Selection -->
                 <div class="bg-white rounded-[2rem] border border-slate-100 p-6 md:p-8 shadow-xl shadow-slate-200/50 relative overflow-hidden">
                     <h2 class="text-xl font-bold outfit text-slate-900 mb-6 flex items-center gap-3">
-                        <span class="w-10 h-10 bg-slate-900 text-[#D4AF37] rounded-full flex items-center justify-center text-sm font-black shadow-lg">3</span>
+                        <span class="w-10 h-10 bg-slate-900 text-[#C5A059] rounded-full flex items-center justify-center text-sm font-black shadow-lg">4</span>
                         Payment Selection
                     </h2>
 
-                    <div class="bg-gradient-to-r from-slate-50 to-white border border-slate-200 rounded-2xl p-5 md:p-6 flex items-start gap-5 group cursor-pointer hover:border-[#D4AF37] transition-all">
+                    <div class="bg-gradient-to-r from-slate-50 to-white border border-slate-200 rounded-2xl p-5 md:p-6 flex items-start gap-5 group cursor-pointer hover:border-[#C5A059] transition-all">
                         <div class="w-12 h-12 rounded-full bg-[#D4AF37]/10 text-[#D4AF37] flex items-center justify-center text-xl shrink-0 mt-0.5 group-hover:scale-110 transition-transform">
                             <i class="fa-solid fa-hotel"></i>
                         </div>
@@ -260,7 +336,7 @@
             </div>
 
             <!-- Price Summary Sidebar (Right) -->
-            <div class="w-full lg:w-1/3">
+            <div class="w-full lg:w-1/3" data-animate="fade-up">
                 <div class="bg-white rounded-[2rem] border border-slate-100 shadow-2xl shadow-slate-200/50 p-6 md:p-8 space-y-7 sticky top-28">
                     <div class="flex items-center justify-between border-b border-slate-100 pb-4">
                         <h3 class="font-bold text-xl outfit text-slate-900">Stay Summary</h3>
@@ -277,15 +353,15 @@
                         </div>
                         <div class="flex flex-col justify-center">
                             <h4 id="preview-room-name" class="font-bold text-slate-900 outfit text-base leading-tight">Deluxe Alpine Room</h4>
-                            <span id="preview-room-location" class="text-[10px] uppercase tracking-widest text-slate-400 font-bold mt-1.5 flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-[#D4AF37]"></i> Islamabad</span>
-                            <span id="preview-room-price" class="text-sm font-black text-[#D4AF37] mt-1.5 bg-[#D4AF37]/10 inline-block px-2 py-0.5 rounded-lg w-max">25,000 PKR / Night</span>
+                            <span id="preview-room-location" class="text-[10px] uppercase tracking-widest text-slate-400 font-bold mt-1.5 flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-[#C5A059]"></i> Islamabad</span>
+                            <span id="preview-room-price" class="text-sm font-black text-[#C5A059] mt-1.5 bg-[#C5A059]/10 inline-block px-2 py-0.5 rounded-lg w-max">25,000 PKR / Night</span>
                             <span id="preview-room-guests" class="text-[10px] text-slate-500 font-medium mt-1">Capacity: Max 2 guests</span>
                         </div>
                     </div>
 
                     <!-- Advanced Pricing Strategy Noticeable Graphics -->
                     <div id="pricing-breakdown-graphics" class="hidden bg-slate-50 border border-slate-100 rounded-2xl p-4 space-y-3">
-                        <div class="text-[10px] uppercase tracking-wider text-slate-400 font-bold mb-1 flex items-center gap-1"><i class="fa-solid fa-tags text-[#D4AF37]"></i> Pricing Advantage Available</div>
+                        <div class="text-[10px] uppercase tracking-wider text-slate-400 font-bold mb-1 flex items-center gap-1"><i class="fa-solid fa-tags text-[#C5A059]"></i> Pricing Advantage Available</div>
                         <div id="graphics-daily-row" class="flex justify-between items-center text-xs">
                             <span class="text-slate-600 font-medium">Standard Daily</span>
                             <span id="graphics-daily-val" class="font-bold text-slate-800">PKR 0 / day</span>
@@ -325,15 +401,21 @@
                             <span id="calc-tax">PKR 0</span>
                         </div>
                         
+                        <!-- Luxury Upgrades row -->
+                        <div id="calc-addons-row" class="hidden justify-between text-slate-500">
+                            <span>Upgrades & Add-ons</span>
+                            <span id="calc-addons-total">PKR 0</span>
+                        </div>
+                        
                         <!-- Coupon Input Box -->
-                        <div class="border-t border-slate-100 pt-4 pb-1 mt-2">
+                        <div class="border-t border-slate-100/80 pt-4 pb-1 mt-2">
                             <label class="block text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 ml-1">Have a Coupon Code?</label>
                             <div class="flex gap-2">
                                 <div class="relative flex-grow">
                                     <i class="fa-solid fa-ticket absolute left-3 top-3 text-slate-400 text-xs"></i>
-                                    <input type="text" id="coupon-code-input" placeholder="Enter code" class="w-full border border-slate-200 rounded-xl pl-8 pr-3 py-2 outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/10 text-xs bg-slate-50 focus:bg-white text-slate-800 transition-all font-medium uppercase">
+                                    <input type="text" id="coupon-code-input" placeholder="Enter code" class="w-full border border-slate-200 rounded-xl pl-8 pr-3 py-2 outline-none focus:border-[#C5A059] focus:ring-2 focus:ring-[#C5A059]/10 text-xs bg-slate-50 focus:bg-white text-slate-800 transition-all font-medium uppercase">
                                 </div>
-                                <button onclick="validateAndApplyCoupon()" class="bg-[#0F172A] text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-[#D4AF37] transition-all shadow-md">Apply</button>
+                                <button onclick="validateAndApplyCoupon()" class="bg-[#0B0F19] text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-[#C5A059] transition-all shadow-md">Apply</button>
                             </div>
                             <p id="coupon-message" class="text-[9px] font-semibold mt-2 hidden ml-1"></p>
                         </div>
@@ -344,19 +426,18 @@
                             <span id="calc-coupon-discount">-PKR 0</span>
                         </div>
 
-
-                        <div class="border-t border-slate-100 pt-4 flex justify-between items-center font-extrabold text-lg text-slate-900">
+                        <div class="border-t border-slate-100/80 pt-4 flex justify-between items-center font-extrabold text-lg text-[#0B0F19]">
                             <span>Total (PKR)</span>
-                            <span id="calc-total" class="text-[#D4AF37] outfit text-xl">PKR 0</span>
+                            <span id="calc-total" class="text-[#C5A059] outfit text-xl">PKR 0</span>
                         </div>
                     </div>
 
-                    <button onclick="submitBooking()" class="w-full bg-[#D4AF37] text-white py-4 rounded-2xl font-bold hover:bg-[#0F172A] transition-all shadow-lg flex items-center justify-center gap-2 btn-shimmer">
+                    <button onclick="submitBooking()" class="w-full bg-[#C5A059] text-white py-4 rounded-2xl font-bold hover:bg-[#0B0F19] transition-all shadow-lg flex items-center justify-center gap-2 btn-shimmer">
                         <i class="fa-solid fa-lock text-xs"></i>
                         Confirm Stay
                     </button>
                     <p class="text-[10px] text-center text-slate-400">
-                        Secured SSL checkout powered by KPH Stay. <br><span class="font-bold text-[#D4AF37]">48-Hour Refund Policy:</span> Cancellations made within 48 hours of booking are eligible for a full refund.
+                        Secured SSL checkout powered by KPH Stay. <br><span class="font-bold text-[#C5A059]">48-Hour Refund Policy:</span> Cancellations made within 48 hours of booking are eligible for a full refund.
                     </p>
                 </div>
             </div>
@@ -432,6 +513,7 @@
         let finalPrice = 0;
         let slideshowInterval = null;
         let currentImageIdx = 0;
+        let availableUpgrades = [];
 
         function startImageSlideshow(images) {
             if (slideshowInterval) {
@@ -589,9 +671,19 @@
                     locations.map(l => `<option value="${l.id}">${l.label}</option>`).join('');
             }
 
+            // Populate Dynamic Categories
+            const categories = await KaghanDB.getCategories();
+            const categorySelect = document.getElementById('book-category');
+            if (categorySelect) {
+                let currentVal = categorySelect.value;
+                categorySelect.innerHTML = `<option value="all">All Categories</option>` +
+                    categories.map(c => `<option value="${c.id}">${c.label}</option>`).join('');
+            }
+
             // Read URL query parameters
             const urlParams = new URLSearchParams(window.location.search);
             const queryLocation = urlParams.get('location');
+            const queryCategory = urlParams.get('category');
             const queryRoomId = urlParams.get('room');
 
             if (queryLocation && locationSelect) {
@@ -601,19 +693,32 @@
                 }
             }
 
+            if (queryCategory && categorySelect) {
+                const found = categories.find(c => c.id === queryCategory);
+                if (found) {
+                    categorySelect.value = queryCategory;
+                }
+            }
+
             await filterRoomsByLocation(queryRoomId);
         }
 
         async function filterRoomsByLocation(preselectedRoomId = null) {
             const location = document.getElementById('book-location').value;
+            const categorySelect = document.getElementById('book-category');
+            const category = categorySelect ? categorySelect.value : 'all';
             const selector = document.getElementById('book-room-id');
             const grid = document.getElementById('book-rooms-grid');
             
-            const filteredRooms = allAvailableRooms.filter(r => location === 'all' || (r.location || 'Islamabad') === location);
+            const filteredRooms = allAvailableRooms.filter(r => {
+                const matchesLocation = location === 'all' || (r.location || 'Islamabad') === location;
+                const matchesCategory = category === 'all' || r.type === category;
+                return matchesLocation && matchesCategory;
+            });
             
             if (filteredRooms.length === 0) {
-                selector.innerHTML = '<option value="">No suites available in this location</option>';
-                if (grid) grid.innerHTML = '<div class="col-span-2 text-center py-8 text-slate-400 text-xs">No suites available in this location.</div>';
+                selector.innerHTML = '<option value="">No suites available in this location or category</option>';
+                if (grid) grid.innerHTML = '<div class="col-span-2 text-center py-8 text-slate-400 text-xs">No suites available in this location or category.</div>';
                 selectedRoom = null;
                 // Clear preview
                 document.getElementById('preview-room-img').src = 'assets/images/logo.png';
@@ -641,7 +746,12 @@
                 if (preselectedRoomId) {
                     const matchRoom = allAvailableRooms.find(r => r.id === preselectedRoomId);
                     if (matchRoom) {
-                        document.getElementById('book-location').value = matchRoom.location || 'Islamabad';
+                        if (document.getElementById('book-location')) {
+                            document.getElementById('book-location').value = matchRoom.location || 'Islamabad';
+                        }
+                        if (document.getElementById('book-category')) {
+                            document.getElementById('book-category').value = matchRoom.type || 'all';
+                        }
                         return filterRoomsByLocation(preselectedRoomId);
                     }
                 }
@@ -1078,6 +1188,40 @@
             calculatePrice();
         };
 
+        // Stepper Progress Updater
+        function updateStepper() {
+            const hasDates = document.getElementById('book-check-in').value && document.getElementById('book-check-out').value && selectedRoom;
+            const hasGuestInfo = document.getElementById('guest-name').value && document.getElementById('guest-phone').value && document.getElementById('guest-email').value;
+            
+            const progressBar = document.getElementById('stepper-progress-bar');
+            const stepNode2 = document.getElementById('step-node-2');
+            const stepNode3 = document.getElementById('step-node-3');
+            const stepNode4 = document.getElementById('step-node-4');
+            const stepText4 = document.getElementById('step-text-4');
+
+            if (!progressBar) return;
+
+            if (hasDates && hasGuestInfo) {
+                progressBar.style.width = '100%';
+                stepNode2.className = "w-10 h-10 rounded-full bg-[#C5A059] text-white flex items-center justify-center text-xs font-bold shadow-lg shadow-[#C5A059]/20 transition-all duration-300";
+                stepNode3.className = "w-10 h-10 rounded-full bg-[#C5A059] text-white flex items-center justify-center text-xs font-bold shadow-lg shadow-[#C5A059]/20 transition-all duration-300";
+                stepNode4.className = "w-10 h-10 rounded-full bg-[#C5A059] text-white flex items-center justify-center text-xs font-bold shadow-lg shadow-[#C5A059]/20 transition-all duration-300";
+                stepText4.className = "text-[9px] uppercase tracking-widest text-[#0B0F19] font-bold";
+            } else if (hasDates) {
+                progressBar.style.width = '66%';
+                stepNode2.className = "w-10 h-10 rounded-full bg-[#C5A059] text-white flex items-center justify-center text-xs font-bold shadow-lg shadow-[#C5A059]/20 transition-all duration-300";
+                stepNode3.className = "w-10 h-10 rounded-full bg-[#C5A059] text-white flex items-center justify-center text-xs font-bold shadow-lg shadow-[#C5A059]/20 transition-all duration-300";
+                stepNode4.className = "w-10 h-10 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center text-xs font-bold transition-all duration-300";
+                stepText4.className = "text-[9px] uppercase tracking-widest text-slate-405 font-bold";
+            } else {
+                progressBar.style.width = '33%';
+                stepNode2.className = "w-10 h-10 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center text-xs font-bold transition-all duration-300";
+                stepNode3.className = "w-10 h-10 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center text-xs font-bold transition-all duration-300";
+                stepNode4.className = "w-10 h-10 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center text-xs font-bold transition-all duration-300";
+                stepText4.className = "text-[9px] uppercase tracking-widest text-slate-405 font-bold";
+            }
+        }
+
         // Live calculation logic
         async function calculatePrice() {
             if (!selectedRoom) return;
@@ -1112,7 +1256,34 @@
             
             const tax = Math.round(subtotal * 0.15); // 15% GST
             
+            // Addons/Upgrades calculations
+            let addonsTotal = 0;
+            if (typeof availableUpgrades !== 'undefined') {
+                availableUpgrades.forEach(up => {
+                    const upgradeCheckbox = document.getElementById(up.id);
+                    if (upgradeCheckbox && upgradeCheckbox.checked) {
+                        if (up.priceType === 'night') {
+                            addonsTotal += up.price * stayNights;
+                        } else {
+                            addonsTotal += up.price;
+                        }
+                    }
+                });
+            }
 
+            const addonsRow = document.getElementById('calc-addons-row');
+            if (addonsTotal > 0) {
+                if (addonsRow) {
+                    addonsRow.classList.remove('hidden');
+                    addonsRow.classList.add('flex');
+                    document.getElementById('calc-addons-total').innerText = KaghanUI.formatPKR(addonsTotal);
+                }
+            } else {
+                if (addonsRow) {
+                    addonsRow.classList.add('hidden');
+                    addonsRow.classList.remove('flex');
+                }
+            }
 
             let couponDiscount = 0;
             const couponRow = document.getElementById('coupon-discount-row');
@@ -1120,10 +1291,7 @@
             const couponVal = document.getElementById('calc-coupon-discount');
 
             if (appliedCoupon) {
-                // Coupons now strictly use discountPercentage based on admin schema
                 couponDiscount = Math.round(subtotal * ((appliedCoupon.discountPercentage || 0) / 100));
-
-                // Make sure coupon doesn't exceed subtotal
                 couponDiscount = Math.min(couponDiscount, subtotal);
 
                 if (couponRow) {
@@ -1139,7 +1307,7 @@
                 }
             }
             
-            finalPrice = (subtotal + tax) - couponDiscount;
+            finalPrice = (subtotal + tax + addonsTotal) - couponDiscount;
             
             document.getElementById('calc-rate').innerText = `${KaghanUI.formatPKR(rate)} / ${cycleText}`;
             document.getElementById('calc-nights').innerText = `${stayNights} Night${stayNights > 1 ? 's' : ''}`;
@@ -1151,16 +1319,14 @@
             const isAvailable = await KaghanDB.isRoomAvailable(selectedRoom.id, checkInVal, checkOutVal);
             const submitBtn = document.querySelector('button[onclick="submitBooking()"]');
             
-            // Remove previous warning
             const prevWarning = document.getElementById('booking-availability-warning');
             if (prevWarning) prevWarning.remove();
 
             if (!isAvailable) {
                 submitBtn.disabled = true;
-                submitBtn.classList.remove('hover:bg-[#0F172A]', 'bg-[#D4AF37]');
+                submitBtn.classList.remove('hover:bg-[#0B0F19]', 'bg-[#C5A059]');
                 submitBtn.classList.add('bg-slate-400', 'cursor-not-allowed');
 
-                // Create alert warning block
                 const warningDiv = document.createElement('div');
                 warningDiv.id = 'booking-availability-warning';
                 warningDiv.className = 'bg-rose-50 border border-rose-200 text-rose-700 text-xs px-4 py-3 rounded-2xl mt-4 font-semibold text-center animate-bounce';
@@ -1169,8 +1335,11 @@
             } else {
                 submitBtn.disabled = false;
                 submitBtn.classList.remove('bg-slate-400', 'cursor-not-allowed');
-                submitBtn.classList.add('bg-[#D4AF37]', 'hover:bg-[#0F172A]');
+                submitBtn.classList.add('bg-[#C5A059]', 'hover:bg-[#0B0F19]');
             }
+
+            // Trigger progress stepper state updates
+            updateStepper();
         }
 
         // Form Validation & Card Input Formatter
@@ -1304,6 +1473,21 @@
             const user = KaghanDB.getCurrentUser();
             const bookingId = 'BK-' + Math.floor(1000 + Math.random() * 9000);
             
+            const selectedUpgradesList = [];
+            if (typeof availableUpgrades !== 'undefined') {
+                availableUpgrades.forEach(up => {
+                    const cb = document.getElementById(up.id);
+                    if (cb && cb.checked) {
+                        selectedUpgradesList.push({
+                            id: up.id,
+                            name: up.name,
+                            price: up.price,
+                            priceType: up.priceType
+                        });
+                    }
+                });
+            }
+
             const booking = {
                 id: bookingId,
                 userId: user ? user.id : 'usr-guest-walkin',
@@ -1315,6 +1499,7 @@
                 checkOut: checkOut,
                 totalPrice: finalPrice,
                 couponUsed: appliedCoupon ? appliedCoupon.code : null,
+                upgrades: selectedUpgradesList,
                 status: 'confirmed', // Instant confirmation simulation
                 billingCycle: selectedRoom.isApartment ? document.getElementById('book-billing-cycle').value : 'daily',
                 createdAt: new Date().toISOString()
@@ -1528,14 +1713,85 @@
             }, 1500);
         };
 
+        async function loadUpgrades() {
+            try {
+                let dbUpgrades = await KaghanDB.getUpgrades();
+                if (!dbUpgrades || dbUpgrades.length === 0) {
+                    availableUpgrades = [
+                        {
+                            id: 'upgrade-airport-shuttle',
+                            name: 'Airport VIP Transfer',
+                            icon: 'fa-car-side',
+                            price: 5000,
+                            priceType: 'flat',
+                            description: 'Direct one-way pickup or drop-off in a luxury business sedan with personal chauffeur.'
+                        },
+                        {
+                            id: 'upgrade-dining-breakfast',
+                            name: 'In-suite Dining Package',
+                            icon: 'fa-utensils',
+                            price: 2500,
+                            priceType: 'night',
+                            description: 'Chef-crafted continental breakfast served fresh in your living room each morning.'
+                        },
+                        {
+                            id: 'upgrade-spa-tray',
+                            name: 'Organic Spa Amenities Tray',
+                            icon: 'fa-spa',
+                            price: 1500,
+                            priceType: 'flat',
+                            description: 'Assorted dry fruit basket, honey, and organic local chamomile herbal teas delivered on arrival.'
+                        }
+                    ];
+                } else {
+                    availableUpgrades = dbUpgrades;
+                }
+                renderUpgrades();
+            } catch (err) {
+                console.error("Failed to load upgrades:", err);
+            }
+        }
+
+        function renderUpgrades() {
+            const container = document.getElementById('upgrades-container');
+            if (!container) return;
+            
+            if (availableUpgrades.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-400 text-center py-6">No upgrade services available at this time.</p>`;
+                return;
+            }
+            
+            container.innerHTML = availableUpgrades.map(up => `
+                <label class="flex items-start gap-4 p-5 rounded-2xl border border-slate-200 hover:border-[#C5A059]/50 bg-slate-50/55 hover:bg-white transition-all cursor-pointer group">
+                    <input type="checkbox" id="${up.id}" onchange="calculatePrice()" class="mt-1 w-4 h-4 rounded text-[#C5A059] border-slate-300 focus:ring-[#C5A059]">
+                    <div class="flex-grow">
+                        <div class="flex justify-between items-center mb-1">
+                            <h4 class="font-bold text-slate-800 text-sm group-hover:text-[#C5A059] transition-colors flex items-center gap-2">
+                                <i class="fa-solid ${up.icon || 'fa-plus'} text-[#C5A059]"></i> ${KaghanSafe.escapeHTML(up.name)}
+                            </h4>
+                            <span class="text-xs font-black text-[#C5A059]">${KaghanUI.formatPKR(up.price)}${up.priceType === 'night' ? ' <span class="text-[9px] font-normal text-slate-400">/ night</span>' : ''}</span>
+                        </div>
+                        <p class="text-slate-500 text-xs leading-relaxed font-light">${KaghanSafe.escapeHTML(up.description)}</p>
+                    </div>
+                </label>
+            `).join('');
+        }
+
         // Drawer handled by shared.js
 
         // Initialize Page
         window.addEventListener('DOMContentLoaded', async () => {
             setupDates();
             await loadRoomSelector();
+            await loadUpgrades();
             renderBookingNavbar();
             setupPaymentInputs();
+
+            const guestForm = document.getElementById('booking-form');
+            if (guestForm) {
+                guestForm.addEventListener('input', updateStepper);
+            }
+            updateStepper();
         });
     </script>
 </body>

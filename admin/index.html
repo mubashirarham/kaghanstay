@@ -69,7 +69,7 @@
                     <i class="fa-solid fa-bed w-5 text-sm"></i> Room Inventory
                 </button>
                 <button onclick="switchTab('guests')" id="tab-btn-guests" class="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white hover:bg-slate-800/20 text-left">
-                    <i class="fa-solid fa-users w-5 text-sm"></i> Guest Registry
+                    <i class="fa-solid fa-users w-5 text-sm"></i> Users & Admins
                 </button>
                 <button onclick="switchTab('newsletter')" id="tab-btn-newsletter" class="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white hover:bg-slate-800/20 text-left">
                     <i class="fa-solid fa-envelope-open-text w-5 text-sm"></i> Subscribers
@@ -84,6 +84,7 @@
                 <button onclick="switchTab('coupons')" id="tab-btn-coupons" class="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white hover:bg-slate-800/20 text-left">
                     <i class="fa-solid fa-tags w-5 text-sm"></i> Coupons
                 </button>
+
                 <button onclick="switchTab('settings')" id="tab-btn-settings" class="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white hover:bg-slate-800/20 text-left">
                     <i class="fa-solid fa-cogs w-5 text-sm"></i> System Settings
                 </button>
@@ -201,6 +202,22 @@
                             <i class="fa-solid fa-chart-pie text-[#DC2626]"></i> Booking Status
                         </h3>
                         <div id="status-chart"></div>
+                    </div>
+                </div>
+
+                <!-- Advanced Occupancy & Revenue Metrics -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-white rounded-3xl border border-slate-100 p-6 shadow-md">
+                        <h3 class="text-lg font-bold outfit text-slate-900 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-chart-bar text-[#D4AF37]"></i> Suite Revenue Contribution
+                        </h3>
+                        <div id="room-revenue-chart"></div>
+                    </div>
+                    <div class="bg-white rounded-3xl border border-slate-100 p-6 shadow-md">
+                        <h3 class="text-lg font-bold outfit text-slate-900 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-chart-area text-[#3B82F6]"></i> Occupancy Rate Timeline (%)
+                        </h3>
+                        <div id="occupancy-trend-chart"></div>
                     </div>
                 </div>
 
@@ -355,17 +372,20 @@
             <!-- VIEW: GUESTS -->
             <div id="view-guests" class="tab-view hidden space-y-6">
                 <div>
-                    <span class="text-[#D4AF37] text-xs font-bold uppercase tracking-wider">Registry Circle</span>
-                    <h1 class="text-2xl font-extrabold outfit text-slate-900 mt-0.5">Registered Guest Registry</h1>
-                    <p class="text-slate-400 text-xs font-light">View active guest details.</p>
+                    <span class="text-[#D4AF37] text-xs font-bold uppercase tracking-wider">Accounts Circle</span>
+                    <h1 class="text-2xl font-extrabold outfit text-slate-900 mt-0.5">Users & Admins Management</h1>
+                    <p class="text-slate-400 text-xs font-light">View and manage registered clients and administrative accounts.</p>
                 </div>
 
                 <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md space-y-6">
-                    <div class="flex gap-4 items-center">
+                    <div class="flex gap-4 items-center justify-between flex-wrap">
                         <div class="relative w-full sm:w-80">
                             <input type="text" id="guest-search-input" placeholder="Search by name, email, phone..." class="w-full border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-xs bg-slate-50 outline-none focus:border-[#D4AF37]">
                             <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-400 text-xs"></i>
                         </div>
+                        <button onclick="openAddUserModal()" class="bg-gradient-to-r from-[#D4AF37] to-[#DC2626] text-white font-bold px-5 py-2.5 rounded-xl hover:opacity-90 transition-all text-xs shadow-md flex items-center gap-2">
+                            <i class="fa-solid fa-user-plus"></i> Add User / Admin
+                        </button>
                     </div>
 
                     <div class="table-scroll-container overflow-x-auto">
@@ -375,6 +395,7 @@
                                     <th class="px-6 py-3">Name</th>
                                     <th class="px-6 py-3">Email Address</th>
                                     <th class="px-6 py-3">Phone Line</th>
+                                    <th class="px-6 py-3">Role</th>
                                     <th class="px-6 py-3">Actions</th>
                                 </tr>
                             </thead>
@@ -384,7 +405,7 @@
                         </table>
                     </div>
                     <div id="guests-empty-state" class="hidden text-center py-12">
-                        <p class="text-slate-400 text-xs">No guest profiles matching your search filters.</p>
+                        <p class="text-slate-400 text-xs">No user or admin profiles matching your search filters.</p>
                     </div>
                 </div>
             </div>
@@ -637,7 +658,22 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Premium Upgrades & Add-ons -->
+                <div class="bg-white rounded-3xl border border-slate-100 p-6 shadow-md mt-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-lg font-bold outfit text-slate-950">Premium Add-ons & Upgrades</h3>
+                        <button onclick="openAddUpgradeModal()" class="bg-slate-800 hover:bg-[#D4AF37] hover:text-slate-950 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold transition-all flex items-center gap-1">
+                            <i class="fa-solid fa-plus"></i> Add Upgrade
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="admin-upgrades-list">
+                        <!-- Loaded dynamically -->
+                    </div>
+                </div>
             </div>
+
+
 
         </main>
     </div>
@@ -661,7 +697,7 @@
         </button>
         <button onclick="switchTab('guests')" class="flex-1 flex flex-col items-center gap-1 py-2.5 text-slate-400 hover:text-[#D4AF37] transition-colors">
             <i class="fa-solid fa-users text-base"></i>
-            <span class="text-[9px] font-bold uppercase tracking-wider">Guests</span>
+            <span class="text-[9px] font-bold uppercase tracking-wider">Users</span>
         </button>
     </nav>
 
@@ -1084,8 +1120,22 @@
                     <input type="text" id="add-category-id" required placeholder="e.g. treehouse" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800">
                 </div>
                 <div>
-                    <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">FontAwesome Icon Class</label>
-                    <input type="text" id="add-category-icon" required placeholder="e.g. fa-tree" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800">
+                    <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">FontAwesome Icon</label>
+                    <select id="add-category-icon" required class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs bg-slate-50 text-slate-805">
+                        <option value="fa-cube">Cube / Studio</option>
+                        <option value="fa-bed">Bed / 1 Bed</option>
+                        <option value="fa-door-open">Door Open / 2 Bed</option>
+                        <option value="fa-house-chimney">House Chimney / 3 Bed</option>
+                        <option value="fa-building">Building / 4 Bed</option>
+                        <option value="fa-house">House / 5 Marla</option>
+                        <option value="fa-house-user">House User / 10 Marla</option>
+                        <option value="fa-hotel">Hotel / 1 Kanal</option>
+                        <option value="fa-tree">Tree / Farmhouse</option>
+                        <option value="fa-mountain">Mountain / Alpine</option>
+                        <option value="fa-umbrella-beach">Umbrella Beach / Resort</option>
+                        <option value="fa-key">Key / Executive</option>
+                        <option value="fa-compass">Compass / Adventure</option>
+                    </select>
                 </div>
                 <div>
                     <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Custom Image (Overrides Icon)</label>
@@ -1152,6 +1202,99 @@
         </div>
     </div>
 
+    <!-- MODAL: ADD USER / ADMIN -->
+    <div id="add-user-modal" class="fixed inset-0 bg-[#0F172A]/70 z-[100] flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl max-w-sm w-full overflow-hidden shadow-2xl relative border border-slate-100 transform scale-95 transition-transform duration-300 p-8 text-slate-800">
+            <button onclick="closeAddUserModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700">
+                <i class="fa-solid fa-times text-lg"></i>
+            </button>
+            <h3 class="text-lg font-bold outfit text-slate-950 mb-6">Add User or Admin</h3>
+            <form id="add-user-form" class="space-y-4">
+                <div>
+                    <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Full Name</label>
+                    <input type="text" id="add-user-name" required placeholder="e.g. Ali Ahmed" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800">
+                </div>
+                <div>
+                    <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Email Address</label>
+                    <input type="email" id="add-user-email" required placeholder="e.g. ali@gmail.com" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800">
+                </div>
+                <div>
+                    <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Phone Line (Optional)</label>
+                    <input type="text" id="add-user-phone" placeholder="e.g. +923001234567" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800">
+                </div>
+                <div>
+                    <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Password</label>
+                    <input type="password" id="add-user-password" required placeholder="Min 6 characters" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800">
+                </div>
+                <div>
+                    <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Account Role</label>
+                    <select id="add-user-role" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none">
+                        <option value="user">User / Guest</option>
+                        <option value="admin">Administrator</option>
+                    </select>
+                </div>
+                <div class="flex gap-4 pt-4">
+                    <button type="button" onclick="closeAddUserModal()" class="w-1/2 border border-slate-200 text-slate-800 font-bold py-3 rounded-xl hover:bg-slate-100 transition-all text-xs">Cancel</button>
+                    <button type="submit" class="w-1/2 bg-gradient-to-r from-[#D4AF37] to-[#DC2626] text-white font-bold py-3 rounded-xl hover:opacity-90 transition-all text-xs shadow-md">Add Account</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: ADD/EDIT UPGRADE -->
+    <div id="add-upgrade-modal" class="fixed inset-0 bg-[#0F172A]/70 z-[100] flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl max-w-sm w-full overflow-hidden shadow-2xl relative border border-slate-100 transform scale-95 transition-transform duration-300 p-8 text-slate-800">
+            <button onclick="closeAddUpgradeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700">
+                <i class="fa-solid fa-times text-lg"></i>
+            </button>
+            <h3 class="text-lg font-bold outfit text-slate-950 mb-6">Add Add-on Upgrade</h3>
+            <form id="add-upgrade-form" class="space-y-4">
+                <div>
+                    <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Upgrade Name</label>
+                    <input type="text" id="add-upgrade-name" required placeholder="e.g. Airport VIP Transfer" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-805">
+                </div>
+                <div>
+                    <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">ID (Lowercase, unique key)</label>
+                    <input type="text" id="add-upgrade-id" required placeholder="e.g. upgrade-airport-shuttle" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-805">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Price (PKR)</label>
+                        <input type="number" id="add-upgrade-price" required placeholder="e.g. 5000" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-805">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Price Type</label>
+                        <select id="add-upgrade-type" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-850 outline-none">
+                            <option value="flat">Flat Check-in Fee</option>
+                            <option value="night">Per Night Rate</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">FontAwesome Icon</label>
+                    <select id="add-upgrade-icon" required class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs bg-slate-50 text-slate-805">
+                        <option value="fa-car-side">Car / Chauffeur</option>
+                        <option value="fa-utensils">Utensils / Dining</option>
+                        <option value="fa-spa">Spa / Health</option>
+                        <option value="fa-champagne-glasses">Champagne / Drinks</option>
+                        <option value="fa-wifi">Wifi / Tech</option>
+                        <option value="fa-dumbbell">Dumbbell / Gym</option>
+                        <option value="fa-concierge-bell">Concierge Bell</option>
+                        <option value="fa-gift">Gift / Basket</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Description</label>
+                    <textarea id="add-upgrade-desc" required rows="3" placeholder="Brief description of the luxury package service details..." class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-805 outline-none resize-none"></textarea>
+                </div>
+                <div class="flex gap-4 pt-4">
+                    <button type="button" onclick="closeAddUpgradeModal()" class="w-1/2 border border-slate-200 text-slate-800 font-bold py-3 rounded-xl hover:bg-slate-100 transition-all text-xs">Cancel</button>
+                    <button type="submit" class="w-1/2 bg-gradient-to-r from-[#D4AF37] to-[#DC2626] text-white font-bold py-3 rounded-xl hover:opacity-90 transition-all text-xs shadow-md">Save Upgrade</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -1173,5 +1316,6 @@
     <script src="../assets/js/admin/dashboard.js"></script>
     <script src="../assets/js/admin/settings.js"></script>
     <script src="../assets/js/admin/coupons.js"></script>
+
 </body>
 </html>
