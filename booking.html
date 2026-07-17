@@ -290,11 +290,27 @@
                     <p class="text-slate-400 text-xs mb-6 font-light leading-relaxed">
                         Customize your alpine getaway with our curated premium add-on services. Select any package to include it in your stay.
                     </p>
-                    
                     <div id="upgrades-container" class="space-y-4">
-                        <!-- Loaded dynamically from Firestore -->
-                        <div class="text-center py-6 text-slate-400 text-xs">
-                            <i class="fa-solid fa-spinner fa-spin mr-1"></i> Loading premium upgrades...
+                        <!-- Upgrade Skeletons -->
+                        <div class="border border-slate-100 rounded-2xl p-4 flex justify-between items-center h-20">
+                            <div class="flex gap-4 items-center w-full">
+                                <div class="w-10 h-10 skeleton rounded-full shrink-0"></div>
+                                <div class="space-y-2 flex-grow">
+                                    <div class="w-24 h-4 skeleton rounded"></div>
+                                    <div class="w-40 h-3 skeleton rounded"></div>
+                                </div>
+                            </div>
+                            <div class="w-16 h-6 skeleton rounded shrink-0"></div>
+                        </div>
+                        <div class="border border-slate-100 rounded-2xl p-4 flex justify-between items-center h-20">
+                            <div class="flex gap-4 items-center w-full">
+                                <div class="w-10 h-10 skeleton rounded-full shrink-0"></div>
+                                <div class="space-y-2 flex-grow">
+                                    <div class="w-20 h-4 skeleton rounded"></div>
+                                    <div class="w-32 h-3 skeleton rounded"></div>
+                                </div>
+                            </div>
+                            <div class="w-16 h-6 skeleton rounded shrink-0"></div>
                         </div>
                     </div>
                 </div>
@@ -1345,32 +1361,36 @@
         // Form Validation & Card Input Formatter
         function setupPaymentInputs() {
             const cardNum = document.getElementById('card-number');
-            cardNum.addEventListener('input', (e) => {
-                let v = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
-                let matches = v.match(/\d{4,16}/g);
-                let match = (matches && matches[0]) || '';
-                let parts = [];
+            if (cardNum) {
+                cardNum.addEventListener('input', (e) => {
+                    let v = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+                    let matches = v.match(/\d{4,16}/g);
+                    let match = (matches && matches[0]) || '';
+                    let parts = [];
 
-                for (let i = 0, len = match.length; i < len; i += 4) {
-                    parts.push(match.substring(i, i + 4));
-                }
+                    for (let i = 0, len = match.length; i < len; i += 4) {
+                        parts.push(match.substring(i, i + 4));
+                    }
 
-                if (parts.length > 0) {
-                    e.target.value = parts.join(' ');
-                } else {
-                    e.target.value = v;
-                }
-            });
+                    if (parts.length > 0) {
+                        e.target.value = parts.join(' ');
+                    } else {
+                        e.target.value = v;
+                    }
+                });
+            }
 
             const cardExpiry = document.getElementById('card-expiry');
-            cardExpiry.addEventListener('input', (e) => {
-                let v = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
-                if (v.length >= 2) {
-                    e.target.value = v.substring(0,2) + '/' + v.substring(2,4);
-                } else {
-                    e.target.value = v;
-                }
-            });
+            if (cardExpiry) {
+                cardExpiry.addEventListener('input', (e) => {
+                    let v = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+                    if (v.length >= 2) {
+                        e.target.value = v.substring(0,2) + '/' + v.substring(2,4);
+                    } else {
+                        e.target.value = v;
+                    }
+                });
+            }
         }
 
         // Global variables

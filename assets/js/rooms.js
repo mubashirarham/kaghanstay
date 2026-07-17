@@ -267,67 +267,97 @@
 
     // Filter calculations
     async function applyFilters() {
-        const rooms = await KaghanDB.getRooms();
-        const searchInput = document.getElementById('filter-search');
-        const categorySelect = document.getElementById('filter-category');
-        const locationSelect = document.getElementById('filter-location');
-        const priceSlider = document.getElementById('filter-price');
-        const sortSelect = document.getElementById('sort-by');
+        const container = document.getElementById('rooms-grid');
+        if (container) {
+            container.innerHTML = `
+                <div class="bg-white rounded-[2.5rem] border border-slate-100 p-6 shadow-sm flex flex-col justify-between h-[450px]">
+                    <div class="skeleton h-48 w-full rounded-2xl mb-6 animate-pulse"></div>
+                    <div class="skeleton h-6 w-3/4 rounded mb-3 animate-pulse"></div>
+                    <div class="skeleton h-4 w-1/2 rounded mb-6 animate-pulse"></div>
+                    <div class="skeleton h-4 w-full rounded mb-3 animate-pulse"></div>
+                    <div class="skeleton h-4 w-5/6 rounded mb-8 animate-pulse"></div>
+                    <div class="flex justify-between items-center mt-auto flex-row">
+                        <div class="skeleton h-10 w-24 rounded animate-pulse"></div>
+                        <div class="skeleton h-10 w-24 rounded animate-pulse"></div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-[2.5rem] border border-slate-100 p-6 shadow-sm flex flex-col justify-between h-[450px]">
+                    <div class="skeleton h-48 w-full rounded-2xl mb-6 animate-pulse"></div>
+                    <div class="skeleton h-6 w-3/4 rounded mb-3 animate-pulse"></div>
+                    <div class="skeleton h-4 w-1/2 rounded mb-6 animate-pulse"></div>
+                    <div class="skeleton h-4 w-full rounded mb-3 animate-pulse"></div>
+                    <div class="skeleton h-4 w-5/6 rounded mb-8 animate-pulse"></div>
+                    <div class="flex justify-between items-center mt-auto flex-row">
+                        <div class="skeleton h-10 w-24 rounded animate-pulse"></div>
+                        <div class="skeleton h-10 w-24 rounded animate-pulse"></div>
+                    </div>
+                </div>
+            `;
+        }
 
-        const keyword = searchInput ? searchInput.value.toLowerCase() : '';
-        const category = categorySelect ? categorySelect.value : 'all';
-        const location = locationSelect ? locationSelect.value : 'all';
-        const maxPrice = priceSlider ? parseInt(priceSlider.value) : 150000;
-        const sortBy = sortSelect ? sortSelect.value : 'default';
+        setTimeout(async () => {
+            const rooms = await KaghanDB.getRooms();
+            const searchInput = document.getElementById('filter-search');
+            const categorySelect = document.getElementById('filter-category');
+            const locationSelect = document.getElementById('filter-location');
+            const priceSlider = document.getElementById('filter-price');
+            const sortSelect = document.getElementById('sort-by');
 
-        // Sync custom category buttons state
-        const customCategoryContainer = document.getElementById('custom-category-filters');
-        if (customCategoryContainer && categorySelect) {
-            const btns = customCategoryContainer.querySelectorAll('.category-filter-btn');
-            btns.forEach(btn => {
-                if (btn.getAttribute('data-value') === categorySelect.value) {
-                    btn.classList.add('active-category', 'opacity-100');
-                    btn.classList.remove('opacity-60');
-                } else {
-                    btn.classList.remove('active-category', 'opacity-100');
-                    btn.classList.add('opacity-60');
-                }
+            const keyword = searchInput ? searchInput.value.toLowerCase() : '';
+            const category = categorySelect ? categorySelect.value : 'all';
+            const location = locationSelect ? locationSelect.value : 'all';
+            const maxPrice = priceSlider ? parseInt(priceSlider.value) : 150000;
+            const sortBy = sortSelect ? sortSelect.value : 'default';
+
+            // Sync custom category buttons state
+            const customCategoryContainer = document.getElementById('custom-category-filters');
+            if (customCategoryContainer && categorySelect) {
+                const btns = customCategoryContainer.querySelectorAll('.category-filter-btn');
+                btns.forEach(btn => {
+                    if (btn.getAttribute('data-value') === categorySelect.value) {
+                        btn.classList.add('active-category', 'opacity-100');
+                        btn.classList.remove('opacity-60');
+                    } else {
+                        btn.classList.remove('active-category', 'opacity-100');
+                        btn.classList.add('opacity-60');
+                    }
+                });
+            }
+
+            // Get selected amenities
+            const checkedAmenities = document.querySelectorAll('input[name="filter-amenity"]:checked');
+            const selectedAmenities = Array.from(checkedAmenities).map(cb => cb.value.toLowerCase());
+
+            let filtered = rooms.filter(room => {
+                const matchesKeyword = !keyword || 
+                                       room.name.toLowerCase().includes(keyword) || 
+                                       room.description.toLowerCase().includes(keyword) ||
+                                       room.amenities.some(a => a.toLowerCase().includes(keyword));
+                const matchesCategory = category === 'all' || room.type === category;
+                const matchesLocation = location === 'all' || room.location === location;
+                const matchesPrice = room.price <= maxPrice;
+                
+                // Room must contain all selected amenities
+                const matchesAmenities = selectedAmenities.every(selectedA => 
+                    room.amenities.some(roomA => roomA.toLowerCase().includes(selectedA))
+                );
+
+                return matchesKeyword && matchesCategory && matchesLocation && matchesPrice && matchesAmenities;
             });
-        }
 
-        // Get selected amenities
-        const checkedAmenities = document.querySelectorAll('input[name="filter-amenity"]:checked');
-        const selectedAmenities = Array.from(checkedAmenities).map(cb => cb.value.toLowerCase());
+            // Sorting
+            if (sortBy === 'price-low') {
+                filtered.sort((a, b) => a.price - b.price);
+            } else if (sortBy === 'price-high') {
+                filtered.sort((a, b) => b.price - a.price);
+            } else if (sortBy === 'rating') {
+                filtered.sort((a, b) => b.rating - a.rating);
+            }
 
-        let filtered = rooms.filter(room => {
-            const matchesKeyword = !keyword || 
-                                   room.name.toLowerCase().includes(keyword) || 
-                                   room.description.toLowerCase().includes(keyword) ||
-                                   room.amenities.some(a => a.toLowerCase().includes(keyword));
-            const matchesCategory = category === 'all' || room.type === category;
-            const matchesLocation = location === 'all' || room.location === location;
-            const matchesPrice = room.price <= maxPrice;
-            
-            // Room must contain all selected amenities
-            const matchesAmenities = selectedAmenities.every(selectedA => 
-                room.amenities.some(roomA => roomA.toLowerCase().includes(selectedA))
-            );
-
-            return matchesKeyword && matchesCategory && matchesLocation && matchesPrice && matchesAmenities;
-        });
-
-        // Sorting
-        if (sortBy === 'price-low') {
-            filtered.sort((a, b) => a.price - b.price);
-        } else if (sortBy === 'price-high') {
-            filtered.sort((a, b) => b.price - a.price);
-        } else if (sortBy === 'rating') {
-            filtered.sort((a, b) => b.rating - a.rating);
-        }
-
-        // Reset to page 1 on filter change
-        currentPage = 1;
-        renderRooms(filtered);
+            // Reset to page 1 on filter change
+            currentPage = 1;
+            renderRooms(filtered);
+        }, 300);
     }
 
     async function getCategoryLabel(categoryId) {

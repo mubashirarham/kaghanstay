@@ -229,24 +229,32 @@
                     </div>
                     <div>
                         <label class="block text-xs uppercase tracking-widest text-[#C5A059] font-bold mb-2.5 ml-1">Location</label>
-                        <div class="relative">
-                            <i class="fa-solid fa-location-dot absolute left-4 top-4 text-white/50"></i>
-                            <select id="search-location" class="w-full bg-white/5 border border-white/15 hover:bg-white/10 focus:bg-white/20 focus:border-[#C5A059] rounded-2xl pl-11 pr-11 py-3.5 outline-none transition-all text-white text-sm appearance-none cursor-pointer">
-                                <option value="all" class="bg-[#0B0F19] text-white">All Locations</option>
+                        <div class="relative custom-dropdown" id="dropdown-location">
+                            <button type="button" class="w-full bg-white/5 border border-white/15 hover:bg-white/10 hover:border-[#C5A059] focus:bg-white/20 focus:border-[#C5A059] rounded-2xl pl-11 pr-10 py-3.5 outline-none transition-all text-white text-sm text-left flex items-center justify-between cursor-pointer relative overflow-hidden">
+                                <i class="fa-solid fa-location-dot absolute left-4 text-white/50"></i>
+                                <span class="dropdown-selected truncate">All Locations</span>
+                                <i class="fa-solid fa-chevron-down text-white/50 text-xs"></i>
+                            </button>
+                            <div class="dropdown-menu absolute left-0 right-0 mt-2 bg-[#0B0F19]/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl hidden z-30 max-h-60 overflow-y-auto py-2 transition-all duration-300 transform scale-95 opacity-0 origin-top">
+                                <div class="dropdown-item px-5 py-3 hover:bg-white/10 text-white text-sm cursor-pointer transition-colors" data-value="all">All Locations</div>
                                 <!-- Dynamically loaded -->
-                            </select>
-                            <i class="fa-solid fa-chevron-down absolute right-4 top-4.5 text-white/50 pointer-events-none text-xs"></i>
+                            </div>
+                            <input type="hidden" id="search-location" value="all">
                         </div>
                     </div>
                     <div>
                         <label class="block text-xs uppercase tracking-widest text-[#C5A059] font-bold mb-2.5 ml-1">Room Style</label>
-                        <div class="relative">
-                            <i class="fa-solid fa-bed absolute left-4 top-4 text-white/50"></i>
-                            <select id="search-room-type" class="w-full bg-white/5 border border-white/15 hover:bg-white/10 focus:bg-white/20 focus:border-[#C5A059] rounded-2xl pl-11 pr-11 py-3.5 outline-none transition-all text-white text-sm appearance-none cursor-pointer">
-                                <option value="all" class="bg-[#0B0F19] text-white">All Categories</option>
+                        <div class="relative custom-dropdown" id="dropdown-room-type">
+                            <button type="button" class="w-full bg-white/5 border border-white/15 hover:bg-white/10 hover:border-[#C5A059] focus:bg-white/20 focus:border-[#C5A059] rounded-2xl pl-11 pr-10 py-3.5 outline-none transition-all text-white text-sm text-left flex items-center justify-between cursor-pointer relative overflow-hidden">
+                                <i class="fa-solid fa-bed absolute left-4 text-white/50"></i>
+                                <span class="dropdown-selected truncate">All Categories</span>
+                                <i class="fa-solid fa-chevron-down text-white/50 text-xs"></i>
+                            </button>
+                            <div class="dropdown-menu absolute left-0 right-0 mt-2 bg-[#0B0F19]/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl hidden z-30 max-h-60 overflow-y-auto py-2 transition-all duration-300 transform scale-95 opacity-0 origin-top">
+                                <div class="dropdown-item px-5 py-3 hover:bg-white/10 text-white text-sm cursor-pointer transition-colors" data-value="all">All Categories</div>
                                 <!-- Dynamically loaded -->
-                            </select>
-                            <i class="fa-solid fa-chevron-down absolute right-4 top-4.5 text-white/50 pointer-events-none text-xs"></i>
+                            </div>
+                            <input type="hidden" id="search-room-type" value="all">
                         </div>
                     </div>
                     <div class="sm:col-span-2 md:col-span-1">
@@ -275,7 +283,7 @@
             </div>
 
             <!-- Category Filter Bar (Airbnb Style) -->
-            <div data-animate="fade-up" class="relative max-w-7xl mx-auto -mt-20 z-20 bg-white rounded-[2.5rem] shadow-2xl p-6 md:p-8 mb-20 border border-slate-100">
+            <div data-animate="fade-up" class="relative max-w-7xl mx-auto mt-10 z-20 bg-white rounded-[2.5rem] shadow-2xl p-6 md:p-8 mb-20 border border-slate-100">
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="text-xs uppercase tracking-widest text-slate-400 font-bold">Sort by Signature Style</h3>
                     <div class="flex gap-2">
@@ -285,13 +293,52 @@
                 </div>
 
                 <div id="index-categories-container" class="flex overflow-x-auto gap-8 pb-4 hide-scrollbar snap-x px-4 md:px-0">
-                    <!-- Dynamically loaded categories -->
+                    <!-- Category skeletons -->
+                    <div class="flex gap-8">
+                        <div class="w-16 h-10 skeleton rounded-full animate-pulse"></div>
+                        <div class="w-16 h-10 skeleton rounded-full animate-pulse"></div>
+                        <div class="w-16 h-10 skeleton rounded-full animate-pulse"></div>
+                        <div class="w-16 h-10 skeleton rounded-full animate-pulse"></div>
+                    </div>
                 </div>
             </div>
 
             <!-- Dynamic Room Container -->
             <div id="featured-rooms" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                <!-- Seeded via Javascript dynamically -->
+                <!-- Room skeletons -->
+                <div class="bg-white rounded-[2.5rem] border border-slate-100 p-8 shadow-sm flex flex-col justify-between h-[450px]">
+                    <div class="skeleton h-48 w-full rounded-2xl mb-6"></div>
+                    <div class="skeleton h-6 w-3/4 rounded mb-3"></div>
+                    <div class="skeleton h-4 w-1/2 rounded mb-6"></div>
+                    <div class="skeleton h-4 w-full rounded mb-3"></div>
+                    <div class="skeleton h-4 w-5/6 rounded mb-8"></div>
+                    <div class="flex justify-between items-center mt-auto">
+                        <div class="skeleton h-10 w-24 rounded"></div>
+                        <div class="skeleton h-10 w-24 rounded"></div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-[2.5rem] border border-slate-100 p-8 shadow-sm flex flex-col justify-between h-[450px]">
+                    <div class="skeleton h-48 w-full rounded-2xl mb-6"></div>
+                    <div class="skeleton h-6 w-3/4 rounded mb-3"></div>
+                    <div class="skeleton h-4 w-1/2 rounded mb-6"></div>
+                    <div class="skeleton h-4 w-full rounded mb-3"></div>
+                    <div class="skeleton h-4 w-5/6 rounded mb-8"></div>
+                    <div class="flex justify-between items-center mt-auto">
+                        <div class="skeleton h-10 w-24 rounded"></div>
+                        <div class="skeleton h-10 w-24 rounded"></div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-[2.5rem] border border-slate-100 p-8 shadow-sm flex flex-col justify-between h-[450px]">
+                    <div class="skeleton h-48 w-full rounded-2xl mb-6"></div>
+                    <div class="skeleton h-6 w-3/4 rounded mb-3"></div>
+                    <div class="skeleton h-4 w-1/2 rounded mb-6"></div>
+                    <div class="skeleton h-4 w-full rounded mb-3"></div>
+                    <div class="skeleton h-4 w-5/6 rounded mb-8"></div>
+                    <div class="flex justify-between items-center mt-auto">
+                        <div class="skeleton h-10 w-24 rounded"></div>
+                        <div class="skeleton h-10 w-24 rounded"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -812,16 +859,198 @@
             });
         }
 
-        // Handle Search Form Submission
-        document.getElementById('hero-search-form').addEventListener('submit', (e) => {
+        // Custom Dropdown JS Helper Setup
+        function setupCustomDropdown(id) {
+            const dropdown = document.getElementById(id);
+            if (!dropdown) return;
+
+            const button = dropdown.querySelector('button');
+            const menu = dropdown.querySelector('.dropdown-menu');
+
+            button.onclick = (e) => {
+                e.stopPropagation();
+                
+                // Close other custom dropdowns
+                document.querySelectorAll('.dropdown-menu').forEach(m => {
+                    if (m !== menu) {
+                        m.classList.add('hidden', 'scale-95', 'opacity-0');
+                    }
+                });
+
+                const isHidden = menu.classList.contains('hidden');
+                if (isHidden) {
+                    menu.classList.remove('hidden');
+                    setTimeout(() => {
+                        menu.classList.remove('scale-95', 'opacity-0');
+                    }, 10);
+                } else {
+                    menu.classList.add('scale-95', 'opacity-0');
+                    setTimeout(() => { menu.classList.add('hidden'); }, 150);
+                }
+            };
+        }
+
+        // Handle custom option click dynamically
+        document.addEventListener('click', (e) => {
+            const item = e.target.closest('.dropdown-item');
+            if (item) {
+                const dropdown = item.closest('.custom-dropdown');
+                if (dropdown) {
+                    const hiddenInput = dropdown.querySelector('input[type="hidden"]');
+                    const selectedText = dropdown.querySelector('.dropdown-selected');
+                    const menu = dropdown.querySelector('.dropdown-menu');
+                    
+                    hiddenInput.value = item.getAttribute('data-value');
+                    selectedText.innerText = item.innerText;
+                    
+                    menu.classList.add('scale-95', 'opacity-0');
+                    setTimeout(() => { menu.classList.add('hidden'); }, 150);
+                }
+            } else {
+                document.querySelectorAll('.dropdown-menu').forEach(m => {
+                    m.classList.add('scale-95', 'opacity-0');
+                    setTimeout(() => { m.classList.add('hidden'); }, 150);
+                });
+            }
+        });
+
+        // Handle Search Form Submission (Filtering locally on the home page)
+        document.getElementById('hero-search-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const checkIn = document.getElementById('search-check-in').value;
             const checkOut = document.getElementById('search-check-out').value;
             const roomType = document.getElementById('search-room-type').value;
             const location = document.getElementById('search-location').value;
             
-            // Redirect to reservation page with parameters
-            window.location.href = `booking.html?checkIn=${checkIn}&checkOut=${checkOut}&category=${roomType}&location=${location}`;
+            const container = document.getElementById('featured-rooms');
+            if (container) {
+                container.innerHTML = `
+                    <div class="bg-white rounded-[2.5rem] border border-slate-100 p-8 shadow-sm flex flex-col justify-between h-[450px]">
+                        <div class="skeleton h-48 w-full rounded-2xl mb-6 animate-pulse"></div>
+                        <div class="skeleton h-6 w-3/4 rounded mb-3 animate-pulse"></div>
+                        <div class="skeleton h-4 w-1/2 rounded mb-6 animate-pulse"></div>
+                        <div class="skeleton h-4 w-full rounded mb-3 animate-pulse"></div>
+                        <div class="skeleton h-4 w-5/6 rounded mb-8 animate-pulse"></div>
+                        <div class="flex justify-between items-center mt-auto">
+                            <div class="skeleton h-10 w-24 rounded animate-pulse"></div>
+                            <div class="skeleton h-10 w-24 rounded animate-pulse"></div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-[2.5rem] border border-slate-100 p-8 shadow-sm flex flex-col justify-between h-[450px]">
+                        <div class="skeleton h-48 w-full rounded-2xl mb-6 animate-pulse"></div>
+                        <div class="skeleton h-6 w-3/4 rounded mb-3 animate-pulse"></div>
+                        <div class="skeleton h-4 w-1/2 rounded mb-6 animate-pulse"></div>
+                        <div class="skeleton h-4 w-full rounded mb-3 animate-pulse"></div>
+                        <div class="skeleton h-4 w-5/6 rounded mb-8 animate-pulse"></div>
+                        <div class="flex justify-between items-center mt-auto">
+                            <div class="skeleton h-10 w-24 rounded animate-pulse"></div>
+                            <div class="skeleton h-10 w-24 rounded animate-pulse"></div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Scroll down to featured section smoothly
+            const featuredSection = document.querySelector('.bg-slate-50');
+            if (featuredSection) {
+                featuredSection.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            // Wait a brief period to show skeleton loading state
+            setTimeout(async () => {
+                try {
+                    const rooms = await KaghanDB.getRooms();
+                    const filtered = [];
+                    
+                    for (const room of rooms) {
+                        if (room.status !== 'available') continue;
+                        if (roomType !== 'all' && room.type !== roomType) continue;
+                        if (location !== 'all') {
+                            const rLoc = (room.location || '').toLowerCase().replace(/\s+/g, '');
+                            if (rLoc !== location) continue;
+                        }
+                        if (checkIn && checkOut) {
+                            const available = await KaghanDB.isRoomAvailable(room.id, checkIn, checkOut);
+                            if (!available) continue;
+                        }
+                        filtered.push(room);
+                    }
+
+                    if (filtered.length === 0) {
+                        container.innerHTML = `
+                            <div class="col-span-full bg-white border border-slate-100 rounded-[2.5rem] p-16 text-center shadow-md">
+                                <i class="fa-solid fa-hotel text-slate-200 text-5xl mb-4 block"></i>
+                                <h3 class="text-xl font-bold outfit text-slate-800 mb-2">No Suites Available</h3>
+                                <p class="text-slate-400 text-xs font-light max-w-md mx-auto">No accommodations match your selection for the requested dates. Try choosing alternative dates or suite configurations.</p>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    container.innerHTML = filtered.map((room, idx) => `
+                        <div data-animate="fade-up" style="transition-delay: ${idx * 80}ms;" onclick="KaghanUI.openRoomDetailModal('${room.id}')" class="bg-white/80 backdrop-blur-md rounded-[2.5rem] overflow-hidden border border-[#C5A059]/10 shadow-[0_12px_40px_-15px_rgba(11,15,25,0.05)] hover:border-[#C5A059]/30 transition-all duration-500 group cursor-pointer flex flex-col justify-between h-full hover-lift">
+                            <div class="relative h-64 overflow-hidden shrink-0">
+                                <img src="${room.image}" alt="${room.name}" class="w-full h-full object-cover group-hover:scale-105 group-hover:brightness-95 transition-all duration-700">
+                                <div class="absolute top-4 right-4 backdrop-blur-md bg-[#0B0F19]/65 px-3.5 py-1.5 rounded-full text-[9px] font-bold text-[#C5A059] border border-white/10 uppercase tracking-widest flex items-center gap-1.5 shadow-lg">
+                                    ${
+                                        room.type === 'studio' ? '<i class="fa-solid fa-cube"></i> Studio Furnished' :
+                                        room.type === '1bed' ? '<i class="fa-solid fa-bed"></i> 1 Bed Furnished' :
+                                        room.type === '2bed' ? '<i class="fa-solid fa-door-open"></i> 2 Bed Furnished' :
+                                        room.type === '3bed' ? '<i class="fa-solid fa-house-chimney"></i> 3 Bed Furnished' :
+                                        room.type === '4bed' ? '<i class="fa-solid fa-building"></i> 4 Bed Furnished' :
+                                        room.type === 'farmhouse' ? '<i class="fa-solid fa-tree"></i> Furnished Farmhouse' :
+                                        room.type
+                                    }
+                                </div>
+                            </div>
+                            <div class="p-8 flex-grow flex flex-col justify-between">
+                                <div>
+                                    <div class="flex justify-between items-start mb-1.5">
+                                        <h3 class="text-xl font-medium outfit text-[#0B0F19] tracking-tight group-hover:text-[#C5A059] transition-colors duration-300">${room.name}</h3>
+                                        <div class="flex items-center gap-1 text-[#C5A059] font-bold text-xs">
+                                            <i class="fa-solid fa-star"></i>
+                                            <span>${room.rating}</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-[9px] text-slate-400 font-bold mb-4 flex items-center gap-1.5 uppercase tracking-widest">
+                                        <i class="fa-solid fa-location-dot text-[#C5A059] text-[9px]"></i>
+                                        <span>${room.location || 'Islamabad'}</span>
+                                    </div>
+                                    <p class="text-slate-500 text-xs line-clamp-3 mb-6 leading-relaxed font-light">
+                                        ${room.description}
+                                    </p>
+                                    <div class="flex flex-wrap gap-2 mb-6">
+                                        ${room.amenities.slice(0, 3).map(a => `
+                                            <span class="bg-slate-50/50 text-slate-605 text-[9px] uppercase font-bold tracking-wider px-3.5 py-1 rounded-full border border-slate-100/50">
+                                                ${a}
+                                            </span>
+                                        `).join('')}
+                                        ${room.amenities.length > 3 ? `<span class="bg-slate-50/50 text-[#C5A059] text-[9px] uppercase font-bold px-2.5 py-1 rounded-full border border-slate-100/50">+${room.amenities.length - 3}</span>` : ''}
+                                    </div>
+                                </div>
+                                <div class="border-t border-slate-100/70 pt-6 flex justify-between items-center mt-auto">
+                                    <div>
+                                        <span class="text-slate-400 text-[9px] uppercase tracking-widest block font-bold">${room.isApartment ? 'Rates starting from' : 'Rate Per Night'}</span>
+                                        <div class="flex items-center gap-1.5 mt-1">
+                                            ${room.originalPrice ? `<span class="line-through text-slate-400 font-semibold text-[10px]">${KaghanUI.formatPKR(room.originalPrice)}</span>` : ''}
+                                            <span class="text-xl font-bold text-[#C5A059] outfit tracking-tight">${KaghanUI.formatPKR(room.price)}</span>
+                                        </div>
+                                    </div>
+                                    <button onclick="event.stopPropagation(); window.location.href='booking.html?room=${room.id}&checkIn=${checkIn}&checkOut=${checkOut}'" class="bg-[#0B0F19] text-white text-[10px] uppercase tracking-wider font-bold px-5 py-3 rounded-xl hover:bg-[#C5A059] transition-all shadow-sm">
+                                        Reserve Suite
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+
+                    if (window.setupScrollAnimations) window.setupScrollAnimations();
+
+                } catch (err) {
+                    console.error("Filter search execution failed:", err);
+                    KaghanUI.showToast("Search failed to execute.", "error");
+                }
+            }, 600);
         });
 
         // Render Dynamic Categories and Locations
@@ -830,22 +1059,21 @@
             const locations = await KaghanDB.getLocations();
 
             // Populate Locations
-            const searchLocation = document.getElementById('search-location');
-            if (searchLocation) {
-                let currentVal = searchLocation.value;
-                searchLocation.innerHTML = `<option value="all">All Locations</option>` +
-                    locations.map(l => `<option value="${l.id}">${l.label}</option>`).join('');
-                if(locations.find(l => l.id === currentVal)) searchLocation.value = currentVal;
+            const dropdownLocMenu = document.querySelector('#dropdown-location .dropdown-menu');
+            if (dropdownLocMenu) {
+                dropdownLocMenu.innerHTML = `<div class="dropdown-item px-5 py-3 hover:bg-white/10 text-white text-sm cursor-pointer transition-colors" data-value="all">All Locations</div>` +
+                    locations.map(l => `<div class="dropdown-item px-5 py-3 hover:bg-white/10 text-white text-sm cursor-pointer transition-colors" data-value="${l.id}">${l.label}</div>`).join('');
             }
 
             // Populate Categories
-            const searchRoomType = document.getElementById('search-room-type');
-            if (searchRoomType) {
-                let currentVal = searchRoomType.value;
-                searchRoomType.innerHTML = `<option value="all">All Categories</option>` +
-                    categories.map(c => `<option value="${c.id}">${c.label}</option>`).join('');
-                if(categories.find(c => c.id === currentVal)) searchRoomType.value = currentVal;
+            const dropdownCatMenu = document.querySelector('#dropdown-room-type .dropdown-menu');
+            if (dropdownCatMenu) {
+                dropdownCatMenu.innerHTML = `<div class="dropdown-item px-5 py-3 hover:bg-white/10 text-white text-sm cursor-pointer transition-colors" data-value="all">All Categories</div>` +
+                    categories.map(c => `<div class="dropdown-item px-5 py-3 hover:bg-white/10 text-white text-sm cursor-pointer transition-colors" data-value="${c.id}">${c.label}</div>`).join('');
             }
+
+            setupCustomDropdown('dropdown-location');
+            setupCustomDropdown('dropdown-room-type');
 
             const container = document.getElementById('index-categories-container');
             if (!container) return;

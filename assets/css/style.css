@@ -407,3 +407,27 @@ body {
     animation: pulse-slow 8s ease-in-out infinite;
 }
 
+/* Luxury Custom Select Dropdowns */
+.custom-dropdown .dropdown-menu {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(212,175,55,0.3) transparent;
+}
+.custom-dropdown .dropdown-menu::-webkit-scrollbar {
+    width: 6px;
+}
+.custom-dropdown .dropdown-menu::-webkit-scrollbar-thumb {
+    background-color: rgba(212,175,55,0.3);
+    border-radius: 10px;
+}
+.custom-dropdown .dropdown-item:hover {
+    color: #D4AF37;
+}
+
+/* Translucent Dark Skeletons for dark cards/areas */
+.skeleton-dark { 
+    background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%); 
+    background-size: 200% 100%; 
+    animation: shimmer 1.5s infinite; 
+    border-radius: 1rem; 
+}
+

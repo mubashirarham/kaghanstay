@@ -80,6 +80,8 @@ This file serves as the persistence memory for AI agents working on the Kaghan S
   * **WhatsApp Floating Concierge Widget:** Injected a dynamic, floating WhatsApp chat-bubble launcher widget (`injectWhatsApp()`) on the bottom-right of the public pages, positioned vertically above the AI chatbot trigger. Added mutual auto-close rules so that opening one widget automatically collapses the other, maintaining a clean layout. Excluded the widget from the admin panel view.
   * **Reversion of Housekeeping Manager:** Completely removed all tab navigation buttons, managers, stats cards, and scripts for housekeeping in the admin dashboard.
   * **Advanced Metrics Charts:** Added two new ApexCharts widgets to the admin overview dashboard tab (`#room-revenue-chart` and `#occupancy-trend-chart`) demonstrating Suite Revenue Contribution (horizontal bars) and Occupancy Rate Timeline (weekly area curve) metrics dynamically derived from bookings and room inventory details.
+  * **Home Page Search & Layout Fixes:** Corrected overlap error on the Category Filter section by replacing the negative margin block wrapper, upgraded select menus to beautiful custom glassmorphic selector boxes, and rerouted the search widget submit action to perform live check-in/out and location filtering directly on the home page with a smooth-scroll window slide.
+  * **Skeleton Loader Integration:** Implemented premium skeleton loading states across the guest suites grid, categories list, blog articles list, and reservation upgrades container (`index.html`, `rooms.html`, `blog.html`, `booking.html`, and `assets/js/rooms.js`).
 
 ## Active / Next Tasks
 1. Test and verify email notifications and newsletters dispatch stability on production.
