@@ -241,6 +241,8 @@
         if (sortSelect) sortSelect.addEventListener('change', applyFilters);
     }
 
+    let filterDebounceTimer = null;
+
     // Reset filters action
     window.clearFilters = async () => {
         const searchInput = document.getElementById('filter-search');
@@ -252,112 +254,124 @@
         if (searchInput) searchInput.value = '';
         if (categorySelect) categorySelect.value = 'all';
         if (locationSelect) locationSelect.value = 'all';
-        if (priceSlider) priceSlider.value = 150000;
+        if (priceSlider) {
+            priceSlider.value = priceSlider.max || 500000;
+        }
         if (sortSelect) sortSelect.value = 'default';
 
         // Uncheck all amenity checkboxes
         const amenityCheckboxes = document.querySelectorAll('input[name="filter-amenity"]');
         amenityCheckboxes.forEach(cb => cb.checked = false);
 
-        if (priceSlider) {
-            document.getElementById('price-val').innerText = KaghanUI.formatPKR(priceSlider.value);
-        }
+        if (window.updatePriceLabel) window.updatePriceLabel();
         await applyFilters();
     };
 
-    // Filter calculations
-    async function applyFilters() {
-        const container = document.getElementById('rooms-grid');
-        if (container) {
-            container.innerHTML = `
-                <div class="bg-white rounded-[2.5rem] border border-slate-100 p-6 shadow-sm flex flex-col justify-between h-[450px]">
-                    <div class="skeleton h-48 w-full rounded-2xl mb-6 animate-pulse"></div>
-                    <div class="skeleton h-6 w-3/4 rounded mb-3 animate-pulse"></div>
-                    <div class="skeleton h-4 w-1/2 rounded mb-6 animate-pulse"></div>
-                    <div class="skeleton h-4 w-full rounded mb-3 animate-pulse"></div>
-                    <div class="skeleton h-4 w-5/6 rounded mb-8 animate-pulse"></div>
-                    <div class="flex justify-between items-center mt-auto flex-row">
-                        <div class="skeleton h-10 w-24 rounded animate-pulse"></div>
-                        <div class="skeleton h-10 w-24 rounded animate-pulse"></div>
-                    </div>
-                </div>
-                <div class="bg-white rounded-[2.5rem] border border-slate-100 p-6 shadow-sm flex flex-col justify-between h-[450px]">
-                    <div class="skeleton h-48 w-full rounded-2xl mb-6 animate-pulse"></div>
-                    <div class="skeleton h-6 w-3/4 rounded mb-3 animate-pulse"></div>
-                    <div class="skeleton h-4 w-1/2 rounded mb-6 animate-pulse"></div>
-                    <div class="skeleton h-4 w-full rounded mb-3 animate-pulse"></div>
-                    <div class="skeleton h-4 w-5/6 rounded mb-8 animate-pulse"></div>
-                    <div class="flex justify-between items-center mt-auto flex-row">
-                        <div class="skeleton h-10 w-24 rounded animate-pulse"></div>
-                        <div class="skeleton h-10 w-24 rounded animate-pulse"></div>
-                    </div>
-                </div>
-            `;
+    window.updatePriceLabel = () => {
+        const priceSlider = document.getElementById('filter-price');
+        const priceVal = document.getElementById('price-val');
+        if (!priceSlider || !priceVal) return;
+        const val = Number(priceSlider.value);
+        const maxVal = Number(priceSlider.max || 500000);
+        if (val >= maxVal) {
+            priceVal.innerText = "Any Price";
+        } else {
+            priceVal.innerText = KaghanUI.formatPKR(val);
         }
+    };
 
-        setTimeout(async () => {
-            const rooms = await KaghanDB.getRooms();
-            const searchInput = document.getElementById('filter-search');
-            const categorySelect = document.getElementById('filter-category');
-            const locationSelect = document.getElementById('filter-location');
-            const priceSlider = document.getElementById('filter-price');
-            const sortSelect = document.getElementById('sort-by');
+    // Filter calculations (Debounced & Smooth Rendering)
+    function applyFilters() {
+        if (filterDebounceTimer) clearTimeout(filterDebounceTimer);
+        
+        filterDebounceTimer = setTimeout(async () => {
+            try {
+                const rooms = await KaghanDB.getRooms();
+                const searchInput = document.getElementById('filter-search');
+                const categorySelect = document.getElementById('filter-category');
+                const locationSelect = document.getElementById('filter-location');
+                const priceSlider = document.getElementById('filter-price');
+                const sortSelect = document.getElementById('sort-by');
 
-            const keyword = searchInput ? searchInput.value.toLowerCase() : '';
-            const category = categorySelect ? categorySelect.value : 'all';
-            const location = locationSelect ? locationSelect.value : 'all';
-            const maxPrice = priceSlider ? parseInt(priceSlider.value) : 150000;
-            const sortBy = sortSelect ? sortSelect.value : 'default';
+                const keyword = searchInput ? searchInput.value.trim().toLowerCase() : '';
+                const category = categorySelect ? categorySelect.value : 'all';
+                const location = locationSelect ? locationSelect.value : 'all';
+                const sliderVal = priceSlider ? Number(priceSlider.value) : Infinity;
+                const sliderMax = priceSlider ? Number(priceSlider.max || 500000) : 500000;
+                const isMaxCeiling = sliderVal >= sliderMax;
+                const sortBy = sortSelect ? sortSelect.value : 'default';
 
-            // Sync custom category buttons state
-            const customCategoryContainer = document.getElementById('custom-category-filters');
-            if (customCategoryContainer && categorySelect) {
-                const btns = customCategoryContainer.querySelectorAll('.category-filter-btn');
-                btns.forEach(btn => {
-                    if (btn.getAttribute('data-value') === categorySelect.value) {
-                        btn.classList.add('active-category', 'opacity-100');
-                        btn.classList.remove('opacity-60');
-                    } else {
-                        btn.classList.remove('active-category', 'opacity-100');
-                        btn.classList.add('opacity-60');
-                    }
+                // Sync custom category buttons state
+                const customCategoryContainer = document.getElementById('custom-category-filters');
+                if (customCategoryContainer && categorySelect) {
+                    const btns = customCategoryContainer.querySelectorAll('.category-filter-btn');
+                    btns.forEach(btn => {
+                        if (btn.getAttribute('data-value') === categorySelect.value) {
+                            btn.classList.add('active-category', 'opacity-100');
+                            btn.classList.remove('opacity-60');
+                        } else {
+                            btn.classList.remove('active-category', 'opacity-100');
+                            btn.classList.add('opacity-60');
+                        }
+                    });
+                }
+
+                // Get selected amenities
+                const checkedAmenities = document.querySelectorAll('input[name="filter-amenity"]:checked');
+                const selectedAmenities = Array.from(checkedAmenities).map(cb => cb.value.toLowerCase());
+
+                let filtered = rooms.filter(room => {
+                    const rName = (room.name || '').toLowerCase();
+                    const rDesc = (room.description || '').toLowerCase();
+                    const rType = (room.type || '').toLowerCase();
+                    const rLoc = (room.location || '').toLowerCase();
+                    const rLocName = (room.locationName || '').toLowerCase();
+                    const rAmenities = Array.isArray(room.amenities) ? room.amenities : [];
+                    const rPrice = Number(room.priceDaily || room.price || 0);
+
+                    // Keyword matches title, description, category, location, or amenities
+                    const matchesKeyword = !keyword || 
+                                           rName.includes(keyword) || 
+                                           rDesc.includes(keyword) ||
+                                           rType.includes(keyword) ||
+                                           rLoc.includes(keyword) ||
+                                           rLocName.includes(keyword) ||
+                                           rAmenities.some(a => (a || '').toLowerCase().includes(keyword));
+
+                    const matchesCategory = category === 'all' || rType === category.toLowerCase();
+                    
+                    const matchesLocation = location === 'all' || 
+                                           rLoc === location.toLowerCase() || 
+                                           rLocName === location.toLowerCase() ||
+                                           rLoc.includes(location.toLowerCase());
+
+                    const matchesPrice = isMaxCeiling || rPrice <= sliderVal;
+
+                    // Room must contain all selected amenities
+                    const matchesAmenities = selectedAmenities.every(selectedA => 
+                        rAmenities.some(roomA => (roomA || '').toLowerCase().includes(selectedA))
+                    );
+
+                    return matchesKeyword && matchesCategory && matchesLocation && matchesPrice && matchesAmenities;
                 });
+
+                // Sorting
+                if (sortBy === 'price-low') {
+                    filtered.sort((a, b) => (Number(a.priceDaily || a.price || 0)) - (Number(b.priceDaily || b.price || 0)));
+                } else if (sortBy === 'price-high') {
+                    filtered.sort((a, b) => (Number(b.priceDaily || b.price || 0)) - (Number(a.priceDaily || a.price || 0)));
+                } else if (sortBy === 'rating') {
+                    filtered.sort((a, b) => (Number(b.rating || 0)) - (Number(a.rating || 0)));
+                }
+
+                // Reset to page 1 on filter change
+                currentPage = 1;
+                renderRooms(filtered);
+                updateMapMarkers(filtered);
+            } catch (err) {
+                console.error("applyFilters error:", err);
             }
-
-            // Get selected amenities
-            const checkedAmenities = document.querySelectorAll('input[name="filter-amenity"]:checked');
-            const selectedAmenities = Array.from(checkedAmenities).map(cb => cb.value.toLowerCase());
-
-            let filtered = rooms.filter(room => {
-                const matchesKeyword = !keyword || 
-                                       room.name.toLowerCase().includes(keyword) || 
-                                       room.description.toLowerCase().includes(keyword) ||
-                                       room.amenities.some(a => a.toLowerCase().includes(keyword));
-                const matchesCategory = category === 'all' || room.type === category;
-                const matchesLocation = location === 'all' || room.location === location;
-                const matchesPrice = room.price <= maxPrice;
-                
-                // Room must contain all selected amenities
-                const matchesAmenities = selectedAmenities.every(selectedA => 
-                    room.amenities.some(roomA => roomA.toLowerCase().includes(selectedA))
-                );
-
-                return matchesKeyword && matchesCategory && matchesLocation && matchesPrice && matchesAmenities;
-            });
-
-            // Sorting
-            if (sortBy === 'price-low') {
-                filtered.sort((a, b) => a.price - b.price);
-            } else if (sortBy === 'price-high') {
-                filtered.sort((a, b) => b.price - a.price);
-            } else if (sortBy === 'rating') {
-                filtered.sort((a, b) => b.rating - a.rating);
-            }
-
-            // Reset to page 1 on filter change
-            currentPage = 1;
-            renderRooms(filtered);
-        }, 300);
+        }, 150);
     }
 
     async function getCategoryLabel(categoryId) {
@@ -398,16 +412,15 @@
             container.innerHTML = paginatedRooms.map((room, idx) => {
                 let mainImg = room.image || (room.images && room.images.length ? room.images[0] : '');
                 return `
-                return `
                 <div data-animate="fade-up" style="transition-delay: ${idx * 80}ms;" onclick="KaghanUI.openRoomDetailModal('${room.id}')" class="bg-white/80 backdrop-blur-md rounded-[2.5rem] overflow-hidden border border-[#C5A059]/10 shadow-[0_12px_40px_-15px_rgba(11,15,25,0.05)] hover:border-[#C5A059]/30 transition-all duration-500 group cursor-pointer flex flex-col h-full hover-lift">
                     <div class="relative h-56 overflow-hidden bg-slate-100 shrink-0">
-                        <img src="${KaghanSafe.escapeHTML(mainImg)}" alt="${KaghanSafe.escapeHTML(room.name)}" class="w-full h-full object-cover group-hover:scale-105 group-hover:brightness-95 transition-all duration-700">
+                        <img src="${KaghanSafe.escapeHTML(mainImg)}" alt="${KaghanSafe.escapeHTML(room.name || 'Luxury Suite')}" class="w-full h-full object-cover group-hover:scale-105 group-hover:brightness-95 transition-all duration-700">
                         <div class="absolute top-4 left-4 bg-white/95 backdrop-blur-md px-3.5 py-1.5 rounded-xl shadow-sm border border-white/20 text-[10px] font-bold uppercase tracking-wider text-[#C5A059] flex items-center gap-1.5">
                             ${room.originalPrice ? `<span class="line-through text-slate-400 font-semibold text-[9px]">${KaghanUI.formatPKR(room.originalPrice)}</span>` : ''}
-                            <span>${KaghanUI.formatPKR(room.priceDaily || room.price)} <span class="text-slate-400 lowercase font-medium">/night</span></span>
+                            <span>${KaghanUI.formatPKR(room.priceDaily || room.price || 0)} <span class="text-slate-400 lowercase font-medium">/night</span></span>
                         </div>
-                        <div class="absolute top-4 right-4 backdrop-blur-md bg-[#0B0F19]/65 px-3 py-1.5 rounded-full text-[9px] font-bold text-[#C5A059] border border-white/10 uppercase tracking-widest room-cat-label" data-cat="${room.type}">
-                            ${KaghanSafe.escapeHTML(room.type)}
+                        <div class="absolute top-4 right-4 backdrop-blur-md bg-[#0B0F19]/65 px-3 py-1.5 rounded-full text-[9px] font-bold text-[#C5A059] border border-white/10 uppercase tracking-widest room-cat-label" data-cat="${room.type || ''}">
+                            ${KaghanSafe.escapeHTML(room.type || 'Suite')}
                         </div>
                     </div>
                     <div class="p-6 flex-1 flex flex-col justify-between">
@@ -437,11 +450,16 @@
                         </div>
                         <div class="border-t border-slate-100/70 pt-4 mt-auto flex justify-between items-center">
                             <div class="flex items-center gap-1.5 text-slate-500 text-xs font-semibold">
-                                <i class="fa-solid fa-user-group text-[#C5A059] text-xs"></i> Max ${room.maxGuests} Guests
+                                <i class="fa-solid fa-user-group text-[#C5A059] text-xs"></i> Max ${room.maxGuests} Guests • ${room.bedrooms || 1} Bed
                             </div>
-                            <button onclick="event.stopPropagation(); window.location.href='booking.html?room=${room.id}'" class="bg-[#0B0F19] text-white text-[10px] uppercase tracking-wider font-bold px-4 py-2.5 rounded-xl hover:bg-[#C5A059] transition-all shadow-sm">
-                                Book Now
-                            </button>
+                            <div class="flex items-center gap-2">
+                                <button onclick="event.stopPropagation(); window.location.href='room-details.html?id=${room.id}'" class="bg-[#0B0F19] text-white text-[10px] uppercase tracking-wider font-bold px-3.5 py-2.5 rounded-xl hover:bg-[#C5A059] transition-all shadow-sm">
+                                    View Details
+                                </button>
+                                <button onclick="event.stopPropagation(); window.location.href='booking.html?id=${room.id}'" class="bg-[#C5A059] text-white text-[10px] uppercase tracking-wider font-bold px-3.5 py-2.5 rounded-xl hover:bg-[#0B0F19] transition-all shadow-sm">
+                                    Book Now
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>

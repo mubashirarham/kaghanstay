@@ -58,7 +58,15 @@ function startActiveListeners() {
     // 1. Rooms Listener (Public)
     window.KaghanDB_Listeners.rooms = fdb.collection('rooms').onSnapshot(snap => {
         const list = [];
-        snap.forEach(doc => list.push(doc.data()));
+        const seenIds = new Set();
+        snap.forEach(doc => {
+            const data = doc.data();
+            const id = data.id || doc.id;
+            if (!seenIds.has(id)) {
+                seenIds.add(id);
+                list.push({ ...data, id });
+            }
+        });
         window.KaghanDB_Cache.rooms = list;
         window.dispatchEvent(new CustomEvent('kaghan-db-rooms', { detail: list }));
     }, err => console.warn("Rooms listener error:", err));
@@ -66,7 +74,15 @@ function startActiveListeners() {
     // 2. Blogs Listener (Public)
     window.KaghanDB_Listeners.blogs = fdb.collection('blogs').onSnapshot(snap => {
         const list = [];
-        snap.forEach(doc => list.push(doc.data()));
+        const seen = new Set();
+        snap.forEach(doc => {
+            const data = doc.data();
+            const id = data.id || doc.id;
+            if (!seen.has(id)) {
+                seen.add(id);
+                list.push({ ...data, id });
+            }
+        });
         const sorted = list.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         window.KaghanDB_Cache.blogs = sorted;
         window.dispatchEvent(new CustomEvent('kaghan-db-blogs', { detail: sorted }));
@@ -75,7 +91,15 @@ function startActiveListeners() {
     // 3. Reviews Listener (Public)
     window.KaghanDB_Listeners.reviews = fdb.collection('reviews').onSnapshot(snap => {
         const list = [];
-        snap.forEach(doc => list.push({ id: doc.id, ...doc.data() }));
+        const seen = new Set();
+        snap.forEach(doc => {
+            const data = doc.data();
+            const id = data.id || doc.id;
+            if (!seen.has(id)) {
+                seen.add(id);
+                list.push({ ...data, id });
+            }
+        });
         const sorted = list.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         window.KaghanDB_Cache.reviews = sorted;
         window.dispatchEvent(new CustomEvent('kaghan-db-reviews', { detail: sorted }));
@@ -84,21 +108,45 @@ function startActiveListeners() {
     // Settings Listeners (Public)
     window.KaghanDB_Listeners.categories = fdb.collection('categories').onSnapshot(snap => {
         const list = [];
-        snap.forEach(doc => list.push(doc.data()));
+        const seen = new Set();
+        snap.forEach(doc => {
+            const data = doc.data();
+            const id = data.id || doc.id;
+            if (!seen.has(id)) {
+                seen.add(id);
+                list.push({ ...data, id });
+            }
+        });
         window.KaghanDB_Cache.categories = list;
         window.dispatchEvent(new CustomEvent('kaghan-db-categories', { detail: list }));
     }, err => console.warn("Categories listener error:", err));
 
     window.KaghanDB_Listeners.locations = fdb.collection('locations').onSnapshot(snap => {
         const list = [];
-        snap.forEach(doc => list.push(doc.data()));
+        const seen = new Set();
+        snap.forEach(doc => {
+            const data = doc.data();
+            const id = data.id || doc.id;
+            if (!seen.has(id)) {
+                seen.add(id);
+                list.push({ ...data, id });
+            }
+        });
         window.KaghanDB_Cache.locations = list;
         window.dispatchEvent(new CustomEvent('kaghan-db-locations', { detail: list }));
     }, err => console.warn("Locations listener error:", err));
 
     window.KaghanDB_Listeners.upgrades = fdb.collection('upgrades').onSnapshot(snap => {
         const list = [];
-        snap.forEach(doc => list.push(doc.data()));
+        const seen = new Set();
+        snap.forEach(doc => {
+            const data = doc.data();
+            const id = data.id || doc.id;
+            if (!seen.has(id)) {
+                seen.add(id);
+                list.push({ ...data, id });
+            }
+        });
         window.KaghanDB_Cache.upgrades = list;
         window.dispatchEvent(new CustomEvent('kaghan-db-upgrades', { detail: list }));
     }, err => console.warn("Upgrades listener error:", err));
@@ -119,7 +167,15 @@ function startActiveListeners() {
             // Subscribe to all coupons (Admin)
             window.KaghanDB_Listeners.coupons = fdb.collection('coupons').onSnapshot(snap => {
                 const list = [];
-                snap.forEach(doc => list.push(doc.data()));
+                const seen = new Set();
+                snap.forEach(doc => {
+                    const data = doc.data();
+                    const id = data.id || doc.id;
+                    if (!seen.has(id)) {
+                        seen.add(id);
+                        list.push({ ...data, id });
+                    }
+                });
                 window.KaghanDB_Cache.coupons = list;
                 window.dispatchEvent(new CustomEvent('kaghan-db-coupons', { detail: list }));
             }, err => console.warn("Coupons listener error:", err));
@@ -127,7 +183,15 @@ function startActiveListeners() {
             // Subscribe to all bookings (Admin)
             window.KaghanDB_Listeners.bookings = fdb.collection('bookings').onSnapshot(snap => {
                 const list = [];
-                snap.forEach(doc => list.push(doc.data()));
+                const seen = new Set();
+                snap.forEach(doc => {
+                    const data = doc.data();
+                    const id = data.id || doc.id;
+                    if (!seen.has(id)) {
+                        seen.add(id);
+                        list.push({ ...data, id });
+                    }
+                });
                 const sorted = list.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
                 window.KaghanDB_Cache.bookings = sorted;
                 window.dispatchEvent(new CustomEvent('kaghan-db-bookings', { detail: sorted }));
@@ -136,7 +200,15 @@ function startActiveListeners() {
             // Subscribe to all users (Admin)
             window.KaghanDB_Listeners.users = fdb.collection('users').onSnapshot(snap => {
                 const list = [];
-                snap.forEach(doc => list.push(doc.data()));
+                const seen = new Set();
+                snap.forEach(doc => {
+                    const data = doc.data();
+                    const id = data.id || doc.id;
+                    if (!seen.has(id)) {
+                        seen.add(id);
+                        list.push({ ...data, id });
+                    }
+                });
                 window.KaghanDB_Cache.users = list;
                 window.dispatchEvent(new CustomEvent('kaghan-db-users', { detail: list }));
             }, err => console.warn("Users listener error:", err));
@@ -144,7 +216,15 @@ function startActiveListeners() {
             // Subscribe to all newsletter subscribers (Admin)
             window.KaghanDB_Listeners.newsletter = fdb.collection('newsletter').onSnapshot(snap => {
                 const list = [];
-                snap.forEach(doc => list.push(doc.data()));
+                const seen = new Set();
+                snap.forEach(doc => {
+                    const data = doc.data();
+                    const id = data.id || doc.id;
+                    if (!seen.has(id)) {
+                        seen.add(id);
+                        list.push({ ...data, id });
+                    }
+                });
                 const sorted = list.sort((a, b) => new Date(b.subscribedAt) - new Date(a.subscribedAt));
                 window.KaghanDB_Cache.newsletter = sorted;
                 window.dispatchEvent(new CustomEvent('kaghan-db-newsletter', { detail: sorted }));
@@ -153,7 +233,15 @@ function startActiveListeners() {
             // Subscribe to user-specific bookings (Guest)
             window.KaghanDB_Listeners.bookings = fdb.collection('bookings').where('userId', '==', user.id).onSnapshot(snap => {
                 const list = [];
-                snap.forEach(doc => list.push(doc.data()));
+                const seen = new Set();
+                snap.forEach(doc => {
+                    const data = doc.data();
+                    const id = data.id || doc.id;
+                    if (!seen.has(id)) {
+                        seen.add(id);
+                        list.push({ ...data, id });
+                    }
+                });
                 const sorted = list.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
                 window.KaghanDB_Cache.bookings = sorted;
                 window.dispatchEvent(new CustomEvent('kaghan-db-bookings', { detail: sorted }));
@@ -356,20 +444,40 @@ const db = {
         return list;
     },
     saveUpgrade: async (upgrade) => {
-        return await callAdminAction('saveUpgrade', { upgrade });
+        await fdb.collection('upgrades').doc(upgrade.id).set(upgrade);
+        return true;
     },
     deleteUpgrade: async (id) => {
-        return await callAdminAction('deleteUpgrade', { id });
+        await fdb.collection('upgrades').doc(id).delete();
+        return true;
     },
 
     // Rooms CRUD
     getRooms: async () => {
         if (window.KaghanDB_Cache.rooms) {
-            return window.KaghanDB_Cache.rooms;
+            const seen = new Set();
+            const deduped = [];
+            window.KaghanDB_Cache.rooms.forEach(r => {
+                const id = r.id || r._id;
+                if (id && !seen.has(id)) {
+                    seen.add(id);
+                    deduped.push(r);
+                }
+            });
+            window.KaghanDB_Cache.rooms = deduped;
+            return deduped;
         }
         const snap = await fdb.collection('rooms').get();
         const list = [];
-        snap.forEach(doc => list.push(doc.data()));
+        const seen = new Set();
+        snap.forEach(doc => {
+            const data = doc.data();
+            const id = data.id || doc.id;
+            if (!seen.has(id)) {
+                seen.add(id);
+                list.push({ ...data, id });
+            }
+        });
         window.KaghanDB_Cache.rooms = list;
         return list;
     },
@@ -382,10 +490,24 @@ const db = {
         return doc.exists ? doc.data() : null;
     },
     updateRoom: async (id, updatedData) => {
-        return await callAdminAction('updateRoom', { id, updatedData });
+        await fdb.collection('rooms').doc(id).update(updatedData);
+        if (window.KaghanDB_Cache.rooms) {
+            const idx = window.KaghanDB_Cache.rooms.findIndex(r => r.id === id);
+            if (idx !== -1) {
+                window.KaghanDB_Cache.rooms[idx] = { ...window.KaghanDB_Cache.rooms[idx], ...updatedData };
+            }
+        }
+        window.dispatchEvent(new CustomEvent('kaghan-db-rooms', { detail: window.KaghanDB_Cache.rooms }));
+        return true;
     },
     addRoom: async (room) => {
-        return await callAdminAction('addRoom', { room });
+        await fdb.collection('rooms').doc(room.id).set(room);
+        if (window.KaghanDB_Cache.rooms) {
+            const filtered = window.KaghanDB_Cache.rooms.filter(r => r.id !== room.id);
+            window.KaghanDB_Cache.rooms = [room, ...filtered];
+        }
+        window.dispatchEvent(new CustomEvent('kaghan-db-rooms', { detail: window.KaghanDB_Cache.rooms }));
+        return true;
     },
 
     // Bookings CRUD
@@ -400,80 +522,117 @@ const db = {
         window.KaghanDB_Cache.bookings = sorted;
         return sorted;
     },
+    getBookingById: async (id) => {
+        if (window.KaghanDB_Cache.bookings) {
+            const match = window.KaghanDB_Cache.bookings.find(b => b.id === id);
+            if (match) return match;
+        }
+        const doc = await fdb.collection('bookings').doc(id).get();
+        return doc.exists ? doc.data() : null;
+    },
     addBooking: async (booking, pdfBase64 = null) => {
-        let idToken = null;
-        if (typeof firebase !== 'undefined' && firebase.auth && firebase.auth().currentUser) {
-            idToken = await firebase.auth().currentUser.getIdToken();
+        const bookingId = booking.id || ('BK-' + Math.floor(1000 + Math.random() * 9000));
+        booking.id = bookingId;
+        booking.createdAt = booking.createdAt || new Date().toISOString();
+        booking.updatedAt = new Date().toISOString();
+        booking.status = booking.status || 'confirmed';
+
+        await fdb.collection('bookings').doc(bookingId).set(booking);
+
+        if (window.KaghanDB_Cache.bookings) {
+            window.KaghanDB_Cache.bookings.unshift(booking);
         }
+        window.dispatchEvent(new CustomEvent('kaghan-db-bookings', { detail: window.KaghanDB_Cache.bookings }));
 
-        const res = await window.safeFetch('/.netlify/functions/create-booking', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                roomId: booking.roomId,
-                checkIn: booking.checkIn,
-                checkOut: booking.checkOut,
-                guestName: booking.guestName,
-                guestEmail: booking.guestEmail,
-                guestPhone: booking.guestPhone,
-                couponCode: booking.couponUsed,
-                billingCycle: booking.billingCycle,
-                pdfBase64: pdfBase64,
-                idToken: idToken,
-                upgrades: (booking.upgrades || []).map(u => typeof u === 'string' ? u : u.id),
-                force: booking.force || false
-            })
-        });
-
-        if (!res.ok) {
-            const data = await res.json();
-            throw new Error(data.error || 'Failed to confirm reservation.');
-        }
-
-        const data = await res.json();
-        booking.id = data.booking.id;
-        booking.totalPrice = data.booking.totalPrice;
         return true;
     },
     updateBookingStatus: async (id, status) => {
-        await fdb.collection('bookings').doc(id).update({ status });
+        await fdb.collection('bookings').doc(id).update({ 
+            status,
+            updatedAt: new Date().toISOString()
+        });
+        if (window.KaghanDB_Cache.bookings) {
+            const b = window.KaghanDB_Cache.bookings.find(item => item.id === id);
+            if (b) b.status = status;
+        }
+        window.dispatchEvent(new CustomEvent('kaghan-db-bookings', { detail: window.KaghanDB_Cache.bookings }));
         return true;
     },
     updateBookingDates: async (id, checkIn, checkOut) => {
-        let idToken = null;
-        if (typeof firebase !== 'undefined' && firebase.auth && firebase.auth().currentUser) {
-            idToken = await firebase.auth().currentUser.getIdToken();
-        }
-
-        const res = await window.safeFetch('/.netlify/functions/reschedule-booking', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ bookingId: id, checkIn, checkOut, idToken })
+        await fdb.collection('bookings').doc(id).update({
+            checkIn,
+            checkOut,
+            updatedAt: new Date().toISOString()
         });
-
-        if (!res.ok) {
-            const data = await res.json();
-            throw new Error(data.error || 'Failed to reschedule reservation.');
+        if (window.KaghanDB_Cache.bookings) {
+            const b = window.KaghanDB_Cache.bookings.find(item => item.id === id);
+            if (b) {
+                b.checkIn = checkIn;
+                b.checkOut = checkOut;
+            }
         }
+        window.dispatchEvent(new CustomEvent('kaghan-db-bookings', { detail: window.KaghanDB_Cache.bookings }));
         return true;
     },
     deleteBooking: async (id) => {
-        return await callAdminAction('deleteBooking', { id });
+        await fdb.collection('bookings').doc(id).delete();
+        if (window.KaghanDB_Cache.bookings) {
+            window.KaghanDB_Cache.bookings = window.KaghanDB_Cache.bookings.filter(b => b.id !== id);
+        }
+        window.dispatchEvent(new CustomEvent('kaghan-db-bookings', { detail: window.KaghanDB_Cache.bookings }));
+        return true;
     },
     updateBookingDetails: async (id, updatedData) => {
-        return await callAdminAction('updateBookingDetails', { id, updatedData });
+        await fdb.collection('bookings').doc(id).update({
+            ...updatedData,
+            updatedAt: new Date().toISOString()
+        });
+        if (window.KaghanDB_Cache.bookings) {
+            const idx = window.KaghanDB_Cache.bookings.findIndex(b => b.id === id);
+            if (idx !== -1) {
+                window.KaghanDB_Cache.bookings[idx] = { ...window.KaghanDB_Cache.bookings[idx], ...updatedData };
+            }
+        }
+        window.dispatchEvent(new CustomEvent('kaghan-db-bookings', { detail: window.KaghanDB_Cache.bookings }));
+        return true;
     },
     deleteRoom: async (id) => {
-        return await callAdminAction('deleteRoom', { id });
+        await fdb.collection('rooms').doc(id).delete();
+        if (window.KaghanDB_Cache.rooms) {
+            window.KaghanDB_Cache.rooms = window.KaghanDB_Cache.rooms.filter(r => r.id !== id);
+        }
+        window.dispatchEvent(new CustomEvent('kaghan-db-rooms', { detail: window.KaghanDB_Cache.rooms }));
+        return true;
     },
     deleteUser: async (id) => {
-        return await callAdminAction('deleteUser', { id });
+        await fdb.collection('users').doc(id).delete();
+        if (window.KaghanDB_Cache.users) {
+            window.KaghanDB_Cache.users = window.KaghanDB_Cache.users.filter(u => u.id !== id && u.uid !== id);
+        }
+        return true;
     },
     createUser: async (user) => {
-        return await callAdminAction('createUser', user);
+        const userId = user.id || user.uid || ('usr-' + Date.now());
+        user.id = userId;
+        user.createdAt = user.createdAt || new Date().toISOString();
+        await fdb.collection('users').doc(userId).set(user);
+        if (window.KaghanDB_Cache.users) {
+            window.KaghanDB_Cache.users.unshift(user);
+        }
+        return true;
+    },
+    subscribeNewsletter: async (email) => {
+        const docId = email.trim().toLowerCase().replace(/[^a-z0-9]/g, '_');
+        await fdb.collection('subscribers').doc(docId).set({
+            email: email.trim().toLowerCase(),
+            subscribedAt: new Date().toISOString()
+        });
+        return true;
     },
     deleteNewsletterSubscriber: async (email) => {
-        return await callAdminAction('deleteNewsletterSubscriber', { email });
+        const docId = email.trim().toLowerCase().replace(/[^a-z0-9]/g, '_');
+        await fdb.collection('subscribers').doc(docId).delete();
+        return true;
     },
     getReviews: async () => {
         if (window.KaghanDB_Cache.reviews) {
@@ -496,23 +655,39 @@ const db = {
         return list.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     },
     addReview: async (review) => {
-        let idToken = null;
-        if (typeof firebase !== 'undefined' && firebase.auth && firebase.auth().currentUser) {
-            idToken = await firebase.auth().currentUser.getIdToken();
+        const reviewId = review.id || ('rev-' + Date.now());
+        review.id = reviewId;
+        review.createdAt = review.createdAt || new Date().toISOString();
+        await fdb.collection('reviews').doc(reviewId).set(review);
+        if (window.KaghanDB_Cache.reviews) {
+            window.KaghanDB_Cache.reviews.unshift(review);
         }
-        const res = await window.safeFetch('/.netlify/functions/create-review', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ review, idToken })
-        });
-        if (!res.ok) {
-            const data = await res.json();
-            throw new Error(data.error || 'Failed to submit review.');
+        window.dispatchEvent(new CustomEvent('kaghan-db-reviews', { detail: window.KaghanDB_Cache.reviews }));
+        return true;
+    },
+    replyReview: async (reviewId, replyText) => {
+        const replyData = {
+            adminReply: replyText,
+            adminRepliedAt: new Date().toISOString()
+        };
+        await fdb.collection('reviews').doc(reviewId).update(replyData);
+        if (window.KaghanDB_Cache.reviews) {
+            const r = window.KaghanDB_Cache.reviews.find(item => item.id === reviewId);
+            if (r) {
+                r.adminReply = replyText;
+                r.adminRepliedAt = replyData.adminRepliedAt;
+            }
         }
+        window.dispatchEvent(new CustomEvent('kaghan-db-reviews', { detail: window.KaghanDB_Cache.reviews }));
         return true;
     },
     deleteReview: async (reviewId) => {
-        return await callAdminAction('deleteReview', { reviewId });
+        await fdb.collection('reviews').doc(reviewId).delete();
+        if (window.KaghanDB_Cache.reviews) {
+            window.KaghanDB_Cache.reviews = window.KaghanDB_Cache.reviews.filter(r => r.id !== reviewId);
+        }
+        window.dispatchEvent(new CustomEvent('kaghan-db-reviews', { detail: window.KaghanDB_Cache.reviews }));
+        return true;
     },
 
     // Date Overlap checking
@@ -552,26 +727,13 @@ const db = {
     },
     updateUser: async (id, updatedData) => {
         delete updatedData.password;
+        await fdb.collection('users').doc(id).update(updatedData);
         
-        let idToken = null;
-        if (typeof firebase !== 'undefined' && firebase.auth && firebase.auth().currentUser) {
-            idToken = await firebase.auth().currentUser.getIdToken();
+        const currentUser = db.getCurrentUser();
+        if (currentUser && (currentUser.id === id || currentUser.uid === id)) {
+            const mergedUser = { ...currentUser, ...updatedData };
+            localStorage.setItem(DB_KEYS.SESSION, JSON.stringify(mergedUser));
         }
-        
-        const res = await window.safeFetch('/.netlify/functions/update-profile', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id, updatedData, idToken })
-        });
-        
-        if (!res.ok) {
-            const data = await res.json();
-            throw new Error(data.error || 'Failed to update profile.');
-        }
-        
-        const data = await res.json();
-        // Sync active user session
-        localStorage.setItem(DB_KEYS.SESSION, JSON.stringify(data.user));
         return true;
     },
 
@@ -592,7 +754,18 @@ const db = {
                 startActiveListeners();
                 return { success: true, user: userData };
             }
-            return { success: false, message: 'User profile not found in database.' };
+            const defaultUser = {
+                id: firebaseUser.uid,
+                uid: firebaseUser.uid,
+                email: firebaseUser.email,
+                name: firebaseUser.displayName || email.split('@')[0],
+                role: 'user',
+                createdAt: new Date().toISOString()
+            };
+            await fdb.collection('users').doc(firebaseUser.uid).set(defaultUser);
+            localStorage.setItem(DB_KEYS.SESSION, JSON.stringify(defaultUser));
+            startActiveListeners();
+            return { success: true, user: defaultUser };
         } catch (err) {
             console.error("Login error:", err);
             return { success: false, message: err.message };
@@ -605,23 +778,23 @@ const db = {
             }
             const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
             const firebaseUser = userCredential.user;
-            const idToken = await firebaseUser.getIdToken();
             
-            const res = await window.safeFetch('/.netlify/functions/register-profile', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, phone, idToken })
-            });
-            
-            if (!res.ok) {
-                const data = await res.json();
-                throw new Error(data.error || 'Failed to create profile.');
-            }
-            
-            const data = await res.json();
-            localStorage.setItem(DB_KEYS.SESSION, JSON.stringify(data.user));
+            await firebaseUser.updateProfile({ displayName: name }).catch(() => {});
+
+            const userData = {
+                id: firebaseUser.uid,
+                uid: firebaseUser.uid,
+                name: name,
+                email: email,
+                phone: phone || '',
+                role: 'user',
+                createdAt: new Date().toISOString()
+            };
+
+            await fdb.collection('users').doc(firebaseUser.uid).set(userData);
+            localStorage.setItem(DB_KEYS.SESSION, JSON.stringify(userData));
             startActiveListeners();
-            return { success: true, user: data.user };
+            return { success: true, user: userData };
         } catch (err) {
             console.error("Registration error:", err);
             return { success: false, message: err.message };
@@ -751,178 +924,9 @@ const UI = {
         const options = { year: 'numeric', month: 'short', day: 'numeric' };
         return new Date(dateStr).toLocaleDateString('en-US', options);
     },
-    openRoomDetailModal: async (roomId) => {
-        try {
-            const room = await db.getRoomById(roomId);
-            if (!room) {
-                UI.showToast('Room not found', 'error');
-                return;
-            }
-
-            const categories = await db.getCategories();
-            const locations = await db.getLocations();
-            const cat = categories.find(c => c.id === room.type);
-            const catLabel = cat ? cat.label : room.type;
-            const loc = locations.find(l => l.id === room.location);
-            const locLabel = loc ? loc.label : (room.locationName || room.location || 'Islamabad');
-
-            const images = room.images && room.images.length > 0 ? room.images : [room.image || 'assets/images/logo.png'];
-            let currentImgIdx = 0;
-
-            const modal = document.createElement('div');
-            modal.id = 'room-detail-modal';
-            modal.className = 'fixed inset-0 z-[1000] bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 opacity-0 transition-opacity duration-300';
-            
-            modal.innerHTML = `
-                <div class="relative max-w-3xl w-full bg-white rounded-[2rem] shadow-2xl overflow-hidden border border-slate-100 flex flex-col md:flex-row max-h-[90vh] md:max-h-[80vh] transform scale-95 transition-transform duration-300">
-                    
-                    <!-- Left: Image Slider Column -->
-                    <div class="w-full md:w-1/2 relative bg-slate-100 min-h-[250px] md:min-h-full flex items-center justify-center overflow-hidden">
-                        <img id="detail-modal-img" src="${KaghanSafe.escapeHTML(images[currentImgIdx])}" class="w-full h-full object-cover transition-all duration-300">
-                        
-                        <!-- Nav Arrows -->
-                        ${images.length > 1 ? `
-                            <button id="detail-modal-prev" class="absolute left-4 bg-black/40 hover:bg-black/60 text-[#D4AF37] w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-105 border border-white/10 active:scale-95">
-                                <i class="fa-solid fa-chevron-left"></i>
-                            </button>
-                            <button id="detail-modal-next" class="absolute right-4 bg-black/40 hover:bg-black/60 text-[#D4AF37] w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-105 border border-white/10 active:scale-95">
-                                <i class="fa-solid fa-chevron-right"></i>
-                            </button>
-                            
-                            <!-- Counter Indicator -->
-                            <div class="absolute bottom-4 bg-black/60 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-bold text-white border border-white/10 tracking-widest">
-                                <span id="detail-modal-counter">1</span> / ${images.length}
-                            </div>
-                        ` : ''}
-                    </div>
-
-                    <!-- Right: Content Details Column -->
-                    <div class="w-full md:w-1/2 p-6 md:p-8 flex flex-col justify-between overflow-y-auto max-h-[50vh] md:max-h-[80vh]">
-                        <!-- Close Button -->
-                        <button id="detail-modal-close" class="absolute top-4 right-4 bg-slate-100/80 hover:bg-slate-200 text-slate-700 hover:text-slate-900 w-9 h-9 rounded-full flex items-center justify-center transition-colors z-10">
-                            <i class="fa-solid fa-xmark text-lg"></i>
-                        </button>
-
-                        <div>
-                            <!-- Category Badge -->
-                            <span class="inline-block bg-[#C5A059]/10 text-[#C5A059] text-[9px] font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-3 border border-[#C5A059]/20">
-                                ${KaghanSafe.escapeHTML(catLabel)}
-                            </span>
-                            
-                            <!-- Title -->
-                            <h2 class="text-2xl font-light outfit text-[#0B0F19] leading-tight mb-2">${KaghanSafe.escapeHTML(room.name)}</h2>
-                            
-                            <!-- Location -->
-                            <div class="text-[9px] text-slate-400 font-bold mb-4 flex items-center gap-1.5 uppercase tracking-widest">
-                                <i class="fa-solid fa-location-dot text-[#C5A059]"></i>
-                                <span>${KaghanSafe.escapeHTML(locLabel)}</span>
-                            </div>
-
-                            <!-- Description -->
-                            <div class="text-slate-500 text-xs font-light leading-relaxed mb-6">
-                                ${KaghanSafe.sanitizeHTML(room.description)}
-                            </div>
-
-                            <!-- Key Amenities -->
-                            <div class="mb-6">
-                                <h4 class="text-[9px] uppercase tracking-widest text-[#C5A059] font-bold mb-3">Suite Features</h4>
-                                <div class="grid grid-cols-2 gap-2.5">
-                                    <span class="text-slate-600 text-xs font-semibold flex items-center gap-2">
-                                        <i class="fa-solid fa-user-group text-[#C5A059] text-xs w-4"></i> Max ${room.maxGuests} Guests
-                                    </span>
-                                    ${(room.amenities || []).slice(0, 5).map(a => `
-                                        <span class="text-slate-650 text-xs font-semibold flex items-center gap-2">
-                                            <i class="fa-solid fa-circle-check text-[#C5A059] text-xs w-4"></i> ${KaghanSafe.escapeHTML(a)}
-                                        </span>
-                                    `).join('')}
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Price & CTA Button -->
-                        <div class="border-t border-slate-100/80 pt-6 mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                            <div>
-                                <span class="text-slate-400 text-[9px] uppercase tracking-widest block font-bold">Price per night</span>
-                                <div class="flex items-center gap-2 mt-1">
-                                    ${room.originalPrice ? `<span class="line-through text-slate-400 font-semibold text-[10px]">${UI.formatPKR(room.originalPrice)}</span>` : ''}
-                                    <span class="text-2xl font-bold text-[#C5A059] outfit tracking-tight">${UI.formatPKR(room.priceDaily || room.price)}</span>
-                                </div>
-                            </div>
-                            <a href="booking.html?room=${KaghanSafe.escapeHTML(room.id)}" class="bg-[#0B0F19] text-white text-center font-bold px-6 py-3.5 rounded-xl hover:bg-[#C5A059] hover:text-white transition-all shadow-md text-xs uppercase tracking-wider whitespace-nowrap">
-                                Book Stay
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            document.body.appendChild(modal);
-            setTimeout(() => {
-                modal.classList.remove('opacity-0');
-                modal.querySelector('.transform').classList.remove('scale-95');
-            }, 10);
-
-            const closeModal = () => {
-                modal.classList.add('opacity-0');
-                modal.querySelector('.transform').classList.add('scale-95');
-                setTimeout(() => modal.remove(), 300);
-                document.removeEventListener('keydown', keydownHandler);
-            };
-
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) closeModal();
-            });
-            modal.querySelector('#detail-modal-close').addEventListener('click', closeModal);
-
-            const keydownHandler = (e) => {
-                if (e.key === 'Escape') closeModal();
-                if (images.length > 1) {
-                    if (e.key === 'ArrowLeft') showPrevImage();
-                    if (e.key === 'ArrowRight') showNextImage();
-                }
-            };
-            document.addEventListener('keydown', keydownHandler);
-
-            const imgEl = modal.querySelector('#detail-modal-img');
-            const counterEl = modal.querySelector('#detail-modal-counter');
-
-            const updateImage = () => {
-                if (imgEl) {
-                    imgEl.classList.add('opacity-0');
-                    setTimeout(() => {
-                        imgEl.src = images[currentImgIdx];
-                        imgEl.classList.remove('opacity-0');
-                    }, 150);
-                }
-                if (counterEl) {
-                    counterEl.innerText = currentImgIdx + 1;
-                }
-            };
-
-            const showPrevImage = () => {
-                currentImgIdx = (currentImgIdx - 1 + images.length) % images.length;
-                updateImage();
-            };
-
-            const showNextImage = () => {
-                currentImgIdx = (currentImgIdx + 1) % images.length;
-                updateImage();
-            };
-
-            if (images.length > 1) {
-                modal.querySelector('#detail-modal-prev').addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    showPrevImage();
-                });
-                modal.querySelector('#detail-modal-next').addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    showNextImage();
-                });
-            }
-
-        } catch (err) {
-            console.error("Failed to open room details modal:", err);
-            UI.showToast("Failed to load room details.", "error");
+    openRoomDetailModal: (roomId) => {
+        if (roomId) {
+            window.location.href = `room-details.html?id=${roomId}`;
         }
     }
 };
@@ -1038,7 +1042,7 @@ function injectChatbot() {
         }
     });
 
-    document.getElementById('kph-chat-close').addEventListener('click', closeChat);
+    document.getElementById('kph-chat-close')?.addEventListener('click', closeChat);
 
     function closeChat() {
         chatBox.classList.add('scale-95', 'opacity-0');
@@ -1053,7 +1057,7 @@ function injectChatbot() {
     const form = document.getElementById('kph-chat-form');
     const input = document.getElementById('kph-chat-input');
 
-    form.addEventListener('submit', async (e) => {
+    form?.addEventListener('submit', async (e) => {
         e.preventDefault();
         const text = input.value.trim();
         if (!text) return;
@@ -1162,7 +1166,7 @@ function injectChatbot() {
     // Expose quick message trigger
     window.sendQuickMessage = async (msgText) => {
         input.value = msgText;
-        form.dispatchEvent(new Event('submit'));
+        form?.dispatchEvent(new Event('submit'));
     };
 }
 
@@ -1197,12 +1201,12 @@ function injectCookieBanner() {
     }, 200);
 
     // Button actions
-    document.getElementById('kph-cookie-accept').addEventListener('click', () => {
+    document.getElementById('kph-cookie-accept')?.addEventListener('click', () => {
         localStorage.setItem('kph_cookie_consent', 'true');
         dismissBanner();
     });
 
-    document.getElementById('kph-cookie-decline').addEventListener('click', () => {
+    document.getElementById('kph-cookie-decline')?.addEventListener('click', () => {
         localStorage.setItem('kph_cookie_consent', 'false');
         dismissBanner();
     });

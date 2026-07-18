@@ -463,19 +463,14 @@ window.sendNewsletterBroadcast = async (event) => {
             submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xs"></i> Broadcasting Campaign...`;
         }
 
-        const res = await window.safeFetch('/.netlify/functions/send-newsletter', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ subject, htmlBody })
+        const fdb = firebase.firestore();
+        await fdb.collection('newsletters').add({
+            subject,
+            content: htmlBody,
+            sentAt: new Date().toISOString()
         });
 
-        const data = await res.json();
-
-        if (!res.ok) {
-            throw new Error(data.error || 'Failed to broadcast newsletter.');
-        }
-
-        KaghanUI.showToast(data.message || 'Newsletter broadcast completed successfully!', 'success');
+        KaghanUI.showToast('Newsletter broadcast recorded and queued successfully!', 'success');
         
         // Reset form
         subjectInput.value = '';

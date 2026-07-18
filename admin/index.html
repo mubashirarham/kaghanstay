@@ -760,6 +760,28 @@
                             </div>
                         </div>
 
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Bedrooms Count</label>
+                                <input type="number" id="edit-room-bedrooms" placeholder="e.g. 2" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Bathrooms Count</label>
+                                <input type="number" id="edit-room-bathrooms" placeholder="e.g. 2" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Floor Area (Sq Ft)</label>
+                                <input type="text" id="edit-room-area" placeholder="e.g. 1,800 sq ft" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Beds Arrangement</label>
+                                <input type="text" id="edit-room-beds-config" placeholder="e.g. 1 King Bed, 2 Single Beds" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                            </div>
+                        </div>
+
                         <div>
                             <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Location</label>
                             <select id="edit-room-location" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]"></select>
@@ -771,7 +793,7 @@
                                 <input type="number" id="edit-room-price" required class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
                             </div>
                             <div>
-                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Original Price (Slash-through) (opt)</label>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Original Price (Strikethrough) (opt)</label>
                                 <input type="number" id="edit-room-price-original" class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]" placeholder="e.g. 35000">
                             </div>
                         </div>
@@ -812,9 +834,21 @@
                         <input type="hidden" id="edit-room-images-data" value="[]">
                     </div>
 
+                    <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm space-y-4">
+                        <h4 class="text-sm font-bold uppercase tracking-wider text-[#D4AF37]">Highlights & Video Tour</h4>
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Key Highlights (Comma-separated)</label>
+                            <input type="text" id="edit-room-highlights" placeholder="e.g. Private Heated Pool, Panoramic Mountain View, Personal Butler" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">360° / Video Walkthrough URL (Optional)</label>
+                            <input type="text" id="edit-room-video-url" placeholder="https://youtube.com/... or https://res.cloudinary.com/..." class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                        </div>
+                    </div>
+
                     <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
-                        <h4 class="text-sm font-bold uppercase tracking-wider text-[#D4AF37] mb-4">Amenities</h4>
-                        <input type="text" id="edit-room-amenities" placeholder="e.g. WiFi, Kitchen, TV" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                        <h4 class="text-sm font-bold uppercase tracking-wider text-[#D4AF37] mb-4">Amenities (Comma-separated)</h4>
+                        <input type="text" id="edit-room-amenities" placeholder="e.g. Wi-Fi, Kitchen, Smart TV, Jacuzzi, Rain Shower, 24/7 Security" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
                     </div>
 
                     <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
@@ -882,7 +916,29 @@
                             </div>
                             <div>
                                 <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Max Guests</label>
-                                <input type="number" id="add-room-guests" required placeholder="e.g. 2" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                                <input type="number" id="add-room-guests" required placeholder="e.g. 4" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Bedrooms Count</label>
+                                <input type="number" id="add-room-bedrooms" placeholder="e.g. 2" value="1" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Bathrooms Count</label>
+                                <input type="number" id="add-room-bathrooms" placeholder="e.g. 2" value="1" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Floor Area (Sq Ft)</label>
+                                <input type="text" id="add-room-area" placeholder="e.g. 1,800 sq ft" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Beds Arrangement</label>
+                                <input type="text" id="add-room-beds-config" placeholder="e.g. 1 King Bed, 2 Single Beds" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
                             </div>
                         </div>
 
@@ -901,7 +957,7 @@
                                 <input type="number" id="add-room-price" required placeholder="PKR" class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
                             </div>
                             <div>
-                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Original Price (Slash-through) (opt)</label>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Original Price (Strikethrough) (opt)</label>
                                 <input type="number" id="add-room-price-original" class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]" placeholder="e.g. 35000">
                             </div>
                         </div>
@@ -942,14 +998,26 @@
                         <input type="hidden" id="add-room-images-data" value="[]">
                     </div>
 
+                    <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm space-y-4">
+                        <h4 class="text-sm font-bold uppercase tracking-wider text-[#D4AF37]">Highlights & Video Tour</h4>
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Key Highlights (Comma-separated)</label>
+                            <input type="text" id="add-room-highlights" placeholder="e.g. Private Heated Pool, Panoramic Mountain View, Personal Butler" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">360° / Video Walkthrough URL (Optional)</label>
+                            <input type="text" id="add-room-video-url" placeholder="https://youtube.com/... or https://res.cloudinary.com/..." class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                        </div>
+                    </div>
+
                     <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
-                        <h4 class="text-sm font-bold uppercase tracking-wider text-[#D4AF37] mb-4">Amenities</h4>
-                        <input type="text" id="add-room-amenities" placeholder="e.g. WiFi, Kitchen, TV" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                        <h4 class="text-sm font-bold uppercase tracking-wider text-[#D4AF37] mb-4">Amenities (Comma-separated)</h4>
+                        <input type="text" id="add-room-amenities" placeholder="e.g. Wi-Fi, Kitchen, Smart TV, Jacuzzi, Rain Shower, 24/7 Security" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
                     </div>
 
                     <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
                         <h4 class="text-sm font-bold uppercase tracking-wider text-[#D4AF37] mb-4">Room Description</h4>
-                        <textarea id="add-room-desc" placeholder="Write a comprehensive suite description..." rows="12" class="w-full border border-slate-200 rounded-xl px-4 py-3 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37] resize-none leading-relaxed"></textarea>
+                        <textarea id="add-room-desc" placeholder="Write a comprehensive suite description..." rows="10" class="w-full border border-slate-200 rounded-xl px-4 py-3 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37] resize-none leading-relaxed"></textarea>
                     </div>
                 </div>
 

@@ -48,23 +48,12 @@
                         button.textContent = '...';
 
                         try {
-                            const res = await window.safeFetch('/.netlify/functions/subscribe-newsletter', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ email })
-                            });
-
-                            if (!res.ok) {
-                                const data = await res.json();
-                                throw new Error(data.error || 'Failed to subscribe.');
-                            }
-
-                            const data = await res.json();
+                            await KaghanDB.subscribeNewsletter(email);
 
                             if (window.KaghanUI) {
-                                KaghanUI.showToast(data.message || 'Thank you for subscribing!', 'success');
+                                KaghanUI.showToast('Thank you for subscribing to KPH Stay updates!', 'success');
                             } else {
-                                alert(data.message || 'Thank you for subscribing!');
+                                alert('Thank you for subscribing to KPH Stay updates!');
                             }
                             input.value = '';
                         } catch (error) {

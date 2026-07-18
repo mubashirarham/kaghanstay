@@ -280,8 +280,8 @@
                     </form>
                 </div>
 
-                <!-- Custom Upgrades -->
-                <div data-animate="fade-up" class="bg-white rounded-[2rem] border border-slate-100 p-6 md:p-8 shadow-xl shadow-slate-200/50 relative overflow-hidden">
+                <!-- Custom Upgrades (Dynamically loaded strictly from Firestore if at least 1 upgrade exists) -->
+                <div id="upgrades-section-wrapper" data-animate="fade-up" class="bg-white rounded-[2rem] border border-slate-100 p-6 md:p-8 shadow-xl shadow-slate-200/50 relative overflow-hidden hidden">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#C5A059]/10 to-transparent rounded-bl-full pointer-events-none"></div>
                     <h2 class="text-xl font-bold outfit text-slate-900 mb-6 flex items-center gap-3">
                         <span class="w-10 h-10 bg-slate-900 text-[#C5A059] rounded-full flex items-center justify-center text-sm font-black shadow-lg">3</span>
@@ -1360,80 +1360,84 @@
 
         // Form Validation & Card Input Formatter
         function setupPaymentInputs() {
-            const cardNum = document.getElementById('card-number');
-            if (cardNum) {
-                cardNum.addEventListener('input', (e) => {
-                    let v = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
-                    let matches = v.match(/\d{4,16}/g);
-                    let match = (matches && matches[0]) || '';
-                    let parts = [];
+            try {
+                const cardNum = document.getElementById('card-number');
+                if (cardNum) {
+                    cardNum.addEventListener('input', (e) => {
+                        let v = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+                        let matches = v.match(/\d{4,16}/g);
+                        let match = (matches && matches[0]) || '';
+                        let parts = [];
 
-                    for (let i = 0, len = match.length; i < len; i += 4) {
-                        parts.push(match.substring(i, i + 4));
-                    }
+                        for (let i = 0, len = match.length; i < len; i += 4) {
+                            parts.push(match.substring(i, i + 4));
+                        }
 
-                    if (parts.length > 0) {
-                        e.target.value = parts.join(' ');
-                    } else {
-                        e.target.value = v;
-                    }
-                });
-            }
+                        if (parts.length > 0) {
+                            e.target.value = parts.join(' ');
+                        } else {
+                            e.target.value = v;
+                        }
+                    });
+                }
 
-            const cardExpiry = document.getElementById('card-expiry');
-            if (cardExpiry) {
-                cardExpiry.addEventListener('input', (e) => {
-                    let v = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
-                    if (v.length >= 2) {
-                        e.target.value = v.substring(0,2) + '/' + v.substring(2,4);
-                    } else {
-                        e.target.value = v;
-                    }
-                });
+                const cardExpiry = document.getElementById('card-expiry');
+                if (cardExpiry) {
+                    cardExpiry.addEventListener('input', (e) => {
+                        let v = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+                        if (v.length >= 2) {
+                            e.target.value = v.substring(0,2) + '/' + v.substring(2,4);
+                        } else {
+                            e.target.value = v;
+                        }
+                    });
+                }
+            } catch (err) {
+                console.warn('setupPaymentInputs non-fatal warning:', err);
             }
         }
 
         // Global variables
         let appliedCoupon = null;
 
-        // Coupon Logic
+        // Coupon Logic (Queries Firestore via KaghanDB Client SDK)
         window.validateAndApplyCoupon = async () => {
             const input = document.getElementById('coupon-code-input');
             const msg = document.getElementById('coupon-message');
+            if (!input || !msg) return;
             const code = input.value.trim().toUpperCase();
 
             if (!code) {
                 appliedCoupon = null;
                 calculatePrice();
-                msg.classList.remove('hidden', 'text-emerald-500', 'text-rose-500');
+                msg.classList.add('hidden');
                 return;
             }
 
             try {
-                const couponDoc = await firebase.firestore().collection('coupons').doc(code).get();
-                if (couponDoc.exists) {
-                    const validCoupon = couponDoc.data();
-                    if (validCoupon && validCoupon.isActive === true) {
-                        appliedCoupon = validCoupon;
-                        msg.innerText = "Coupon applied successfully!";
-                        msg.classList.remove('hidden', 'text-rose-500');
-                        msg.classList.add('text-emerald-500');
-                        calculatePrice();
-                        return;
-                    }
+                const coupons = await KaghanDB.getCoupons();
+                const matched = coupons ? coupons.find(c => (c.code || c.id || '').toUpperCase() === code && c.isActive !== false) : null;
+                
+                if (matched) {
+                    appliedCoupon = matched;
+                    msg.innerText = `Coupon ${matched.code || code} applied! (${matched.discountPercent || matched.discount || 10}% OFF)`;
+                    msg.classList.remove('hidden', 'text-rose-500');
+                    msg.classList.add('text-emerald-600', 'font-bold');
+                    calculatePrice();
+                    return;
                 }
                 
                 appliedCoupon = null;
-                msg.innerText = "Invalid or expired coupon.";
-                msg.classList.remove('hidden', 'text-emerald-500');
-                msg.classList.add('text-rose-500');
+                msg.innerText = "Invalid or expired coupon code.";
+                msg.classList.remove('hidden', 'text-emerald-600');
+                msg.classList.add('text-rose-500', 'font-bold');
                 calculatePrice();
             } catch (err) {
                 console.error("Coupon validation error:", err);
                 appliedCoupon = null;
                 msg.innerText = "Failed to validate coupon.";
-                msg.classList.remove('hidden', 'text-emerald-500');
-                msg.classList.add('text-rose-500');
+                msg.classList.remove('hidden', 'text-emerald-600');
+                msg.classList.add('text-rose-500', 'font-bold');
                 calculatePrice();
             }
         };
@@ -1733,54 +1737,32 @@
             }, 1500);
         };
 
+        // Upgrades Logic strictly from Firestore collection (No Mock Data)
         async function loadUpgrades() {
             try {
-                let dbUpgrades = await KaghanDB.getUpgrades();
-                if (!dbUpgrades || dbUpgrades.length === 0) {
-                    availableUpgrades = [
-                        {
-                            id: 'upgrade-airport-shuttle',
-                            name: 'Airport VIP Transfer',
-                            icon: 'fa-car-side',
-                            price: 5000,
-                            priceType: 'flat',
-                            description: 'Direct one-way pickup or drop-off in a luxury business sedan with personal chauffeur.'
-                        },
-                        {
-                            id: 'upgrade-dining-breakfast',
-                            name: 'In-suite Dining Package',
-                            icon: 'fa-utensils',
-                            price: 2500,
-                            priceType: 'night',
-                            description: 'Chef-crafted continental breakfast served fresh in your living room each morning.'
-                        },
-                        {
-                            id: 'upgrade-spa-tray',
-                            name: 'Organic Spa Amenities Tray',
-                            icon: 'fa-spa',
-                            price: 1500,
-                            priceType: 'flat',
-                            description: 'Assorted dry fruit basket, honey, and organic local chamomile herbal teas delivered on arrival.'
-                        }
-                    ];
-                } else {
-                    availableUpgrades = dbUpgrades;
-                }
+                const dbUpgrades = await KaghanDB.getUpgrades();
+                availableUpgrades = dbUpgrades || [];
                 renderUpgrades();
             } catch (err) {
-                console.error("Failed to load upgrades:", err);
+                console.error("Failed to load upgrades from Firestore:", err);
+                availableUpgrades = [];
+                renderUpgrades();
             }
         }
 
         function renderUpgrades() {
             const container = document.getElementById('upgrades-container');
+            const sectionWrapper = document.getElementById('upgrades-section-wrapper');
             if (!container) return;
             
-            if (availableUpgrades.length === 0) {
-                container.innerHTML = `<p class="text-xs text-slate-400 text-center py-6">No upgrade services available at this time.</p>`;
+            if (!availableUpgrades || availableUpgrades.length === 0) {
+                if (sectionWrapper) sectionWrapper.classList.add('hidden');
+                container.innerHTML = '';
                 return;
             }
             
+            if (sectionWrapper) sectionWrapper.classList.remove('hidden');
+
             container.innerHTML = availableUpgrades.map(up => `
                 <label class="flex items-start gap-4 p-5 rounded-2xl border border-slate-200 hover:border-[#C5A059]/50 bg-slate-50/55 hover:bg-white transition-all cursor-pointer group">
                     <input type="checkbox" id="${up.id}" onchange="calculatePrice()" class="mt-1 w-4 h-4 rounded text-[#C5A059] border-slate-300 focus:ring-[#C5A059]">
@@ -1791,7 +1773,7 @@
                             </h4>
                             <span class="text-xs font-black text-[#C5A059]">${KaghanUI.formatPKR(up.price)}${up.priceType === 'night' ? ' <span class="text-[9px] font-normal text-slate-400">/ night</span>' : ''}</span>
                         </div>
-                        <p class="text-slate-500 text-xs leading-relaxed font-light">${KaghanSafe.escapeHTML(up.description)}</p>
+                        <p class="text-slate-500 text-xs leading-relaxed font-light">${KaghanSafe.escapeHTML(up.description || '')}</p>
                     </div>
                 </label>
             `).join('');

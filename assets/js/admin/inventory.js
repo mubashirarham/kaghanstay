@@ -25,10 +25,19 @@
     }
 
     async function renderRooms() {
-        const rooms = await KaghanDB.getRooms();
+        const rawRooms = await KaghanDB.getRooms();
         const grid = document.getElementById('admin-rooms-grid');
 
         if (!grid) return;
+
+        const seen = new Set();
+        const rooms = [];
+        rawRooms.forEach(r => {
+            if (r && r.id && !seen.has(r.id)) {
+                seen.add(r.id);
+                rooms.push(r);
+            }
+        });
 
         grid.innerHTML = rooms.map(room => `
             <div class="bg-white border border-slate-100 rounded-3xl p-5 flex flex-col justify-between hover:border-[#D4AF37] transition-all shadow-md group">
@@ -178,6 +187,13 @@
         document.getElementById('edit-room-price-weekly').value = room.priceWeekly || '';
         document.getElementById('edit-room-price-monthly').value = room.priceMonthly || '';
         document.getElementById('edit-room-guests').value = room.maxGuests || 2;
+        if (document.getElementById('edit-room-bedrooms')) document.getElementById('edit-room-bedrooms').value = room.bedrooms || 1;
+        if (document.getElementById('edit-room-bathrooms')) document.getElementById('edit-room-bathrooms').value = room.bathrooms || 1;
+        if (document.getElementById('edit-room-area')) document.getElementById('edit-room-area').value = room.area || '';
+        if (document.getElementById('edit-room-beds-config')) document.getElementById('edit-room-beds-config').value = room.bedsConfig || '';
+        if (document.getElementById('edit-room-highlights')) document.getElementById('edit-room-highlights').value = (room.highlights || []).join(', ');
+        if (document.getElementById('edit-room-video-url')) document.getElementById('edit-room-video-url').value = room.videoUrl || '';
+
         const editDescEl = document.getElementById('edit-room-desc');
         if (editDescEl) {
             editDescEl.value = room.description || '';
@@ -185,7 +201,7 @@
         if (typeof tinymce !== 'undefined' && tinymce.get('edit-room-desc')) {
             tinymce.get('edit-room-desc').setContent(room.description || '');
         }
-        document.getElementById('edit-room-amenities').value = room.amenities.join(', ');
+        document.getElementById('edit-room-amenities').value = (room.amenities || []).join(', ');
 
         const imagesArray = room.images || (room.image ? [room.image] : []);
         renderGalleryPreview('edit-room-gallery-preview', 'edit-room-images-data', imagesArray);
@@ -265,6 +281,12 @@
                 const priceWeekly = parseInt(document.getElementById('edit-room-price-weekly').value);
                 const priceMonthly = parseInt(document.getElementById('edit-room-price-monthly').value);
                 const maxGuests = parseInt(document.getElementById('edit-room-guests').value);
+                const bedrooms = parseInt(document.getElementById('edit-room-bedrooms')?.value || '1');
+                const bathrooms = parseInt(document.getElementById('edit-room-bathrooms')?.value || '1');
+                const area = document.getElementById('edit-room-area')?.value.trim() || '';
+                const bedsConfig = document.getElementById('edit-room-beds-config')?.value.trim() || '';
+                const highlightsInput = document.getElementById('edit-room-highlights')?.value.trim() || '';
+                const videoUrl = document.getElementById('edit-room-video-url')?.value.trim() || '';
                 const descEl = document.getElementById('edit-room-desc');
                 const description = descEl ? descEl.value.trim() : '';
                 const amenitiesInput = document.getElementById('edit-room-amenities').value.trim();
@@ -282,6 +304,10 @@
                     ? amenitiesInput.split(',').map(a => a.trim()).filter(a => a !== '')
                     : ['King Bed', 'High-Speed Wi-Fi', 'Smart TV'];
 
+                const highlights = highlightsInput
+                    ? highlightsInput.split(',').map(h => h.trim()).filter(h => h !== '')
+                    : [];
+
                 const updatedData = {
                     name,
                     type,
@@ -291,6 +317,12 @@
                     priceWeekly: isNaN(priceWeekly) ? null : priceWeekly,
                     priceMonthly: isNaN(priceMonthly) ? null : priceMonthly,
                     maxGuests,
+                    bedrooms: isNaN(bedrooms) ? 1 : bedrooms,
+                    bathrooms: isNaN(bathrooms) ? 1 : bathrooms,
+                    area,
+                    bedsConfig,
+                    highlights,
+                    videoUrl,
                     description,
                     amenities,
                     location,
@@ -418,6 +450,17 @@
                     return;
                 }
 
+                const bedrooms = parseInt(document.getElementById('add-room-bedrooms')?.value || '1');
+                const bathrooms = parseInt(document.getElementById('add-room-bathrooms')?.value || '1');
+                const area = document.getElementById('add-room-area')?.value.trim() || '';
+                const bedsConfig = document.getElementById('add-room-beds-config')?.value.trim() || '';
+                const highlightsInput = document.getElementById('add-room-highlights')?.value.trim() || '';
+                const videoUrl = document.getElementById('add-room-video-url')?.value.trim() || '';
+
+                const highlights = highlightsInput 
+                    ? highlightsInput.split(',').map(h => h.trim()).filter(h => h !== '')
+                    : [];
+
                 let imageUrl = imagesArray.length > 0 ? imagesArray[0] : 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80';
                 if (imagesArray.length === 0) imagesArray.push(imageUrl);
 
@@ -437,6 +480,12 @@
                     image: imageUrl,
                     images: imagesArray,
                     maxGuests,
+                    bedrooms: isNaN(bedrooms) ? 1 : bedrooms,
+                    bathrooms: isNaN(bathrooms) ? 1 : bathrooms,
+                    area,
+                    bedsConfig,
+                    highlights,
+                    videoUrl,
                     description,
                     amenities,
                     location,
