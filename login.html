@@ -161,7 +161,7 @@
                         <label class="block text-[10px] uppercase tracking-wider text-slate-400 font-semibold mb-1">Phone Number</label>
                         <div class="relative">
                             <i class="fa-solid fa-phone absolute left-4 top-3.5 text-slate-400 text-sm"></i>
-                            <input type="tel" id="reg-phone" placeholder="+92 300 1234567" class="w-full bg-slate-900/60 border border-slate-800 rounded-xl pl-11 pr-4 py-3 outline-none focus:border-[#D4AF37] text-sm text-white">
+                            <input type="tel" id="reg-phone" placeholder="0300-1234567" maxlength="12" class="w-full bg-slate-900/60 border border-slate-800 rounded-xl pl-11 pr-4 py-3 outline-none focus:border-[#C5A059] text-sm text-white font-mono">
                         </div>
                     </div>
 
@@ -383,9 +383,61 @@
             }
         }
 
+        function setupPhoneInputFormatter() {
+            const phoneInput = document.getElementById('reg-phone');
+            if (!phoneInput) return;
+
+            const formatPakPhone = (val) => {
+                let digits = val.replace(/\D/g, '');
+                if (digits.startsWith('923')) {
+                    digits = '0' + digits.substring(2);
+                } else if (digits.startsWith('92')) {
+                    digits = '03' + digits.substring(2);
+                }
+
+                if (digits.length > 0 && !digits.startsWith('03')) {
+                    if (digits.startsWith('3')) {
+                        digits = '0' + digits;
+                    } else if (digits.startsWith('0')) {
+                        digits = '03' + digits.substring(1);
+                    } else {
+                        digits = '03' + digits;
+                    }
+                }
+
+                digits = digits.substring(0, 11);
+
+                if (digits.length > 4) {
+                    return digits.substring(0, 4) + '-' + digits.substring(4);
+                }
+                return digits;
+            };
+
+            phoneInput.addEventListener('focus', () => {
+                if (!phoneInput.value) {
+                    phoneInput.value = '03';
+                }
+            });
+
+            phoneInput.addEventListener('input', (e) => {
+                let formatted = formatPakPhone(e.target.value);
+                if (!formatted || formatted === '0') {
+                    formatted = '03';
+                }
+                e.target.value = formatted;
+            });
+
+            phoneInput.addEventListener('blur', () => {
+                if (phoneInput.value === '03') {
+                    phoneInput.value = '';
+                }
+            });
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
             checkActiveSession();
             parseUrlState();
+            setupPhoneInputFormatter();
         });
     </script>
 </body>

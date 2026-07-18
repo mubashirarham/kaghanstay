@@ -262,13 +262,13 @@
                                     <input type="text" id="guest-name" required placeholder="John Doe" class="w-full border border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/10 text-sm bg-slate-50 focus:bg-white text-slate-800 transition-all font-medium">
                                 </div>
                             </div>
-                            <div>
-                                <label class="block text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 ml-1">Phone Number</label>
-                                <div class="relative">
-                                    <i class="fa-solid fa-phone absolute left-4 top-4 text-slate-400"></i>
-                                    <input type="tel" id="guest-phone" required placeholder="+92 300 1234567" class="w-full border border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/10 text-sm bg-slate-50 focus:bg-white text-slate-800 transition-all font-medium">
+                                <div>
+                                    <label class="block text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 ml-1">Phone Number</label>
+                                    <div class="relative">
+                                        <i class="fa-solid fa-phone absolute left-4 top-4 text-slate-400"></i>
+                                        <input type="tel" id="guest-phone" required placeholder="0300-1234567" maxlength="12" class="w-full border border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/10 text-sm bg-slate-50 focus:bg-white text-slate-800 transition-all font-medium font-mono">
+                                    </div>
                                 </div>
-                            </div>
                         </div>
                         <div>
                             <label class="block text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 ml-1">Email Address</label>
@@ -1358,9 +1358,62 @@
             updateStepper();
         }
 
-        // Form Validation & Card Input Formatter
+        // Form Validation, Phone & Card Input Formatter
         function setupPaymentInputs() {
             try {
+                // Pakistani Mobile Number Formatter (Must start with 03 and format as 03XX-XXXXXXX)
+                const phoneInput = document.getElementById('guest-phone');
+                if (phoneInput) {
+                    phoneInput.setAttribute('maxlength', '12'); // 03XX-XXXXXXX is 12 chars
+
+                    const formatPakPhone = (val) => {
+                        let digits = val.replace(/\D/g, '');
+                        if (digits.startsWith('923')) {
+                            digits = '0' + digits.substring(2);
+                        } else if (digits.startsWith('92')) {
+                            digits = '03' + digits.substring(2);
+                        }
+
+                        if (digits.length > 0 && !digits.startsWith('03')) {
+                            if (digits.startsWith('3')) {
+                                digits = '0' + digits;
+                            } else if (digits.startsWith('0')) {
+                                digits = '03' + digits.substring(1);
+                            } else {
+                                digits = '03' + digits;
+                            }
+                        }
+
+                        digits = digits.substring(0, 11);
+
+                        if (digits.length > 4) {
+                            return digits.substring(0, 4) + '-' + digits.substring(4);
+                        }
+                        return digits;
+                    };
+
+                    phoneInput.addEventListener('focus', () => {
+                        if (!phoneInput.value) {
+                            phoneInput.value = '03';
+                        }
+                    });
+
+                    phoneInput.addEventListener('input', (e) => {
+                        let formatted = formatPakPhone(e.target.value);
+                        if (!formatted || formatted === '0') {
+                            formatted = '03';
+                        }
+                        e.target.value = formatted;
+                        updateStepper();
+                    });
+
+                    phoneInput.addEventListener('blur', () => {
+                        if (phoneInput.value === '03') {
+                            phoneInput.value = '';
+                        }
+                    });
+                }
+
                 const cardNum = document.getElementById('card-number');
                 if (cardNum) {
                     cardNum.addEventListener('input', (e) => {
