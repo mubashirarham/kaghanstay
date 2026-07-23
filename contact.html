@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -44,7 +44,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css?v=3">
+    <link rel="stylesheet" href="assets/css/style.css?v=4">
 
     <style>
         body { font-family: 'Inter', sans-serif; }
@@ -149,11 +149,11 @@
                         <h4 class="outfit font-bold text-slate-800 text-base mb-1">Resort Headquarters</h4>
                         <div class="space-y-3 mt-2 text-xs leading-relaxed text-slate-500">
                             <div>
-                                <span class="font-bold text-slate-700 block text-xs">🌲 Nathia Gali Branch:</span>
+                                <span class="font-bold text-slate-700 block text-xs">ðŸŒ² Nathia Gali Branch:</span>
                                 Main Alpine Road, Adjacent to Pine Hills, Nathia Gali, Pakistan
                             </div>
                             <div>
-                                <span class="font-bold text-slate-700 block text-xs">🏢 Islamabad Office:</span>
+                                <span class="font-bold text-slate-700 block text-xs">ðŸ¢ Islamabad Office:</span>
                                 Kaghan Properties Pvt Ltd<br>
                                 Office 203, 2nd Floor, Asian Arcade, opposite Zoo, C Avenue, Sector C, Bahria Enclave, Islamabad, Pakistan<br>
                                 <span class="font-semibold text-slate-600 text-[11px]">Phone: +92 51 8461975</span>
@@ -216,7 +216,7 @@
                     </div>
                     <div class="flex justify-between items-center py-3 border-b border-slate-100">
                         <span class="text-sm font-semibold text-slate-700">Concierge & Shuttle Booking</span>
-                        <span class="text-sm text-slate-600">8:00 AM – 10:00 PM</span>
+                        <span class="text-sm text-slate-600">8:00 AM â€“ 10:00 PM</span>
                     </div>
                     <div class="flex justify-between items-center py-3 border-b border-slate-100">
                         <span class="text-sm font-semibold text-slate-700">Check-in</span>
@@ -235,7 +235,7 @@
                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d53115.25!2d73.04!3d33.73!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38dfbf2b0a1c5c1b%3A0x9c8e1e4a3a3b3b3b!2sMargalla%20Hills%2C%20Islamabad!5e0!3m2!1sen!2spk!4v1640000000000"
                     width="100%" height="100%" style="border:0; min-height:360px;" allowfullscreen="" loading="lazy"
                     referrerpolicy="no-referrer-when-downgrade"
-                    title="KPH Stay Location — Margalla Hills, Islamabad">
+                    title="KPH Stay Location â€” Margalla Hills, Islamabad">
                 </iframe>
             </div>
         </div>
@@ -255,7 +255,7 @@
                         <i class="fa-solid fa-chevron-down text-[#D4AF37] text-xs shrink-0 transition-transform duration-300"></i>
                     </button>
                     <div class="px-6 pb-6 hidden text-slate-600 text-sm leading-relaxed font-light">
-                        Our team typically responds to all inquiries within <strong>2–4 hours</strong> during business hours (8 AM – 10 PM PKT). For urgent booking requests, please call our front desk directly at <strong>+92 334 009 1127</strong> for immediate assistance.
+                        Our team typically responds to all inquiries within <strong>2â€“4 hours</strong> during business hours (8 AM â€“ 10 PM PKT). For urgent booking requests, please call our front desk directly at <strong>+92 334 009 1127</strong> for immediate assistance.
                     </div>
                 </div>
                 <div class="border border-slate-200 rounded-2xl overflow-hidden bg-slate-50">
@@ -357,15 +357,11 @@
                 // Alert user
                 if (window.KaghanUI) {
                     KaghanUI.showToast('Inquiry sent successfully. Our team will contact you shortly!', 'success');
-                } else {
-                    alert('Inquiry sent successfully!');
                 }
             } catch (err) {
                 console.error("Error submitting inquiry:", err);
                 if (window.KaghanUI) {
                     KaghanUI.showToast('Failed to submit message. Please check connection and try again.', 'error');
-                } else {
-                    alert('Submission failed.');
                 }
             }
         });

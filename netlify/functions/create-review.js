@@ -6,7 +6,15 @@ const RequestSchema = z.object({
         roomId: z.string().min(1, "Room ID is required"),
         rating: z.number().min(1).max(5),
         comment: z.string().min(1, "Comment is required"),
-        guestName: z.string().min(1, "Guest name is required")
+        guestName: z.string().min(1, "Guest name is required"),
+        subRatings: z.object({
+            cleanliness: z.number().min(1).max(5).optional(),
+            accuracy: z.number().min(1).max(5).optional(),
+            checkin: z.number().min(1).max(5).optional(),
+            communication: z.number().min(1).max(5).optional(),
+            location: z.number().min(1).max(5).optional(),
+            value: z.number().min(1).max(5).optional()
+        }).optional()
     }),
     idToken: z.string().min(1, "ID token is required")
 });
@@ -77,6 +85,7 @@ exports.handler = async (event, context) => {
             rating: review.rating,
             comment: review.comment,
             guestName: review.guestName,
+            subRatings: review.subRatings || null,
             createdAt: new Date().toISOString()
         };
 

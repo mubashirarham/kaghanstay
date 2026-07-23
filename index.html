@@ -134,7 +134,7 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Global CSS -->
-    <link rel="stylesheet" href="assets/css/style.css?v=3">
+    <link rel="stylesheet" href="assets/css/style.css?v=4">
 </head>
 <body class="bg-[#F8FAFC] text-[#0F172A] overflow-x-hidden font-sans">
 
@@ -183,10 +183,10 @@
     </div>
 
     <!-- Hero Section -->
-    <header class="relative h-screen flex flex-col justify-center items-center overflow-hidden">
+    <header class="relative min-h-screen flex flex-col justify-between items-center pt-28 pb-0 overflow-visible">
         <!-- Background Image & Gradient overlay -->
         <div class="absolute inset-0">
-            <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1920&q=80" alt="Kaghan Luxury Hotel Islamabad" class="w-full h-full object-cover">
+            <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1920&q=80" alt="Kaghan Luxury Hotel Islamabad" class="w-full h-full object-cover object-center">
             <div class="absolute inset-0 bg-gradient-to-t from-[#0B0F19] via-[#0B0F19]/60 to-[#0B0F19]/40"></div>
         </div>
 
@@ -194,7 +194,7 @@
         <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-[#C5A059]/10 rounded-full blur-[120px] pointer-events-none animate-pulse-slow"></div>
         <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#0B0F19]/30 rounded-full blur-[120px] pointer-events-none animate-pulse-slow"></div>
 
-        <div class="relative z-10 text-center px-4 max-w-4xl mx-auto mt-20 animate-fade-in">
+        <div class="relative z-10 text-center px-4 max-w-4xl mx-auto animate-fade-in w-full">
             <!-- Gilded Glass Subtitle Badge -->
             <span class="inline-block border border-[#C5A059]/30 bg-[#C5A059]/5 backdrop-blur-md text-[#C5A059] uppercase tracking-[0.3em] text-[10px] md:text-xs font-medium px-5 py-2 rounded-full mb-6" data-animate="fade-down">
                 A New Era of Luxury Living
@@ -210,65 +210,116 @@
         </div>
 
         <!-- Search Widget (Spatial Glassmorphism) -->
-        <div class="relative z-10 w-full max-w-5xl px-4 -mb-16 md:-mb-10 mt-4" data-animate="fade-up">
+        <div class="relative z-10 w-full max-w-5xl px-4 mt-8 mb-10" data-animate="fade-up">
             <div class="backdrop-blur-xl bg-white/5 rounded-[2.5rem] p-6 md:p-8 border border-white/10 shadow-[0_32px_64px_-15px_rgba(11,15,25,0.6)] text-white">
                 
                 <!-- Stay Duration Tag Selector -->
-                <div class="flex items-center justify-between mb-5 border-b border-white/10 pb-4">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-5 border-b border-white/10 pb-4">
                     <span class="text-xs uppercase tracking-widest text-[#C5A059] font-bold">Select Stay Type</span>
-                    <div class="flex gap-2" id="hero-stay-type-tags">
-                        <button type="button" onclick="selectHeroStayType('daily')" id="stay-tag-daily" class="px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-[#C5A059] text-white shadow-md">Daily Stay</button>
-                        <button type="button" onclick="selectHeroStayType('weekly')" id="stay-tag-weekly" class="px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-white/10 text-white/80 hover:bg-white/20">Weekly Stay (-15%)</button>
-                        <button type="button" onclick="selectHeroStayType('monthly')" id="stay-tag-monthly" class="px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-white/10 text-white/80 hover:bg-white/20">Monthly Stay (-35%)</button>
+                    <div class="flex flex-wrap gap-2" id="hero-stay-type-tags">
+                        <button type="button" onclick="selectHeroStayType('daily')" id="stay-tag-daily" class="px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-[#C5A059] text-white shadow-md cursor-pointer">Daily Stay</button>
+                        <button type="button" onclick="selectHeroStayType('weekly')" id="stay-tag-weekly" class="px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-white/10 text-white/80 hover:bg-white/20 cursor-pointer">Weekly Stay (-15%)</button>
+                        <button type="button" onclick="selectHeroStayType('monthly')" id="stay-tag-monthly" class="px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-white/10 text-white/80 hover:bg-white/20 cursor-pointer">Monthly Stay (-35%)</button>
                     </div>
+                    <input type="hidden" id="hero-stay-type" value="daily">
                 </div>
 
-                <form id="hero-search-form" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 md:gap-5 items-end">
-                    <div>
+                <form id="hero-search-form" onsubmit="handleHeroSearchSubmit(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 items-end">
+                    <!-- Location Custom Dropdown -->
+                    <div class="sm:col-span-1 lg:col-span-1">
                         <label class="block text-xs uppercase tracking-widest text-[#C5A059] font-bold mb-2 ml-1">Location</label>
                         <div class="relative custom-dropdown" id="dropdown-location">
-                            <button type="button" class="w-full bg-white/5 border border-white/15 hover:bg-white/10 hover:border-[#C5A059] focus:bg-white/20 focus:border-[#C5A059] rounded-2xl pl-11 pr-10 py-3.5 outline-none transition-all text-white text-sm text-left flex items-center justify-between cursor-pointer relative overflow-hidden">
-                                <i class="fa-solid fa-location-dot absolute left-4 text-white/50"></i>
+                            <button type="button" onclick="toggleCustomDropdown('dropdown-location')" class="w-full bg-white/5 border border-white/15 hover:bg-white/10 hover:border-[#C5A059] rounded-2xl pl-11 pr-8 py-3.5 outline-none transition-all text-white text-sm text-left flex items-center justify-between cursor-pointer relative">
+                                <i class="fa-solid fa-location-dot absolute left-4 text-white/50 pointer-events-none"></i>
                                 <span class="dropdown-selected truncate">All Locations</span>
-                                <i class="fa-solid fa-chevron-down text-white/50 text-xs"></i>
+                                <i class="fa-solid fa-chevron-down text-white/50 text-xs ml-1 shrink-0"></i>
                             </button>
-                            <div class="dropdown-menu absolute left-0 right-0 mt-2 bg-[#0B0F19]/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl hidden z-30 max-h-60 overflow-y-auto py-2 transition-all duration-300 transform scale-95 opacity-0 origin-top">
-                                <div class="dropdown-item px-5 py-3 hover:bg-white/10 text-white text-sm cursor-pointer transition-colors" data-value="all">All Locations</div>
-                                <!-- Dynamically loaded -->
+                            <div class="dropdown-menu">
+                                <div class="dropdown-item" data-value="all">All Locations</div>
+                                <!-- Loaded dynamically -->
                             </div>
                             <input type="hidden" id="search-location" value="all">
                         </div>
                     </div>
-                    <div>
-                        <label class="block text-xs uppercase tracking-widest text-[#C5A059] font-bold mb-2 ml-1">Check In</label>
-                        <div class="relative">
-                            <i class="fa-solid fa-calendar-alt absolute left-4 top-4 text-white/50"></i>
-                            <input type="date" id="search-check-in" required class="w-full bg-white/5 border border-white/15 hover:bg-white/10 focus:bg-white/20 focus:border-[#C5A059] rounded-2xl pl-11 pr-4 py-3.5 outline-none transition-all text-white text-sm">
+
+                    <!-- Suite Style Custom Dropdown -->
+                    <div class="sm:col-span-1 lg:col-span-1">
+                        <label class="block text-xs uppercase tracking-widest text-[#C5A059] font-bold mb-2 ml-1">Suite Style</label>
+                        <div class="relative custom-dropdown" id="dropdown-type">
+                            <button type="button" onclick="toggleCustomDropdown('dropdown-type')" class="w-full bg-white/5 border border-white/15 hover:bg-white/10 hover:border-[#C5A059] rounded-2xl pl-11 pr-8 py-3.5 outline-none transition-all text-white text-sm text-left flex items-center justify-between cursor-pointer relative">
+                                <i class="fa-solid fa-bed absolute left-4 text-white/50 pointer-events-none"></i>
+                                <span class="dropdown-selected truncate">All Styles</span>
+                                <i class="fa-solid fa-chevron-down text-white/50 text-xs ml-1 shrink-0"></i>
+                            </button>
+                            <div class="dropdown-menu">
+                                <div class="dropdown-item" data-value="all">All Styles</div>
+                                <div class="dropdown-item" data-value="studio">Studio Furnished</div>
+                                <div class="dropdown-item" data-value="1bed">1 Bed Furnished</div>
+                                <div class="dropdown-item" data-value="2bed">2 Bed Furnished</div>
+                                <div class="dropdown-item" data-value="3bed">3 Bed Furnished</div>
+                                <div class="dropdown-item" data-value="4bed">4 Bed Furnished</div>
+                                <div class="dropdown-item" data-value="farmhouse">Furnished Farmhouse</div>
+                            </div>
+                            <input type="hidden" id="search-type" value="all">
                         </div>
                     </div>
-                    <div>
-                        <label class="block text-xs uppercase tracking-widest text-[#C5A059] font-bold mb-2 ml-1">Check Out</label>
-                        <div class="relative">
-                            <i class="fa-solid fa-calendar-alt absolute left-4 top-4 text-white/50"></i>
-                            <input type="date" id="search-check-out" required class="w-full bg-white/5 border border-white/15 hover:bg-white/10 focus:bg-white/20 focus:border-[#C5A059] rounded-2xl pl-11 pr-4 py-3.5 outline-none transition-all text-white text-sm">
-                        </div>
+
+                    <!-- Dates Picker Trigger -->
+                    <div class="sm:col-span-2 lg:col-span-2">
+                        <label class="block text-xs uppercase tracking-widest text-[#C5A059] font-bold mb-2 ml-1">Dates</label>
+                        <button type="button" onclick="KaghanSearchWidget.openCalendarModal()" class="w-full bg-white/5 border border-white/15 hover:bg-white/10 focus:border-[#C5A059] rounded-2xl pl-11 pr-4 py-3.5 outline-none transition-all text-white text-sm text-left flex items-center justify-between cursor-pointer relative">
+                            <i class="fa-solid fa-calendar-alt absolute left-4 text-white/50 pointer-events-none"></i>
+                            <span id="search-date-trigger-text" class="truncate font-medium">Add dates</span>
+                            <i class="fa-solid fa-chevron-down text-white/50 text-xs shrink-0"></i>
+                        </button>
+                        <input type="hidden" id="search-check-in">
+                        <input type="hidden" id="search-check-out">
                     </div>
-                    <div>
+
+                    <!-- Guests Count Stepper Trigger -->
+                    <div class="sm:col-span-1 lg:col-span-1 relative">
                         <label class="block text-xs uppercase tracking-widest text-[#C5A059] font-bold mb-2 ml-1">Guests</label>
-                        <div class="relative">
-                            <i class="fa-solid fa-users absolute left-4 top-4 text-white/50"></i>
-                            <select id="search-guests" class="w-full bg-white/5 border border-white/15 hover:bg-white/10 focus:bg-white/20 focus:border-[#C5A059] rounded-2xl pl-11 pr-4 py-3.5 outline-none transition-all text-white text-sm">
-                                <option value="1" class="text-slate-900">1 Guest</option>
-                                <option value="2" selected class="text-slate-900">2 Guests</option>
-                                <option value="3" class="text-slate-900">3 Guests</option>
-                                <option value="4" class="text-slate-900">4+ Guests</option>
-                            </select>
+                        <button type="button" onclick="KaghanSearchWidget.toggleGuestStepperPopover()" class="w-full bg-white/5 border border-white/15 hover:bg-white/10 hover:border-[#C5A059] rounded-2xl pl-11 pr-4 py-3.5 outline-none transition-all text-white text-sm text-left flex items-center justify-between cursor-pointer relative">
+                            <i class="fa-solid fa-users absolute left-4 text-white/50 pointer-events-none"></i>
+                            <span id="search-guest-trigger-text" class="truncate font-medium">2 Guests</span>
+                            <i class="fa-solid fa-chevron-down text-white/50 text-xs shrink-0"></i>
+                        </button>
+                        <input type="hidden" id="search-guests" value="2">
+
+                        <!-- Guest Stepper Dropdown Popover -->
+                        <div id="guest-stepper-popover" class="hidden absolute top-full left-0 right-0 mt-2 bg-[#0B0F19]/95 backdrop-blur-xl border border-white/15 rounded-2xl p-4 shadow-2xl z-50 text-white space-y-3 min-w-[220px]">
+                            <!-- Adults -->
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <div class="text-xs font-bold">Adults</div>
+                                    <div class="text-[10px] text-slate-400">Ages 13+</div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button type="button" onclick="KaghanSearchWidget.changeGuests('adults', -1)" class="w-7 h-7 rounded-full border border-white/20 flex items-center justify-center text-xs hover:bg-white/10 active:scale-95 transition-all">-</button>
+                                    <span id="stepper-adults-count" class="w-5 text-center text-xs font-bold">2</span>
+                                    <button type="button" onclick="KaghanSearchWidget.changeGuests('adults', 1)" class="w-7 h-7 rounded-full border border-white/20 flex items-center justify-center text-xs hover:bg-white/10 active:scale-95 transition-all">+</button>
+                                </div>
+                            </div>
+                            <!-- Children -->
+                            <div class="flex items-center justify-between border-t border-white/10 pt-3">
+                                <div>
+                                    <div class="text-xs font-bold">Children</div>
+                                    <div class="text-[10px] text-slate-400">Ages 0–12</div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button type="button" onclick="KaghanSearchWidget.changeGuests('children', -1)" class="w-7 h-7 rounded-full border border-white/20 flex items-center justify-center text-xs hover:bg-white/10 active:scale-95 transition-all">-</button>
+                                    <span id="stepper-children-count" class="w-5 text-center text-xs font-bold">0</span>
+                                    <button type="button" onclick="KaghanSearchWidget.changeGuests('children', 1)" class="w-7 h-7 rounded-full border border-white/20 flex items-center justify-center text-xs hover:bg-white/10 active:scale-95 transition-all">+</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div>
-                        <button type="submit" class="w-full bg-[#C5A059] text-white py-4 rounded-2xl font-bold hover:bg-white hover:text-[#0B0F19] hover:shadow-[0_0_20px_rgba(255,255,255,0.4)] transition-all shadow-lg flex items-center justify-center gap-2 btn-shimmer text-sm">
+
+                    <!-- Submit Search Button -->
+                    <div class="sm:col-span-1 lg:col-span-1">
+                        <button type="submit" id="hero-search-submit" class="w-full bg-[#C5A059] text-white py-3.5 rounded-2xl font-bold hover:bg-white hover:text-[#0B0F19] transition-all shadow-lg flex items-center justify-center gap-2 btn-shimmer text-sm cursor-pointer min-h-[52px]">
                             <i class="fa-solid fa-search"></i>
-                            Find Apartments
+                            <span>Search Stays</span>
                         </button>
                     </div>
                 </form>
@@ -277,7 +328,7 @@
     </header>
 
     <!-- Featured Suites Section -->
-    <section class="py-24 px-6 md:px-12 bg-slate-50">
+    <section class="pt-12 pb-24 px-6 md:px-12 bg-slate-50">
         <div class="max-w-7xl mx-auto">
             <div data-animate="fade-up" class="flex flex-col md:flex-row md:items-end justify-between mb-10">
                 <div>
@@ -426,7 +477,7 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" data-animate-group data-animate="fade-up">
                 <div data-animate="fade-up" class="bg-slate-800/40 border border-slate-700/50 p-8 rounded-3xl">
-                    <div class="flex text-[#D4AF37] mb-6 text-sm">★★★★★</div>
+                    <div class="flex text-[#D4AF37] mb-6 text-sm">ÃƒÂ¢Ã‹Å“Ã¢â‚¬Â¦ÃƒÂ¢Ã‹Å“Ã¢â‚¬Â¦ÃƒÂ¢Ã‹Å“Ã¢â‚¬Â¦ÃƒÂ¢Ã‹Å“Ã¢â‚¬Â¦ÃƒÂ¢Ã‹Å“Ã¢â‚¬Â¦</div>
                     <p class="text-slate-300 italic mb-8 font-light leading-relaxed">
                         "The Presidential Penthouse exceeded every expectation. The views are unmatched, and having a private heated pool overlooking the hills made our anniversary unforgettable. An absolute masterpiece!"
                     </p>
@@ -440,7 +491,7 @@
                 </div>
 
                 <div data-animate="fade-up" class="bg-slate-800/40 border border-slate-700/50 p-8 rounded-3xl">
-                    <div class="flex text-[#D4AF37] mb-6 text-sm">★★★★★</div>
+                    <div class="flex text-[#D4AF37] mb-6 text-sm">ÃƒÂ¢Ã‹Å“Ã¢â‚¬Â¦ÃƒÂ¢Ã‹Å“Ã¢â‚¬Â¦ÃƒÂ¢Ã‹Å“Ã¢â‚¬Â¦ÃƒÂ¢Ã‹Å“Ã¢â‚¬Â¦ÃƒÂ¢Ã‹Å“Ã¢â‚¬Â¦</div>
                     <p class="text-slate-300 italic mb-8 font-light leading-relaxed">
                         "Service here is art. The custom concierge team arranged a private mountain dinner with just 3 hours notice. The Executive Suite is clean, luxurious, and spacious."
                     </p>
@@ -454,7 +505,7 @@
                 </div>
 
                 <div data-animate="fade-up" class="bg-slate-800/40 border border-slate-700/50 p-8 rounded-3xl">
-                    <div class="flex text-[#D4AF37] mb-6 text-sm">★★★★★</div>
+                    <div class="flex text-[#D4AF37] mb-6 text-sm">ÃƒÂ¢Ã‹Å“Ã¢â‚¬Â¦ÃƒÂ¢Ã‹Å“Ã¢â‚¬Â¦ÃƒÂ¢Ã‹Å“Ã¢â‚¬Â¦ÃƒÂ¢Ã‹Å“Ã¢â‚¬Â¦ÃƒÂ¢Ã‹Å“Ã¢â‚¬Â¦</div>
                     <p class="text-slate-300 italic mb-8 font-light leading-relaxed">
                         "Everything from booking on the web portal to the express checkout was completely seamless. Highly recommend the Loyalty point system, already saved 20,000 PKR on my next reservation!"
                     </p>
@@ -491,13 +542,13 @@
         </div>
     </section>
 
-    <!-- Locations Showcase — Geo-Targeted SEO Content -->
+    <!-- Locations Showcase ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â Geo-Targeted SEO Content -->
     <section class="py-24 px-6 md:px-12 bg-slate-50 border-t border-slate-100">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16">
                 <span class="text-[#D4AF37] font-bold uppercase tracking-widest text-xs mb-3 block">Our Destinations</span>
                 <h2 class="text-3xl md:text-5xl font-bold outfit text-[#0F172A]">Two Premium <span class="text-[#D4AF37]">Locations</span></h2>
-                <p class="text-slate-500 text-sm mt-4 max-w-2xl mx-auto font-light">Discover luxury hospitality in Pakistan's most coveted destinations — the cosmopolitan capital and the serene mountain highlands.</p>
+                <p class="text-slate-500 text-sm mt-4 max-w-2xl mx-auto font-light">Discover luxury hospitality in Pakistan's most coveted destinations ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â the cosmopolitan capital and the serene mountain highlands.</p>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
@@ -554,14 +605,14 @@
         </div>
     </section>
 
-    <!-- Why Choose KPH Stay — Stats Counter & Trust Section -->
+    <!-- Why Choose KPH Stay ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â Stats Counter & Trust Section -->
     <section class="py-24 px-6 md:px-12 bg-[#0F172A] text-white relative overflow-hidden">
         <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[#D4AF37]/5 via-transparent to-transparent"></div>
         <div class="max-w-7xl mx-auto relative z-10">
             <div class="text-center mb-16">
                 <span class="text-[#D4AF37] font-bold uppercase tracking-widest text-xs mb-3 block">Why Guests Choose Us</span>
                 <h2 class="text-3xl md:text-5xl font-bold outfit mb-4">The KPH Stay <span class="text-[#D4AF37]">Difference</span></h2>
-                <p class="text-slate-400 text-sm max-w-2xl mx-auto font-light">We don't just provide rooms — we deliver curated living experiences that blend the warmth of home with the precision of five-star hospitality.</p>
+                <p class="text-slate-400 text-sm max-w-2xl mx-auto font-light">We don't just provide rooms ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â we deliver curated living experiences that blend the warmth of home with the precision of five-star hospitality.</p>
             </div>
 
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16">
@@ -583,7 +634,7 @@
                     <div class="w-14 h-14 bg-[#D4AF37]/10 text-[#D4AF37] rounded-2xl flex items-center justify-center mx-auto mb-4">
                         <i class="fa-solid fa-star text-xl"></i>
                     </div>
-                    <span class="text-3xl md:text-4xl font-extrabold text-[#D4AF37] outfit block">4.9★</span>
+                    <span class="text-3xl md:text-4xl font-extrabold text-[#D4AF37] outfit block">4.9ÃƒÂ¢Ã‹Å“Ã¢â‚¬Â¦</span>
                     <p class="text-xs uppercase text-slate-400 tracking-wider font-semibold mt-2">Average Guest Rating</p>
                 </div>
                 <div class="text-center p-6 bg-slate-800/30 border border-slate-700/30 rounded-3xl">
@@ -609,13 +660,13 @@
                 <div class="p-8 bg-slate-800/20 border border-slate-700/30 rounded-3xl">
                     <i class="fa-solid fa-bolt text-[#D4AF37] text-2xl mb-4"></i>
                     <h3 class="text-lg font-bold outfit mb-3">Instant Confirmation</h3>
-                    <p class="text-slate-400 text-sm leading-relaxed font-light">Receive your booking confirmation immediately via email after completing your reservation. No waiting, no phone calls — your suite is secured in seconds.</p>
+                    <p class="text-slate-400 text-sm leading-relaxed font-light">Receive your booking confirmation immediately via email after completing your reservation. No waiting, no phone calls ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â your suite is secured in seconds.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- FAQ Section — Rich Snippet Eligible -->
+    <!-- FAQ Section ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â Rich Snippet Eligible -->
     <section class="py-24 px-6 md:px-12 bg-white border-t border-slate-100">
         <div class="max-w-4xl mx-auto">
             <div class="text-center mb-16">
@@ -644,7 +695,7 @@
                     </button>
                     <div class="accordion-content text-slate-600 text-sm leading-relaxed font-light">
                         <div class="px-6 pb-6">
-                            Yes! KPH Stay offers fully furnished <strong>service apartments</strong> ranging from Studio to 3BHK configurations in Islamabad near Margalla Hills. Each apartment includes an equipped kitchen with cookware and utensils, a spacious living area, high-speed Wi-Fi, 24/7 security, and regular professional housekeeping — making it perfect for extended business stays, family relocations, and medical tourism visits.
+                            Yes! KPH Stay offers fully furnished <strong>service apartments</strong> ranging from Studio to 3BHK configurations in Islamabad near Margalla Hills. Each apartment includes an equipped kitchen with cookware and utensils, a spacious living area, high-speed Wi-Fi, 24/7 security, and regular professional housekeeping ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â making it perfect for extended business stays, family relocations, and medical tourism visits.
                         </div>
                     </div>
                 </div>
@@ -656,7 +707,7 @@
                     </button>
                     <div class="accordion-content text-slate-600 text-sm leading-relaxed font-light">
                         <div class="px-6 pb-6">
-                            We offer <strong>free cancellation up to 48 hours</strong> before the check-in date. Cancellations made within 48 hours may be subject to a one-night charge. Refunds are processed within 5–7 business days. For group bookings of 5+ rooms, a 72-hour notice period applies. Please refer to our <a href="terms.html" class="text-[#D4AF37] font-semibold hover:underline">Terms of Stay</a> for full details.
+                            We offer <strong>free cancellation up to 48 hours</strong> before the check-in date. Cancellations made within 48 hours may be subject to a one-night charge. Refunds are processed within 5ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“7 business days. For group bookings of 5+ rooms, a 72-hour notice period applies. Please refer to our <a href="terms.html" class="text-[#D4AF37] font-semibold hover:underline">Terms of Stay</a> for full details.
                         </div>
                     </div>
                 </div>
@@ -745,370 +796,240 @@
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.9/dist/purify.min.js"></script>
     <script src="assets/js/shared.js?v=3"></script>
     <script src="assets/js/users.js"></script>
+    <script src="assets/js/search-widget.js"></script>
     <script src="assets/js/newsletter.js"></script>
     <script>
-        // Update header user auth state
-        // renderNavbar and logoutUser are handled by shared.js
+        /* ============================================================
+           KAGHAN STAY ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â HOME PAGE SCRIPT
+           Handles hero search, featured rooms, category filters, blogs
+           ============================================================ */
 
-        // Drawer Menu Functions handled by shared.js
-
-        // Render Featured Rooms
+        // ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ FEATURED ROOMS ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
         async function loadFeaturedRooms(category = 'all') {
-            const rooms = await KaghanDB.getRooms();
             const container = document.getElementById('featured-rooms');
-            
-            // Load all available published rooms
-            let featuredList = rooms.filter(r => r.status === 'available');
-            if (category !== 'all') {
-                featuredList = featuredList.filter(r => r.type === category);
-            }
-            
-            container.innerHTML = featuredList.map((room, idx) => `
-                <div data-animate="fade-up" style="transition-delay: ${idx * 80}ms;" onclick="KaghanUI.openRoomDetailModal('${room.id}')" class="bg-white/80 backdrop-blur-md rounded-[2.5rem] overflow-hidden border border-[#C5A059]/10 shadow-[0_12px_40px_-15px_rgba(11,15,25,0.05)] hover:border-[#C5A059]/30 transition-all duration-500 group cursor-pointer flex flex-col justify-between h-full hover-lift">
-                    <div class="relative h-64 overflow-hidden shrink-0">
-                        <img src="${room.image}" alt="${room.name}" class="w-full h-full object-cover group-hover:scale-105 group-hover:brightness-95 transition-all duration-700">
-                        <div class="absolute top-4 right-4 backdrop-blur-md bg-[#0B0F19]/65 px-3.5 py-1.5 rounded-full text-[9px] font-bold text-[#C5A059] border border-white/10 uppercase tracking-widest flex items-center gap-1.5 shadow-lg">
-                            ${
-                                room.type === 'studio' ? '<i class="fa-solid fa-cube"></i> Studio Furnished' :
-                                room.type === '1bed' ? '<i class="fa-solid fa-bed"></i> 1 Bed Furnished' :
-                                room.type === '2bed' ? '<i class="fa-solid fa-door-open"></i> 2 Bed Furnished' :
-                                room.type === '3bed' ? '<i class="fa-solid fa-house-chimney"></i> 3 Bed Furnished' :
-                                room.type === '4bed' ? '<i class="fa-solid fa-building"></i> 4 Bed Furnished' :
-                                room.type === '5marla' ? '<i class="fa-solid fa-house"></i> 5 Marla Furnished' :
-                                room.type === '10marla' ? '<i class="fa-solid fa-house-user"></i> 10 Marla Furnished' :
-                                room.type === '1kanal' ? '<i class="fa-solid fa-hotel"></i> 1 Kanal Furnished' :
-                                room.type === 'farmhouse' ? '<i class="fa-solid fa-tree"></i> Furnished Farmhouse' :
-                                room.type
-                            }
-                        </div>
-                    </div>
-                    <div class="p-8 flex-grow flex flex-col justify-between">
-                        <div>
-                            <div class="flex justify-between items-start mb-1.5">
-                                <h3 class="text-xl font-medium outfit text-[#0B0F19] tracking-tight group-hover:text-[#C5A059] transition-colors duration-300">${room.name}</h3>
-                                <div class="flex items-center gap-1 text-[#C5A059] font-bold text-xs">
-                                    <i class="fa-solid fa-star"></i>
-                                    <span>${room.rating}</span>
-                                </div>
-                            </div>
-                            <div class="text-[9px] text-slate-400 font-bold mb-4 flex items-center gap-1.5 uppercase tracking-widest">
-                                <i class="fa-solid fa-location-dot text-[#C5A059] text-[9px]"></i>
-                                <span>${room.location || 'Islamabad'}</span>
-                            </div>
-                            <p class="text-slate-500 text-xs line-clamp-3 mb-6 leading-relaxed font-light">
-                                ${room.description}
-                            </p>
-                            <div class="flex flex-wrap gap-2 mb-6">
-                                ${room.amenities.slice(0, 3).map(a => `
-                                    <span class="bg-slate-50/50 text-slate-605 text-[9px] uppercase font-bold tracking-wider px-3.5 py-1 rounded-full border border-slate-100/50">
-                                        ${a}
-                                    </span>
-                                `).join('')}
-                                ${room.amenities.length > 3 ? `<span class="bg-slate-50/50 text-[#C5A059] text-[9px] uppercase font-bold px-2.5 py-1 rounded-full border border-slate-100/50">+${room.amenities.length - 3}</span>` : ''}
-                            </div>
-                        </div>
-                        <div class="border-t border-slate-100/70 pt-6 flex justify-between items-center mt-auto">
-                            <div>
-                                <span class="text-slate-400 text-[9px] uppercase tracking-widest block font-bold">${room.isApartment ? 'Rates starting from' : 'Rate Per Night'}</span>
-                                <div class="flex items-center gap-1.5 mt-1">
-                                    ${room.originalPrice ? `<span class="line-through text-slate-400 font-semibold text-[10px]">${KaghanUI.formatPKR(room.originalPrice)}</span>` : ''}
-                                    <span class="text-xl font-bold text-[#C5A059] outfit tracking-tight">${KaghanUI.formatPKR(room.price)}</span>
-                                </div>
-                            </div>
-                            <button onclick="event.stopPropagation(); window.location.href='booking.html?room=${room.id}'" class="bg-[#0B0F19] text-white text-[10px] uppercase tracking-wider font-bold px-5 py-3 rounded-xl hover:bg-[#C5A059] transition-all shadow-sm">
-                                Reserve Suite
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
+            if (!container) return;
 
-            // Re-trigger scroll animations observer for the newly loaded featured rooms
-            if (window.setupScrollAnimations) window.setupScrollAnimations();
+            try {
+                const [rooms, savedWishlist] = await Promise.all([
+                    KaghanDB.getRooms(),
+                    KaghanDB.getWishlist()
+                ]);
+
+                let list = rooms.filter(r => r.status === 'available');
+                if (category !== 'all') {
+                    list = list.filter(r => r.type === category);
+                }
+
+                if (!list.length) {
+                    container.innerHTML = `<div class="col-span-3 text-center text-slate-400 py-16 font-light">No suites available for this category.</div>`;
+                    return;
+                }
+
+                const typeLabels = {
+                    studio: '<i class="fa-solid fa-cube"></i> Studio Furnished',
+                    '1bed': '<i class="fa-solid fa-bed"></i> 1 Bed Furnished',
+                    '2bed': '<i class="fa-solid fa-door-open"></i> 2 Bed Furnished',
+                    '3bed': '<i class="fa-solid fa-house-chimney"></i> 3 Bed Furnished',
+                    '4bed': '<i class="fa-solid fa-building"></i> 4 Bed Furnished',
+                    '5marla': '<i class="fa-solid fa-house"></i> 5 Marla Furnished',
+                    '10marla': '<i class="fa-solid fa-house-user"></i> 10 Marla Furnished',
+                    '1kanal': '<i class="fa-solid fa-hotel"></i> 1 Kanal Furnished',
+                    farmhouse: '<i class="fa-solid fa-tree"></i> Furnished Farmhouse'
+                };
+
+                container.innerHTML = list.map((room, idx) => {
+                    const isSaved = savedWishlist.includes(room.id);
+                    return `
+                    <div data-animate="fade-up" style="transition-delay:${idx * 80}ms;"
+                         onclick="KaghanUI.openRoomDetailModal('${room.id}')"
+                         class="bg-white/80 backdrop-blur-md rounded-[2.5rem] overflow-hidden border border-[#C5A059]/10 shadow-[0_12px_40px_-15px_rgba(11,15,25,0.05)] hover:border-[#C5A059]/30 transition-all duration-500 group cursor-pointer flex flex-col justify-between h-full hover-lift relative">
+                        <div class="relative h-64 overflow-hidden shrink-0">
+                            <img src="${room.image}" alt="${KaghanSafe.escapeHTML(room.name)}" loading="lazy"
+                                 class="w-full h-full object-cover group-hover:scale-105 group-hover:brightness-95 transition-all duration-700">
+                            <button type="button" class="wishlist-btn ${isSaved ? 'active' : ''}"
+                                    onclick="event.stopPropagation(); KaghanDB.toggleWishlistItem('${room.id}');"
+                                    aria-label="Save to Wishlist">
+                                <i class="${isSaved ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
+                            </button>
+                            <div class="absolute top-4 left-4 backdrop-blur-md bg-[#0B0F19]/65 px-3.5 py-1.5 rounded-full text-[9px] font-bold text-[#C5A059] border border-white/10 uppercase tracking-widest flex items-center gap-1.5 shadow-lg">
+                                ${typeLabels[room.type] || room.type}
+                            </div>
+                        </div>
+                        <div class="p-8 flex-grow flex flex-col justify-between">
+                            <div>
+                                <div class="flex justify-between items-start mb-1.5">
+                                    <h3 class="text-xl font-medium outfit text-[#0B0F19] tracking-tight group-hover:text-[#C5A059] transition-colors duration-300">${KaghanSafe.escapeHTML(room.name)}</h3>
+                                    <div class="flex items-center gap-1 text-[#C5A059] font-bold text-xs">
+                                        <i class="fa-solid fa-star"></i><span>${room.rating || 'ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â'}</span>
+                                    </div>
+                                </div>
+                                <div class="text-[9px] text-slate-400 font-bold mb-4 flex items-center gap-1.5 uppercase tracking-widest">
+                                    <i class="fa-solid fa-location-dot text-[#C5A059] text-[9px]"></i>
+                                    <span>${KaghanSafe.escapeHTML(room.location || 'Islamabad')}</span>
+                                </div>
+                                <p class="text-slate-500 text-xs line-clamp-3 mb-6 leading-relaxed font-light">${KaghanSafe.escapeHTML(room.description || '')}</p>
+                                <div class="flex flex-wrap gap-2 mb-6">
+                                    ${(room.amenities || []).slice(0, 3).map(a => `<span class="bg-slate-50/50 text-slate-600 text-[9px] uppercase font-bold tracking-wider px-3.5 py-1 rounded-full border border-slate-100/50">${KaghanSafe.escapeHTML(a)}</span>`).join('')}
+                                    ${(room.amenities || []).length > 3 ? `<span class="bg-slate-50/50 text-[#C5A059] text-[9px] uppercase font-bold px-2.5 py-1 rounded-full border border-slate-100/50">+${room.amenities.length - 3}</span>` : ''}
+                                </div>
+                            </div>
+                            <div class="border-t border-slate-100/70 pt-6 flex justify-between items-center mt-auto">
+                                <div>
+                                    <span class="text-slate-400 text-[9px] uppercase tracking-widest block font-bold">${room.isApartment ? 'Rates starting from' : 'Rate Per Night'}</span>
+                                    <div class="flex items-center gap-1.5 mt-1">
+                                        ${room.originalPrice ? `<span class="line-through text-slate-400 font-semibold text-[10px]">${KaghanUI.formatPKR(room.originalPrice)}</span>` : ''}
+                                        <span class="text-xl font-bold text-[#C5A059] outfit tracking-tight">${KaghanUI.formatPKR(room.price)}</span>
+                                    </div>
+                                </div>
+                                <button onclick="event.stopPropagation(); window.location.href='booking.html?room=${room.id}'"
+                                        class="bg-[#0B0F19] text-white text-[10px] uppercase tracking-wider font-bold px-5 py-3 rounded-xl hover:bg-[#C5A059] transition-all shadow-sm">
+                                    Reserve Suite
+                                </button>
+                            </div>
+                        </div>
+                    </div>`;
+                }).join('');
+
+                if (window.setupScrollAnimations) window.setupScrollAnimations();
+            } catch (err) {
+                console.error('loadFeaturedRooms error:', err);
+            }
         }
 
-        // Filter Rooms by Category
+        // ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ CATEGORY FILTER ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
         function filterIndexRooms(category, btnElement) {
-            // Update active state on buttons
-            const buttons = document.querySelectorAll('#index-categories-container button');
-            buttons.forEach(btn => {
+            document.querySelectorAll('#index-categories-container button').forEach(btn => {
                 btn.classList.remove('active-category', 'opacity-100');
                 btn.classList.add('opacity-60');
             });
             btnElement.classList.add('active-category', 'opacity-100');
             btnElement.classList.remove('opacity-60');
-
             loadFeaturedRooms(category);
         }
 
-        // Set minimum check-in and check-out dates
-        function setupDateSelectors() {
-            const today = new Date().toISOString().split('T')[0];
-            const checkInInput = document.getElementById('search-check-in');
-            const checkOutInput = document.getElementById('search-check-out');
-            
-            checkInInput.min = today;
-            checkInInput.value = today;
-            
-            const tomorrow = new Date();
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            const tomorrowStr = tomorrow.toISOString().split('T')[0];
-            checkOutInput.min = tomorrowStr;
-            checkOutInput.value = tomorrowStr;
-            
-            checkInInput.addEventListener('change', () => {
-                const checkInDate = new Date(checkInInput.value);
-                const nextDay = new Date(checkInDate);
-                nextDay.setDate(nextDay.getDate() + 1);
-                checkOutInput.min = nextDay.toISOString().split('T')[0];
-                if (new Date(checkOutInput.value) <= checkInDate) {
-                    checkOutInput.value = nextDay.toISOString().split('T')[0];
+        // ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ STAY TYPE SELECTOR ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
+        window.selectHeroStayType = function(type) {
+            const hiddenInput = document.getElementById('hero-stay-type');
+            if (hiddenInput) hiddenInput.value = type;
+
+            ['daily', 'weekly', 'monthly'].forEach(t => {
+                const btn = document.getElementById(`stay-tag-${t}`);
+                if (!btn) return;
+                if (t === type) {
+                    btn.classList.remove('bg-white/10', 'text-white/80', 'hover:bg-white/20');
+                    btn.classList.add('bg-[#C5A059]', 'text-white', 'shadow-md');
+                } else {
+                    btn.classList.remove('bg-[#C5A059]', 'text-white', 'shadow-md');
+                    btn.classList.add('bg-white/10', 'text-white/80', 'hover:bg-white/20');
                 }
             });
-        }
+        };
 
-        // Custom Dropdown JS Helper Setup
-        function setupCustomDropdown(id) {
-            const dropdown = document.getElementById(id);
-            if (!dropdown) return;
+        // ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ CUSTOM DROPDOWN TOGGLE ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
+        window.toggleCustomDropdown = function(id) {
+            const target = document.getElementById(id);
+            if (!target) return;
 
-            const button = dropdown.querySelector('button');
-            const menu = dropdown.querySelector('.dropdown-menu');
+            // Close others
+            document.querySelectorAll('.custom-dropdown.open').forEach(d => {
+                if (d.id !== id) d.classList.remove('open');
+            });
 
-            button.onclick = (e) => {
-                e.stopPropagation();
-                
-                // Close other custom dropdowns
-                document.querySelectorAll('.dropdown-menu').forEach(m => {
-                    if (m !== menu) {
-                        m.classList.add('hidden', 'scale-95', 'opacity-0');
-                    }
-                });
+            target.classList.toggle('open');
+        };
 
-                const isHidden = menu.classList.contains('hidden');
-                if (isHidden) {
-                    menu.classList.remove('hidden');
-                    setTimeout(() => {
-                        menu.classList.remove('scale-95', 'opacity-0');
-                    }, 10);
-                } else {
-                    menu.classList.add('scale-95', 'opacity-0');
-                    setTimeout(() => { menu.classList.add('hidden'); }, 150);
-                }
-            };
-        }
-
-        // Handle custom option click dynamically
-        document.addEventListener('click', (e) => {
+        // Global click: close dropdowns when clicking outside + handle item selection
+        document.addEventListener('click', function(e) {
             const item = e.target.closest('.dropdown-item');
             if (item) {
-                const dropdown = item.closest('.custom-dropdown');
-                if (dropdown) {
-                    const hiddenInput = dropdown.querySelector('input[type="hidden"]');
-                    const selectedText = dropdown.querySelector('.dropdown-selected');
-                    const menu = dropdown.querySelector('.dropdown-menu');
-                    
-                    hiddenInput.value = item.getAttribute('data-value');
-                    selectedText.innerText = item.innerText;
-                    
-                    menu.classList.add('scale-95', 'opacity-0');
-                    setTimeout(() => { menu.classList.add('hidden'); }, 150);
+                const dd = item.closest('.custom-dropdown');
+                if (dd) {
+                    const hidden = dd.querySelector('input[type="hidden"]');
+                    const label = dd.querySelector('.dropdown-selected');
+                    if (hidden) hidden.value = item.dataset.value || '';
+                    if (label) label.textContent = item.textContent.trim();
+                    dd.querySelectorAll('.dropdown-item').forEach(i => i.classList.remove('selected'));
+                    item.classList.add('selected');
+                    dd.classList.remove('open');
                 }
-            } else {
-                document.querySelectorAll('.dropdown-menu').forEach(m => {
-                    m.classList.add('scale-95', 'opacity-0');
-                    setTimeout(() => { m.classList.add('hidden'); }, 150);
-                });
+                return; // don't fall through to close-all
+            }
+
+            // Click was outside any dropdown ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â close all
+            if (!e.target.closest('.custom-dropdown')) {
+                document.querySelectorAll('.custom-dropdown.open').forEach(d => d.classList.remove('open'));
             }
         });
 
-        // Handle Search Form Submission (Filtering locally on the home page)
-        document.getElementById('hero-search-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const checkIn = document.getElementById('search-check-in').value;
-            const checkOut = document.getElementById('search-check-out').value;
-            const roomType = document.getElementById('search-room-type').value;
-            const location = document.getElementById('search-location').value;
-            
-            const container = document.getElementById('featured-rooms');
-            if (container) {
-                container.innerHTML = `
-                    <div class="bg-white rounded-[2.5rem] border border-slate-100 p-8 shadow-sm flex flex-col justify-between h-[450px]">
-                        <div class="skeleton h-48 w-full rounded-2xl mb-6 animate-pulse"></div>
-                        <div class="skeleton h-6 w-3/4 rounded mb-3 animate-pulse"></div>
-                        <div class="skeleton h-4 w-1/2 rounded mb-6 animate-pulse"></div>
-                        <div class="skeleton h-4 w-full rounded mb-3 animate-pulse"></div>
-                        <div class="skeleton h-4 w-5/6 rounded mb-8 animate-pulse"></div>
-                        <div class="flex justify-between items-center mt-auto">
-                            <div class="skeleton h-10 w-24 rounded animate-pulse"></div>
-                            <div class="skeleton h-10 w-24 rounded animate-pulse"></div>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-[2.5rem] border border-slate-100 p-8 shadow-sm flex flex-col justify-between h-[450px]">
-                        <div class="skeleton h-48 w-full rounded-2xl mb-6 animate-pulse"></div>
-                        <div class="skeleton h-6 w-3/4 rounded mb-3 animate-pulse"></div>
-                        <div class="skeleton h-4 w-1/2 rounded mb-6 animate-pulse"></div>
-                        <div class="skeleton h-4 w-full rounded mb-3 animate-pulse"></div>
-                        <div class="skeleton h-4 w-5/6 rounded mb-8 animate-pulse"></div>
-                        <div class="flex justify-between items-center mt-auto">
-                            <div class="skeleton h-10 w-24 rounded animate-pulse"></div>
-                            <div class="skeleton h-10 w-24 rounded animate-pulse"></div>
-                        </div>
-                    </div>
-                `;
-            }
+        // ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ HERO SEARCH SUBMIT ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
+        window.handleHeroSearchSubmit = function(e) {
+            if (e) e.preventDefault();
 
-            // Scroll down to featured section smoothly
-            const featuredSection = document.querySelector('.bg-slate-50');
-            if (featuredSection) {
-                featuredSection.scrollIntoView({ behavior: 'smooth' });
-            }
+            const location = document.getElementById('search-location')?.value || '';
+            const type     = document.getElementById('search-type')?.value     || '';
+            const checkin  = document.getElementById('search-check-in')?.value  || '';
+            const checkout = document.getElementById('search-check-out')?.value || '';
+            const guests   = document.getElementById('search-guests')?.value   || '2';
+            const stayType = document.getElementById('hero-stay-type')?.value  || 'daily';
 
-            // Wait a brief period to show skeleton loading state
-            setTimeout(async () => {
-                try {
-                    const rooms = await KaghanDB.getRooms();
-                    const filtered = [];
-                    
-                    for (const room of rooms) {
-                        if (room.status !== 'available') continue;
-                        if (roomType !== 'all' && room.type !== roomType) continue;
-                        if (location !== 'all') {
-                            const rLoc = (room.location || '').toLowerCase().replace(/\s+/g, '');
-                            if (rLoc !== location) continue;
-                        }
-                        if (checkIn && checkOut) {
-                            const available = await KaghanDB.isRoomAvailable(room.id, checkIn, checkOut);
-                            if (!available) continue;
-                        }
-                        filtered.push(room);
-                    }
+            const params = new URLSearchParams();
+            if (location && location !== 'all') params.set('location', location);
+            if (type     && type     !== 'all') params.set('type', type);
+            if (checkin)  params.set('checkin',  checkin);
+            if (checkout) params.set('checkout', checkout);
+            if (guests)   params.set('guests',   guests);
+            if (stayType && stayType !== 'daily') params.set('stayType', stayType);
 
-                    if (filtered.length === 0) {
-                        container.innerHTML = `
-                            <div class="col-span-full bg-white border border-slate-100 rounded-[2.5rem] p-16 text-center shadow-md">
-                                <i class="fa-solid fa-hotel text-slate-200 text-5xl mb-4 block"></i>
-                                <h3 class="text-xl font-bold outfit text-slate-800 mb-2">No Suites Available</h3>
-                                <p class="text-slate-400 text-xs font-light max-w-md mx-auto">No accommodations match your selection for the requested dates. Try choosing alternative dates or suite configurations.</p>
-                            </div>
-                        `;
-                        return;
-                    }
+            window.location.href = 'rooms.html?' + params.toString();
+        };
 
-                    container.innerHTML = filtered.map((room, idx) => `
-                        <div data-animate="fade-up" style="transition-delay: ${idx * 80}ms;" onclick="KaghanUI.openRoomDetailModal('${room.id}')" class="bg-white/80 backdrop-blur-md rounded-[2.5rem] overflow-hidden border border-[#C5A059]/10 shadow-[0_12px_40px_-15px_rgba(11,15,25,0.05)] hover:border-[#C5A059]/30 transition-all duration-500 group cursor-pointer flex flex-col justify-between h-full hover-lift">
-                            <div class="relative h-64 overflow-hidden shrink-0">
-                                <img src="${room.image}" alt="${room.name}" class="w-full h-full object-cover group-hover:scale-105 group-hover:brightness-95 transition-all duration-700">
-                                <div class="absolute top-4 right-4 backdrop-blur-md bg-[#0B0F19]/65 px-3.5 py-1.5 rounded-full text-[9px] font-bold text-[#C5A059] border border-white/10 uppercase tracking-widest flex items-center gap-1.5 shadow-lg">
-                                    ${
-                                        room.type === 'studio' ? '<i class="fa-solid fa-cube"></i> Studio Furnished' :
-                                        room.type === '1bed' ? '<i class="fa-solid fa-bed"></i> 1 Bed Furnished' :
-                                        room.type === '2bed' ? '<i class="fa-solid fa-door-open"></i> 2 Bed Furnished' :
-                                        room.type === '3bed' ? '<i class="fa-solid fa-house-chimney"></i> 3 Bed Furnished' :
-                                        room.type === '4bed' ? '<i class="fa-solid fa-building"></i> 4 Bed Furnished' :
-                                        room.type === 'farmhouse' ? '<i class="fa-solid fa-tree"></i> Furnished Farmhouse' :
-                                        room.type
-                                    }
-                                </div>
-                            </div>
-                            <div class="p-8 flex-grow flex flex-col justify-between">
-                                <div>
-                                    <div class="flex justify-between items-start mb-1.5">
-                                        <h3 class="text-xl font-medium outfit text-[#0B0F19] tracking-tight group-hover:text-[#C5A059] transition-colors duration-300">${room.name}</h3>
-                                        <div class="flex items-center gap-1 text-[#C5A059] font-bold text-xs">
-                                            <i class="fa-solid fa-star"></i>
-                                            <span>${room.rating}</span>
-                                        </div>
-                                    </div>
-                                    <div class="text-[9px] text-slate-400 font-bold mb-4 flex items-center gap-1.5 uppercase tracking-widest">
-                                        <i class="fa-solid fa-location-dot text-[#C5A059] text-[9px]"></i>
-                                        <span>${room.location || 'Islamabad'}</span>
-                                    </div>
-                                    <p class="text-slate-500 text-xs line-clamp-3 mb-6 leading-relaxed font-light">
-                                        ${room.description}
-                                    </p>
-                                    <div class="flex flex-wrap gap-2 mb-6">
-                                        ${room.amenities.slice(0, 3).map(a => `
-                                            <span class="bg-slate-50/50 text-slate-605 text-[9px] uppercase font-bold tracking-wider px-3.5 py-1 rounded-full border border-slate-100/50">
-                                                ${a}
-                                            </span>
-                                        `).join('')}
-                                        ${room.amenities.length > 3 ? `<span class="bg-slate-50/50 text-[#C5A059] text-[9px] uppercase font-bold px-2.5 py-1 rounded-full border border-slate-100/50">+${room.amenities.length - 3}</span>` : ''}
-                                    </div>
-                                </div>
-                                <div class="border-t border-slate-100/70 pt-6 flex justify-between items-center mt-auto">
-                                    <div>
-                                        <span class="text-slate-400 text-[9px] uppercase tracking-widest block font-bold">${room.isApartment ? 'Rates starting from' : 'Rate Per Night'}</span>
-                                        <div class="flex items-center gap-1.5 mt-1">
-                                            ${room.originalPrice ? `<span class="line-through text-slate-400 font-semibold text-[10px]">${KaghanUI.formatPKR(room.originalPrice)}</span>` : ''}
-                                            <span class="text-xl font-bold text-[#C5A059] outfit tracking-tight">${KaghanUI.formatPKR(room.price)}</span>
-                                        </div>
-                                    </div>
-                                    <button onclick="event.stopPropagation(); window.location.href='booking.html?room=${room.id}&checkIn=${checkIn}&checkOut=${checkOut}'" class="bg-[#0B0F19] text-white text-[10px] uppercase tracking-wider font-bold px-5 py-3 rounded-xl hover:bg-[#C5A059] transition-all shadow-sm">
-                                        Reserve Suite
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    `).join('');
-
-                    if (window.setupScrollAnimations) window.setupScrollAnimations();
-
-                } catch (err) {
-                    console.error("Filter search execution failed:", err);
-                    KaghanUI.showToast("Search failed to execute.", "error");
-                }
-            }, 600);
-        });
-
-        // Render Dynamic Categories and Locations
+        // ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ DYNAMIC FILTERS (Locations dropdown + Index categories) ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
         async function loadDynamicFilters() {
-            const categories = await KaghanDB.getCategories();
-            const locations = await KaghanDB.getLocations();
+            try {
+                const [categories, locations] = await Promise.all([
+                    KaghanDB.getCategories(),
+                    KaghanDB.getLocations()
+                ]);
 
-            // Populate Locations
-            const dropdownLocMenu = document.querySelector('#dropdown-location .dropdown-menu');
-            if (dropdownLocMenu) {
-                dropdownLocMenu.innerHTML = `<div class="dropdown-item px-5 py-3 hover:bg-white/10 text-white text-sm cursor-pointer transition-colors" data-value="all">All Locations</div>` +
-                    locations.map(l => `<div class="dropdown-item px-5 py-3 hover:bg-white/10 text-white text-sm cursor-pointer transition-colors" data-value="${l.id}">${l.label}</div>`).join('');
+                // Populate Location dropdown menu
+                const locMenu = document.querySelector('#dropdown-location .dropdown-menu');
+                if (locMenu) {
+                    locMenu.innerHTML = `<div class="dropdown-item" data-value="all">All Locations</div>` +
+                        locations.map(l => `<div class="dropdown-item" data-value="${KaghanSafe.escapeHTML(l.id)}">${KaghanSafe.escapeHTML(l.label || l.name || l.id)}</div>`).join('');
+                }
+
+                // Index Category Filter Bar
+                const container = document.getElementById('index-categories-container');
+                if (!container) return;
+
+                let html = `
+                    <button data-category="all" type="button"
+                        class="category-filter-btn flex flex-col items-center gap-2 group transition-opacity min-w-[64px] active-category opacity-100"
+                        onclick="filterIndexRooms('all', this)">
+                        <div class="w-8 h-8 flex items-center justify-center text-slate-800 text-2xl group-[.active-category]:text-[#D4AF37]"><i class="fa-solid fa-border-all"></i></div>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 group-[.active-category]:text-slate-900 group-[.active-category]:border-b-2 group-[.active-category]:border-[#D4AF37] pb-1">All</span>
+                    </button>`;
+
+                categories.forEach(cat => {
+                    const iconOrImg = cat.image
+                        ? `<img src="${KaghanSafe.escapeHTML(cat.image)}" class="w-full h-full object-cover rounded-lg group-[.active-category]:ring-2 ring-[#D4AF37] ring-offset-2" loading="lazy">`
+                        : `<i class="fa-solid ${KaghanSafe.escapeHTML(cat.icon || 'fa-home')}"></i>`;
+                    html += `
+                        <button data-category="${KaghanSafe.escapeHTML(cat.id)}" type="button"
+                            class="category-filter-btn flex flex-col items-center gap-2 group opacity-60 hover:opacity-100 transition-opacity min-w-[64px]"
+                            onclick="filterIndexRooms('${KaghanSafe.escapeHTML(cat.id)}', this)">
+                            <div class="w-8 h-8 flex items-center justify-center text-slate-800 text-2xl group-[.active-category]:text-[#D4AF37]">${iconOrImg}</div>
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 group-[.active-category]:text-slate-900 group-[.active-category]:border-b-2 group-[.active-category]:border-[#D4AF37] pb-1">${KaghanSafe.escapeHTML(cat.label || cat.name || '')}</span>
+                        </button>`;
+                });
+
+                container.innerHTML = html;
+            } catch (err) {
+                console.error('loadDynamicFilters error:', err);
             }
-
-            // Populate Categories
-            const dropdownCatMenu = document.querySelector('#dropdown-room-type .dropdown-menu');
-            if (dropdownCatMenu) {
-                dropdownCatMenu.innerHTML = `<div class="dropdown-item px-5 py-3 hover:bg-white/10 text-white text-sm cursor-pointer transition-colors" data-value="all">All Categories</div>` +
-                    categories.map(c => `<div class="dropdown-item px-5 py-3 hover:bg-white/10 text-white text-sm cursor-pointer transition-colors" data-value="${c.id}">${c.label}</div>`).join('');
-            }
-
-            setupCustomDropdown('dropdown-location');
-            setupCustomDropdown('dropdown-room-type');
-
-            const container = document.getElementById('index-categories-container');
-            if (!container) return;
-            
-            let html = `
-                <button data-category="all" class="flex flex-col items-center gap-2 group transition-opacity min-w-[64px] active-category opacity-100" onclick="filterIndexRooms('all', this)">
-                    <div class="w-8 h-8 flex items-center justify-center text-slate-800 text-2xl group-[.active-category]:text-[#D4AF37]"><i class="fa-solid fa-border-all"></i></div>
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 group-[.active-category]:text-slate-900 group-[.active-category]:border-b-2 group-[.active-category]:border-[#D4AF37] pb-1">All</span>
-                </button>
-            `;
-
-            categories.forEach(cat => {
-                const iconOrImg = cat.image 
-                    ? `<img src="${cat.image}" class="w-full h-full object-cover rounded-lg group-[.active-category]:ring-2 ring-[#D4AF37] ring-offset-2">` 
-                    : `<i class="fa-solid ${cat.icon}"></i>`;
-                    
-                html += `
-                    <button data-category="${cat.id}" class="flex flex-col items-center gap-2 group opacity-60 hover:opacity-100 transition-opacity min-w-[64px]" onclick="filterIndexRooms('${cat.id}', this)">
-                        <div class="w-8 h-8 flex items-center justify-center text-slate-800 text-2xl group-[.active-category]:text-[#D4AF37]">${iconOrImg}</div>
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 group-[.active-category]:text-slate-900 group-[.active-category]:border-b-2 group-[.active-category]:border-[#D4AF37] pb-1">${cat.label}</span>
-                    </button>
-                `;
-            });
-            container.innerHTML = html;
         }
 
-        // Fetch and Render Dynamic Blog Posts Feed (Hospitality/Stay portal)
+        // ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ BLOG FEED ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
         async function loadResortBlogs() {
             const container = document.getElementById('resort-blog-feed-container');
             if (!container) return;
@@ -1116,62 +1037,57 @@
             try {
                 const blogs = await KaghanDB.getBlogs();
                 const stayBlogs = blogs.filter(b => b.portal === 'stay');
-                if (stayBlogs.length === 0) {
-                    container.innerHTML = `<div class="col-span-2 text-center text-slate-500 py-12">No updates published in the resort journal yet. Check Admin Panel.</div>`;
+
+                if (!stayBlogs.length) {
+                    container.innerHTML = `<div class="col-span-2 text-center text-slate-500 py-12">No updates published yet.</div>`;
                     return;
                 }
 
-                // Render latest 2 stay blogs
-                const latest = stayBlogs.slice(0, 2);
-                container.innerHTML = latest.map((b, idx) => {
+                container.innerHTML = stayBlogs.slice(0, 2).map((b, idx) => {
                     const img = b.imageUrl || 'assets/images/logo.png';
                     return `
-                        <div data-animate="fade-up" style="transition-delay: ${idx * 100}ms;" class="bg-white rounded-[2.5rem] border border-slate-100 p-8 shadow-md hover-lift hover:border-[#D4AF37] transition-all duration-300 flex flex-col md:flex-row gap-6 items-center">
+                        <div data-animate="fade-up" style="transition-delay:${idx * 100}ms;"
+                             class="bg-white rounded-[2.5rem] border border-slate-100 p-8 shadow-md hover-lift hover:border-[#D4AF37] transition-all duration-300 flex flex-col md:flex-row gap-6 items-center">
                             <div class="w-full md:w-1/3 aspect-video md:aspect-square rounded-2xl overflow-hidden shrink-0 border border-slate-100">
-                                <img src="${img}" alt="${b.title}" class="w-full h-full object-cover" onerror="this.src='../assets/images/logo.png'">
+                                <img src="${KaghanSafe.escapeHTML(img)}" alt="${KaghanSafe.escapeHTML(b.title)}"
+                                     class="w-full h-full object-cover" loading="lazy"
+                                     onerror="this.src='assets/images/logo.png'">
                             </div>
                             <div class="flex-grow">
-                                <span class="text-[#D4AF37] font-bold text-[9px] uppercase tracking-widest block mb-2">${b.category}</span>
-                                <h4 class="text-lg font-bold outfit text-slate-900 mb-3 leading-snug">${b.title}</h4>
-                                <p class="text-slate-500 text-xs leading-relaxed mb-4 line-clamp-2">${b.excerpt}</p>
-                                <a href="blog.html#${b.slug}" class="text-slate-950 hover:text-[#D4AF37] text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 self-start">Read Article <i class="fa-solid fa-arrow-right text-[10px]"></i></a>
+                                <span class="text-[#D4AF37] font-bold text-[9px] uppercase tracking-widest block mb-2">${KaghanSafe.escapeHTML(b.category || '')}</span>
+                                <h4 class="text-lg font-bold outfit text-slate-900 mb-3 leading-snug">${KaghanSafe.escapeHTML(b.title || '')}</h4>
+                                <p class="text-slate-500 text-xs leading-relaxed mb-4 line-clamp-2">${KaghanSafe.escapeHTML(b.excerpt || '')}</p>
+                                <a href="blog.html#${KaghanSafe.escapeHTML(b.slug || '')}"
+                                   class="text-slate-950 hover:text-[#D4AF37] text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 self-start">
+                                    Read Article <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                                </a>
                             </div>
-                        </div>
-                    `;
+                        </div>`;
                 }).join('');
+
                 if (window.setupScrollAnimations) window.setupScrollAnimations();
             } catch (err) {
-                console.error("Failed to load featured blogs:", err);
-                container.innerHTML = `<div class="col-span-2 text-center text-rose-500 py-12">Failed to sync resort news feeds.</div>`;
+                console.error('loadResortBlogs error:', err);
+                container.innerHTML = `<div class="col-span-2 text-center text-rose-500 py-12">Failed to load resort news.</div>`;
             }
         }
 
-        // Initialize Page
+        // ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ INIT ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
         window.addEventListener('DOMContentLoaded', () => {
-            renderNavbar();
-            setupDateSelectors();
+            if (typeof renderNavbar === 'function') renderNavbar();
 
-            // Set up real-time active database listeners
-            window.addEventListener('kaghan-db-rooms', () => {
-                loadFeaturedRooms();
-            });
-            window.addEventListener('kaghan-db-blogs', () => {
-                loadResortBlogs();
-            });
-            window.addEventListener('kaghan-db-categories', () => {
-                loadDynamicFilters();
-            });
-            window.addEventListener('kaghan-db-locations', () => {
-                loadDynamicFilters();
-            });
+            // Real-time data listeners
+            window.addEventListener('kaghan-db-rooms',      () => loadFeaturedRooms());
+            window.addEventListener('kaghan-db-blogs',      () => loadResortBlogs());
+            window.addEventListener('kaghan-db-categories', () => loadDynamicFilters());
+            window.addEventListener('kaghan-db-locations',  () => loadDynamicFilters());
 
-            // Trigger initial render from cache/gets
+            // Initial load
             loadDynamicFilters();
             loadFeaturedRooms();
             loadResortBlogs();
         });
     </script>
-
     <!-- FAQ Accordion Behavior Script -->
     <script>
         function toggleFAQ(button) {

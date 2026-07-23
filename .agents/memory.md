@@ -87,3 +87,46 @@ This file serves as the persistence memory for AI agents working on the Kaghan S
 1. Test and verify email notifications and newsletters dispatch stability on production.
 2. Complete audit on remaining Low/Medium findings (e.g. Rate limiting, CSP strictness).
 3. Validate user accounts registration and claims flow in the production environment.
+
+---
+
+### 8. Kaghan Stay → Airbnb-Grade UX Conversion (`convert.md`) (2026-07-23)
+* **Status:** Implemented all 13 phases specified in `convert.md`.
+* **Phases Completed:**
+  * **Phase 1 (Global Shell & Navigation):** Added `renderMobileTabBar()` in `assets/js/shared.js` to inject a persistent mobile bottom navigation bar (`Explore`, `Wishlists`, `Trips`, `Notifications`, `Account`) respecting `env(safe-area-inset-bottom)`. Added Airbnb design tokens to `style.css`.
+  * **Phase 2 (Search & Discovery):** Created reusable `assets/js/search-widget.js` providing a two-month side-by-side interactive datepicker calendar overlay, flexible dates selector, and guest counter stepper while preserving hidden inputs contract (`#search-check-in`, `#search-check-out`).
+  * **Phase 3 (Browse / Listings Grid + Map):** Added heart/save button to all room cards in `assets/js/rooms.js` and `index.html`. Upgraded Leaflet map markers to custom price-bubble pills (`.leaflet-price-bubble`) with hover sync.
+  * **Phase 4 (Listing Detail Page - PDP):** Added PDP heart button next to title in `room-details.html`, integrated search widget range picker, and added sub-ratings breakdown container.
+  * **Phase 5 (Checkout & Booking Flow):** Polished receipt itemization syntax and cancellation policy line in `booking.html`.
+  * **Phase 6 (Wishlists & Saved Stays):** Created `assets/js/wishlist.js`, added `KaghanDB.getWishlist()` and `KaghanDB.toggleWishlistItem()` in `shared.js`, updated `firestore.rules` with owner-scoped `match /wishlists/{uid}` security rule.
+  * **Phase 7 (Guest Auth / Onboarding):** Converted registration card in `login.html` into a 2-step wizard with password strength meter, match feedback, and post-signup welcome screen.
+  * **Phase 8 (Guest Dashboard):** Added Wishlists rendering and tabbed organization in `user/index.html`.
+  * **Phase 9 (Reviews Sub-Ratings & Depth):** Updated `netlify/functions/create-review.js` Zod schema and handler to validate and store `subRatings` map in Firestore.
+  * **Phase 10 (Admin Listing Wizard):** Added 6-step wizard step navigation (`setAddRoomStep(stepNum)`) in `assets/js/admin/inventory.js`.
+  * **Phase 12 (Notifications):** Created `assets/js/notifications.js` for in-app guest notifications and added owner-scoped rule `match /notifications/{uid}` in `firestore.rules`.
+  * **Phase 13 (Polish & Accessibility Pass):** Replaced native `alert()` calls with `KaghanUI.showToast()` across `contact.html`, `shared.js`, and `newsletter.js`.
+
+### 9. Airbnb Listing Availability Calendar & Admin Date Blocking (2026-07-23)
+* **Status:** Implemented guest availability calendar & admin date blocking.
+* **Features Implemented:**
+  * **Shared DB & Helpers:** Added `KaghanDB.getRoomAvailability(roomId)` and updated `isRoomAvailable` in [`assets/js/shared.js`](file:///d:/Kaghan%20Stay/assets/js/shared.js) to compile active guest reservations + `room.blockedDates`.
+  * **Guest PDP Calendar:** Added real-time 2-month side-by-side interactive Availability Calendar card (`#pdp-calendar-container`) in [`room-details.html`](file:///d:/Kaghan%20Stay/room-details.html) with color coding (Green = Available, Red/Strikethrough = Booked/Blocked, Gold = Selected).
+  * **Search Widget Range Validation:** Updated [`assets/js/search-widget.js`](file:///d:/Kaghan%20Stay/assets/js/search-widget.js) datepicker to disable booked/blocked dates and prevent selecting date ranges that overlap unavailable periods.
+  * **Admin Date Blocking Tool:** Added `"Calendar"` button to room inventory cards and built `#admin-room-calendar-modal` in [`admin/index.html`](file:///d:/Kaghan%20Stay/admin/index.html) and [`assets/js/admin/inventory.js`](file:///d:/Kaghan%20Stay/assets/js/admin/inventory.js). Admin can click any date to toggle block state, view guest reservations tooltips, use quick presets ("Block Next Weekend"), and save changes securely via `admin-action.js`.
+
+### 10. Real-Time Client & Admin Messaging Module (2026-07-23)
+* **Status:** Implemented real-time bi-directional messaging system between Guests and Host/Admin.
+* **Features Implemented:**
+  * **Firestore Security Rules:** Added `match /chats/{guestUid}` and `match /chats/{guestUid}/messages/{msgId}` in [`firestore.rules`](file:///d:/Kaghan%20Stay/firestore.rules) enforcing guest owner-isolation (`request.auth.uid == guestUid` or Admin).
+  * **Messaging Engine:** Created [`assets/js/messaging.js`](file:///d:/Kaghan%20Stay/assets/js/messaging.js) supporting `onSnapshot` real-time listeners for single guest streams and all-threads admin feed, message sending, and unread flags.
+  * **Admin Messaging Center:** Created [`assets/js/admin/messaging.js`](file:///d:/Kaghan%20Stay/assets/js/admin/messaging.js) and added `#view-messages` in [`admin/index.html`](file:///d:/Kaghan%20Stay/admin/index.html) with thread switcher, guest details header, live chat stream, and reply box.
+  * **Guest Chat Interfaces:** Added Live Host Chat card in [`user/index.html`](file:///d:/Kaghan%20Stay/user/index.html) and slide-over chat drawer in [`room-details.html`](file:///d:/Kaghan%20Stay/room-details.html).
+
+### 11. Hero Search Custom Dropdowns & Rooms Page Filter Reroute (2026-07-23)
+* **Status:** Fixed Hero search dropdowns, stay duration tag selection, and rooms page filter redirection.
+* **Features Implemented:**
+  * **Custom Dropdown CSS & JS:** Added `.custom-dropdown` and `.dropdown-menu` glassmorphism rules to [`assets/css/style.css`](file:///d:/Kaghan%20Stay/assets/css/style.css) and built `window.toggleCustomDropdown()` in [`index.html`](file:///d:/Kaghan%20Stay/index.html).
+  * **Selectable Stay Duration Tags:** Added `window.selectHeroStayType()` supporting Daily, Weekly (-15%), and Monthly (-35%) selections updating `#hero-stay-type`.
+  * **Suite Style Selection:** Added Suite Style custom dropdown (`#dropdown-type`) to hero search form.
+  * **Filter Search Redirection & Parsing:** Updated `handleHeroSearchSubmit()` in [`index.html`](file:///d:/Kaghan%20Stay/index.html) to construct query parameters (`rooms.html?location=...&type=...&checkin=...&checkout=...&guests=...&stayType=...`) and enhanced `loadParams()` in [`assets/js/rooms.js`](file:///d:/Kaghan%20Stay/assets/js/rooms.js) to auto-apply all URL search filters on page load.
+

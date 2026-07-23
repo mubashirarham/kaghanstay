@@ -22,7 +22,7 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
     <!-- Global CSS -->
-    <link rel="stylesheet" href="assets/css/style.css?v=3">
+    <link rel="stylesheet" href="assets/css/style.css?v=4">
 </head>
 <body class="bg-[#F8FAFC] text-[#0F172A] overflow-x-hidden font-sans pt-24 min-h-screen flex flex-col justify-between pb-24 md:pb-0">
 
@@ -129,13 +129,18 @@
                         <div>
                             <div class="flex items-center gap-2 mb-2">
                                 <span id="detail-rating-pill" class="inline-flex items-center gap-1 bg-[#C5A059]/10 text-[#C5A059] text-xs font-bold px-2.5 py-1 rounded-lg">
-                                    <i class="fa-solid fa-star"></i> 5.0 ★
+                                    <i class="fa-solid fa-star"></i> 5.0 â˜…
                                 </span>
                                 <span id="detail-location-pill" class="text-xs text-slate-500 font-semibold uppercase tracking-wider">
                                     <i class="fa-solid fa-location-dot text-[#C5A059] mr-1"></i> Islamabad
                                 </span>
                             </div>
-                            <h1 id="detail-title" class="text-2xl md:text-4xl font-bold outfit text-[#0B0F19]">Luxury Service Suite</h1>
+                            <div class="flex items-center gap-4">
+                                <h1 id="detail-title" class="text-2xl md:text-4xl font-bold outfit text-[#0B0F19]">Luxury Service Suite</h1>
+                                <button type="button" id="pdp-wishlist-btn" class="wishlist-btn !relative !top-0 !right-0 shrink-0" aria-label="Save to Wishlist">
+                                    <i class="fa-regular fa-heart"></i>
+                                </button>
+                            </div>
                         </div>
 
                         <!-- Price Breakdown Card -->
@@ -270,6 +275,30 @@
                             <span>2 Mins walk to Sector C Commercial Hub</span>
                         </div>
                     </div>
+                <!-- Availability Calendar Card -->
+                <div class="bg-white/80 backdrop-blur-md rounded-[2.5rem] border border-[#C5A059]/10 shadow-[0_12px_40px_-15px_rgba(11,15,25,0.05)] hover:border-[#C5A059]/30 transition-all duration-500 p-6 md:p-8 space-y-6">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            <h3 class="text-xl font-bold outfit text-[#0B0F19] flex items-center gap-2">
+                                <i class="fa-solid fa-calendar-days text-[#C5A059]"></i>
+                                Suite Availability & Reserved Dates
+                            </h3>
+                            <p class="text-xs text-slate-500 font-light mt-1">
+                                Check real-time date availability for this suite. Dates marked in red or strikethrough are reserved or unavailable.
+                            </p>
+                        </div>
+                        <!-- Legend -->
+                        <div class="flex items-center gap-4 text-xs font-semibold shrink-0 bg-white px-4 py-2 rounded-xl border border-slate-200 shadow-sm">
+                            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-slate-300"></span> Available</span>
+                            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-rose-400"></span> Booked/Blocked</span>
+                            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#C5A059]"></span> Selected</span>
+                        </div>
+                    </div>
+
+                    <!-- PDP Calendar Grid -->
+                    <div id="pdp-calendar-container" class="bg-slate-50 rounded-2xl p-4 md:p-6 border border-slate-100 min-h-[300px]">
+                        <!-- Rendered dynamically -->
+                    </div>
                 </div>
 
                 <!-- ReviewsSection Component (Dynamically Loaded from Firestore) -->
@@ -282,6 +311,34 @@
                         <span id="reviews-count-badge" class="bg-[#C5A059]/10 text-[#C5A059] text-xs font-bold px-3 py-1 rounded-full">
                             Loading Reviews...
                         </span>
+                    </div>
+
+                    <!-- 6-Category Rating Breakdown Grid -->
+                    <div id="sub-ratings-breakdown-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100 text-xs">
+                        <div>
+                            <div class="flex justify-between font-semibold mb-1"><span>Cleanliness</span> <span id="rating-val-cleanliness">5.0</span></div>
+                            <div class="sub-rating-bar"><div id="rating-bar-cleanliness" class="sub-rating-fill" style="width: 100%;"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between font-semibold mb-1"><span>Accuracy</span> <span id="rating-val-accuracy">5.0</span></div>
+                            <div class="sub-rating-bar"><div id="rating-bar-accuracy" class="sub-rating-fill" style="width: 100%;"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between font-semibold mb-1"><span>Check-in</span> <span id="rating-val-checkin">5.0</span></div>
+                            <div class="sub-rating-bar"><div id="rating-bar-checkin" class="sub-rating-fill" style="width: 100%;"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between font-semibold mb-1"><span>Communication</span> <span id="rating-val-communication">5.0</span></div>
+                            <div class="sub-rating-bar"><div id="rating-bar-communication" class="sub-rating-fill" style="width: 100%;"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between font-semibold mb-1"><span>Location</span> <span id="rating-val-location">5.0</span></div>
+                            <div class="sub-rating-bar"><div id="rating-bar-location" class="sub-rating-fill" style="width: 100%;"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between font-semibold mb-1"><span>Value</span> <span id="rating-val-value">5.0</span></div>
+                            <div class="sub-rating-bar"><div id="rating-bar-value" class="sub-rating-fill" style="width: 100%;"></div></div>
+                        </div>
                     </div>
 
                     <div id="detail-reviews-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -304,7 +361,7 @@
                     <div>
                         <span class="text-[10px] uppercase font-bold tracking-widest text-[#C5A059] block mb-1">Instant Reservation</span>
                         <h3 class="text-2xl font-bold outfit text-[#0B0F19]">Reserve This Suite</h3>
-                        <p class="text-xs text-slate-400 font-light mt-1">Best rate guaranteed • Free cancellation</p>
+                        <p class="text-xs text-slate-400 font-light mt-1">Best rate guaranteed â€¢ Free cancellation</p>
                     </div>
 
                     <!-- Stay Type Tab Selector -->
@@ -319,15 +376,14 @@
 
                     <!-- Booking Input Form -->
                     <form id="booking-card-form" onsubmit="handleConfirmBooking(event)" class="space-y-4">
-                        <div class="grid grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-[10px] uppercase font-bold tracking-widest text-slate-400 mb-1">Check-In</label>
-                                <input type="date" id="card-checkin" required onchange="calculateCardTotal()" class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs outline-none focus:border-[#C5A059] bg-slate-50 font-medium text-slate-800">
-                            </div>
-                            <div>
-                                <label class="block text-[10px] uppercase font-bold tracking-widest text-slate-400 mb-1">Check-Out</label>
-                                <input type="date" id="card-checkout" required onchange="calculateCardTotal()" class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs outline-none focus:border-[#C5A059] bg-slate-50 font-medium text-slate-800">
-                            </div>
+                        <div>
+                            <label class="block text-[10px] uppercase font-bold tracking-widest text-slate-400 mb-1">Stay Dates</label>
+                            <button type="button" onclick="if(window.KaghanSearchWidget) KaghanSearchWidget.openCalendarModal(window.currentRoomBookedDates || []);" class="w-full bg-slate-50 border border-slate-200 hover:border-[#C5A059] rounded-xl px-3 py-2.5 text-xs text-left flex items-center justify-between font-medium text-slate-800 cursor-pointer">
+                                <span id="search-date-trigger-text">Select check-in & check-out</span>
+                                <i class="fa-solid fa-calendar-alt text-[#C5A059]"></i>
+                            </button>
+                            <input type="hidden" id="card-checkin" required>
+                            <input type="hidden" id="card-checkout" required>
                         </div>
 
                         <div>
@@ -369,12 +425,15 @@
                     </form>
 
                     <!-- Secondary Contact Actions -->
-                    <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100">
-                        <a href="https://wa.me/923340091127" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white text-center py-2.5 rounded-xl font-bold text-xs transition-colors flex items-center justify-center gap-1.5 shadow-sm">
-                            <i class="fa-brands fa-whatsapp text-sm"></i> WhatsApp
+                    <div class="grid grid-cols-3 gap-2 pt-2 border-t border-slate-100">
+                        <button type="button" onclick="openPDPGuestChat()" class="bg-[#0B0F19] hover:bg-[#C5A059] text-white text-center py-2.5 rounded-xl font-bold text-xs transition-colors flex items-center justify-center gap-1 shadow-sm">
+                            <i class="fa-solid fa-comments text-xs"></i> Chat
+                        </button>
+                        <a href="https://wa.me/923340091127" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white text-center py-2.5 rounded-xl font-bold text-xs transition-colors flex items-center justify-center gap-1 shadow-sm">
+                            <i class="fa-brands fa-whatsapp text-xs"></i> WhatsApp
                         </a>
-                        <a href="tel:+92518461975" class="border border-slate-200 hover:bg-slate-100 text-slate-800 text-center py-2.5 rounded-xl font-bold text-xs transition-colors flex items-center justify-center gap-1.5">
-                            <i class="fa-solid fa-phone text-xs"></i> Call Lobby
+                        <a href="tel:+92518461975" class="border border-slate-200 hover:bg-slate-100 text-slate-800 text-center py-2.5 rounded-xl font-bold text-xs transition-colors flex items-center justify-center gap-1">
+                            <i class="fa-solid fa-phone text-xs"></i> Call
                         </a>
                     </div>
                 </div>
@@ -449,12 +508,37 @@
         </div>
     </footer>
 
+    <!-- Slide-over PDP Live Chat Drawer -->
+    <div id="pdp-guest-chat-drawer" class="fixed inset-y-0 right-0 z-[120] w-full max-w-md bg-white shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col border-l border-slate-200">
+        <div class="p-5 bg-[#0B0F19] text-white flex justify-between items-center shrink-0">
+            <div>
+                <span class="text-[10px] text-[#C5A059] uppercase font-bold tracking-widest block">KPH Stay Concierge</span>
+                <h3 class="font-bold outfit text-base text-white">Live Host Chat</h3>
+            </div>
+            <button type="button" onclick="closePDPGuestChat()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white text-sm transition-colors">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div id="pdp-chat-messages-stream" class="flex-grow p-4 overflow-y-auto space-y-4 bg-slate-50">
+            <div class="text-center text-xs text-slate-400 py-10">Connecting to host...</div>
+        </div>
+
+        <form id="pdp-chat-form" class="p-4 border-t border-slate-200 bg-white flex items-center gap-2 shrink-0">
+            <input type="text" id="pdp-chat-input" placeholder="Ask about this suite..." required autocomplete="off" class="flex-grow border border-slate-200 rounded-2xl px-4 py-3 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#C5A059]">
+            <button type="submit" class="bg-[#0B0F19] text-white px-4 py-3 rounded-2xl text-xs font-bold hover:bg-[#C5A059] transition-all">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </form>
+    </div>
+
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.9/dist/purify.min.js"></script>
     <script src="assets/js/shared.js?v=3"></script>
+    <script src="assets/js/messaging.js"></script>
 
     <!-- Room Details & Booking Module Script -->
     <script>
@@ -463,6 +547,87 @@
         let activeImgIdx = 0;
         let detailMap = null;
         let activeStayType = 'daily'; // daily, weekly, monthly
+        let pdpChatUnsub = null;
+
+        function openPDPGuestChat() {
+            const user = KaghanDB.getCurrentUser();
+            if (!user || (!user.uid && !user.id)) {
+                if (window.KaghanUI) KaghanUI.showToast("Please log in to chat with resort host", "warning");
+                setTimeout(() => {
+                    const currentPath = encodeURIComponent(window.location.pathname + window.location.search);
+                    window.location.href = 'login.html?redirect=' + currentPath;
+                }, 1200);
+                return;
+            }
+
+            const drawer = document.getElementById('pdp-guest-chat-drawer');
+            if (drawer) drawer.classList.remove('translate-x-full');
+
+            const guestUid = user.uid || user.id;
+            const stream = document.getElementById('pdp-chat-messages-stream');
+            if (!stream) return;
+
+            KaghanMessaging.markThreadRead(guestUid, 'guest');
+
+            if (pdpChatUnsub) pdpChatUnsub();
+            pdpChatUnsub = KaghanMessaging.subscribeToGuestThread(guestUid, messages => {
+                if (!messages || messages.length === 0) {
+                    stream.innerHTML = `
+                        <div class="text-center text-xs text-slate-400 py-10">
+                            <i class="fa-solid fa-handshake text-2xl text-[#C5A059] mb-2"></i>
+                            <p class="font-bold text-slate-700">Start Live Chat</p>
+                            <p class="font-light">Send a message to inquire about ${KaghanSafe.escapeHTML(currentRoom ? currentRoom.name : 'this suite')}.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                stream.innerHTML = messages.map(m => {
+                    const isGuest = m.senderRole === 'guest';
+                    return `
+                        <div class="flex flex-col ${isGuest ? 'items-end' : 'items-start'} space-y-1">
+                            <div class="max-w-[80%] p-3.5 rounded-2xl text-xs ${
+                                isGuest 
+                                ? 'bg-[#0B0F19] text-white rounded-br-none shadow-sm' 
+                                : 'bg-white text-slate-800 rounded-bl-none border border-slate-200/80'
+                            }">
+                                <div class="font-bold text-[10px] ${isGuest ? 'text-[#C5A059]' : 'text-slate-500'} mb-1">
+                                    ${KaghanSafe.escapeHTML(m.senderName || (isGuest ? 'You' : 'Resort Host'))}
+                                </div>
+                                <p class="leading-relaxed whitespace-pre-wrap">${KaghanSafe.escapeHTML(m.text)}</p>
+                            </div>
+                            <span class="text-[9px] text-slate-400 font-medium px-1">${KaghanUI.formatDate(m.createdAt || new Date())}</span>
+                        </div>
+                    `;
+                }).join('');
+
+                stream.scrollTop = stream.scrollHeight;
+            });
+
+            const form = document.getElementById('pdp-chat-form');
+            if (form) {
+                const newForm = form.cloneNode(true);
+                form.parentNode.replaceChild(newForm, form);
+
+                newForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const input = document.getElementById('pdp-chat-input');
+                    const text = input ? input.value.trim() : '';
+                    if (!text) return;
+                    input.value = '';
+                    await KaghanMessaging.sendGuestMessage(text, { roomContext: currentRoom ? currentRoom.name : '' });
+                });
+            }
+        }
+
+        function closePDPGuestChat() {
+            const drawer = document.getElementById('pdp-guest-chat-drawer');
+            if (drawer) drawer.classList.add('translate-x-full');
+            if (pdpChatUnsub) {
+                pdpChatUnsub();
+                pdpChatUnsub = null;
+            }
+        }
 
         // Initialize Page
         window.addEventListener('DOMContentLoaded', async () => {
@@ -531,7 +696,7 @@
                 document.getElementById('detail-category-badge').innerText = cat ? cat.label : (currentRoom.type || 'Luxury Suite');
                 const locationLabel = loc ? loc.label : (currentRoom.locationName || currentRoom.location || 'Islamabad');
                 document.getElementById('detail-location-pill').innerHTML = `<i class="fa-solid fa-location-dot text-[#C5A059] mr-1"></i> ${KaghanSafe.escapeHTML(locationLabel)}`;
-                document.getElementById('detail-rating-pill').innerHTML = `<i class="fa-solid fa-star"></i> ${currentRoom.rating || '5.0'} ★`;
+                document.getElementById('detail-rating-pill').innerHTML = `<i class="fa-solid fa-star"></i> ${currentRoom.rating || '5.0'} â˜…`;
 
                 // Rates & Prices directly from Firestore
                 const basePrice = Number(currentRoom.priceDaily || currentRoom.price || 0);
@@ -617,8 +782,78 @@
                 // Map Setup
                 initDetailMap(currentRoom);
 
+                // PDP Availability Calendar
+                loadPDPAvailabilityCalendar(currentRoom.id);
+
             } catch (err) {
                 console.error("Failed to load room details:", err);
+            }
+        }
+
+        // Render PDP Availability Calendar Grid
+        async function loadPDPAvailabilityCalendar(roomId) {
+            const container = document.getElementById('pdp-calendar-container');
+            if (!container) return;
+
+            try {
+                const avail = await KaghanDB.getRoomAvailability(roomId);
+                const unavailableDates = avail.unavailableDates || [];
+
+                const today = new Date();
+                today.setHours(0,0,0,0);
+
+                let html = `<div class="grid grid-cols-1 md:grid-cols-2 gap-8">`;
+
+                for (let m = 0; m < 2; m++) {
+                    const monthDate = new Date(today.getFullYear(), today.getMonth() + m, 1);
+                    const year = monthDate.getFullYear();
+                    const month = monthDate.getMonth();
+                    const monthName = monthDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+                    const firstDayIndex = new Date(year, month, 1).getDay();
+                    const totalDays = new Date(year, month + 1, 0).getDate();
+
+                    html += `
+                        <div>
+                            <div class="text-center font-bold text-slate-900 text-sm mb-3 outfit">${monthName}</div>
+                            <div class="grid grid-cols-7 gap-1 text-center text-[10px] uppercase font-bold text-slate-400 mb-2">
+                                <div>Su</div><div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div>
+                            </div>
+                            <div class="grid grid-cols-7 gap-1 text-center text-xs font-medium">
+                    `;
+
+                    for (let i = 0; i < firstDayIndex; i++) {
+                        html += `<div></div>`;
+                    }
+
+                    for (let d = 1; d <= totalDays; d++) {
+                        const cellDate = new Date(year, month, d);
+                        cellDate.setHours(0,0,0,0);
+                        const isoStr = cellDate.getFullYear() + '-' + String(cellDate.getMonth() + 1).padStart(2, '0') + '-' + String(cellDate.getDate()).padStart(2, '0');
+
+                        const isPast = cellDate < today;
+                        const isUnavailable = unavailableDates.includes(isoStr);
+
+                        let cellClass = "h-8 rounded-lg flex items-center justify-center font-semibold text-xs transition-all ";
+
+                        if (isPast) {
+                            cellClass += "text-slate-300 bg-transparent cursor-not-allowed";
+                        } else if (isUnavailable) {
+                            cellClass += "bg-rose-100 text-rose-500 line-through cursor-not-allowed font-bold";
+                        } else {
+                            cellClass += "bg-white text-slate-800 border border-slate-200/60 shadow-2xs hover:border-[#C5A059] hover:text-[#C5A059] cursor-pointer";
+                        }
+
+                        html += `<div class="${cellClass}" title="${isUnavailable ? 'Reserved/Blocked' : 'Available'}">${d}</div>`;
+                    }
+
+                    html += `</div></div>`;
+                }
+
+                html += `</div>`;
+                container.innerHTML = html;
+            } catch (err) {
+                console.warn("PDP calendar load error:", err);
+                container.innerHTML = `<p class="text-xs text-slate-400 italic text-center">Unable to load calendar availability.</p>`;
             }
         }
 
@@ -770,7 +1005,7 @@
             try {
                 const reviews = roomId ? await KaghanDB.getReviewsByRoomId(roomId) : await KaghanDB.getReviews();
                 if (reviews && reviews.length > 0) {
-                    if (badge) badge.innerText = `5.0 ★ (${reviews.length} Review${reviews.length > 1 ? 's' : ''})`;
+                    if (badge) badge.innerText = `5.0 â˜… (${reviews.length} Review${reviews.length > 1 ? 's' : ''})`;
                     container.innerHTML = reviews.map(r => `
                         <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100 space-y-2 flex flex-col justify-between">
                             <div class="space-y-2">
@@ -797,12 +1032,12 @@
                         </div>
                     `).join('');
                 } else {
-                    if (badge) badge.innerText = `5.0 ★ (0 Reviews)`;
+                    if (badge) badge.innerText = `5.0 â˜… (0 Reviews)`;
                     container.innerHTML = `<div class="col-span-2 p-6 bg-slate-50 rounded-2xl border border-slate-100 text-center text-xs text-slate-400 font-medium italic">No verified guest reviews submitted for this suite yet.</div>`;
                 }
             } catch (err) {
                 console.warn("Reviews load error:", err);
-                if (badge) badge.innerText = `5.0 ★ (0 Reviews)`;
+                if (badge) badge.innerText = `5.0 â˜… (0 Reviews)`;
                 container.innerHTML = `<div class="col-span-2 p-6 bg-slate-50 rounded-2xl border border-slate-100 text-center text-xs text-slate-400 font-medium italic">No verified guest reviews submitted for this suite yet.</div>`;
             }
 
@@ -845,11 +1080,11 @@
                         <div class="flex items-center gap-4">
                             <label class="text-xs text-slate-600 font-semibold">Rating:</label>
                             <select id="review-rating" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs outline-none focus:border-[#C5A059] bg-white font-bold text-[#C5A059]">
-                                <option value="5">★★★★★ 5.0 - Excellent</option>
-                                <option value="4">★★★★☆ 4.0 - Very Good</option>
-                                <option value="3">★★★☆☆ 3.0 - Average</option>
-                                <option value="2">★★☆☆☆ 2.0 - Poor</option>
-                                <option value="1">★☆☆☆☆ 1.0 - Terrible</option>
+                                <option value="5">â˜…â˜…â˜…â˜…â˜… 5.0 - Excellent</option>
+                                <option value="4">â˜…â˜…â˜…â˜…â˜† 4.0 - Very Good</option>
+                                <option value="3">â˜…â˜…â˜…â˜†â˜† 3.0 - Average</option>
+                                <option value="2">â˜…â˜…â˜†â˜†â˜† 2.0 - Poor</option>
+                                <option value="1">â˜…â˜†â˜†â˜†â˜† 1.0 - Terrible</option>
                             </select>
                         </div>
                         <textarea id="review-comment" required placeholder="Share your stay experience in this suite..." rows="3" class="w-full border border-slate-200 rounded-xl p-3 text-xs outline-none focus:border-[#C5A059] bg-white leading-relaxed"></textarea>

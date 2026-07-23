@@ -59,6 +59,9 @@ async function initAdminDashboard() {
     if (window.AdminBlogsModule) {
         window.AdminBlogsModule.init();
     }
+    if (window.AdminMessagingModule) {
+        window.AdminMessagingModule.init();
+    }
 
     await refreshAll();
 }
@@ -148,6 +151,9 @@ window.switchTab = (tabName) => {
         setTimeout(() => {
             window.AdminBookingsModule.renderCalendar();
         }, 50);
+    }
+    if (tabName === 'messages' && window.AdminMessagingModule) {
+        window.AdminMessagingModule.init();
     }
 };
 

@@ -27,8 +27,6 @@
                         if (!email) {
                             if (window.KaghanUI) {
                                 KaghanUI.showToast('Please enter an email address.', 'error');
-                            } else {
-                                alert('Please enter an email address.');
                             }
                             return;
                         }
@@ -37,8 +35,6 @@
                         if (!emailRegex.test(email)) {
                             if (window.KaghanUI) {
                                 KaghanUI.showToast('Please enter a valid email address.', 'error');
-                            } else {
-                                alert('Please enter a valid email address.');
                             }
                             return;
                         }
@@ -52,8 +48,6 @@
 
                             if (window.KaghanUI) {
                                 KaghanUI.showToast('Thank you for subscribing to KPH Stay updates!', 'success');
-                            } else {
-                                alert('Thank you for subscribing to KPH Stay updates!');
                             }
                             input.value = '';
                         } catch (error) {
@@ -61,8 +55,6 @@
                             const msg = error.message || 'Error subscribing. Please try again.';
                             if (window.KaghanUI) {
                                 KaghanUI.showToast(msg, 'error');
-                            } else {
-                                alert(msg);
                             }
                         } finally {
                             button.disabled = false;

@@ -344,8 +344,6 @@ async function callAdminAction(action, data) {
     if (!idToken) {
         if (typeof KaghanUI !== 'undefined') {
             KaghanUI.showToast("Your session has expired. Redirecting to login...", "error");
-        } else {
-            alert("Your session has expired. Redirecting to login...");
         }
         setTimeout(() => {
             window.location.href = '../login.html';
@@ -690,8 +688,90 @@ const db = {
         return true;
     },
 
-    // Date Overlap checking
+    // Wishlist CRUD (Owner-scoped user data)
+    getWishlist: async () => {
+        const user = db.getCurrentUser ? db.getCurrentUser() : null;
+        if (!user || (!user.uid && !user.id)) return [];
+        const uid = user.uid || user.id;
+        try {
+            const doc = await fdb.collection('wishlists').doc(uid).get();
+            if (doc.exists) {
+                return doc.data().items || [];
+            }
+            return [];
+        } catch (err) {
+            console.warn("Error getting wishlist:", err);
+            return [];
+        }
+    },
+    toggleWishlistItem: async (roomId) => {
+        const user = db.getCurrentUser ? db.getCurrentUser() : null;
+        if (!user || (!user.uid && !user.id)) {
+            UI.showToast("Please log in to save your favorite stays", "warning");
+            setTimeout(() => {
+                const currentPath = encodeURIComponent(window.location.pathname + window.location.search);
+                const isDashboard = window.location.pathname.includes('/user/');
+                window.location.href = isDashboard ? '../login.html?redirect=' + currentPath : 'login.html?redirect=' + currentPath;
+            }, 1200);
+            return { success: false, reason: 'unauthenticated' };
+        }
+        const uid = user.uid || user.id;
+        try {
+            const docRef = fdb.collection('wishlists').doc(uid);
+            const doc = await docRef.get();
+            let items = [];
+            if (doc.exists) {
+                items = doc.data().items || [];
+            }
+            const exists = items.includes(roomId);
+            if (exists) {
+                items = items.filter(id => id !== roomId);
+            } else {
+                items.push(roomId);
+            }
+            await docRef.set({ items, updatedAt: new Date().toISOString() }, { merge: true });
+            window.dispatchEvent(new CustomEvent('kaghan-wishlist-updated', { detail: { items, roomId, added: !exists } }));
+            UI.showToast(!exists ? "Saved to your Wishlist!" : "Removed from Wishlist", "success");
+            return { success: true, isWishlisted: !exists, items };
+        } catch (err) {
+            console.error("Error toggling wishlist item:", err);
+            UI.showToast("Could not update wishlist", "error");
+            return { success: false, error: err.message };
+        }
+    },
+
+    // Date Overlap & Availability checking
+    getRoomAvailability: async (roomId) => {
+        const room = await db.getRoomById(roomId);
+        const bookings = await db.getBookings();
+        
+        const bookedDatesSet = new Set();
+        const blockedDatesSet = new Set((room && room.blockedDates) || []);
+
+        if (bookings && bookings.length > 0) {
+            bookings.forEach(b => {
+                if (b.roomId === roomId && b.status !== 'cancelled') {
+                    const start = new Date(b.checkIn);
+                    const end = new Date(b.checkOut);
+                    for (let dt = new Date(start); dt < end; dt.setDate(dt.getDate() + 1)) {
+                        const dateStr = dt.toISOString().split('T')[0];
+                        bookedDatesSet.add(dateStr);
+                    }
+                }
+            });
+        }
+
+        const unavailableDatesSet = new Set([...bookedDatesSet, ...blockedDatesSet]);
+        return {
+            bookedDates: Array.from(bookedDatesSet),
+            blockedDates: Array.from(blockedDatesSet),
+            unavailableDates: Array.from(unavailableDatesSet),
+            room: room
+        };
+    },
+
     isRoomAvailable: async (roomId, checkInStr, checkOutStr) => {
+        const room = await db.getRoomById(roomId);
         const bookings = await db.getBookings();
         const searchIn = new Date(checkInStr);
         const searchOut = new Date(checkOutStr);
@@ -707,6 +787,17 @@ const db = {
                 }
             }
         }
+
+        if (room && room.blockedDates && room.blockedDates.length > 0) {
+            const blockedSet = new Set(room.blockedDates);
+            for (let dt = new Date(searchIn); dt < searchOut; dt.setDate(dt.getDate() + 1)) {
+                const dateStr = dt.toISOString().split('T')[0];
+                if (blockedSet.has(dateStr)) {
+                    return false; // Admin blocked!
+                }
+            }
+        }
+
         return true; // Available
     },
 
@@ -1268,6 +1359,60 @@ window.renderNavbar = () => {
     }
 };
 
+window.renderMobileTabBar = () => {
+    if (window.location.pathname.includes('/admin/')) return;
+    if (document.getElementById('kph-mobile-tab-bar')) return;
+
+    const user = KaghanDB.getCurrentUser();
+    const isDashboard = window.location.pathname.includes('/user/');
+    const pathPrefix = isDashboard ? '../' : '';
+    const currentPath = window.location.pathname;
+    const searchParams = new URLSearchParams(window.location.search);
+    const tabParam = searchParams.get('tab');
+
+    const tabBar = document.createElement('nav');
+    tabBar.id = 'kph-mobile-tab-bar';
+    tabBar.className = 'mobile-tab-bar';
+    tabBar.setAttribute('aria-label', 'Mobile Bottom Navigation');
+
+    const exploreActive = (!tabParam && (currentPath.includes('index.html') || currentPath.includes('rooms.html') || currentPath.endsWith('/'))) ? 'active' : '';
+    const wishlistActive = tabParam === 'wishlists' ? 'active' : '';
+    const tripsActive = tabParam === 'trips' ? 'active' : '';
+    const notifActive = tabParam === 'notifications' ? 'active' : '';
+    const accountActive = tabParam === 'account' ? 'active' : '';
+
+    const wishlistUrl = user ? `${pathPrefix}user/index.html?tab=wishlists` : `${pathPrefix}login.html`;
+    const tripsUrl = user ? `${pathPrefix}user/index.html?tab=trips` : `${pathPrefix}track.html`;
+    const notifUrl = user ? `${pathPrefix}user/index.html?tab=notifications` : `${pathPrefix}login.html`;
+    const accountUrl = user ? `${pathPrefix}user/index.html?tab=account` : `${pathPrefix}login.html`;
+
+    tabBar.innerHTML = `
+        <a href="${pathPrefix}index.html" class="mobile-tab-item ${exploreActive}">
+            <i class="fa-solid fa-compass"></i>
+            <span>Explore</span>
+        </a>
+        <a href="${wishlistUrl}" class="mobile-tab-item ${wishlistActive}">
+            <i class="fa-solid fa-heart"></i>
+            <span>Wishlists</span>
+        </a>
+        <a href="${tripsUrl}" class="mobile-tab-item ${tripsActive}">
+            <i class="fa-solid fa-suitcase"></i>
+            <span>Trips</span>
+        </a>
+        <a href="${notifUrl}" class="mobile-tab-item ${notifActive}">
+            <i class="fa-solid fa-bell"></i>
+            <span>Alerts</span>
+        </a>
+        <a href="${accountUrl}" class="mobile-tab-item ${accountActive}">
+            <i class="fa-solid fa-user"></i>
+            <span>Account</span>
+        </a>
+    `;
+
+    document.body.appendChild(tabBar);
+    document.body.classList.add('has-mobile-tab-bar');
+};
+
 // Centralized dynamic UI listener setup & script injections
 function initializeSharedUI() {
     const drawer = document.getElementById('mobile-drawer');
@@ -1286,8 +1431,9 @@ function initializeSharedUI() {
         menuClose.addEventListener('click', closeDrawer);
     }
 
-    // Automatically sync header auth state
+    // Automatically sync header auth state & mobile tab bar
     window.renderNavbar();
+    window.renderMobileTabBar();
 
     // Trigger chatbot, WhatsApp widget, and cookie consent injections
     setTimeout(() => {

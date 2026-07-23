@@ -99,26 +99,24 @@
         const bounds = L.latLngBounds();
 
         rooms.forEach(room => {
-            // Mock coordinates based on location name if missing
             let lat = room.lat;
             let lng = room.lng;
             
             if (!lat || !lng) {
-                // Fuzzy fallback coordinates for demonstration
                 const locStr = (room.location || '').toLowerCase();
                 if (locStr.includes('nathia')) { lat = 34.0722; lng = 73.3831; }
                 else if (locStr.includes('murree')) { lat = 33.9070; lng = 73.3943; }
-                else { lat = 33.7294 + (Math.random()*0.02 - 0.01); lng = 73.0931 + (Math.random()*0.02 - 0.01); } // Default ISB scattered
+                else { lat = 33.7294 + (Math.random()*0.02 - 0.01); lng = 73.0931 + (Math.random()*0.02 - 0.01); }
             }
 
-            const priceText = KaghanUI.formatPKR(room.priceDaily || room.price);
+            const priceText = KaghanUI.formatPKR(room.priceDaily || room.price || 0);
             
-            // Custom divIcon for price marker (Airbnb style)
+            // Custom divIcon for price bubble marker (Airbnb style)
             const icon = L.divIcon({
-                className: 'custom-map-marker',
-                html: `<div class="bg-white px-3 py-1.5 rounded-2xl shadow-lg border border-slate-200 text-xs font-bold text-slate-800 hover:bg-[#D4AF37] hover:text-white transition-colors cursor-pointer hover:scale-110 transform-gpu">${priceText}</div>`,
-                iconSize: [80, 30],
-                iconAnchor: [40, 15]
+                className: 'custom-map-price-marker',
+                html: `<div class="leaflet-price-bubble" data-room-id="${room.id}">${priceText}</div>`,
+                iconSize: [85, 32],
+                iconAnchor: [42, 16]
             });
 
             const marker = L.marker([lat, lng], { icon: icon }).addTo(mapInstance);
@@ -126,11 +124,14 @@
 
             // Popup logic
             marker.bindPopup(`
-                <div class="p-2 w-48 font-sans">
-                    <img src="${room.image}" class="w-full h-24 object-cover rounded-xl mb-2">
-                    <h4 class="font-bold text-sm text-slate-800 leading-tight">${room.name}</h4>
-                    <p class="text-xs text-[#D4AF37] font-bold mt-1">${priceText} / Night</p>
-                    <a href="booking.html?id=${room.id}" class="block text-center bg-slate-900 text-white text-xs py-1.5 rounded-lg mt-2 hover:bg-[#D4AF37]">Book Now</a>
+                <div class="p-2 w-52 font-sans">
+                    <div class="relative h-28 rounded-xl overflow-hidden mb-2">
+                        <img src="${KaghanSafe.escapeHTML(room.image)}" class="w-full h-full object-cover">
+                        <div class="absolute top-2 right-2 backdrop-blur-md bg-black/60 px-2 py-0.5 rounded-full text-[9px] font-bold text-[#C5A059]">★ ${room.rating || '5.0'}</div>
+                    </div>
+                    <h4 class="font-bold text-sm text-slate-900 leading-tight mb-1">${KaghanSafe.escapeHTML(room.name)}</h4>
+                    <p class="text-xs text-[#C5A059] font-bold">${priceText} <span class="text-slate-500 font-normal">/ Night</span></p>
+                    <a href="room-details.html?id=${room.id}" class="block text-center bg-slate-900 text-white text-xs py-1.5 rounded-xl mt-2 font-bold hover:bg-[#C5A059] transition-colors">View Stay</a>
                 </div>
             `);
 
@@ -142,6 +143,15 @@
         }
     }
 
+    function highlightMapBubble(roomId, isHovered) {
+        if (!mapInstance) return;
+        const bubbles = document.querySelectorAll(`.leaflet-price-bubble[data-room-id="${roomId}"]`);
+        bubbles.forEach(b => {
+            if (isHovered) b.classList.add('highlighted');
+            else b.classList.remove('highlighted');
+        });
+    }
+
     async function populateFilters() {
         const categories = await KaghanDB.getCategories();
         const locations = await KaghanDB.getLocations();
@@ -151,8 +161,9 @@
         if (locationSelect) {
             let currentVal = locationSelect.value;
             locationSelect.innerHTML = `<option value="all">All Locations</option>` +
-                locations.map(l => `<option value="${l.id}">${l.label}</option>`).join('');
-            if(locations.find(l => l.id === currentVal)) locationSelect.value = currentVal;
+                locations.map(l => `<option value="${l.id}">${l.label || l.name}</option>`).join('');
+            const matchingOpt = Array.from(locationSelect.options).find(opt => opt.value.toLowerCase() === (currentVal || '').toLowerCase());
+            if (matchingOpt) locationSelect.value = matchingOpt.value;
         }
 
         // Populate Category Select
@@ -160,8 +171,9 @@
         if (categorySelect) {
             let currentVal = categorySelect.value;
             categorySelect.innerHTML = `<option value="all">All Categories</option>` +
-                categories.map(c => `<option value="${c.id}">${c.label}</option>`).join('');
-            if(categories.find(c => c.id === currentVal)) categorySelect.value = currentVal;
+                categories.map(c => `<option value="${c.id}">${c.label || c.name}</option>`).join('');
+            const matchingOpt = Array.from(categorySelect.options).find(opt => opt.value.toLowerCase() === (currentVal || '').toLowerCase());
+            if (matchingOpt) categorySelect.value = matchingOpt.value;
         }
 
         // Populate Custom Category Filter Bar
@@ -380,7 +392,7 @@
         return cat ? cat.label : categoryId;
     }
 
-    function renderRooms(roomsList) {
+    async function renderRooms(roomsList) {
         const container = document.getElementById('rooms-grid');
         const fallback = document.getElementById('no-rooms-fallback');
         const countLabel = document.getElementById('results-count');
@@ -402,6 +414,8 @@
         if (fallback) fallback.classList.add('hidden');
         if (pagination) pagination.classList.remove('hidden');
 
+        const savedWishlist = await KaghanDB.getWishlist();
+
         // Pagination calculations
         const totalPages = Math.ceil(roomsList.length / itemsPerPage);
         const startIndex = (currentPage - 1) * itemsPerPage;
@@ -411,15 +425,19 @@
         if (container) {
             container.innerHTML = paginatedRooms.map((room, idx) => {
                 let mainImg = room.image || (room.images && room.images.length ? room.images[0] : '');
+                const isSaved = savedWishlist.includes(room.id);
                 return `
-                <div data-animate="fade-up" style="transition-delay: ${idx * 80}ms;" onclick="KaghanUI.openRoomDetailModal('${room.id}')" class="bg-white/80 backdrop-blur-md rounded-[2.5rem] overflow-hidden border border-[#C5A059]/10 shadow-[0_12px_40px_-15px_rgba(11,15,25,0.05)] hover:border-[#C5A059]/30 transition-all duration-500 group cursor-pointer flex flex-col h-full hover-lift">
+                <div data-room-id="${room.id}" data-animate="fade-up" style="transition-delay: ${idx * 80}ms;" onclick="KaghanUI.openRoomDetailModal('${room.id}')" class="bg-white/80 backdrop-blur-md rounded-[2.5rem] overflow-hidden border border-[#C5A059]/10 shadow-[0_12px_40px_-15px_rgba(11,15,25,0.05)] hover:border-[#C5A059]/30 transition-all duration-500 group cursor-pointer flex flex-col h-full hover-lift relative">
                     <div class="relative h-56 overflow-hidden bg-slate-100 shrink-0">
                         <img src="${KaghanSafe.escapeHTML(mainImg)}" alt="${KaghanSafe.escapeHTML(room.name || 'Luxury Suite')}" class="w-full h-full object-cover group-hover:scale-105 group-hover:brightness-95 transition-all duration-700">
+                        <button type="button" class="wishlist-btn ${isSaved ? 'active' : ''}" onclick="event.stopPropagation(); KaghanDB.toggleWishlistItem('${room.id}');" aria-label="Save to Wishlist">
+                            <i class="${isSaved ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
+                        </button>
                         <div class="absolute top-4 left-4 bg-white/95 backdrop-blur-md px-3.5 py-1.5 rounded-xl shadow-sm border border-white/20 text-[10px] font-bold uppercase tracking-wider text-[#C5A059] flex items-center gap-1.5">
                             ${room.originalPrice ? `<span class="line-through text-slate-400 font-semibold text-[9px]">${KaghanUI.formatPKR(room.originalPrice)}</span>` : ''}
                             <span>${KaghanUI.formatPKR(room.priceDaily || room.price || 0)} <span class="text-slate-400 lowercase font-medium">/night</span></span>
                         </div>
-                        <div class="absolute top-4 right-4 backdrop-blur-md bg-[#0B0F19]/65 px-3 py-1.5 rounded-full text-[9px] font-bold text-[#C5A059] border border-white/10 uppercase tracking-widest room-cat-label" data-cat="${room.type || ''}">
+                        <div class="absolute top-4 right-14 backdrop-blur-md bg-[#0B0F19]/65 px-3 py-1.5 rounded-full text-[9px] font-bold text-[#C5A059] border border-white/10 uppercase tracking-widest room-cat-label" data-cat="${room.type || ''}">
                             ${KaghanSafe.escapeHTML(room.type || 'Suite')}
                         </div>
                     </div>
@@ -469,6 +487,13 @@
             container.querySelectorAll('.room-cat-label').forEach(async el => {
                 const catId = el.getAttribute('data-cat');
                 el.innerText = await getCategoryLabel(catId);
+            });
+
+            // Card hover sync to map markers
+            container.querySelectorAll('[data-room-id]').forEach(card => {
+                const rId = card.getAttribute('data-room-id');
+                card.addEventListener('mouseenter', () => highlightMapBubble(rId, true));
+                card.addEventListener('mouseleave', () => highlightMapBubble(rId, false));
             });
 
             // Update map pins to match filtered list
@@ -638,27 +663,18 @@
     // Extract URL query params to auto-filter on load
     async function loadParams() {
         const urlParams = new URLSearchParams(window.location.search);
-        const category = urlParams.get('category');
+        const category = urlParams.get('category') || urlParams.get('type');
         const location = urlParams.get('location');
+        const keyword = urlParams.get('keyword');
 
         const categorySelect = document.getElementById('filter-category');
         const locationSelect = document.getElementById('filter-location');
+        const searchInput = document.getElementById('filter-search');
 
-        let shouldFilter = false;
-        if (category && categorySelect) {
-            categorySelect.value = category;
-            shouldFilter = true;
-        }
-        if (location && locationSelect) {
-            locationSelect.value = location;
-            shouldFilter = true;
-        }
+        if (category && categorySelect) categorySelect.value = category;
+        if (location && locationSelect) locationSelect.value = location;
+        if (keyword && searchInput) searchInput.value = keyword;
 
-        if (shouldFilter) {
-            await applyFilters();
-        } else {
-            // initial render
-            await applyFilters();
-        }
+        await applyFilters();
     }
 })();

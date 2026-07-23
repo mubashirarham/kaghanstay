@@ -44,5 +44,24 @@ service cloud.firestore {
       allow read: if true;
       allow write: if true;
     }
+
+    /* Owner-scoped rules for guest Wishlists and Notifications */
+    match /wishlists/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+
+    match /notifications/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if false; // Only written via Netlify Admin SDK serverless functions
+    }
+
+    /* Real-Time Guest & Admin Messaging Scoping */
+    match /chats/{guestUid} {
+      allow read, write: if request.auth != null && (request.auth.uid == guestUid || isAdmin());
+      
+      match /messages/{msgId} {
+        allow read, write: if request.auth != null && (request.auth.uid == guestUid || isAdmin());
+      }
+    }
   }
 }

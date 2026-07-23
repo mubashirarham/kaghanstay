@@ -78,6 +78,9 @@
                         <span class="text-sm font-black text-[#D4AF37]">${KaghanUI.formatPKR(room.price)}</span>
                     </div>
                     <div class="flex gap-2">
+                        <button onclick="openAdminRoomCalendar('${room.id}')" class="bg-amber-50 border border-amber-200 text-amber-700 text-[10px] font-bold px-2.5 py-2 rounded-lg hover:bg-amber-100 transition-all flex items-center gap-1" title="Manage Availability Calendar & Block Dates">
+                            <i class="fa-regular fa-calendar-days"></i> Calendar
+                        </button>
                         <button onclick="deleteRoomRecord('${room.id}')" class="bg-rose-50 border border-rose-200 text-rose-600 text-[10px] font-bold px-2.5 py-2 rounded-lg hover:bg-rose-100 hover:text-rose-700 transition-all" title="Delete Room Style">
                             <i class="fa-solid fa-trash-can"></i>
                         </button>
@@ -354,9 +357,43 @@
         const form = document.getElementById('add-room-form');
         if (!form) return;
         
+        let currentWizardStep = 1;
+        window.setAddRoomStep = function(stepNum) {
+            currentWizardStep = stepNum;
+            for (let i = 1; i <= 6; i++) {
+                const stepEl = document.getElementById(`add-wizard-step-${i}`);
+                const nodeEl = document.getElementById(`wizard-node-${i}`);
+                if (stepEl) {
+                    if (i === stepNum) stepEl.classList.remove('hidden');
+                    else stepEl.classList.add('hidden');
+                }
+                if (nodeEl) {
+                    nodeEl.classList.remove('active', 'completed');
+                    if (i === stepNum) nodeEl.classList.add('active');
+                    else if (i < stepNum) nodeEl.classList.add('completed');
+                }
+            }
+            if (stepNum === 6) {
+                const name = document.getElementById('add-room-name')?.value || '—';
+                const price = document.getElementById('add-room-price')?.value || '0';
+                const type = document.getElementById('add-room-type')?.value || '—';
+                const summaryEl = document.getElementById('add-wizard-review-summary');
+                if (summaryEl) {
+                    summaryEl.innerHTML = `
+                        <div class="p-5 bg-slate-50 rounded-2xl border border-slate-200 text-xs space-y-2">
+                            <div class="font-bold text-sm text-slate-900">${KaghanSafe.escapeHTML(name)}</div>
+                            <div class="text-slate-600">Style: <strong>${KaghanSafe.escapeHTML(type)}</strong> • Rate: <strong>PKR ${price}</strong>/night</div>
+                            <div class="text-emerald-600 font-bold pt-2"><i class="fa-solid fa-circle-check mr-1"></i> All steps completed! Click Publish Suite below to add to inventory.</div>
+                        </div>
+                    `;
+                }
+            }
+        };
+
         window.openAddRoomModal = async () => {
             await populateSelects();
             renderGalleryPreview('add-room-gallery-preview', 'add-room-images-data', []);
+            window.setAddRoomStep(1);
             const modal = document.getElementById('add-room-modal');
             modal.classList.remove('hidden');
             modal.classList.add('flex');
@@ -520,6 +557,209 @@
             }
         } else {
             KaghanUI.showToast('Failed to delete room style.', 'error');
+        }
+    };
+
+    // Admin Availability Calendar & Blocked Dates Management
+    let activeAdminRoomId = null;
+    let activeAdminBlockedDates = new Set();
+    let activeAdminBookedDatesMap = new Map(); // isoStr -> booking details
+
+    window.openAdminRoomCalendar = async (roomId) => {
+        activeAdminRoomId = roomId;
+        const room = await KaghanDB.getRoomById(roomId);
+        if (!room) return;
+
+        const nameLbl = document.getElementById('admin-calendar-room-name');
+        if (nameLbl) nameLbl.textContent = `Calendar: ${room.name}`;
+
+        activeAdminBlockedDates = new Set(room.blockedDates || []);
+        
+        // Fetch active bookings for this room
+        const bookings = await KaghanDB.getBookings();
+        activeAdminBookedDatesMap = new Map();
+
+        if (bookings && bookings.length > 0) {
+            bookings.forEach(b => {
+                if (b.roomId === roomId && b.status !== 'cancelled') {
+                    const start = new Date(b.checkIn);
+                    const end = new Date(b.checkOut);
+                    for (let dt = new Date(start); dt < end; dt.setDate(dt.getDate() + 1)) {
+                        const iso = dt.toISOString().split('T')[0];
+                        activeAdminBookedDatesMap.set(iso, b);
+                    }
+                }
+            });
+        }
+
+        renderAdminCalendarGrid();
+
+        const modal = document.getElementById('admin-room-calendar-modal');
+        if (modal) {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                const content = modal.querySelector('.transform');
+                if (content) content.classList.remove('scale-95');
+            }, 50);
+        }
+    };
+
+    window.closeAdminRoomCalendarModal = () => {
+        const modal = document.getElementById('admin-room-calendar-modal');
+        if (!modal) return;
+        modal.classList.add('opacity-0');
+        const content = modal.querySelector('.transform');
+        if (content) content.classList.add('scale-95');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            activeAdminRoomId = null;
+        }, 300);
+    };
+
+    function renderAdminCalendarGrid() {
+        const container = document.getElementById('admin-calendar-grid-container');
+        const summary = document.getElementById('admin-calendar-summary');
+        if (!container) return;
+
+        if (summary) {
+            summary.textContent = `${activeAdminBlockedDates.size} date(s) currently blocked by admin`;
+        }
+
+        const today = new Date();
+        today.setHours(0,0,0,0);
+
+        let html = `<div class="grid grid-cols-1 md:grid-cols-2 gap-8 select-none">`;
+
+        for (let m = 0; m < 2; m++) {
+            const monthDate = new Date(today.getFullYear(), today.getMonth() + m, 1);
+            const year = monthDate.getFullYear();
+            const month = monthDate.getMonth();
+            const monthName = monthDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+            const firstDayIndex = new Date(year, month, 1).getDay();
+            const totalDays = new Date(year, month + 1, 0).getDate();
+
+            html += `
+                <div>
+                    <div class="text-center font-bold text-slate-900 text-sm mb-3 outfit">${monthName}</div>
+                    <div class="grid grid-cols-7 gap-1 text-center text-[10px] uppercase font-bold text-slate-400 mb-2">
+                        <div>Su</div><div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div>
+                    </div>
+                    <div class="grid grid-cols-7 gap-1 text-center text-xs font-medium">
+            `;
+
+            for (let i = 0; i < firstDayIndex; i++) {
+                html += `<div></div>`;
+            }
+
+            for (let d = 1; d <= totalDays; d++) {
+                const cellDate = new Date(year, month, d);
+                cellDate.setHours(0,0,0,0);
+                const isoStr = cellDate.getFullYear() + '-' + String(cellDate.getMonth() + 1).padStart(2, '0') + '-' + String(cellDate.getDate()).padStart(2, '0');
+
+                const isPast = cellDate < today;
+                const isGuestReserved = activeAdminBookedDatesMap.has(isoStr);
+                const isAdminBlocked = activeAdminBlockedDates.has(isoStr);
+
+                let cellClass = "h-9 rounded-xl flex flex-col items-center justify-center font-bold text-xs transition-all relative cursor-pointer ";
+                let titleAttr = "Click to block date";
+
+                if (isPast) {
+                    cellClass += "text-slate-300 bg-slate-50 cursor-not-allowed ";
+                    titleAttr = "Past date";
+                } else if (isGuestReserved) {
+                    const booking = activeAdminBookedDatesMap.get(isoStr);
+                    cellClass += "bg-blue-500 text-white shadow-sm cursor-not-allowed ";
+                    titleAttr = `Guest Booking #${booking.id || ''} (${booking.userName || booking.guestName || 'Guest'})`;
+                } else if (isAdminBlocked) {
+                    cellClass += "bg-rose-500 text-white shadow-sm hover:bg-rose-600 ";
+                    titleAttr = "Admin Blocked - Click to unblock";
+                } else {
+                    cellClass += "bg-emerald-50 text-emerald-700 border border-emerald-200/60 hover:bg-rose-100 hover:text-rose-700 hover:border-rose-300 ";
+                    titleAttr = "Available - Click to block";
+                }
+
+                const clickAttr = (isPast || isGuestReserved) ? '' : `onclick="toggleAdminBlockDate('${isoStr}')"`;
+
+                html += `
+                    <div class="${cellClass}" ${clickAttr} title="${titleAttr}">
+                        <span>${d}</span>
+                        ${isAdminBlocked ? '<span class="text-[8px] leading-none font-bold uppercase mt-0.5">Blocked</span>' : ''}
+                        ${isGuestReserved ? '<span class="text-[8px] leading-none font-bold uppercase mt-0.5">Booked</span>' : ''}
+                    </div>
+                `;
+            }
+
+            html += `</div></div>`;
+        }
+
+        html += `</div>`;
+        container.innerHTML = html;
+    }
+
+    window.toggleAdminBlockDate = (isoStr) => {
+        if (activeAdminBlockedDates.has(isoStr)) {
+            activeAdminBlockedDates.delete(isoStr);
+        } else {
+            activeAdminBlockedDates.add(isoStr);
+        }
+        renderAdminCalendarGrid();
+    };
+
+    window.adminQuickBlockWeekend = () => {
+        const today = new Date();
+        const nextSat = new Date();
+        nextSat.setDate(today.getDate() + ((6 - today.getDay() + 7) % 7));
+        const nextSun = new Date(nextSat);
+        nextSun.setDate(nextSat.getDate() + 1);
+
+        const satIso = nextSat.toISOString().split('T')[0];
+        const sunIso = nextSun.toISOString().split('T')[0];
+
+        activeAdminBlockedDates.add(satIso);
+        activeAdminBlockedDates.add(sunIso);
+        renderAdminCalendarGrid();
+        if (window.KaghanUI) KaghanUI.showToast("Next weekend dates added to blocked list", "info");
+    };
+
+    window.adminClearAllBlocks = () => {
+        activeAdminBlockedDates.clear();
+        renderAdminCalendarGrid();
+        if (window.KaghanUI) KaghanUI.showToast("Cleared all admin blocked dates", "info");
+    };
+
+    window.saveAdminBlockedDates = async () => {
+        if (!activeAdminRoomId) return;
+
+        const btn = document.getElementById('save-admin-blocked-dates-btn');
+        const origText = btn ? btn.innerHTML : 'Save Availability';
+        if (btn) {
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+            btn.disabled = true;
+        }
+
+        try {
+            const blockedArray = Array.from(activeAdminBlockedDates).sort();
+            const success = await KaghanDB.updateRoom(activeAdminRoomId, { blockedDates: blockedArray });
+
+            if (success) {
+                if (window.KaghanUI) KaghanUI.showToast("Listing availability & blocked dates updated!", "success");
+                closeAdminRoomCalendarModal();
+                if (window.AdminDashboardModule) {
+                    await window.AdminDashboardModule.refreshAll();
+                } else {
+                    renderRooms();
+                }
+            } else {
+                if (window.KaghanUI) KaghanUI.showToast("Failed to update availability.", "error");
+            }
+        } finally {
+            if (btn) {
+                btn.innerHTML = origText;
+                btn.disabled = false;
+            }
         }
     };
 

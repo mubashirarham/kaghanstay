@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -10,7 +10,7 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Global CSS -->
-    <link rel="stylesheet" href="../assets/css/style.css?v=3">
+    <link rel="stylesheet" href="../assets/css/style.css?v=4">
 </head>
 <body class="bg-[#F8FAFC] text-[#0F172A] overflow-x-hidden font-sans pt-24">
 
@@ -147,6 +147,33 @@
                     <div id="previous-bookings-empty-state" class="hidden text-center py-10">
                         <p class="text-slate-400 text-xs">No previous stays history.</p>
                     </div>
+                <!-- Real-Time Host Chat Card -->
+                <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md space-y-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h2 class="text-lg font-bold outfit text-slate-900 flex items-center gap-2">
+                                <i class="fa-solid fa-comments text-[#C5A059]"></i> Live Host Chat & Support
+                            </h2>
+                            <p class="text-xs text-slate-500 font-light mt-0.5">Chat directly with KPH Stay resort management in real-time.</p>
+                        </div>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-600 text-[10px] font-bold">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Live Support
+                        </span>
+                    </div>
+
+                    <!-- Live Guest Chat Stream Box -->
+                    <div id="guest-chat-stream" class="bg-slate-50/60 rounded-2xl p-4 md:p-6 border border-slate-100 h-64 overflow-y-auto space-y-4">
+                        <!-- Messages loaded dynamically -->
+                        <div class="text-center text-xs text-slate-400 py-12">Loading messages...</div>
+                    </div>
+
+                    <!-- Message Input Form -->
+                    <form id="guest-chat-form" class="flex items-center gap-3">
+                        <input type="text" id="guest-chat-input" placeholder="Type your inquiry to resort host..." required autocomplete="off" class="flex-grow border border-slate-200 rounded-2xl px-4 py-3 text-xs bg-white text-slate-800 outline-none focus:border-[#C5A059] transition-all">
+                        <button type="submit" class="bg-[#0B0F19] text-white px-5 py-3 rounded-2xl text-xs font-bold uppercase tracking-wider hover:bg-[#C5A059] transition-all shadow-md flex items-center gap-2 shrink-0">
+                            <i class="fa-solid fa-paper-plane text-xs"></i> Send
+                        </button>
+                    </form>
                 </div>
             </div>
 
@@ -304,6 +331,7 @@
     <script src="../assets/js/user/bookings.js"></script>
     <script src="../assets/js/user/reviews.js"></script>
     <script src="../assets/js/user/profile.js"></script>
+    <script src="../assets/js/messaging.js"></script>
     <script src="../assets/js/user/dashboard.js"></script>
 </body>
 </html>
