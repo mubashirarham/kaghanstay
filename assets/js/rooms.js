@@ -355,7 +355,8 @@
                     const matchesLocation = location === 'all' || 
                                            rLoc === location.toLowerCase() || 
                                            rLocName === location.toLowerCase() ||
-                                           rLoc.includes(location.toLowerCase());
+                                           rLoc.includes(location.toLowerCase()) ||
+                                           (room.locationId && room.locationId.toLowerCase() === location.toLowerCase());
 
                     const matchesPrice = isMaxCeiling || rPrice <= sliderVal;
 
@@ -582,18 +583,18 @@
                 <div class="p-8">
                     <div class="flex justify-between items-start mb-4">
                         <div>
-                            <h2 class="text-2xl font-bold outfit text-slate-900">${room.name}</h2>
+                            <h2 class="text-2xl font-bold outfit text-slate-900">${KaghanSafe.escapeHTML(room.name)}</h2>
                             <div class="text-xs text-[#D4AF37] font-extrabold flex items-center gap-1 mt-1">
                                 <i class="fa-solid fa-location-dot"></i>
-                                <span>${room.locationName || room.location}</span>
+                                <span>${KaghanSafe.escapeHTML(room.locationName || room.location || '')}</span>
                             </div>
-                            <p class="text-slate-400 text-xs mt-1.5">Capacity: Up to ${room.maxGuests} Guests</p>
+                            <p class="text-slate-400 text-xs mt-1.5">Capacity: Up to ${room.maxGuests || 'N/A'} Guests</p>
                         </div>
                         <div class="text-right">
                             <span class="text-[#D4AF37] font-bold text-sm block flex items-center justify-end gap-1">
-                                <i class="fa-solid fa-star"></i> ${room.rating} 
+                                <i class="fa-solid fa-star"></i> ${room.rating || '5.0'} 
                             </span>
-                            <span class="text-slate-400 text-[10px] uppercase font-semibold">(${room.reviewsCount} verified reviews)</span>
+                            <span class="text-slate-400 text-[10px] uppercase font-semibold">(${room.reviewsCount || 0} verified reviews)</span>
                         </div>
                     </div>
                     
@@ -603,10 +604,10 @@
 
                     <h4 class="text-xs uppercase tracking-widest text-[#D4AF37] font-bold mb-3">Premium Amenities Included</h4>
                     <div class="grid grid-cols-2 gap-2 mb-8">
-                        ${room.amenities.map(a => `
+                        ${(room.amenities || []).map(a => `
                             <div class="flex items-center gap-2 text-slate-700 text-xs">
                                 <i class="fa-solid fa-circle-check text-[#D4AF37]"></i>
-                                <span>${a}</span>
+                                <span>${KaghanSafe.escapeHTML(a)}</span>
                             </div>
                         `).join('')}
                     </div>
@@ -614,7 +615,7 @@
                     <div class="border-t border-slate-100 pt-6 flex justify-between items-center">
                         <div>
                             <span class="text-slate-400 text-[10px] uppercase tracking-wider block font-semibold">Price per night</span>
-                            <span class="text-2xl font-black text-[#D4AF37] outfit">${KaghanUI.formatPKR(room.price)}</span>
+                            <span class="text-2xl font-black text-[#D4AF37] outfit">${KaghanUI.formatPKR(room.priceDaily || room.price || 0)}</span>
                         </div>
                         <a href="booking.html?room=${room.id}" class="bg-[#D4AF37] text-white font-bold px-8 py-3.5 rounded-2xl hover:bg-[#0F172A] transition-all shadow-lg text-sm">
                             Instant Book
@@ -666,6 +667,11 @@
         const category = urlParams.get('category') || urlParams.get('type');
         const location = urlParams.get('location');
         const keyword = urlParams.get('keyword');
+        // Hero search sends these param names:
+        const checkin  = urlParams.get('checkin');
+        const checkout = urlParams.get('checkout');
+        const guests   = urlParams.get('guests');
+        const stayType = urlParams.get('stayType');
 
         const categorySelect = document.getElementById('filter-category');
         const locationSelect = document.getElementById('filter-location');
@@ -674,6 +680,21 @@
         if (category && categorySelect) categorySelect.value = category;
         if (location && locationSelect) locationSelect.value = location;
         if (keyword && searchInput) searchInput.value = keyword;
+
+        // Sync hidden date inputs if search-widget IDs exist on this page
+        if (checkin) {
+            const el = document.getElementById('search-check-in');
+            if (el) el.value = checkin;
+        }
+        if (checkout) {
+            const el = document.getElementById('search-check-out');
+            if (el) el.value = checkout;
+        }
+        if (guests) {
+            const el = document.getElementById('search-guests');
+            if (el) el.value = guests;
+        }
+        // stayType is informational (no filter-stayType element on rooms page currently)
 
         await applyFilters();
     }

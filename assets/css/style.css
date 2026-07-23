@@ -160,10 +160,15 @@ input[type="range"]:focus { box-shadow:none !important; border:none !important; 
 .btn-shimmer:hover::after { left:100%; }
 
 /* Global buttons premium visual feedback */
-button, .btn, nav a, a.border, a.bg-gold {
+button, .btn, a.border, a.bg-gold {
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
-button:hover, .btn:hover {
+nav a {
+    transition: color 0.25s ease, opacity 0.25s ease;
+}
+/* Only apply lift to action buttons — not to special-purpose buttons that handle their own transforms */
+button:not(.wishlist-btn):not(.category-filter-btn):not(.dropdown-item):not([class*="rounded-full"][class*="w-7"]):not([class*="rounded-full"][class*="w-8"]):not([class*="rounded-full"][class*="w-9"]):not([class*="rounded-full"][class*="w-10"]):hover,
+.btn:hover {
     transform: translateY(-2px);
 }
 button:active, .btn:active {
@@ -894,7 +899,8 @@ button, a, select, input[type="submit"], input[type="button"],
 /* But let inline/badge elements be smaller */
 .stay-badge-daily, .stay-badge-weekly, .stay-badge-monthly,
 span.badge-gold, #hero-stay-type-tags button,
-.rounded-full.text-xs { min-height: unset; }
+.rounded-full.text-xs, .dropdown-item,
+.mobile-tab-item { min-height: unset; }
 
 /* â”€â”€ CATEGORY FILTER BAR SCROLL â”€â”€ */
 .category-filter-scroll {

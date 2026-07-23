@@ -1217,7 +1217,7 @@ function injectChatbot() {
             bubble.className = 'bg-slate-800/60 text-slate-300 p-3 rounded-2xl rounded-tl-none border border-slate-700/40 max-w-[85%] self-start leading-relaxed animate-fade-in shadow-sm';
         }
         
-        bubble.innerHTML = msg.replace(/\n/g, '<br>');
+        bubble.innerHTML = KaghanSafe.sanitizeHTML(msg.replace(/\n/g, '<br>'));
         messagesArea.appendChild(bubble);
         messagesArea.scrollTop = messagesArea.scrollHeight;
     }
@@ -1230,7 +1230,7 @@ function injectChatbot() {
             bubble.className = 'bg-slate-800/60 text-slate-300 p-3 rounded-2xl rounded-tl-none border border-slate-700/40 max-w-[85%] self-start leading-relaxed shadow-sm';
         }
         
-        bubble.innerHTML = msg.replace(/\n/g, '<br>');
+        bubble.innerHTML = KaghanSafe.sanitizeHTML(msg.replace(/\n/g, '<br>'));
         messagesArea.appendChild(bubble);
     }
 
@@ -1642,8 +1642,8 @@ window.downloadPDFInvoice = async function(bookingId) {
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('/service-worker.js')
-            .then((reg) => console.log('[KPH Stay] Service Worker registered successfully:', reg.scope))
-            .catch((err) => console.error('[KPH Stay] Service Worker registration failed:', err));
+            .then(() => { /* Service Worker registered */ })
+            .catch(() => { /* Service Worker registration failed - running without offline support */ });
     });
 }
 
