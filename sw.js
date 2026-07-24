@@ -1,10 +1,10 @@
-// Kaghan Stay Service Worker for PWA Readiness & Offline Resilience
-const CACHE_NAME = 'kaghan-stay-v1';
+// Kaghan Stay Service Worker for PWA Readiness & Offline Resilience (v10)
+const CACHE_NAME = 'kaghan-stay-v10';
 const ASSETS_TO_CACHE = [
     '/',
     '/index.html',
-    '/assets/css/style.css',
-    '/assets/js/shared.js',
+    '/assets/css/style.css?v=10',
+    '/assets/js/shared.js?v=10',
     '/assets/images/logo.png',
     '/manifest.json'
 ];
@@ -23,6 +23,7 @@ self.addEventListener('activate', (event) => {
             return Promise.all(
                 cacheNames.map((cache) => {
                     if (cache !== CACHE_NAME) {
+                        console.log('[Service Worker] Deleting obsolete cache:', cache);
                         return caches.delete(cache);
                     }
                 })
@@ -42,17 +43,29 @@ self.addEventListener('fetch', (event) => {
     // Bypass cross-origin requests — let browser handle them natively under page CSP
     if (url.origin !== self.location.origin) return;
 
+    // Network-First strategy for HTML & JS resources to ensure instant updates
     event.respondWith(
-        caches.match(event.request).then((cachedResponse) => {
-            if (cachedResponse) {
-                return cachedResponse;
-            }
-            return fetch(event.request).catch(() => {
-                if (event.request.mode === 'navigate') {
-                    return caches.match('/index.html').then(r => r || new Response('Offline', { status: 503 }));
+        fetch(event.request)
+            .then((networkResponse) => {
+                if (networkResponse && networkResponse.status === 200) {
+                    const responseClone = networkResponse.clone();
+                    caches.open(CACHE_NAME).then((cache) => {
+                        cache.put(event.request, responseClone);
+                    });
                 }
-                return new Response('', { status: 503 });
-            });
-        })
+                return networkResponse;
+            })
+            .catch(() => {
+                // Fallback to cache if network is offline or fails
+                return caches.match(event.request).then((cachedResponse) => {
+                    if (cachedResponse) {
+                        return cachedResponse;
+                    }
+                    if (event.request.mode === 'navigate') {
+                        return caches.match('/index.html').then(r => r || new Response('Offline', { status: 503 }));
+                    }
+                    return new Response('', { status: 503 });
+                });
+            })
     );
 });

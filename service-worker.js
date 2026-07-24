@@ -1,9 +1,4 @@
-const CACHE_NAME = 'kph-stay-cache-v9';
-// Only cache same-origin static assets.
-// External CDN resources must NOT be pre-cached: the SW fetch() runs under the
-// page CSP and any cross-origin fetch is blocked, causing install failures.
-// NOTE: shared.js is NOT listed here because HTML loads it as shared.js?v=3
-// (different cache key). It will be cached on first visit by the fetch handler.
+const CACHE_NAME = 'kph-stay-cache-v10';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -16,8 +11,8 @@ const ASSETS_TO_CACHE = [
   '/terms.html',
   '/privacy.html',
   '/manifest.json',
-  '/assets/css/style.css',
-  '/assets/js/rooms.js',
+  '/assets/css/style.css?v=10',
+  '/assets/js/rooms.js?v=10',
   '/assets/images/logo.png'
 ];
 
@@ -56,67 +51,39 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetch Event - Stale-While-Revalidate caching strategy
+// Fetch Event - Network-First caching strategy
 self.addEventListener('fetch', (event) => {
-  // Bypassing non-GET requests (e.g. POST chatbot, Firestore updates)
-  if (event.request.method !== 'GET') {
-    return;
-  }
+  if (event.request.method !== 'GET') return;
 
   const url = new URL(event.request.url);
 
-  // Bypass Google Firestore API endpoints and external analytics (handled natively or ignored)
-  if (url.origin.includes('firestore.googleapis.com') || url.origin.includes('google-analytics.com')) {
-    return;
-  }
+  // Bypass Firestore, Netlify API, and external cross-origin requests
+  if (url.origin.includes('firestore.googleapis.com') || url.pathname.includes('/.netlify/')) return;
 
-  // Bypass all admin panel pages and assets from caching to prevent out-of-sync dashboard issues
-  if (url.pathname.includes('/admin/') || url.pathname.includes('/admin')) {
-    return;
-  }
-
-  // Bypass ALL external / cross-origin requests — let the browser handle them
-  // directly. The SW fetch() runs under the page CSP so any cross-origin fetch
-  // that is not in connect-src will be blocked and produce a TypeError.
-  if (url.origin !== self.location.origin) {
-    return;
-  }
+  // Bypass cross-origin requests
+  if (url.origin !== self.location.origin) return;
 
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        // Only revalidate same-origin assets in the background.
-        // Cross-origin requests (CDN tiles, etc.) are bypassed above, so this
-        // branch is only reached for same-origin URLs — safe to re-fetch.
-        fetch(event.request)
-          .then((networkResponse) => {
-            if (networkResponse && networkResponse.status === 200) {
-              caches.open(CACHE_NAME).then((cache) => cache.put(event.request, networkResponse));
-            }
-          })
-          .catch(() => { /* offline — ignore background revalidation failure */ });
-        
-        return cachedResponse;
-      }
-
-      // If not cached, retrieve over network
-      return fetch(event.request)
-        .then((networkResponse) => {
-          // Cache successful responses for local static files
-          if (networkResponse.status === 200 && (url.origin === location.origin || url.origin.includes('unsplash.com'))) {
-            const responseClone = networkResponse.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
+    fetch(event.request)
+      .then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200) {
+          const responseClone = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseClone);
+          });
+        }
+        return networkResponse;
+      })
+      .catch(() => {
+        return caches.match(event.request).then((cachedResponse) => {
+          if (cachedResponse) {
+            return cachedResponse;
           }
-          return networkResponse;
-        })
-        .catch(() => {
-          // Offline fallback for navigation requests
           if (event.request.mode === 'navigate') {
             return caches.match('/index.html').then(r => r || new Response('Offline', { status: 503 }));
           }
-          // For non-navigation requests (scripts, styles, images) return empty 503
           return new Response('', { status: 503 });
         });
-    })
+      })
   );
 });

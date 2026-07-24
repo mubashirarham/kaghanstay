@@ -3,8 +3,8 @@ const { z } = require('zod');
 
 const BookingSchema = z.object({
     roomId: z.string().min(1, "Room ID is required"),
-    checkIn: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid check-in date format. Use YYYY-MM-DD."),
-    checkOut: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid check-out date format. Use YYYY-MM-DD."),
+    checkIn: z.string().min(1, "Check-in date is required"),
+    checkOut: z.string().min(1, "Check-out date is required"),
     guestName: z.string().min(1, "Guest name is required"),
     guestEmail: z.string().email("Invalid email address."),
     guestPhone: z.string().optional().nullable(),
@@ -43,7 +43,7 @@ exports.handler = async (event, context) => {
     if (!fdb) {
         return {
             statusCode: 500,
-            headers: { 'Access-Control-Allow-Origin': allowedOrigin },
+            headers: { 'Access-Control-Allow-Origin': allowedOrigin, 'Content-Type': 'application/json' },
             body: JSON.stringify({ error: 'Database service is currently unavailable.' })
         };
     }
@@ -56,27 +56,31 @@ exports.handler = async (event, context) => {
         if (!validation.success) {
             return {
                 statusCode: 400,
-                headers: { 'Access-Control-Allow-Origin': allowedOrigin },
+                headers: { 'Access-Control-Allow-Origin': allowedOrigin, 'Content-Type': 'application/json' },
                 body: JSON.stringify({ error: 'Validation failed: ' + validation.error.errors.map(e => e.message).join(', ') })
             };
         }
 
         const { roomId, checkIn, checkOut, guestName, guestEmail, guestPhone, couponCode, billingCycle, pdfBase64, idToken, upgrades, force } = validation.data;
 
-        const searchIn = new Date(checkIn);
-        const searchOut = new Date(checkOut);
+        // Clean date strings (extract YYYY-MM-DD if ISO format passed)
+        const checkInStr = checkIn.includes('T') ? checkIn.split('T')[0] : checkIn;
+        const checkOutStr = checkOut.includes('T') ? checkOut.split('T')[0] : checkOut;
+
+        const searchIn = new Date(checkInStr);
+        const searchOut = new Date(checkOutStr);
         const today = new Date();
         today.setHours(0,0,0,0);
 
-        if (searchIn >= searchOut || searchIn < today) {
+        if (isNaN(searchIn.getTime()) || isNaN(searchOut.getTime()) || searchIn >= searchOut || searchIn < today) {
             return {
                 statusCode: 400,
-                headers: { 'Access-Control-Allow-Origin': allowedOrigin },
+                headers: { 'Access-Control-Allow-Origin': allowedOrigin, 'Content-Type': 'application/json' },
                 body: JSON.stringify({ error: 'Invalid check-in or check-out date parameters.' })
             };
         }
 
-        // 2. Authenticate user if token is provided
+        // Authenticate user if token is provided
         let userId = 'usr-guest-walkin';
         let isAdmin = false;
         if (idToken && auth) {
@@ -85,17 +89,110 @@ exports.handler = async (event, context) => {
                 userId = decodedToken.uid;
                 isAdmin = await resolveIsAdmin(decodedToken, fdb);
             } catch (authErr) {
-                console.warn("Invalid ID Token provided, falling back to guest walk-in:", authErr);
+                console.warn("Invalid ID Token provided, falling back to guest walk-in:", authErr.message);
             }
         }
 
-        let bookingId = '';
-        let calculatedPrice = 0;
-        let roomName = 'Luxury Suite';
+        // 1. Fetch Room detail outside transaction
+        const roomRef = fdb.collection('rooms').doc(roomId);
+        const roomDoc = await roomRef.get();
+        if (!roomDoc.exists) {
+            return {
+                statusCode: 400,
+                headers: { 'Access-Control-Allow-Origin': allowedOrigin, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ error: 'Requested accommodation style not found.' })
+            };
+        }
+        const room = roomDoc.data();
+        const roomName = room.name || 'Luxury Suite';
 
-        // 3. Perform Availability Check and Write inside Transaction to prevent TOCTOU race condition (M-04)
+        // 2. Perform Overlap check outside transaction
+        if (!force || !isAdmin) {
+            const bookingsSnap = await fdb.collection('bookings').where('roomId', '==', roomId).get();
+            for (const doc of bookingsSnap.docs) {
+                const b = doc.data();
+                if (b.status !== 'cancelled') {
+                    const bIn = new Date(b.checkIn);
+                    const bOut = new Date(b.checkOut);
+                    if (searchIn < bOut && searchOut > bIn) {
+                        return {
+                            statusCode: 400,
+                            headers: { 'Access-Control-Allow-Origin': allowedOrigin, 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ error: 'Suite is already reserved for the selected dates.' })
+                        };
+                    }
+                }
+            }
+        }
+
+        // 3. Calculate pricing & addons
+        const stayNights = Math.max(1, Math.ceil((searchOut - searchIn) / (1000 * 3600 * 24)));
+        let rate = room.price || room.priceDaily || 0;
+        let subtotal = 0;
+
+        if (billingCycle === 'weekly' && room.priceWeekly) {
+            rate = room.priceWeekly;
+            subtotal = Math.round((rate / 7) * stayNights);
+        } else if (billingCycle === 'monthly' && room.priceMonthly) {
+            rate = room.priceMonthly;
+            subtotal = Math.round((rate / 30) * stayNights);
+        } else {
+            rate = room.priceDaily || room.price || 0;
+            subtotal = rate * stayNights;
+        }
+
+        const tax = Math.round(subtotal * 0.15); // 15% GST
+
+        // Fetch upgrades outside transaction
+        let dbUpgrades = [];
+        const upgradesSnap = await fdb.collection('upgrades').get();
+        upgradesSnap.forEach(doc => dbUpgrades.push({ id: doc.id, ...doc.data() }));
+        if (dbUpgrades.length === 0) {
+            dbUpgrades = [
+                { id: 'upgrade-airport-shuttle', name: 'Airport VIP Transfer', price: 5000, priceType: 'flat' },
+                { id: 'upgrade-dining-breakfast', name: 'In-suite Dining Package', price: 2500, priceType: 'night' },
+                { id: 'upgrade-spa-tray', name: 'Organic Spa Amenities Tray', price: 1500, priceType: 'flat' }
+            ];
+        }
+
+        let addonsTotal = 0;
+        const selectedUpgradesDetails = [];
+        if (upgrades && Array.isArray(upgrades)) {
+            upgrades.forEach(upId => {
+                const matched = dbUpgrades.find(u => u.id === upId);
+                if (matched) {
+                    const price = Number(matched.price || 0);
+                    const cost = matched.priceType === 'night' ? price * stayNights : price;
+                    addonsTotal += cost;
+                    selectedUpgradesDetails.push({
+                        id: matched.id,
+                        name: matched.name,
+                        price: price,
+                        priceType: matched.priceType || 'flat'
+                    });
+                }
+            });
+        }
+
+        // Validate coupon
+        let couponDiscount = 0;
+        if (couponCode) {
+            const couponRef = fdb.collection('coupons').doc(couponCode.toUpperCase());
+            const couponDoc = await couponRef.get();
+            if (couponDoc.exists) {
+                const coupon = couponDoc.data();
+                if (coupon.isActive) {
+                    couponDiscount = Math.round(subtotal * ((coupon.discountPercentage || 0) / 100));
+                    couponDiscount = Math.min(couponDiscount, subtotal);
+                }
+            }
+        }
+
+        const calculatedPrice = (subtotal + tax + addonsTotal) - couponDiscount;
+        let bookingId = '';
+
+        // 4. Run transactional write only
         await fdb.runTransaction(async (transaction) => {
-            // Allocate unique booking ID with collision check
             let allocatedId = generateBookingId();
             let attempts = 0;
             let existingDoc = await transaction.get(fdb.collection('bookings').doc(allocatedId));
@@ -109,122 +206,15 @@ exports.handler = async (event, context) => {
             }
             bookingId = allocatedId;
 
-            // A. Fetch Room detail to compute price server-side
-            const roomRef = fdb.collection('rooms').doc(roomId);
-            const roomDoc = await transaction.get(roomRef);
-            if (!roomDoc.exists) {
-                throw new Error('Requested accommodation style not found.');
-            }
-            const room = roomDoc.data();
-            roomName = room.name;
-
-            // Compute stay duration
-            const stayNights = Math.max(1, Math.ceil((searchOut - searchIn) / (1000 * 3600 * 24)));
-            let rate = room.price || room.priceDaily || 0;
-            let subtotal = 0;
-
-            if (billingCycle === 'weekly' && room.priceWeekly) {
-                rate = room.priceWeekly;
-                subtotal = Math.round((rate / 7) * stayNights);
-            } else if (billingCycle === 'monthly' && room.priceMonthly) {
-                rate = room.priceMonthly;
-                subtotal = Math.round((rate / 30) * stayNights);
-            } else {
-                rate = room.priceDaily || room.price || 0;
-                subtotal = rate * stayNights;
-            }
-
-            const tax = Math.round(subtotal * 0.15); // 15% GST
-
-            // Fetch upgrades
-            let dbUpgrades = [];
-            const upgradesQuery = fdb.collection('upgrades');
-            const upgradesSnap = await upgradesQuery.get();
-            upgradesSnap.forEach(doc => dbUpgrades.push({ id: doc.id, ...doc.data() }));
-            if (dbUpgrades.length === 0) {
-                dbUpgrades = [
-                    {
-                        id: 'upgrade-airport-shuttle',
-                        name: 'Airport VIP Transfer',
-                        price: 5000,
-                        priceType: 'flat'
-                    },
-                    {
-                        id: 'upgrade-dining-breakfast',
-                        name: 'In-suite Dining Package',
-                        price: 2500,
-                        priceType: 'night'
-                    },
-                    {
-                        id: 'upgrade-spa-tray',
-                        name: 'Organic Spa Amenities Tray',
-                        price: 1500,
-                        priceType: 'flat'
-                    }
-                ];
-            }
-
-            let addonsTotal = 0;
-            const selectedUpgradesDetails = [];
-            if (upgrades && Array.isArray(upgrades)) {
-                upgrades.forEach(upId => {
-                    const matched = dbUpgrades.find(u => u.id === upId);
-                    if (matched) {
-                        const price = Number(matched.price || 0);
-                        const cost = matched.priceType === 'night' ? price * stayNights : price;
-                        addonsTotal += cost;
-                        selectedUpgradesDetails.push({
-                            id: matched.id,
-                            name: matched.name,
-                            price: price,
-                            priceType: matched.priceType || 'flat'
-                        });
-                    }
-                });
-            }
-
-            // Validate coupon
-            let couponDiscount = 0;
-            if (couponCode) {
-                const couponRef = fdb.collection('coupons').doc(couponCode.toUpperCase());
-                const couponDoc = await transaction.get(couponRef);
-                if (couponDoc.exists) {
-                    const coupon = couponDoc.data();
-                    if (coupon.isActive) {
-                        couponDiscount = Math.round(subtotal * ((coupon.discountPercentage || 0) / 100));
-                        couponDiscount = Math.min(couponDiscount, subtotal);
-                    }
-                }
-            }
-
-            calculatedPrice = (subtotal + tax + addonsTotal) - couponDiscount;
-
-            // B. Overlap check (Bypass if forced by admin)
-            if (!force || !isAdmin) {
-                const query = fdb.collection('bookings').where('roomId', '==', roomId);
-                const bookingsSnap = await query.get();
-                for (const doc of bookingsSnap.docs) {
-                    const b = doc.data();
-                    if (b.status !== 'cancelled') {
-                        const bIn = new Date(b.checkIn);
-                        const bOut = new Date(b.checkOut);
-                        if (searchIn < bOut && searchOut > bIn) {
-                            throw new Error('Suite is already reserved for the selected dates.');
-                        }
-                    }
-                }
-            }
-
-            // C. Create Booking
             const newBooking = {
                 id: bookingId,
                 userId,
                 roomId,
                 guestName,
                 guestEmail: guestEmail.toLowerCase().trim(),
-                guestPhone,
-                checkIn,
-                checkOut,
+                guestPhone: guestPhone || '',
+                checkIn: checkInStr,
+                checkOut: checkOutStr,
                 totalPrice: calculatedPrice,
                 couponUsed: couponCode || null,
                 upgrades: selectedUpgradesDetails,
@@ -237,7 +227,7 @@ exports.handler = async (event, context) => {
             transaction.set(bookingRef, newBooking);
         });
 
-        // 4. Dispatch Notifications (booking-email & admin-notify) and await them to prevent container freezing (502 Gateway errors)
+        // 5. Dispatch Notifications
         const host = event.headers.host || 'kphstay.com';
         const scheme = host.includes('localhost') ? 'http' : 'https';
         const payload = {
@@ -248,8 +238,8 @@ exports.handler = async (event, context) => {
                 guestPhone,
                 roomId,
                 roomName,
-                checkIn,
-                checkOut,
+                checkIn: checkInStr,
+                checkOut: checkOutStr,
                 totalPrice: calculatedPrice
             },
             pdfAttachment: pdfBase64,
@@ -264,7 +254,7 @@ exports.handler = async (event, context) => {
                     body: JSON.stringify(payload)
                 }).then(res => {
                     if (!res.ok) console.error(`Booking email function returned status ${res.status}`);
-                }).catch(err => console.error("Async booking email dispatch failure:", err)),
+                }).catch(err => console.error("Async booking email dispatch failure:", err.message)),
 
                 fetch(`${scheme}://${host}/.netlify/functions/admin-notify`, {
                     method: 'POST',
@@ -272,10 +262,10 @@ exports.handler = async (event, context) => {
                     body: JSON.stringify(payload)
                 }).then(res => {
                     if (!res.ok) console.error(`Admin notify function returned status ${res.status}`);
-                }).catch(err => console.error("Async admin alert dispatch failure:", err))
+                }).catch(err => console.error("Async admin alert dispatch failure:", err.message))
             ]);
         } catch (dispatchErr) {
-            console.error("Notification dispatch failed:", dispatchErr);
+            console.error("Notification dispatch failed:", dispatchErr.message);
         }
 
         return {
@@ -292,14 +282,13 @@ exports.handler = async (event, context) => {
 
     } catch (err) {
         console.error("Reservation creation error:", err);
-        const isExpected = ['Requested accommodation style not found.', 'Suite is already reserved for the selected dates.'].includes(err.message);
         return {
-            statusCode: isExpected ? 400 : 500,
+            statusCode: 400,
             headers: {
                 'Access-Control-Allow-Origin': allowedOrigin,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ error: isExpected ? err.message : 'Failed to complete reservation.' })
+            body: JSON.stringify({ error: err.message || 'Failed to complete reservation.' })
         };
     }
 };
