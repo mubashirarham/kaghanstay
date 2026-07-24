@@ -139,7 +139,7 @@ exports.handler = async (event, context) => {
             // Fetch upgrades
             let dbUpgrades = [];
             const upgradesQuery = fdb.collection('upgrades');
-            const upgradesSnap = await transaction.get(upgradesQuery);
+            const upgradesSnap = await upgradesQuery.get();
             upgradesSnap.forEach(doc => dbUpgrades.push({ id: doc.id, ...doc.data() }));
             if (dbUpgrades.length === 0) {
                 dbUpgrades = [
@@ -202,7 +202,7 @@ exports.handler = async (event, context) => {
             // B. Overlap check (Bypass if forced by admin)
             if (!force || !isAdmin) {
                 const query = fdb.collection('bookings').where('roomId', '==', roomId);
-                const bookingsSnap = await transaction.get(query);
+                const bookingsSnap = await query.get();
                 for (const doc of bookingsSnap.docs) {
                     const b = doc.data();
                     if (b.status !== 'cancelled') {

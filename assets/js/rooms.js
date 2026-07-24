@@ -152,6 +152,22 @@
         });
     }
 
+    window.syncAndApplyFilter = (targetId, value) => {
+        const targetEl = document.getElementById(targetId);
+        if (targetEl) {
+            targetEl.value = value;
+        }
+        if (targetId === 'filter-location') {
+            const q = document.getElementById('quick-filter-location');
+            if (q && q.value !== value) q.value = value;
+        }
+        if (targetId === 'filter-category') {
+            const q = document.getElementById('quick-filter-category');
+            if (q && q.value !== value) q.value = value;
+        }
+        applyFilters();
+    };
+
     async function populateFilters() {
         const categories = await KaghanDB.getCategories();
         const locations = await KaghanDB.getLocations();
@@ -166,6 +182,15 @@
             if (matchingOpt) locationSelect.value = matchingOpt.value;
         }
 
+        const quickLoc = document.getElementById('quick-filter-location');
+        if (quickLoc) {
+            let currentVal = quickLoc.value || 'all';
+            quickLoc.innerHTML = `<option value="all">📍 All Locations</option>` +
+                locations.map(l => `<option value="${l.id}">${l.label || l.name}</option>`).join('');
+            const matchingOpt = Array.from(quickLoc.options).find(opt => opt.value.toLowerCase() === (currentVal || '').toLowerCase());
+            if (matchingOpt) quickLoc.value = matchingOpt.value;
+        }
+
         // Populate Category Select
         const categorySelect = document.getElementById('filter-category');
         if (categorySelect) {
@@ -174,6 +199,15 @@
                 categories.map(c => `<option value="${c.id}">${c.label || c.name}</option>`).join('');
             const matchingOpt = Array.from(categorySelect.options).find(opt => opt.value.toLowerCase() === (currentVal || '').toLowerCase());
             if (matchingOpt) categorySelect.value = matchingOpt.value;
+        }
+
+        const quickCat = document.getElementById('quick-filter-category');
+        if (quickCat) {
+            let currentVal = quickCat.value || 'all';
+            quickCat.innerHTML = `<option value="all">🏢 All Suite Types</option>` +
+                categories.map(c => `<option value="${c.id}">${c.label || c.name}</option>`).join('');
+            const matchingOpt = Array.from(quickCat.options).find(opt => opt.value.toLowerCase() === (currentVal || '').toLowerCase());
+            if (matchingOpt) quickCat.value = matchingOpt.value;
         }
 
         // Populate Custom Category Filter Bar
@@ -383,12 +417,16 @@
 
                     const matchesPrice = isMaxCeiling || rPrice <= sliderVal;
 
+                    const quickGuests = document.getElementById('quick-filter-guests');
+                    const minGuestsNeeded = quickGuests && quickGuests.value !== 'all' ? Number(quickGuests.value) : 0;
+                    const matchesGuests = minGuestsNeeded === 0 || (Number(room.maxGuests || 2) >= minGuestsNeeded);
+
                     // Room must contain all selected amenities
                     const matchesAmenities = selectedAmenities.every(selectedA => 
                         rAmenities.some(roomA => (roomA || '').toLowerCase().includes(selectedA))
                     );
 
-                    return matchesKeyword && matchesCategory && matchesLocation && matchesPrice && matchesAmenities;
+                    return matchesKeyword && matchesCategory && matchesLocation && matchesPrice && matchesAmenities && matchesGuests;
                 });
 
                 // Sorting

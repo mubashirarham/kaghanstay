@@ -109,7 +109,7 @@ async function bookRoomTool(roomId, guestName, guestEmail, guestPhone, checkIn, 
 
             // 2. Overlap check inside transaction (M-04)
             const query = fdb.collection('bookings').where('roomId', '==', roomId);
-            const bookingsSnap = await transaction.get(query);
+            const bookingsSnap = await query.get();
             for (const doc of bookingsSnap.docs) {
                 const b = doc.data();
                 if (b.status !== 'cancelled') {

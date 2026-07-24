@@ -245,7 +245,7 @@ exports.handler = async (event, context) => {
 
                     // Re-calculate room ratings
                     const reviewsQuery = fdb.collection('reviews').where('roomId', '==', roomId);
-                    const reviewsSnap = await transaction.get(reviewsQuery);
+                    const reviewsSnap = await reviewsQuery.get();
                     
                     let totalRating = 0;
                     let count = 0;

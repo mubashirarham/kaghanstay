@@ -145,22 +145,52 @@
     <!-- Explorer Grid & Filters -->
     <section class="py-10 px-4 md:px-8 lg:px-12 max-w-7xl mx-auto">
 
-        <!-- Mobile Filter/Sort Bar -->
-        <div class="flex items-center gap-3 mb-6 lg:hidden" id="mobile-filter-bar">
-            <button id="filter-toggle-btn" onclick="openFilterSidebar()" class="flex items-center gap-2 bg-[#0F172A] text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-md hover:bg-[#D4AF37] transition-all">
-                <i class="fa-solid fa-sliders"></i>
-                Filters
-            </button>
-            <div class="relative flex-1">
-                <select id="sort-by-mobile" onchange="document.getElementById('sort-by').value=this.value; applyFilters()" class="w-full border border-slate-200 rounded-xl pl-4 pr-10 py-2.5 text-xs bg-white text-slate-800 cursor-pointer font-semibold appearance-none">
-                    <option value="default">Sort: Default</option>
-                    <option value="price-low">Price: Low â†’ High</option>
-                    <option value="price-high">Price: High â†’ Low</option>
+        <!-- Quick Select Filters Toolbar -->
+        <div class="bg-white/80 backdrop-blur-md rounded-2xl border border-slate-200 p-3 mb-6 shadow-sm flex flex-wrap items-center gap-2.5" id="mobile-filter-bar">
+            <!-- Location Select Dropdown -->
+            <div class="relative flex-1 min-w-[125px]">
+                <select id="quick-filter-location" onchange="syncAndApplyFilter('filter-location', this.value)" class="w-full border border-slate-200 rounded-xl pl-3 pr-7 py-2 text-xs bg-slate-50 text-slate-800 font-semibold outline-none focus:border-[#C5A059] appearance-none cursor-pointer">
+                    <option value="all">📍 All Locations</option>
+                </select>
+                <i class="fa-solid fa-chevron-down absolute right-3 top-3 text-slate-400 pointer-events-none text-[10px]"></i>
+            </div>
+
+            <!-- Suite Category Select Dropdown -->
+            <div class="relative flex-1 min-w-[125px]">
+                <select id="quick-filter-category" onchange="syncAndApplyFilter('filter-category', this.value)" class="w-full border border-slate-200 rounded-xl pl-3 pr-7 py-2 text-xs bg-slate-50 text-slate-800 font-semibold outline-none focus:border-[#C5A059] appearance-none cursor-pointer">
+                    <option value="all">🏢 All Suite Types</option>
+                </select>
+                <i class="fa-solid fa-chevron-down absolute right-3 top-3 text-slate-400 pointer-events-none text-[10px]"></i>
+            </div>
+
+            <!-- Guests Count Select Dropdown -->
+            <div class="relative min-w-[105px]">
+                <select id="quick-filter-guests" onchange="syncAndApplyFilter('filter-guests', this.value)" class="w-full border border-slate-200 rounded-xl pl-3 pr-7 py-2 text-xs bg-slate-50 text-slate-800 font-semibold outline-none focus:border-[#C5A059] appearance-none cursor-pointer">
+                    <option value="all">👥 Guests</option>
+                    <option value="1">1 Guest</option>
+                    <option value="2">2 Guests</option>
+                    <option value="3">3 Guests</option>
+                    <option value="4">4+ Guests</option>
+                </select>
+                <i class="fa-solid fa-chevron-down absolute right-3 top-3 text-slate-400 pointer-events-none text-[10px]"></i>
+            </div>
+
+            <!-- Sort Select Dropdown -->
+            <div class="relative min-w-[125px]">
+                <select id="sort-by-mobile" onchange="document.getElementById('sort-by').value=this.value; applyFilters()" class="w-full border border-slate-200 rounded-xl pl-3 pr-7 py-2 text-xs bg-slate-50 text-slate-800 font-semibold outline-none focus:border-[#C5A059] appearance-none cursor-pointer">
+                    <option value="default">↕ Sort: Default</option>
+                    <option value="price-low">Price: Low &rarr; High</option>
+                    <option value="price-high">Price: High &rarr; Low</option>
                     <option value="rating">Top Rated</option>
                 </select>
-                <i class="fa-solid fa-chevron-down absolute right-3 top-3 text-slate-400 pointer-events-none text-xs"></i>
+                <i class="fa-solid fa-chevron-down absolute right-3 top-3 text-slate-400 pointer-events-none text-[10px]"></i>
             </div>
-            <p class="text-slate-500 text-xs font-medium whitespace-nowrap"><span id="results-count-mobile" class="text-slate-900 font-bold">â€”</span> results</p>
+
+            <!-- Optional More Filters Sidebar Toggle -->
+            <button id="filter-toggle-btn" onclick="openFilterSidebar()" class="lg:hidden flex items-center gap-1.5 bg-[#0B0F19] text-white text-xs font-bold px-3 py-2 rounded-xl shadow-sm hover:bg-[#C5A059] transition-all shrink-0">
+                <i class="fa-solid fa-sliders text-xs"></i>
+                <span class="hidden sm:inline">More Filters</span>
+            </button>
         </div>
 
         <div class="flex gap-8">

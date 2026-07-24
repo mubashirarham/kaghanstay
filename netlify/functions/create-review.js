@@ -103,7 +103,7 @@ exports.handler = async (event, context) => {
 
             // Fetch reviews to calculate average
             const reviewsQuery = fdb.collection('reviews').where('roomId', '==', review.roomId);
-            const reviewsSnap = await transaction.get(reviewsQuery);
+            const reviewsSnap = await reviewsQuery.get();
             
             let totalRating = review.rating;
             let count = 1;

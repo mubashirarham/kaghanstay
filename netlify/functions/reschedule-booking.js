@@ -159,7 +159,7 @@ exports.handler = async (event, context) => {
 
             // Check availability overlaps
             const bookingsQuery = fdb.collection('bookings').where('roomId', '==', booking.roomId);
-            const bookingsSnap = await transaction.get(bookingsQuery);
+            const bookingsSnap = await bookingsQuery.get();
             for (const doc of bookingsSnap.docs) {
                 const b = doc.data();
                 if (b.id !== bookingId && b.status !== 'cancelled') {
