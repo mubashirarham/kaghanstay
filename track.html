@@ -7,7 +7,9 @@
     <meta name="description" content="Track your reservation progress, view check-in schedules, download PDF receipts, and configure stay preferences.">
     <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
     <link rel="apple-touch-icon" href="assets/images/logo.png">
-    <meta name="theme-color" content="#0B0F19">
+    <meta name="theme-color" content="#0F172A">
+    <!-- DOMPurify for HTML Sanitization -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
     <meta name="robots" content="noindex, follow">
 
     <!-- Tailwind CSS -->
@@ -77,14 +79,20 @@
 
         <!-- Tracking Form Search Card -->
         <div class="bg-white/80 backdrop-blur-md rounded-[2.5rem] border border-[#C5A059]/10 shadow-[0_20px_50px_-15px_rgba(11,15,25,0.05)] hover:border-[#C5A059]/30 transition-all duration-500 p-6 md:p-8 mb-10 max-w-2xl mx-auto">
-            <form id="track-form" onsubmit="handleTrackingSubmit(event)" class="flex flex-col sm:flex-row gap-4 items-center">
-                <div class="relative w-full flex-grow">
+            <form id="track-form" onsubmit="handleTrackingSubmit(event)" class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
+                <div class="relative w-full">
                     <i class="fa-solid fa-receipt absolute left-4 top-4 text-slate-400"></i>
-                    <input type="text" id="tracking-id-input" placeholder="ENTER BOOKING ID, EMAIL, OR PHONE" required class="w-full border border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/10 text-xs font-semibold uppercase tracking-wider bg-slate-50 focus:bg-white text-[#0B0F19] transition-all">
+                    <input type="text" id="tracking-id-input" placeholder="BOOKING ID (E.G. BK-XXXXX)" required class="w-full border border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/10 text-xs font-semibold uppercase tracking-wider bg-slate-50 focus:bg-white text-[#0B0F19] transition-all">
                 </div>
-                <button type="submit" class="w-full sm:w-auto bg-[#0B0F19] hover:bg-[#C5A059] text-white text-xs font-bold uppercase tracking-wider py-4 px-8 rounded-2xl transition-all shadow-md active:scale-95 flex items-center justify-center gap-2 whitespace-nowrap btn-shimmer">
-                    <i class="fa-solid fa-route"></i> Track Progress
-                </button>
+                <div class="relative w-full">
+                    <i class="fa-solid fa-envelope absolute left-4 top-4 text-slate-400"></i>
+                    <input type="text" id="tracking-contact-input" placeholder="GUEST EMAIL OR PHONE" required class="w-full border border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/10 text-xs font-semibold tracking-wider bg-slate-50 focus:bg-white text-[#0B0F19] transition-all">
+                </div>
+                <div class="sm:col-span-2">
+                    <button type="submit" class="w-full bg-[#0B0F19] hover:bg-[#C5A059] text-white text-xs font-bold uppercase tracking-wider py-4 px-8 rounded-2xl transition-all shadow-md active:scale-95 flex items-center justify-center gap-2 whitespace-nowrap btn-shimmer">
+                        <i class="fa-solid fa-route"></i> Track Stay Progress
+                    </button>
+                </div>
             </form>
         </div>
 
@@ -277,7 +285,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <script src="assets/js/shared.js?v=3"></script>
+    <script src="assets/js/shared.js?v=4"></script>
     <script src="assets/js/newsletter.js"></script>
     
     <script>
@@ -297,36 +305,32 @@
         // Search Form Submit Handler
         function handleTrackingSubmit(event) {
             event.preventDefault();
-            const inputVal = document.getElementById('tracking-id-input').value;
-            if (!inputVal) return;
-            trackBooking(inputVal);
+            const idVal = document.getElementById('tracking-id-input').value;
+            const contactVal = document.getElementById('tracking-contact-input').value;
+            if (!idVal || !contactVal) return;
+            trackBooking(idVal, contactVal);
         }
 
-        // Fetch tracking information directly via Frontend Firebase SDK
-        async function trackBooking(bookingId) {
+        // Fetch tracking information via Netlify Function track-booking
+        async function trackBooking(bookingId, contact) {
             const btn = document.querySelector('#track-form button[type="submit"]');
             const originalBtn = btn.innerHTML;
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Tracking...';
             btn.disabled = true;
 
             try {
-                const cleanQuery = bookingId.trim();
-                let booking = await KaghanDB.getBookingById(cleanQuery);
-                if (!booking) {
-                    const allBookings = await KaghanDB.getBookings();
-                    const lowerQuery = cleanQuery.toLowerCase();
-                    booking = allBookings.find(b => 
-                        (b.id && b.id.toLowerCase() === lowerQuery) ||
-                        (b.guestEmail && b.guestEmail.toLowerCase() === lowerQuery) ||
-                        (b.guestPhone && b.guestPhone.includes(cleanQuery))
-                    );
+                const res = await window.safeFetch('/.netlify/functions/track-booking', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ bookingId, contact })
+                });
+
+                const data = await res.json();
+                if (!res.ok) {
+                    throw new Error(data.error || "Reservation not found. Please verify the ID and contact details.");
                 }
 
-                if (!booking) {
-                    throw new Error("No reservation found matching the tracking ID, email, or phone number.");
-                }
-
-                currentBookingData = booking;
+                currentBookingData = data;
                 displayTrackingResult(currentBookingData);
                 KaghanUI.showToast("Tracking status synced!", "success");
 

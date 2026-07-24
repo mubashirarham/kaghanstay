@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+    <title>Realtime Availability Calendar | Kaghan Stay User Panel</title>
+    <meta name="robots" content="noindex, nofollow">
+    <!-- Tailwind CSS (Play CDN with JIT) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Global CSS -->
+    <link rel="stylesheet" href="../assets/css/style.css?v=10">
+    <!-- DOMPurify for HTML Sanitization -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+</head>
+<body class="guest-app-body bg-[#F8FAFC] text-[#0B0F19] overflow-x-hidden font-sans pt-20 pb-28 md:pb-12">
+
+    <!-- Top Luxury App Navigation Header -->
+    <nav id="guest-app-navbar" class="fixed top-0 left-0 right-0 z-50 py-3 px-4 md:px-8 bg-[#0B0F19]/95 backdrop-blur-xl border-b border-white/10 shadow-xl text-white flex items-center justify-between gap-4">
+        <div class="flex items-center gap-3 shrink-0">
+            <a href="index.html" class="w-10 h-10 rounded-2xl bg-white/10 hover:bg-[#C5A059] text-slate-300 hover:text-slate-900 flex items-center justify-center transition-all">
+                <i class="fa-solid fa-arrow-left text-sm"></i>
+            </a>
+            <div class="flex flex-col">
+                <div class="flex items-center gap-1 text-[10px] text-[#C5A059] font-bold uppercase tracking-wider">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    <span>Realtime Availability</span>
+                </div>
+                <h1 class="text-sm font-bold outfit text-white leading-tight">Suite Availability Calendar</h1>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-2.5 shrink-0">
+            <a href="search.html" class="w-9 h-9 rounded-full bg-white/10 hover:bg-[#C5A059] text-slate-300 hover:text-slate-900 flex items-center justify-center transition-all">
+                <i class="fa-solid fa-magnifying-glass text-xs"></i>
+            </a>
+            <a href="notifications.html" class="w-9 h-9 rounded-full bg-white/10 hover:bg-[#C5A059] text-slate-300 hover:text-slate-900 flex items-center justify-center transition-all">
+                <i class="fa-solid fa-bell text-xs"></i>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="py-4 px-4 md:px-8 max-w-7xl mx-auto space-y-6">
+
+        <!-- Breadcrumbs & Header Banner -->
+        <div class="bg-gradient-to-r from-[#0B0F19] via-[#161B26] to-[#0B0F19] rounded-3xl p-6 shadow-xl border border-white/10 text-white flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <span class="inline-flex items-center gap-1.5 text-[#C5A059] text-[10px] font-extrabold uppercase tracking-widest bg-[#C5A059]/10 px-3 py-1 rounded-full border border-[#C5A059]/20 mb-2">
+                    <i class="fa-solid fa-[#C5A059] fa-circle-dot text-[8px] animate-pulse"></i> Live Firestore Feed
+                </span>
+                <h2 class="text-xl md:text-2xl font-bold outfit text-white">Interactive Stay Calendar</h2>
+                <p class="text-slate-300 text-xs mt-1 font-light">Select a suite style, check live booked vs available dates, and reserve your stay dates directly.</p>
+            </div>
+            
+            <a href="search.html" class="bg-[#C5A059] text-slate-900 font-bold text-xs px-5 py-3 rounded-2xl hover:bg-white transition-all shadow-md shrink-0 flex items-center gap-2">
+                <i class="fa-solid fa-sliders"></i> Browse All Suite Styles
+            </a>
+        </div>
+
+        <!-- Room Selector Card & Legend -->
+        <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm space-y-4">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <!-- Suite Selector -->
+                <div class="w-full sm:w-80">
+                    <label class="block text-[10px] uppercase tracking-wider text-slate-400 font-bold mb-1">Select Suite Style</label>
+                    <select id="calendar-room-select" onchange="onRoomSelectChange()" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3 text-xs text-slate-900 font-bold outline-none focus:border-[#C5A059]">
+                        <option value="">Loading suites...</option>
+                    </select>
+                </div>
+
+                <!-- Calendar Legend -->
+                <div class="flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-600">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3.5 h-3.5 rounded-lg bg-emerald-50 border border-emerald-200 inline-block"></span>
+                        <span>Available</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-3.5 h-3.5 rounded-lg bg-rose-100 border border-rose-200 inline-block"></span>
+                        <span class="text-rose-600">Reserved / Booked</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-3.5 h-3.5 rounded-lg bg-[#C5A059] inline-block"></span>
+                        <span class="text-slate-900 font-bold">Your Selected Window</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Selected Suite Overview Strip -->
+            <div id="room-overview-strip" class="bg-slate-50 rounded-2xl p-4 border border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 hidden">
+                <div class="flex items-center gap-4">
+                    <img id="strip-room-img" src="../assets/images/logo.png" alt="Suite Thumbnail" class="w-16 h-16 rounded-xl object-cover border border-slate-200">
+                    <div>
+                        <h4 id="strip-room-title" class="font-bold outfit text-slate-900 text-sm">Suite Title</h4>
+                        <span id="strip-room-location" class="text-[10px] text-slate-400 font-medium block">Location</span>
+                        <span id="strip-room-price" class="text-xs text-[#C5A059] font-bold block mt-0.5">Rs 0 / night</span>
+                    </div>
+                </div>
+                <a id="strip-detail-link" href="#" class="bg-slate-900 text-white text-xs font-bold px-4 py-2 rounded-xl hover:bg-[#C5A059] hover:text-slate-900 transition-all">
+                    View Suite Details
+                </a>
+            </div>
+        </div>
+
+        <!-- Layout: Calendar Grid + Selected Reservation Summary -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            <!-- Left Calendar Column (2 Cols) -->
+            <div class="lg:col-span-2 bg-white rounded-3xl p-6 border border-slate-100 shadow-sm space-y-6">
+                <!-- Month & Year Controls -->
+                <div class="flex justify-between items-center pb-4 border-b border-slate-100">
+                    <button onclick="prevMonth()" class="w-10 h-10 rounded-2xl bg-slate-100 hover:bg-[#C5A059] hover:text-slate-900 text-slate-700 flex items-center justify-center transition-all font-bold">
+                        <i class="fa-solid fa-chevron-left text-xs"></i>
+                    </button>
+                    <h3 id="calendar-month-title" class="font-bold outfit text-slate-900 text-lg uppercase tracking-wider">July 2026</h3>
+                    <button onclick="nextMonth()" class="w-10 h-10 rounded-2xl bg-slate-100 hover:bg-[#C5A059] hover:text-slate-900 text-slate-700 flex items-center justify-center transition-all font-bold">
+                        <i class="fa-solid fa-chevron-right text-xs"></i>
+                    </button>
+                </div>
+
+                <!-- Day of Week Header -->
+                <div class="grid grid-cols-7 gap-2 text-center text-[10px] font-black uppercase text-slate-400 tracking-wider">
+                    <div>Sun</div>
+                    <div>Mon</div>
+                    <div>Tue</div>
+                    <div>Wed</div>
+                    <div>Thu</div>
+                    <div>Fri</div>
+                    <div>Sat</div>
+                </div>
+
+                <!-- Live Days Grid -->
+                <div id="user-calendar-grid" class="grid grid-cols-7 gap-2 min-h-[300px]">
+                    <div class="col-span-full text-center py-12 text-slate-400 text-xs font-light">
+                        Loading availability calendar...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Reservation Summary Box -->
+            <div class="space-y-6">
+                <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-lg space-y-6">
+                    <div class="border-b border-slate-100 pb-4">
+                        <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold block">Selected Stay Window</span>
+                        <h4 id="summary-window-label" class="text-base font-bold outfit text-slate-900 mt-1">Select check-in & check-out dates</h4>
+                    </div>
+
+                    <!-- Stay Breakdown -->
+                    <div class="space-y-3 text-xs text-slate-600 font-medium">
+                        <div class="flex justify-between items-center bg-slate-50 p-3 rounded-2xl border border-slate-100">
+                            <span>Check-in Date:</span>
+                            <span id="summary-checkin-val" class="font-bold text-slate-900">--</span>
+                        </div>
+                        <div class="flex justify-between items-center bg-slate-50 p-3 rounded-2xl border border-slate-100">
+                            <span>Check-out Date:</span>
+                            <span id="summary-checkout-val" class="font-bold text-slate-900">--</span>
+                        </div>
+                        <div class="flex justify-between items-center bg-slate-50 p-3 rounded-2xl border border-slate-100">
+                            <span>Duration:</span>
+                            <span id="summary-nights-val" class="font-bold text-[#C5A059]">0 Nights</span>
+                        </div>
+                    </div>
+
+                    <!-- Total Price Calculation -->
+                    <div class="border-t border-slate-100 pt-4 space-y-2">
+                        <div class="flex justify-between text-xs text-slate-500">
+                            <span>Estimated Subtotal</span>
+                            <span id="summary-subtotal-val" class="font-semibold text-slate-800">Rs 0</span>
+                        </div>
+                        <div class="flex justify-between text-base font-bold text-slate-900 pt-2 border-t border-slate-100">
+                            <span>Total Payable</span>
+                            <span id="summary-total-val" class="text-[#C5A059] outfit text-xl">Rs 0</span>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <button id="btn-reserve-calendar" onclick="proceedFromCalendar()" disabled class="w-full bg-slate-300 text-slate-500 cursor-not-allowed py-4 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all shadow-sm flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-bolt"></i> Reserve Selected Dates
+                    </button>
+
+                    <button onclick="clearDateSelection()" class="w-full border border-slate-200 text-slate-600 py-2.5 rounded-2xl font-bold text-xs hover:bg-slate-50 transition-all">
+                        Reset Selection
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Unified Floating Mobile Navigation Dock -->
+    <nav class="app-bottom-dock md:hidden flex justify-between items-center">
+        <a href="index.html" class="dock-item">
+            <i class="fa-solid fa-hotel text-lg"></i>
+            <span>Home</span>
+        </a>
+        <a href="trips.html" class="dock-item">
+            <i class="fa-solid fa-suitcase text-lg"></i>
+            <span>Stays</span>
+        </a>
+        
+        <!-- Center Raised Gold Search FAB -->
+        <a href="search.html" class="gold-fab-btn -mt-6">
+            <i class="fa-solid fa-magnifying-glass text-lg"></i>
+        </a>
+
+        <a href="wishlists.html" class="dock-item">
+            <i class="fa-solid fa-heart text-lg text-rose-500"></i>
+            <span>Saved</span>
+        </a>
+        <a href="profile.html" class="dock-item">
+            <i class="fa-solid fa-user text-lg"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+
+    <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="../assets/js/shared.js?v=10"></script>
+    <script src="../assets/js/users.js"></script>
+
+    <script>
+        let roomsList = [];
+        let selectedRoom = null;
+        let bookedDatesList = [];
+        let currentCalendarDate = new Date();
+
+        let startDateStr = null;
+        let endDateStr = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const params = new URLSearchParams(window.location.search);
+            const preselectedRoomId = params.get('room') || params.get('id');
+
+            try {
+                roomsList = await KaghanDB.getRooms();
+                populateRoomDropdown(preselectedRoomId);
+            } catch(e) {
+                console.error('Failed to initialize calendar:', e);
+            }
+        });
+
+        function populateRoomDropdown(preselectedId) {
+            const select = document.getElementById('calendar-room-select');
+            if (!select) return;
+
+            if (roomsList.length === 0) {
+                select.innerHTML = `<option value="">No suites available</option>`;
+                return;
+            }
+
+            select.innerHTML = roomsList.map(r => `
+                <option value="${r.id}" ${r.id === preselectedId ? 'selected' : ''}>
+                    ${KaghanSafe.escapeHTML(r.name)} (${KaghanUI.formatPKR(r.priceDaily || r.price || 0)}/night)
+                </option>
+            `).join('');
+
+            const selectedId = select.value || roomsList[0].id;
+            onRoomSelectChange(selectedId);
+        }
+
+        async function onRoomSelectChange(explicitRoomId = null) {
+            const select = document.getElementById('calendar-room-select');
+            const roomId = explicitRoomId || select.value;
+            selectedRoom = roomsList.find(r => r.id === roomId) || roomsList[0];
+
+            if (!selectedRoom) return;
+
+            // Update Overview Strip
+            const strip = document.getElementById('room-overview-strip');
+            if (strip) {
+                strip.classList.remove('hidden');
+                document.getElementById('strip-room-img').src = selectedRoom.image || (selectedRoom.images && selectedRoom.images.length ? selectedRoom.images[0] : '../assets/images/logo.png');
+                document.getElementById('strip-room-title').textContent = selectedRoom.name;
+                document.getElementById('strip-room-location').textContent = selectedRoom.location || 'Islamabad';
+                document.getElementById('strip-room-price').textContent = `${KaghanUI.formatPKR(selectedRoom.priceDaily || selectedRoom.price || 0)} / night`;
+                document.getElementById('strip-detail-link').href = `room-details.html?id=${selectedRoom.id}`;
+            }
+
+            // Fetch Booked Dates for this Room
+            bookedDatesList = await fetchRoomBookedDates(selectedRoom.id);
+            clearDateSelection();
+            renderCalendarGrid();
+        }
+
+        async function fetchRoomBookedDates(roomId) {
+            try {
+                // Fetch confirmed bookings from KaghanDB
+                const allBookings = await KaghanDB.getBookings();
+                const booked = [];
+
+                allBookings.forEach(b => {
+                    if (b.roomId === roomId && b.checkIn && b.checkOut && b.status !== 'cancelled') {
+                        let curr = new Date(b.checkIn);
+                        const end = new Date(b.checkOut);
+                        while (curr < end) {
+                            booked.push(curr.toISOString().split('T')[0]);
+                            curr.setDate(curr.getDate() + 1);
+                        }
+                    }
+                });
+
+                // Also check if room has custom bookedDates array
+                if (selectedRoom.bookedDates && Array.isArray(selectedRoom.bookedDates)) {
+                    selectedRoom.bookedDates.forEach(d => {
+                        if (!booked.includes(d)) booked.push(d);
+                    });
+                }
+
+                return booked;
+            } catch(e) {
+                console.warn('Unable to load bookings for calendar:', e);
+                return (selectedRoom.bookedDates || []);
+            }
+        }
+
+        function prevMonth() {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1);
+            renderCalendarGrid();
+        }
+
+        function nextMonth() {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
+            renderCalendarGrid();
+        }
+
+        function renderCalendarGrid() {
+            const grid = document.getElementById('user-calendar-grid');
+            const monthLabel = document.getElementById('calendar-month-title');
+            if (!grid || !monthLabel) return;
+
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+
+            monthLabel.textContent = currentCalendarDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+            const firstDayIndex = new Date(year, month, 1).getDay();
+            const totalDays = new Date(year, month + 1, 0).getDate();
+            const prevTotalDays = new Date(year, month, 0).getDate();
+
+            let html = '';
+
+            // Previous Month Days (Disabled)
+            for (let i = firstDayIndex; i > 0; i--) {
+                const prevDay = prevTotalDays - i + 1;
+                html += `<div class="p-3 text-center text-xs text-slate-300 pointer-events-none">${prevDay}</div>`;
+            }
+
+            const todayStr = new Date().toISOString().split('T')[0];
+
+            for (let day = 1; day <= totalDays; day++) {
+                const dateObj = new Date(year, month, day);
+                const yyyy = dateObj.getFullYear();
+                const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
+                const dd = String(dateObj.getDate()).padStart(2, '0');
+                const dateStr = `${yyyy}-${mm}-${dd}`;
+
+                const isPast = dateStr < todayStr;
+                const isBooked = bookedDatesList.includes(dateStr);
+
+                let cellClass = "p-3 text-center text-xs font-bold rounded-2xl cursor-pointer transition-all duration-200 select-none flex flex-col items-center justify-center gap-0.5 ";
+                let clickHandler = `onclick="handleDayClick('${dateStr}')"`;
+                let subLabel = `<span class="text-[8px] font-semibold opacity-75">Available</span>`;
+
+                if (isPast) {
+                    cellClass += "bg-slate-50 text-slate-300 line-through cursor-not-allowed pointer-events-none";
+                    subLabel = "";
+                    clickHandler = "";
+                } else if (isBooked) {
+                    cellClass += "bg-rose-50 text-rose-500 border border-rose-100 cursor-not-allowed pointer-events-none";
+                    subLabel = `<span class="text-[8px] font-black text-rose-500 uppercase">Booked</span>`;
+                    clickHandler = "";
+                } else {
+                    const isStart = startDateStr && dateStr === startDateStr;
+                    const isEnd = endDateStr && dateStr === endDateStr;
+                    const inRange = startDateStr && endDateStr && dateStr > startDateStr && dateStr < endDateStr;
+
+                    if (isStart || isEnd) {
+                        cellClass += "bg-[#C5A059] text-slate-900 shadow-md scale-105";
+                        subLabel = `<span class="text-[8px] font-black text-slate-900">${isStart ? 'Check-in' : 'Check-out'}</span>`;
+                    } else if (inRange) {
+                        cellClass += "bg-[#C5A059]/20 text-[#0B0F19] border border-[#C5A059]/40";
+                        subLabel = `<span class="text-[8px] font-bold text-[#C5A059]">Stay</span>`;
+                    } else {
+                        cellClass += "bg-emerald-50/50 hover:bg-[#C5A059]/20 text-slate-800 border border-emerald-100 hover:border-[#C5A059]";
+                    }
+                }
+
+                html += `
+                    <div class="${cellClass}" ${clickHandler}>
+                        <span>${day}</span>
+                        ${subLabel}
+                    </div>
+                `;
+            }
+
+            grid.innerHTML = html;
+        }
+
+        function handleDayClick(dateStr) {
+            if (!startDateStr || (startDateStr && endDateStr)) {
+                startDateStr = dateStr;
+                endDateStr = null;
+            } else if (startDateStr && !endDateStr) {
+                if (dateStr < startDateStr) {
+                    startDateStr = dateStr;
+                    endDateStr = null;
+                } else {
+                    // Check if range contains any booked dates
+                    let hasBookedInRange = false;
+                    let curr = new Date(startDateStr);
+                    const end = new Date(dateStr);
+                    while (curr < end) {
+                        const ds = curr.toISOString().split('T')[0];
+                        if (bookedDatesList.includes(ds)) {
+                            hasBookedInRange = true;
+                            break;
+                        }
+                        curr.setDate(curr.getDate() + 1);
+                    }
+
+                    if (hasBookedInRange) {
+                        alert('Selected stay window contains reserved dates. Please select an open range.');
+                        startDateStr = dateStr;
+                        endDateStr = null;
+                    } else {
+                        endDateStr = dateStr;
+                    }
+                }
+            }
+
+            renderCalendarGrid();
+            updateSummaryBox();
+        }
+
+        function clearDateSelection() {
+            startDateStr = null;
+            endDateStr = null;
+            renderCalendarGrid();
+            updateSummaryBox();
+        }
+
+        function updateSummaryBox() {
+            const checkinVal = document.getElementById('summary-checkin-val');
+            const checkoutVal = document.getElementById('summary-checkout-val');
+            const nightsVal = document.getElementById('summary-nights-val');
+            const subtotalVal = document.getElementById('summary-subtotal-val');
+            const totalVal = document.getElementById('summary-total-val');
+            const btn = document.getElementById('btn-reserve-calendar');
+            const windowLabel = document.getElementById('summary-window-label');
+
+            if (!startDateStr) {
+                windowLabel.textContent = 'Select check-in & check-out dates';
+                checkinVal.textContent = '--';
+                checkoutVal.textContent = '--';
+                nightsVal.textContent = '0 Nights';
+                subtotalVal.textContent = 'Rs 0';
+                totalVal.textContent = 'Rs 0';
+
+                btn.disabled = true;
+                btn.className = 'w-full bg-slate-200 text-slate-400 cursor-not-allowed py-4 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2';
+                return;
+            }
+
+            if (startDateStr && !endDateStr) {
+                windowLabel.textContent = 'Select Check-out Date';
+                checkinVal.textContent = startDateStr;
+                checkoutVal.textContent = 'Select date on calendar';
+                nightsVal.textContent = '1 Night (Minimum)';
+                subtotalVal.textContent = 'Rs 0';
+                totalVal.textContent = 'Rs 0';
+
+                btn.disabled = true;
+                btn.className = 'w-full bg-slate-200 text-slate-400 cursor-not-allowed py-4 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2';
+                return;
+            }
+
+            // Both selected
+            const d1 = new Date(startDateStr);
+            const d2 = new Date(endDateStr);
+            const nights = Math.max(1, Math.ceil((d2 - d1) / (1000 * 60 * 60 * 24)));
+
+            const price = selectedRoom ? (selectedRoom.priceDaily || selectedRoom.price || 0) : 0;
+            const total = price * nights;
+
+            windowLabel.textContent = `${nights} Night${nights > 1 ? 's' : ''} Stay Selected`;
+            checkinVal.textContent = startDateStr;
+            checkoutVal.textContent = endDateStr;
+            nightsVal.textContent = `${nights} Night${nights > 1 ? 's' : ''}`;
+            subtotalVal.textContent = KaghanUI.formatPKR(total);
+            totalVal.textContent = KaghanUI.formatPKR(total);
+
+            btn.disabled = false;
+            btn.className = 'w-full bg-[#0B0F19] text-white hover:bg-[#C5A059] hover:text-slate-900 py-4 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer';
+        }
+
+        function proceedFromCalendar() {
+            if (!selectedRoom || !startDateStr || !endDateStr) return;
+            window.location.href = `../booking.html?room=${selectedRoom.id}&checkIn=${startDateStr}&checkOut=${endDateStr}`;
+        }
+    </script>
+</body>
+</html>

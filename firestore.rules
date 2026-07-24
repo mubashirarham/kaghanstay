@@ -46,8 +46,7 @@ service cloud.firestore {
     }
 
     match /coupons/{id} {
-      allow read: if true;
-      allow write: if isAdmin();
+      allow read, write: if isAdmin();
     }
 
     // Reviews (Read: Public, Create: Authenticated Users, Manage: Admin)
@@ -60,16 +59,26 @@ service cloud.firestore {
     // User Profile Documents
     match /users/{uid} {
       allow read: if isOwner(uid) || isAdmin();
-      allow create: if isAuthenticated();
-      allow update: if isOwner(uid) || isAdmin();
+      allow create: if isAuthenticated() && request.auth.uid == uid
+                    && (!('role' in request.resource.data) || request.resource.data.role == 'user');
+      allow update: if isAdmin() || (
+        isOwner(uid) &&
+        (!('role' in request.resource.data) || request.resource.data.role == resource.data.role) &&
+        (!('loyaltyPoints' in request.resource.data) || request.resource.data.loyaltyPoints == resource.data.loyaltyPoints)
+      );
       allow delete: if isAdmin();
     }
 
-    // Bookings (Read: Owner or Admin, Create: Authenticated, Update/Delete: Admin or Owner within policy)
+    // Bookings (Read: Owner or Admin, Create: Serverless only, Update/Delete: Admin or self-cancel)
     match /bookings/{id} {
       allow read: if isAuthenticated() && (resource == null || resource.data.userId == request.auth.uid || isAdmin());
-      allow create: if isAuthenticated();
-      allow update: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if false; // Only create-booking.js (Admin SDK) may create bookings.
+      allow update: if isAdmin() || (
+        isAuthenticated() && resource.data.userId == request.auth.uid &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status']) &&
+        request.resource.data.status == 'cancelled' &&
+        resource.data.status == 'confirmed'
+      );
       allow delete: if isAdmin();
     }
 
@@ -93,10 +102,17 @@ service cloud.firestore {
       }
     }
 
-    // Newsletter Subscribers
-    match /subscribers/{id} {
+    // Newsletter Subscribers — stored in 'newsletter' collection by subscribe-newsletter.js
+    // Admin can read/manage all. Public endpoint (serverless) uses Admin SDK so bypasses these rules.
+    match /newsletter/{id} {
+      allow read: if isAdmin();
       allow create: if true;
-      allow read, update, delete: if isAdmin();
+      allow update, delete: if isAdmin();
+    }
+
+    // Legacy 'subscribers' collection alias (kept for backward compatibility)
+    match /subscribers/{id} {
+      allow read, write: if isAdmin();
     }
   }
 }

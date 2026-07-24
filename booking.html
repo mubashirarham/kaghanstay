@@ -10,6 +10,8 @@
     <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
     <link rel="apple-touch-icon" href="assets/images/logo.png">
     <meta name="theme-color" content="#0F172A">
+    <!-- DOMPurify for HTML Sanitization -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
     <meta name="robots" content="noindex, follow">
 
     <!-- Open Graph / Facebook -->
@@ -521,7 +523,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <script src="assets/js/shared.js?v=3"></script>
+    <script src="assets/js/shared.js?v=4"></script>
     <script src="assets/js/users.js"></script>
     <script src="assets/js/newsletter.js"></script>
     <script>
@@ -1469,12 +1471,16 @@
             }
 
             try {
-                const coupons = await KaghanDB.getCoupons();
-                const matched = coupons ? coupons.find(c => (c.code || c.id || '').toUpperCase() === code && c.isActive !== false) : null;
+                const res = await window.safeFetch('/.netlify/functions/validate-coupon', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code })
+                });
+                const data = await res.json();
                 
-                if (matched) {
-                    appliedCoupon = matched;
-                    msg.innerText = `Coupon ${matched.code || code} applied! (${matched.discountPercent || matched.discount || 10}% OFF)`;
+                if (data.valid) {
+                    appliedCoupon = { code: data.code, discountPercentage: data.discountPercentage, discountPercent: data.discountPercentage };
+                    msg.innerText = `Coupon ${data.code} applied! (${data.discountPercentage}% OFF)`;
                     msg.classList.remove('hidden', 'text-rose-500');
                     msg.classList.add('text-emerald-600', 'font-bold');
                     calculatePrice();
@@ -1482,14 +1488,14 @@
                 }
                 
                 appliedCoupon = null;
-                msg.innerText = "Invalid or expired coupon code.";
+                msg.innerText = data.error || "Invalid or expired coupon code.";
                 msg.classList.remove('hidden', 'text-emerald-600');
                 msg.classList.add('text-rose-500', 'font-bold');
                 calculatePrice();
             } catch (err) {
                 console.error("Coupon validation error:", err);
                 appliedCoupon = null;
-                msg.innerText = "Failed to validate coupon.";
+                msg.innerText = "Error validating coupon.";
                 msg.classList.remove('hidden', 'text-emerald-600');
                 msg.classList.add('text-rose-500', 'font-bold');
                 calculatePrice();

@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+    <title>Search & Filter Suites | Kaghan Stay User Panel</title>
+    <meta name="robots" content="noindex, nofollow">
+    <!-- Tailwind CSS (Play CDN with JIT) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Global CSS -->
+    <link rel="stylesheet" href="../assets/css/style.css?v=10">
+    <!-- DOMPurify for HTML Sanitization -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+</head>
+<body class="guest-app-body bg-[#F8FAFC] text-[#0B0F19] overflow-x-hidden font-sans pt-20 pb-28 md:pb-12">
+
+    <!-- Top Luxury App Navigation Header -->
+    <nav id="guest-app-navbar" class="fixed top-0 left-0 right-0 z-50 py-3 px-4 md:px-8 bg-[#0B0F19]/95 backdrop-blur-xl border-b border-white/10 shadow-xl text-white flex items-center justify-between gap-4">
+        <div class="flex items-center gap-3 shrink-0">
+            <a href="index.html" class="w-10 h-10 rounded-2xl bg-white/10 hover:bg-[#C5A059] text-slate-300 hover:text-slate-900 flex items-center justify-center transition-all">
+                <i class="fa-solid fa-arrow-left text-sm"></i>
+            </a>
+            <div class="flex flex-col">
+                <div class="flex items-center gap-1 text-[10px] text-[#C5A059] font-bold uppercase tracking-wider">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <span>Kaghan Stay Search</span>
+                </div>
+                <h1 class="text-sm font-bold outfit text-white leading-tight">Explore & Filter Suites</h1>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-2.5 shrink-0">
+            <a href="notifications.html" class="w-9 h-9 rounded-full bg-white/10 hover:bg-[#C5A059] text-slate-300 hover:text-slate-900 flex items-center justify-center transition-all relative">
+                <i class="fa-solid fa-bell text-xs"></i>
+            </a>
+            <a href="profile.html" class="flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 pl-1.5 pr-3 py-1 rounded-full cursor-pointer transition-all">
+                <div id="header-user-initial" class="w-7 h-7 rounded-full bg-[#C5A059] text-slate-900 font-black text-xs flex items-center justify-center shadow-xs">G</div>
+                <span id="header-user-name" class="text-xs font-bold text-slate-200 hidden sm:inline-block max-w-[100px] truncate">Guest</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="py-4 px-4 md:px-8 max-w-7xl mx-auto space-y-6">
+
+        <!-- Search Bar & Mobile Filter Trigger Header -->
+        <div class="bg-gradient-to-r from-[#0B0F19] via-[#161B26] to-[#0B0F19] rounded-3xl p-4 md:p-6 shadow-xl border border-white/10 text-white flex flex-col md:flex-row gap-4 items-center justify-between">
+            <!-- Search Input Box -->
+            <div class="relative w-full md:w-2/3">
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-[#C5A059]"></i>
+                <input type="text" id="search-keyword" oninput="applyFilters()" placeholder="Search by suite name, location, or keywords (e.g. Margalla, Nathia Gali)..." 
+                       class="w-full bg-slate-900/80 border border-slate-700/60 rounded-2xl pl-11 pr-10 py-3 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-[#C5A059] transition-all">
+                <button onclick="document.getElementById('search-keyword').value=''; applyFilters();" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white">
+                    <i class="fa-solid fa-xmark text-xs"></i>
+                </button>
+            </div>
+
+            <!-- Sort Dropdown & Filter Counter -->
+            <div class="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
+                <button onclick="toggleMobileFilter()" class="md:hidden bg-[#C5A059] text-slate-900 text-xs font-bold px-4 py-3 rounded-2xl flex items-center gap-2">
+                    <i class="fa-solid fa-sliders"></i> Filters <span id="active-filter-badge" class="bg-slate-900 text-white text-[10px] px-1.5 py-0.5 rounded-full">0</span>
+                </button>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-slate-300 font-medium hidden sm:inline-block">Sort:</span>
+                    <select id="filter-sort" onchange="applyFilters()" class="bg-slate-900 border border-slate-700 rounded-2xl px-3 py-2.5 text-xs text-white outline-none focus:border-[#C5A059] cursor-pointer">
+                        <option value="recommended">Recommended</option>
+                        <option value="price-asc">Price: Low to High</option>
+                        <option value="price-desc">Price: High to Low</option>
+                        <option value="rating-desc">Highest Rated</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Layout: Filter Sidebar + Results Grid -->
+        <div class="flex flex-col md:flex-row gap-6">
+
+            <!-- Sidebar Filters (Collapsible on Mobile) -->
+            <aside id="filter-sidebar" class="w-full md:w-72 shrink-0 bg-white rounded-3xl p-6 border border-slate-100 shadow-sm space-y-6 hidden md:block">
+                <div class="flex justify-between items-center pb-3 border-b border-slate-100">
+                    <h3 class="font-bold outfit text-slate-900 text-base flex items-center gap-2">
+                        <i class="fa-solid fa-sliders text-[#C5A059]"></i> Search Filters
+                    </h3>
+                    <button onclick="resetFilters()" class="text-[11px] text-[#C5A059] font-bold hover:underline">Reset All</button>
+                </div>
+
+                <!-- Location Filter -->
+                <div class="space-y-2">
+                    <label class="block text-[10px] uppercase tracking-wider text-slate-400 font-bold">Location</label>
+                    <select id="filter-location" onchange="applyFilters()" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3 text-xs text-slate-800 outline-none focus:border-[#C5A059]">
+                        <option value="all">All Destinations</option>
+                        <option value="islamabad">Islamabad (Bahria & Margalla)</option>
+                        <option value="nathia-gali">Nathia Gali (Ayubia)</option>
+                        <option value="murree">Murree Hills</option>
+                    </select>
+                </div>
+
+                <!-- Category Type Filter -->
+                <div class="space-y-2">
+                    <label class="block text-[10px] uppercase tracking-wider text-slate-400 font-bold">Property Type</label>
+                    <div class="space-y-1.5 text-xs text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-[#C5A059]">
+                            <input type="radio" name="filter-type" value="all" checked onchange="applyFilters()" class="accent-[#C5A059]"> All Categories
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-[#C5A059]">
+                            <input type="radio" name="filter-type" value="studio" onchange="applyFilters()" class="accent-[#C5A059]"> Studio Apartments
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-[#C5A059]">
+                            <input type="radio" name="filter-type" value="1bed" onchange="applyFilters()" class="accent-[#C5A059]"> 1 Bed Furnished
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-[#C5A059]">
+                            <input type="radio" name="filter-type" value="2bed" onchange="applyFilters()" class="accent-[#C5A059]"> 2 Bed Furnished
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-[#C5A059]">
+                            <input type="radio" name="filter-type" value="3bed" onchange="applyFilters()" class="accent-[#C5A059]"> 3 Bed Furnished
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer hover:text-[#C5A059]">
+                            <input type="radio" name="filter-type" value="farmhouse" onchange="applyFilters()" class="accent-[#C5A059]"> Luxury Farmhouses
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Price Range Filter -->
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <label class="block text-[10px] uppercase tracking-wider text-slate-400 font-bold">Nightly Budget (PKR)</label>
+                        <span id="price-val-label" class="text-xs font-bold text-[#C5A059]">Up to Rs 100,000</span>
+                    </div>
+                    <input type="range" id="filter-max-price" min="5000" max="100000" step="5000" value="100000" oninput="updatePriceLabel(); applyFilters();" class="w-full accent-[#C5A059] cursor-pointer">
+                    <div class="flex justify-between text-[10px] text-slate-400 font-mono">
+                        <span>Rs 5,000</span>
+                        <span>Rs 100,000+</span>
+                    </div>
+                </div>
+
+                <!-- Capacity Filter -->
+                <div class="space-y-2">
+                    <label class="block text-[10px] uppercase tracking-wider text-slate-400 font-bold">Guest Capacity</label>
+                    <select id="filter-capacity" onchange="applyFilters()" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3 text-xs text-slate-800 outline-none focus:border-[#C5A059]">
+                        <option value="0">Any Guests</option>
+                        <option value="1">1+ Guest</option>
+                        <option value="2">2+ Guests</option>
+                        <option value="4">4+ Guests</option>
+                        <option value="6">6+ Guests</option>
+                    </select>
+                </div>
+
+                <!-- Amenities Filter -->
+                <div class="space-y-2 pt-2 border-t border-slate-100">
+                    <label class="block text-[10px] uppercase tracking-wider text-slate-400 font-bold mb-2">Amenities</label>
+                    <div class="space-y-2 text-xs text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" value="wifi" class="amenity-checkbox accent-[#C5A059]" onchange="applyFilters()"> High-Speed Wi-Fi
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" value="mountain" class="amenity-checkbox accent-[#C5A059]" onchange="applyFilters()"> Mountain View
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" value="kitchen" class="amenity-checkbox accent-[#C5A059]" onchange="applyFilters()"> Equipped Kitchen
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" value="parking" class="amenity-checkbox accent-[#C5A059]" onchange="applyFilters()"> Free Parking
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" value="balcony" class="amenity-checkbox accent-[#C5A059]" onchange="applyFilters()"> Balcony / Terrace
+                        </label>
+                    </div>
+                </div>
+
+                <button onclick="resetFilters()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold py-2.5 rounded-2xl transition-all">
+                    Clear All Filters
+                </button>
+            </aside>
+
+            <!-- Results Section -->
+            <div class="flex-1 space-y-4">
+                <div class="flex justify-between items-center px-1">
+                    <span id="results-count-label" class="text-xs text-slate-500 font-bold">Showing all available luxury listings</span>
+                    <span class="text-xs text-[#C5A059] font-bold"><i class="fa-solid fa-shield-halved mr-1"></i> Best Rate Guaranteed</span>
+                </div>
+
+                <!-- Live Results Grid -->
+                <div id="user-search-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="col-span-full text-center py-16 text-slate-400 text-xs font-light">
+                        Loading suite catalog...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Unified Floating Mobile Navigation Dock -->
+    <nav class="app-bottom-dock md:hidden flex justify-between items-center">
+        <a href="index.html" class="dock-item">
+            <i class="fa-solid fa-hotel text-lg"></i>
+            <span>Home</span>
+        </a>
+        <a href="trips.html" class="dock-item">
+            <i class="fa-solid fa-suitcase text-lg"></i>
+            <span>Stays</span>
+        </a>
+        
+        <!-- Center Raised Gold Search FAB (Active) -->
+        <a href="search.html" class="gold-fab-btn -mt-6">
+            <i class="fa-solid fa-magnifying-glass text-lg"></i>
+        </a>
+
+        <a href="wishlists.html" class="dock-item">
+            <i class="fa-solid fa-heart text-lg text-rose-500"></i>
+            <span>Saved</span>
+        </a>
+        <a href="profile.html" class="dock-item">
+            <i class="fa-solid fa-user text-lg"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+
+    <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="../assets/js/shared.js?v=10"></script>
+    <script src="../assets/js/users.js"></script>
+
+    <script>
+        let allRooms = [];
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Read URL params
+            const params = new URLSearchParams(window.location.search);
+            const q = params.get('q') || '';
+            const cat = params.get('cat') || '';
+            const loc = params.get('location') || '';
+
+            if (q) document.getElementById('search-keyword').value = q;
+            if (loc) document.getElementById('filter-location').value = loc;
+            if (cat) {
+                const radio = document.querySelector(`input[name="filter-type"][value="${cat}"]`);
+                if (radio) radio.checked = true;
+            }
+
+            try {
+                allRooms = await KaghanDB.getRooms();
+                applyFilters();
+            } catch(e) {
+                console.error('Failed to load search listings:', e);
+            }
+        });
+
+        function toggleMobileFilter() {
+            const sidebar = document.getElementById('filter-sidebar');
+            sidebar.classList.toggle('hidden');
+        }
+
+        function updatePriceLabel() {
+            const maxVal = document.getElementById('filter-max-price').value;
+            document.getElementById('price-val-label').textContent = `Up to ${KaghanUI.formatPKR(maxVal)}`;
+        }
+
+        function resetFilters() {
+            document.getElementById('search-keyword').value = '';
+            document.getElementById('filter-location').value = 'all';
+            const defaultRadio = document.querySelector('input[name="filter-type"][value="all"]');
+            if (defaultRadio) defaultRadio.checked = true;
+            document.getElementById('filter-max-price').value = 100000;
+            document.getElementById('filter-capacity').value = '0';
+            document.querySelectorAll('.amenity-checkbox').forEach(cb => cb.checked = false);
+            document.getElementById('filter-sort').value = 'recommended';
+            updatePriceLabel();
+            applyFilters();
+        }
+
+        function applyFilters() {
+            const keyword = (document.getElementById('search-keyword').value || '').toLowerCase().trim();
+            const location = document.getElementById('filter-location').value;
+            const type = document.querySelector('input[name="filter-type"]:checked')?.value || 'all';
+            const maxPrice = parseFloat(document.getElementById('filter-max-price').value) || 100000;
+            const minCapacity = parseInt(document.getElementById('filter-capacity').value) || 0;
+            const sortMode = document.getElementById('filter-sort').value;
+
+            const selectedAmenities = Array.from(document.querySelectorAll('.amenity-checkbox:checked')).map(cb => cb.value.toLowerCase());
+
+            const savedWishlist = KaghanDB.getWishlist();
+
+            let filtered = allRooms.filter(room => {
+                // Keyword
+                const nameMatch = !keyword || (room.name || '').toLowerCase().includes(keyword) || (room.description || '').toLowerCase().includes(keyword);
+                // Location
+                const roomLoc = (room.location || '').toLowerCase();
+                const locMatch = location === 'all' || roomLoc.includes(location.replace('-', ' '));
+                // Type
+                const typeMatch = type === 'all' || room.type === type;
+                // Price
+                const price = room.priceDaily || room.price || 0;
+                const priceMatch = price <= maxPrice;
+                // Capacity
+                const capMatch = (room.maxGuests || 2) >= minCapacity;
+                // Amenities
+                const roomAmenities = (room.amenities || []).map(a => a.toLowerCase());
+                const amenitiesMatch = selectedAmenities.length === 0 || selectedAmenities.every(s => roomAmenities.some(ra => ra.includes(s)));
+
+                return nameMatch && locMatch && typeMatch && priceMatch && capMatch && amenitiesMatch;
+            });
+
+            // Sorting
+            if (sortMode === 'price-asc') {
+                filtered.sort((a, b) => (a.priceDaily || a.price || 0) - (b.priceDaily || b.price || 0));
+            } else if (sortMode === 'price-desc') {
+                filtered.sort((a, b) => (b.priceDaily || b.price || 0) - (a.priceDaily || a.price || 0));
+            } else if (sortMode === 'rating-desc') {
+                filtered.sort((a, b) => (parseFloat(b.rating) || 5) - (parseFloat(a.rating) || 5));
+            }
+
+            // Update Count Label
+            const countLabel = document.getElementById('results-count-label');
+            if (countLabel) countLabel.textContent = `Showing ${filtered.length} matching suite${filtered.length === 1 ? '' : 's'}`;
+
+            // Render Grid
+            const grid = document.getElementById('user-search-grid');
+            if (!grid) return;
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-16 bg-white rounded-3xl border border-slate-100 p-8 shadow-sm">
+                        <i class="fa-solid fa-magnifying-glass-location text-4xl text-slate-300 mb-3 block"></i>
+                        <h4 class="font-bold text-slate-800 text-base mb-1">No Suites Found</h4>
+                        <p class="text-xs text-slate-400 font-light max-w-sm mx-auto mb-4">We couldn't find any luxury rentals matching your exact search criteria.</p>
+                        <button onclick="resetFilters()" class="bg-[#C5A059] text-slate-900 text-xs font-bold px-6 py-2.5 rounded-xl hover:bg-slate-900 hover:text-white transition-all">
+                            Reset Search Filters
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(room => {
+                const isSaved = savedWishlist.includes(room.id);
+                const mainImg = room.image || (room.images && room.images.length ? room.images[0] : '../assets/images/logo.png');
+                const plainDesc = KaghanSafe.stripTags(room.description || '');
+
+                return `
+                    <div class="bg-white rounded-3xl border border-slate-100 p-4 shadow-md flex flex-col justify-between hover-lift group">
+                        <div>
+                            <div class="relative h-48 rounded-2xl overflow-hidden mb-3 bg-slate-100">
+                                <img src="${KaghanSafe.escapeHTML(mainImg)}" alt="${KaghanSafe.escapeHTML(room.name)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='../assets/images/logo.png'">
+                                <button type="button" class="wishlist-btn ${isSaved ? 'active' : ''}" onclick="KaghanDB.toggleWishlistItem('${room.id}'); applyFilters();">
+                                    <i class="${isSaved ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
+                                </button>
+                                <div class="absolute bottom-3 left-3 bg-[#0B0F19]/80 backdrop-blur-md px-3 py-1 rounded-full text-[10px] text-white font-bold">
+                                    <i class="fa-solid fa-location-dot text-[#C5A059] mr-1"></i>${KaghanSafe.escapeHTML(room.location || 'Islamabad')}
+                                </div>
+                                <div class="absolute top-3 left-3 bg-[#C5A059] text-slate-900 text-[9px] font-black uppercase px-2.5 py-0.5 rounded-full shadow-sm">
+                                    ${KaghanSafe.escapeHTML(room.type || 'Suite')}
+                                </div>
+                            </div>
+                            <div class="space-y-1">
+                                <div class="flex justify-between items-start">
+                                    <h4 class="font-bold outfit text-slate-900 text-base leading-snug group-hover:text-[#C5A059] transition-colors">${KaghanSafe.escapeHTML(room.name)}</h4>
+                                    <span class="text-[10px] font-bold text-[#C5A059] bg-[#C5A059]/10 px-2 py-0.5 rounded-md shrink-0"><i class="fa-solid fa-star text-[9px] mr-1"></i>${room.rating || '5.0'}</span>
+                                </div>
+                                <p class="text-xs text-slate-500 font-light line-clamp-2">${KaghanSafe.escapeHTML(plainDesc)}</p>
+                            </div>
+                            <div class="flex flex-wrap gap-1.5 my-3">
+                                ${(room.amenities || []).slice(0, 3).map(a => `
+                                    <span class="bg-slate-50 text-slate-600 text-[9px] font-semibold px-2 py-0.5 rounded-full border border-slate-100">${KaghanSafe.escapeHTML(a)}</span>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div class="border-t border-slate-100 pt-3 flex justify-between items-center mt-2">
+                            <div>
+                                <span class="text-[9px] uppercase tracking-wider text-slate-400 block font-bold">Nightly Rate</span>
+                                <span class="text-base font-bold text-[#C5A059] outfit">${KaghanUI.formatPKR(room.priceDaily || room.price || 0)}</span>
+                            </div>
+                            <a href="room-details.html?id=${room.id}" class="bg-[#0B0F19] text-white text-[10px] uppercase font-bold tracking-wider px-4 py-2.5 rounded-xl hover:bg-[#C5A059] hover:text-slate-900 transition-all shadow-xs">
+                                View Suite
+                            </a>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+    </script>
+</body>
+</html>

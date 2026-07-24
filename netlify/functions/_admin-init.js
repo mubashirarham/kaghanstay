@@ -41,4 +41,23 @@ try {
     console.error('[Firebase Admin] Initialization FAILED:', e.message);
 }
 
-module.exports = { fdb, auth, initError };
+const crypto = require('crypto');
+
+function generateBookingId() {
+    return 'BK-' + crypto.randomBytes(5).toString('hex').toUpperCase();
+}
+
+async function resolveIsAdmin(decodedToken, fdbInstance) {
+    if (!decodedToken) return false;
+    if (decodedToken.role === 'admin') return true;
+    if (!decodedToken.uid || !fdbInstance) return false;
+    try {
+        const dbToUse = fdbInstance || fdb;
+        const userDoc = await dbToUse.collection('users').doc(decodedToken.uid).get();
+        return userDoc.exists && userDoc.data().role === 'admin';
+    } catch (_) {
+        return false;
+    }
+}
+
+module.exports = { fdb, auth, initError, generateBookingId, resolveIsAdmin };

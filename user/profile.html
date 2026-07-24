@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Global CSS -->
     <link rel="stylesheet" href="../assets/css/style.css?v=6">
+    <!-- DOMPurify for HTML Sanitization -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
 </head>
 <body class="guest-app-body bg-[#F8FAFC] text-[#0B0F19] overflow-x-hidden font-sans pt-20 pb-20 md:pb-12">
 
@@ -77,7 +79,7 @@
                         </div>
                         <div>
                             <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-2">Phone Number</label>
-                            <input type="text" id="profile-phone" class="w-full border border-slate-200 rounded-2xl px-4 py-3 text-xs bg-slate-50 text-slate-800 focus:border-[#C5A059] outline-none" placeholder="0300-1234567">
+                            <input type="tel" id="profile-phone" maxlength="12" inputmode="tel" class="w-full border border-slate-200 rounded-2xl px-4 py-3 text-xs bg-slate-50 text-slate-800 focus:border-[#C5A059] outline-none" placeholder="0300-1234567">
                         </div>
                         <div>
                             <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-2">New Password (Leave blank to keep current)</label>
@@ -91,7 +93,25 @@
                 </div>
             </div>
 
-            <div class="space-y-6">
+                <div class="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm space-y-4">
+                    <h3 class="font-bold outfit text-slate-900 text-base flex items-center gap-2">
+                        <i class="fa-solid fa-sliders text-[#C5A059]"></i> Stay Preferences
+                    </h3>
+                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-2xl text-xs space-y-2">
+                        <div class="flex justify-between items-center text-slate-700">
+                            <span class="text-slate-400">Bedding:</span>
+                            <span id="pref-meta-bedding" class="font-bold text-slate-900">King Bed</span>
+                        </div>
+                        <div class="flex justify-between items-center text-slate-700">
+                            <span class="text-slate-400">View & Floor:</span>
+                            <span id="pref-meta-view" class="font-bold text-[#C5A059]">Mountain View</span>
+                        </div>
+                    </div>
+                    <a href="onboarding.html" class="w-full border border-slate-200 text-slate-700 text-xs font-bold py-2.5 rounded-2xl block text-center hover:bg-slate-900 hover:text-white transition-all">
+                        <i class="fa-solid fa-[#C5A059] fa-pen-to-square text-[#C5A059] mr-1"></i> Re-run Onboarding Stepper
+                    </a>
+                </div>
+
                 <div class="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm space-y-4">
                     <h3 class="font-bold outfit text-slate-900 text-base flex items-center gap-2">
                         <i class="fa-solid fa-shield-halved text-emerald-600"></i> Verification Status
@@ -118,26 +138,28 @@
         </div>
     </main>
 
-    <!-- Mobile Floating Navigation Dock -->
-    <nav class="guest-app-dock md:hidden flex justify-around items-center">
-        <a href="index.html?tab=overview" class="dock-item">
-            <i class="fa-solid fa-hotel"></i>
-            <span>Explore</span>
+    <!-- Unified Floating Mobile Navigation Dock -->
+    <nav class="app-bottom-dock md:hidden flex justify-between items-center">
+        <a href="index.html" class="dock-item">
+            <i class="fa-solid fa-hotel text-lg"></i>
+            <span>Home</span>
         </a>
         <a href="trips.html" class="dock-item">
-            <i class="fa-solid fa-suitcase"></i>
+            <i class="fa-solid fa-suitcase text-lg"></i>
             <span>Stays</span>
         </a>
-        <a href="support.html" class="dock-item">
-            <i class="fa-solid fa-comments text-emerald-400"></i>
-            <span>Host Chat</span>
+        
+        <!-- Center Raised Gold Search FAB -->
+        <a href="search.html" class="gold-fab-btn -mt-6">
+            <i class="fa-solid fa-magnifying-glass text-lg"></i>
         </a>
+
         <a href="wishlists.html" class="dock-item">
-            <i class="fa-solid fa-heart text-rose-400"></i>
-            <span>Wishlist</span>
+            <i class="fa-solid fa-heart text-lg text-rose-500"></i>
+            <span>Saved</span>
         </a>
         <a href="profile.html" class="dock-item active">
-            <i class="fa-solid fa-user"></i>
+            <i class="fa-solid fa-user text-lg"></i>
             <span>Profile</span>
         </a>
     </nav>

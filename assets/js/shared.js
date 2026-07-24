@@ -151,19 +151,33 @@ function startActiveListeners() {
         window.dispatchEvent(new CustomEvent('kaghan-db-upgrades', { detail: list }));
     }, err => console.warn("Upgrades listener error:", err));
 
-    // 4. Authenticated User Listeners
-    const user = JSON.parse(localStorage.getItem(DB_KEYS.SESSION));
-    if (user) {
+    // 4. Authenticated User Listeners (Subscribed only when Firebase Auth is ready)
+    firebase.auth().onAuthStateChanged(authUser => {
+        // Stop existing auth listeners on state change
+        ['currentUser', 'coupons', 'bookings', 'users', 'newsletter'].forEach(key => {
+            if (window.KaghanDB_Listeners[key]) {
+                try { window.KaghanDB_Listeners[key](); } catch(e) {}
+                window.KaghanDB_Listeners[key] = null;
+            }
+        });
+
+        if (!authUser) return;
+
+        const sessionUser = JSON.parse(localStorage.getItem(DB_KEYS.SESSION)) || {};
+        const isAdminUser = sessionUser.role === 'admin' || authUser.email === 'admin@kaghanstay.com';
+
         // Sync active user profile details
-        window.KaghanDB_Listeners.currentUser = fdb.collection('users').doc(user.id).onSnapshot(doc => {
+        window.KaghanDB_Listeners.currentUser = fdb.collection('users').doc(authUser.uid).onSnapshot(doc => {
             if (doc.exists) {
                 const uData = doc.data();
                 localStorage.setItem(DB_KEYS.SESSION, JSON.stringify(uData));
                 window.dispatchEvent(new CustomEvent('kaghan-db-current-user', { detail: uData }));
             }
-        }, err => console.warn("Current user listener error:", err));
+        }, err => {
+            // Suppress auth race condition notice
+        });
 
-        if (user.role === 'admin') {
+        if (isAdminUser) {
             // Subscribe to all coupons (Admin)
             window.KaghanDB_Listeners.coupons = fdb.collection('coupons').onSnapshot(snap => {
                 const list = [];
@@ -178,7 +192,7 @@ function startActiveListeners() {
                 });
                 window.KaghanDB_Cache.coupons = list;
                 window.dispatchEvent(new CustomEvent('kaghan-db-coupons', { detail: list }));
-            }, err => console.warn("Coupons listener error:", err));
+            }, err => {});
 
             // Subscribe to all bookings (Admin)
             window.KaghanDB_Listeners.bookings = fdb.collection('bookings').onSnapshot(snap => {
@@ -195,7 +209,7 @@ function startActiveListeners() {
                 const sorted = list.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
                 window.KaghanDB_Cache.bookings = sorted;
                 window.dispatchEvent(new CustomEvent('kaghan-db-bookings', { detail: sorted }));
-            }, err => console.warn("Bookings listener error:", err));
+            }, err => {});
 
             // Subscribe to all users (Admin)
             window.KaghanDB_Listeners.users = fdb.collection('users').onSnapshot(snap => {
@@ -211,7 +225,7 @@ function startActiveListeners() {
                 });
                 window.KaghanDB_Cache.users = list;
                 window.dispatchEvent(new CustomEvent('kaghan-db-users', { detail: list }));
-            }, err => console.warn("Users listener error:", err));
+            }, err => {});
 
             // Subscribe to all newsletter subscribers (Admin)
             window.KaghanDB_Listeners.newsletter = fdb.collection('newsletter').onSnapshot(snap => {
@@ -228,11 +242,10 @@ function startActiveListeners() {
                 const sorted = list.sort((a, b) => new Date(b.subscribedAt) - new Date(a.subscribedAt));
                 window.KaghanDB_Cache.newsletter = sorted;
                 window.dispatchEvent(new CustomEvent('kaghan-db-newsletter', { detail: sorted }));
-            }, err => console.warn("Newsletter listener error:", err));
-        } else if (firebase.auth() && firebase.auth().currentUser) {
+            }, err => {});
+        } else {
             // Subscribe to user-specific bookings (Guest)
-            const authUid = firebase.auth().currentUser.uid;
-            window.KaghanDB_Listeners.bookings = fdb.collection('bookings').where('userId', '==', authUid).onSnapshot(snap => {
+            window.KaghanDB_Listeners.bookings = fdb.collection('bookings').where('userId', '==', authUser.uid).onSnapshot(snap => {
                 const list = [];
                 const seen = new Set();
                 snap.forEach(doc => {
@@ -246,11 +259,9 @@ function startActiveListeners() {
                 const sorted = list.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
                 window.KaghanDB_Cache.bookings = sorted;
                 window.dispatchEvent(new CustomEvent('kaghan-db-bookings', { detail: sorted }));
-            }, err => {
-                // Silently handle auth sync
-            });
+            }, err => {});
         }
-    }
+    });
 }
 
 function stopActiveListeners() {
@@ -291,6 +302,13 @@ window.KaghanSafe = {
             .replace(/>/g, '&gt;')
             .replace(/"/g, '&quot;')
             .replace(/'/g, '&#039;');
+    },
+    stripTags: function(html) {
+        if (html === null || html === undefined) return '';
+        const tmp = document.createElement('DIV');
+        tmp.innerHTML = html;
+        let text = tmp.textContent || tmp.innerText || '';
+        return text.replace(/\u00a0/g, ' ').replace(/\s+/g, ' ').trim();
     },
     sanitizeHTML: function(html) {
         if (html === null || html === undefined) return '';
@@ -378,6 +396,32 @@ async function callAdminAction(action, data) {
     const resData = await res.json();
     return resData.result;
 }
+
+window.ensureAuthReady = function() {
+    return new Promise(resolve => {
+        if (typeof firebase !== 'undefined' && firebase.auth && firebase.auth().currentUser) {
+            resolve(firebase.auth().currentUser);
+        } else if (typeof firebase !== 'undefined' && firebase.auth) {
+            let unsubscribed = false;
+            const unsubscribe = firebase.auth().onAuthStateChanged(user => {
+                if (!unsubscribed) {
+                    unsubscribed = true;
+                    try { unsubscribe(); } catch(e) {}
+                    resolve(user);
+                }
+            });
+            setTimeout(() => {
+                if (!unsubscribed) {
+                    unsubscribed = true;
+                    try { unsubscribe(); } catch(e) {}
+                    resolve(firebase.auth().currentUser);
+                }
+            }, 1500);
+        } else {
+            resolve(null);
+        }
+    });
+};
 
 // DB Firestore Implementation
 const db = {
@@ -516,12 +560,17 @@ const db = {
         if (window.KaghanDB_Cache.bookings) {
             return window.KaghanDB_Cache.bookings;
         }
-        const snap = await fdb.collection('bookings').get();
-        const list = [];
-        snap.forEach(doc => list.push(doc.data()));
-        const sorted = list.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        window.KaghanDB_Cache.bookings = sorted;
-        return sorted;
+        await window.ensureAuthReady();
+        try {
+            const snap = await fdb.collection('bookings').get();
+            const list = [];
+            snap.forEach(doc => list.push(doc.data()));
+            const sorted = list.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            window.KaghanDB_Cache.bookings = sorted;
+            return sorted;
+        } catch (e) {
+            return window.KaghanDB_Cache.bookings || [];
+        }
     },
     getBookingById: async (id) => {
         if (window.KaghanDB_Cache.bookings) {
@@ -558,6 +607,24 @@ const db = {
         }
         window.dispatchEvent(new CustomEvent('kaghan-db-bookings', { detail: window.KaghanDB_Cache.bookings }));
         return true;
+    },
+    addReview: async (reviewData) => {
+        const docRef = fdb.collection('reviews').doc();
+        reviewData.id = docRef.id;
+        reviewData.createdAt = reviewData.createdAt || new Date().toISOString();
+        await docRef.set(reviewData);
+        return reviewData;
+    },
+    getReviews: async (roomId) => {
+        try {
+            const snap = await fdb.collection('reviews').where('roomId', '==', roomId).get();
+            const list = [];
+            snap.forEach(doc => list.push(doc.data()));
+            return list;
+        } catch(e) {
+            console.warn('getReviews notice:', e);
+            return [];
+        }
     },
     updateBookingDates: async (id, checkIn, checkOut) => {
         await fdb.collection('bookings').doc(id).update({
@@ -808,11 +875,17 @@ const db = {
         if (window.KaghanDB_Cache.users) {
             return window.KaghanDB_Cache.users;
         }
-        const snap = await fdb.collection('users').get();
-        const list = [];
-        snap.forEach(doc => list.push(doc.data()));
-        window.KaghanDB_Cache.users = list;
-        return list;
+        await window.ensureAuthReady();
+        try {
+            const snap = await fdb.collection('users').get();
+            const list = [];
+            snap.forEach(doc => list.push(doc.data()));
+            window.KaghanDB_Cache.users = list;
+            return list;
+        } catch (e) {
+            console.warn("getUsers query notice:", e.message);
+            return window.KaghanDB_Cache.users || [];
+        }
     },
     getUserById: async (uid) => {
         const doc = await fdb.collection('users').doc(uid).get();
@@ -820,6 +893,8 @@ const db = {
     },
     updateUser: async (id, updatedData) => {
         delete updatedData.password;
+        delete updatedData.role;
+        delete updatedData.loyaltyPoints;
         await fdb.collection('users').doc(id).update(updatedData);
         
         const currentUser = db.getCurrentUser();
@@ -1021,6 +1096,14 @@ const UI = {
         if (roomId) {
             window.location.href = `room-details.html?id=${roomId}`;
         }
+    },
+    getStatusBadge: (status) => {
+        const map = {
+            confirmed: { label: 'Confirmed', classes: 'text-emerald-600 border-emerald-200 bg-emerald-50/20' },
+            completed: { label: 'Completed', classes: 'text-blue-600 border-blue-200 bg-blue-50/20' },
+            cancelled: { label: 'Cancelled', classes: 'text-rose-600 border-rose-200 bg-rose-50/20' }
+        };
+        return map[status] || { label: status || 'Unknown', classes: 'text-slate-600 border-slate-200 bg-slate-50/20' };
     }
 };
 
@@ -1368,7 +1451,9 @@ window.renderNavbar = () => {
 
 window.renderMobileTabBar = () => {
     if (window.location.pathname.includes('/admin/')) return;
-    if (document.getElementById('kph-mobile-tab-bar')) return;
+    if (window.location.pathname.includes('/user/')) return;
+    if (window.location.pathname.includes('room-details.html')) return;
+    if (document.getElementById('kph-mobile-tab-bar') || document.querySelector('.app-bottom-dock') || document.querySelector('.guest-app-dock')) return;
 
     const user = KaghanDB.getCurrentUser();
     const isDashboard = window.location.pathname.includes('/user/');
@@ -1448,6 +1533,15 @@ function initializeSharedUI() {
         injectWhatsApp();
         injectCookieBanner();
     }, 500);
+
+    // Register Service Worker for PWA Offline Resilience
+    if ('serviceWorker' in navigator && !window.location.pathname.includes('/admin/')) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js').catch(err => {
+                console.warn('SW registration notice:', err);
+            });
+        });
+    }
 }
 
 // Call UI initialization immediately if DOM is ready, otherwise defer until DOMContentLoaded

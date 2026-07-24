@@ -2,7 +2,8 @@ const { admin, fdb } = require('./_admin-init');
 const { z } = require('zod');
 
 const RequestSchema = z.object({
-    bookingId: z.string().min(1, "Booking ID is required")
+    bookingId: z.string().min(1, "Booking ID is required"),
+    contact: z.string().min(3, "Guest email or phone number is required")
 });
 
 exports.handler = async (event, context) => {
@@ -47,7 +48,7 @@ exports.handler = async (event, context) => {
             };
         }
 
-        const { bookingId } = validation.data;
+        const { bookingId, contact } = validation.data;
         const cleanBookingId = bookingId.trim().toUpperCase();
 
         const bookingDoc = await fdb.collection('bookings').doc(cleanBookingId).get();
@@ -55,11 +56,26 @@ exports.handler = async (event, context) => {
             return {
                 statusCode: 404,
                 headers: { 'Access-Control-Allow-Origin': allowedOrigin },
-                body: JSON.stringify({ error: 'Reservation not found. Please verify the ID.' })
+                body: JSON.stringify({ error: 'Reservation not found. Please verify the ID and contact details.' })
             };
         }
 
         const bookingData = bookingDoc.data();
+        const providedContact = contact.trim().toLowerCase();
+        const guestEmailClean = (bookingData.guestEmail || '').toLowerCase().trim();
+        const guestPhoneClean = (bookingData.guestPhone || '').replace(/\D/g, '');
+        const contactDigits = providedContact.replace(/\D/g, '');
+
+        const emailMatch = guestEmailClean.length > 0 && guestEmailClean === providedContact;
+        const phoneMatch = contactDigits.length >= 7 && guestPhoneClean.length >= 7 && (guestPhoneClean.endsWith(contactDigits) || contactDigits.endsWith(guestPhoneClean));
+
+        if (!emailMatch && !phoneMatch) {
+            return {
+                statusCode: 404,
+                headers: { 'Access-Control-Allow-Origin': allowedOrigin },
+                body: JSON.stringify({ error: 'Reservation not found. Please verify the ID and contact details.' })
+            };
+        }
 
         // Retrieve room details for room name
         const roomDoc = await fdb.collection('rooms').doc(bookingData.roomId).get();

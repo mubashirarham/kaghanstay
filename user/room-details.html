@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+    <title>Suite Details | Kaghan Stay User Panel</title>
+    <meta name="robots" content="noindex, nofollow">
+    <!-- Tailwind CSS (Play CDN with JIT) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Global CSS -->
+    <link rel="stylesheet" href="../assets/css/style.css?v=10">
+    <!-- DOMPurify for HTML Sanitization -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+</head>
+<body class="guest-app-body bg-[#F8FAFC] text-[#0B0F19] overflow-x-hidden font-sans pt-20 pb-28 md:pb-12">
+
+    <!-- Top Luxury App Navigation Header -->
+    <nav id="guest-app-navbar" class="fixed top-0 left-0 right-0 z-50 py-3 px-4 md:px-8 bg-[#0B0F19]/95 backdrop-blur-xl border-b border-white/10 shadow-xl text-white flex items-center justify-between gap-4">
+        <div class="flex items-center gap-3 shrink-0">
+            <a href="search.html" class="w-10 h-10 rounded-2xl bg-white/10 hover:bg-[#C5A059] text-slate-300 hover:text-slate-900 flex items-center justify-center transition-all">
+                <i class="fa-solid fa-arrow-left text-sm"></i>
+            </a>
+            <div class="flex flex-col">
+                <div class="flex items-center gap-1 text-[10px] text-[#C5A059] font-bold uppercase tracking-wider">
+                    <i class="fa-solid fa-hotel"></i>
+                    <span id="nav-category-badge">Luxury Suite</span>
+                </div>
+                <h1 id="nav-suite-title" class="text-sm font-bold outfit text-white leading-tight truncate max-w-[200px] sm:max-w-md">Suite Details</h1>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-2.5 shrink-0">
+            <button id="nav-wishlist-btn" onclick="toggleCurrentWishlist()" class="w-9 h-9 rounded-full bg-white/10 hover:bg-rose-500 text-white flex items-center justify-center transition-all">
+                <i class="fa-regular fa-heart text-xs"></i>
+            </button>
+            <a href="notifications.html" class="w-9 h-9 rounded-full bg-white/10 hover:bg-[#C5A059] text-slate-300 hover:text-slate-900 flex items-center justify-center transition-all">
+                <i class="fa-solid fa-bell text-xs"></i>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="py-4 px-4 md:px-8 max-w-7xl mx-auto space-y-6">
+
+        <!-- Breadcrumbs -->
+        <div class="flex items-center gap-2 text-xs text-slate-400 font-medium">
+            <a href="index.html" class="hover:text-[#C5A059]">Dashboard</a>
+            <i class="fa-solid fa-chevron-right text-[10px] text-slate-300"></i>
+            <a href="search.html" class="hover:text-[#C5A059]">Search Catalog</a>
+            <i class="fa-solid fa-chevron-right text-[10px] text-slate-300"></i>
+            <span id="breadcrumb-title" class="text-slate-800 font-bold">Suite Details</span>
+        </div>
+
+        <!-- Main Hero Photo Gallery -->
+        <div class="space-y-3">
+            <div class="relative h-72 sm:h-96 md:h-[420px] rounded-3xl overflow-hidden bg-slate-900 shadow-xl border border-slate-100 group">
+                <img id="main-hero-img" src="../assets/images/logo.png" alt="Suite Gallery Image" class="w-full h-full object-cover transition-all duration-700">
+                
+                <!-- Badges Overlay -->
+                <div class="absolute top-4 left-4 flex flex-wrap gap-2">
+                    <span id="detail-category" class="bg-[#C5A059] text-slate-900 text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full shadow-md">
+                        Luxury Suite
+                    </span>
+                    <span id="detail-rating-badge" class="bg-[#0B0F19]/80 backdrop-blur-md text-[#C5A059] text-[10px] font-bold px-3 py-1 rounded-full border border-white/10">
+                        <i class="fa-solid fa-star text-[9px] mr-1"></i>5.0
+                    </span>
+                </div>
+
+                <div class="absolute bottom-4 left-4 bg-[#0B0F19]/80 backdrop-blur-md px-4 py-1.5 rounded-full text-xs text-white font-bold border border-white/10 flex items-center gap-2">
+                    <i class="fa-solid fa-location-dot text-[#C5A059]"></i>
+                    <span id="detail-location-tag">Islamabad</span>
+                </div>
+            </div>
+
+            <!-- Thumbnails Selector Row -->
+            <div id="gallery-thumbnails" class="flex items-center gap-3 overflow-x-auto pb-2 no-scrollbar">
+                <!-- Dynamically populated thumbnails -->
+            </div>
+        </div>
+
+        <!-- Two Column Content & Sticky Booking Box -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+            <!-- Left Details Column (2 Cols) -->
+            <div class="lg:col-span-2 space-y-6">
+
+                <!-- Header Title & Key Specs Pill Bar -->
+                <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm space-y-4">
+                    <div>
+                        <h2 id="detail-title" class="text-2xl md:text-3xl font-extrabold outfit text-slate-900 leading-tight">Deluxe Mountain Suite</h2>
+                        <p id="detail-address" class="text-xs text-slate-400 font-medium mt-1 flex items-center gap-1.5">
+                            <i class="fa-solid fa-map-pin text-[#C5A059]"></i> Bahria Enclave, Islamabad
+                        </p>
+                    </div>
+
+                    <!-- Key Specs Row -->
+                    <div class="flex flex-wrap items-center gap-3 pt-2 border-t border-slate-100 text-xs text-slate-600 font-semibold">
+                        <div class="flex items-center gap-1.5 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100">
+                            <i class="fa-solid fa-user-group text-[#C5A059]"></i>
+                            <span id="detail-guests">Up to 2 Guests</span>
+                        </div>
+                        <div class="flex items-center gap-1.5 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100">
+                            <i class="fa-solid fa-bed text-[#C5A059]"></i>
+                            <span id="detail-bedrooms">1 Bedroom</span>
+                        </div>
+                        <div class="flex items-center gap-1.5 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100">
+                            <i class="fa-solid fa-bath text-[#C5A059]"></i>
+                            <span id="detail-bathrooms">1 Bath</span>
+                        </div>
+                        <div class="flex items-center gap-1.5 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100">
+                            <i class="fa-solid fa-[#C5A059] fa-shield-halved text-[#C5A059]"></i>
+                            <span>24/7 Security</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Host Concierge Managed Banner -->
+                <div class="bg-gradient-to-r from-[#0B0F19] to-[#161B26] text-white rounded-3xl p-6 shadow-md border border-white/10 flex items-center justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-[#C5A059] text-slate-900 text-xl font-bold flex items-center justify-center shrink-0">
+                            <i class="fa-solid fa-concierge-bell"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold outfit text-white text-base">Managed by Kaghan Stay Hospitality</h4>
+                            <p class="text-xs text-slate-300 font-light mt-0.5">Professional housekeeping, fresh linen, 24/7 power backup, and dedicated host support.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Description Box -->
+                <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm space-y-3">
+                    <h3 class="text-lg font-bold outfit text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-align-left text-[#C5A059]"></i> Suite Overview
+                    </h3>
+                    <div id="detail-description" class="text-xs text-slate-600 leading-relaxed font-light space-y-2">
+                        Loading suite description...
+                    </div>
+                </div>
+
+                <!-- Amenities Grid -->
+                <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm space-y-4">
+                    <h3 class="text-lg font-bold outfit text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-list-check text-[#C5A059]"></i> Included Amenities & Features
+                    </h3>
+                    <div id="detail-amenities-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs text-slate-700 font-medium">
+                        <!-- Loaded dynamically -->
+                    </div>
+                </div>
+
+                <!-- House Rules & Policies -->
+                <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm space-y-4">
+                    <h3 class="text-lg font-bold outfit text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-clipboard-check text-[#C5A059]"></i> House Rules & Stay Policies
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs text-slate-600">
+                        <div class="flex items-start gap-3 bg-slate-50 p-3.5 rounded-2xl">
+                            <i class="fa-solid fa-clock text-[#C5A059] text-base mt-0.5"></i>
+                            <div>
+                                <span class="font-bold text-slate-900 block">Check-in / Check-out</span>
+                                <span class="text-slate-500 font-light">Check-in: 2:00 PM • Check-out: 11:00 AM</span>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 bg-slate-50 p-3.5 rounded-2xl">
+                            <i class="fa-solid fa-[#C5A059] fa-ban-smoke text-[#C5A059] text-base mt-0.5"></i>
+                            <div>
+                                <span class="font-bold text-slate-900 block">Smoking Policy</span>
+                                <span class="text-slate-500 font-light">Non-smoking indoors. Designated balcony area.</span>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 bg-slate-50 p-3.5 rounded-2xl">
+                            <i class="fa-solid fa-id-card text-[#C5A059] text-base mt-0.5"></i>
+                            <div>
+                                <span class="font-bold text-slate-900 block">Identity Verification</span>
+                                <span class="text-slate-500 font-light">Valid CNIC or Passport required at check-in.</span>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 bg-slate-50 p-3.5 rounded-2xl">
+                            <i class="fa-solid fa-rotate-left text-[#C5A059] text-base mt-0.5"></i>
+                            <div>
+                                <span class="font-bold text-slate-900 block">Cancellation Policy</span>
+                                <span class="text-slate-500 font-light">Full refund up to 48 hours before check-in.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Verified Reviews -->
+                <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm space-y-4">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-lg font-bold outfit text-slate-900 flex items-center gap-2">
+                            <i class="fa-solid fa-star text-[#C5A059]"></i> Verified Guest Reviews
+                        </h3>
+                        <span id="detail-review-count" class="text-xs font-bold text-[#C5A059]">5.0 (12 Reviews)</span>
+                    </div>
+
+                    <div id="detail-reviews-list" class="space-y-3">
+                        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100 text-xs space-y-1">
+                            <div class="flex justify-between items-center">
+                                <span class="font-bold text-slate-800">Muhammad Hamza</span>
+                                <div class="text-[#C5A059] text-[10px]"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                            </div>
+                            <p class="text-slate-500 font-light italic">"Extremely clean apartment with stunning balcony views. High-speed Wi-Fi and hot water worked perfectly. Will visit again!"</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Sticky Booking Card -->
+            <div class="space-y-6">
+                <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-lg space-y-6 sticky top-24">
+                    
+                    <!-- Rate Header -->
+                    <div class="flex justify-between items-baseline border-b border-slate-100 pb-4">
+                        <div>
+                            <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold block">Nightly Rate</span>
+                            <div class="flex items-baseline gap-2">
+                                <span id="booking-box-price" class="text-2xl font-bold outfit text-[#C5A059]">Rs 0</span>
+                                <span id="booking-box-orig-price" class="text-xs line-through text-slate-400 font-semibold hidden">Rs 0</span>
+                            </div>
+                        </div>
+                        <span class="text-xs text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full font-bold">Instant Booking</span>
+                    </div>
+
+                    <!-- Date Selection Form -->
+                    <div class="space-y-3">
+                        <div class="grid grid-cols-2 gap-2 bg-slate-50 p-2.5 rounded-2xl border border-slate-200">
+                            <div>
+                                <label class="block text-[9px] uppercase tracking-wider text-slate-400 font-bold mb-1">Check-in</label>
+                                <input type="date" id="booking-checkin" onchange="calculateReservationTotal()" class="w-full text-xs bg-transparent text-slate-800 font-bold outline-none cursor-pointer">
+                            </div>
+                            <div class="border-l border-slate-200 pl-2">
+                                <label class="block text-[9px] uppercase tracking-wider text-slate-400 font-bold mb-1">Check-out</label>
+                                <input type="date" id="booking-checkout" onchange="calculateReservationTotal()" class="w-full text-xs bg-transparent text-slate-800 font-bold outline-none cursor-pointer">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-wider text-slate-400 font-bold mb-1">Guests</label>
+                            <select id="booking-guests-count" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3 text-xs text-slate-800 font-bold outline-none">
+                                <option value="1">1 Guest</option>
+                                <option value="2" selected>2 Guests</option>
+                                <option value="3">3 Guests</option>
+                                <option value="4">4 Guests</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Price Breakdown Summary -->
+                    <div class="space-y-2 text-xs border-t border-slate-100 pt-4 text-slate-600 font-medium">
+                        <div class="flex justify-between">
+                            <span id="summary-nights-label">Rs 0 x 1 night</span>
+                            <span id="summary-subtotal" class="font-bold text-slate-800">Rs 0</span>
+                        </div>
+                        <div class="flex justify-between text-slate-400">
+                            <span>Service & Maintenance Fee</span>
+                            <span class="text-emerald-600 font-bold">FREE</span>
+                        </div>
+                        <div class="flex justify-between text-sm font-bold text-slate-900 pt-2 border-t border-slate-100">
+                            <span>Total Estimated</span>
+                            <span id="summary-total" class="text-[#C5A059] outfit text-lg">Rs 0</span>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <button id="btn-reserve-suite" onclick="proceedToReservation()" class="w-full bg-[#0B0F19] text-white py-4 rounded-2xl font-bold text-xs uppercase tracking-wider hover:bg-[#C5A059] hover:text-slate-900 transition-all shadow-md flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-bolt text-[#C5A059]"></i> Reserve Suite Now
+                    </button>
+
+                    <a href="support.html" class="w-full border border-slate-200 text-slate-700 py-3 rounded-2xl font-bold text-xs text-center block hover:bg-slate-50 transition-all">
+                        <i class="fa-solid fa-comments text-emerald-500 mr-1"></i> Ask Host Concierge
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Unified Floating Mobile Navigation Dock -->
+    <nav class="app-bottom-dock md:hidden flex justify-between items-center">
+        <a href="index.html" class="dock-item">
+            <i class="fa-solid fa-hotel text-lg"></i>
+            <span>Home</span>
+        </a>
+        <a href="trips.html" class="dock-item">
+            <i class="fa-solid fa-suitcase text-lg"></i>
+            <span>Stays</span>
+        </a>
+        
+        <!-- Center Raised Gold Search FAB -->
+        <a href="search.html" class="gold-fab-btn -mt-6">
+            <i class="fa-solid fa-magnifying-glass text-lg"></i>
+        </a>
+
+        <a href="wishlists.html" class="dock-item">
+            <i class="fa-solid fa-heart text-lg text-rose-500"></i>
+            <span>Saved</span>
+        </a>
+        <a href="profile.html" class="dock-item">
+            <i class="fa-solid fa-user text-lg"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+
+    <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="../assets/js/shared.js?v=10"></script>
+    <script src="../assets/js/users.js"></script>
+
+    <script>
+        let currentRoom = null;
+        let roomImages = [];
+        let activeImgIdx = 0;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const params = new URLSearchParams(window.location.search);
+            const roomId = params.get('id');
+
+            if (!roomId) {
+                window.location.href = 'search.html';
+                return;
+            }
+
+            // Set default date pickers
+            const today = new Date();
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+
+            document.getElementById('booking-checkin').value = today.toISOString().split('T')[0];
+            document.getElementById('booking-checkout').value = tomorrow.toISOString().split('T')[0];
+
+            try {
+                const rooms = await KaghanDB.getRooms();
+                currentRoom = rooms.find(r => r.id === roomId);
+
+                if (!currentRoom) {
+                    alert('Suite listing not found.');
+                    window.location.href = 'search.html';
+                    return;
+                }
+
+                renderRoomDetails();
+            } catch(e) {
+                console.error('Error fetching suite details:', e);
+            }
+        });
+
+        function renderRoomDetails() {
+            if (!currentRoom) return;
+
+            // Nav & Breadcrumbs
+            document.getElementById('nav-suite-title').textContent = currentRoom.name;
+            document.getElementById('nav-category-badge').textContent = currentRoom.type || 'Luxury Suite';
+            document.getElementById('breadcrumb-title').textContent = currentRoom.name;
+
+            // Titles & Tags
+            document.getElementById('detail-title').textContent = currentRoom.name;
+            document.getElementById('detail-category').textContent = currentRoom.type || 'Luxury Suite';
+            document.getElementById('detail-location-tag').textContent = currentRoom.location || 'Islamabad';
+            document.getElementById('detail-address').innerHTML = `<i class="fa-solid fa-map-pin text-[#C5A059]"></i> ${KaghanSafe.escapeHTML(currentRoom.location || 'Islamabad')}`;
+            document.getElementById('detail-rating-badge').innerHTML = `<i class="fa-solid fa-star text-[9px] mr-1"></i>${currentRoom.rating || '5.0'}`;
+
+            // Specs
+            document.getElementById('detail-guests').textContent = `Up to ${currentRoom.maxGuests || 2} Guests`;
+            document.getElementById('detail-bedrooms').textContent = `${currentRoom.bedrooms || 1} Bedroom${(currentRoom.bedrooms || 1) > 1 ? 's' : ''}`;
+            document.getElementById('detail-bathrooms').textContent = `${currentRoom.bathrooms || 1} Bath`;
+
+            // Description
+            document.getElementById('detail-description').innerHTML = KaghanSafe.sanitizeHTML(currentRoom.description || 'Experience 5-star mountain hospitality in this fully furnished suite.');
+
+            // Images
+            roomImages = currentRoom.images && currentRoom.images.length ? currentRoom.images : [currentRoom.image || '../assets/images/logo.png'];
+            activeImgIdx = 0;
+            updateHeroImage();
+
+            // Render Thumbnails
+            const thumbsContainer = document.getElementById('gallery-thumbnails');
+            if (thumbsContainer) {
+                thumbsContainer.innerHTML = roomImages.map((img, idx) => `
+                    <button onclick="selectGalleryImage(${idx})" class="relative w-20 h-20 rounded-2xl overflow-hidden shrink-0 border-2 transition-all cursor-pointer ${idx === activeImgIdx ? 'border-[#C5A059] ring-2 ring-[#C5A059]/30 scale-105' : 'border-slate-200 opacity-70 hover:opacity-100'}">
+                        <img src="${KaghanSafe.escapeHTML(img)}" alt="Gallery image ${idx + 1}" class="w-full h-full object-cover">
+                    </button>
+                `).join('');
+            }
+
+            // Amenities Grid
+            const amenGrid = document.getElementById('detail-amenities-grid');
+            if (amenGrid && currentRoom.amenities) {
+                amenGrid.innerHTML = currentRoom.amenities.map(a => `
+                    <div class="flex items-center gap-2 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                        <i class="fa-solid fa-circle-check text-[#C5A059] text-xs"></i>
+                        <span>${KaghanSafe.escapeHTML(a)}</span>
+                    </div>
+                `).join('');
+            }
+
+            // Booking Box Rates
+            const price = currentRoom.priceDaily || currentRoom.price || 0;
+            document.getElementById('booking-box-price').textContent = KaghanUI.formatPKR(price);
+
+            if (currentRoom.originalPrice) {
+                const orig = document.getElementById('booking-box-orig-price');
+                orig.textContent = KaghanUI.formatPKR(currentRoom.originalPrice);
+                orig.classList.remove('hidden');
+            }
+
+            // Update Wishlist Heart
+            updateWishlistIcon();
+
+            // Calculate Reservation Total
+            calculateReservationTotal();
+        }
+
+        function selectGalleryImage(idx) {
+            activeImgIdx = idx;
+            updateHeroImage();
+        }
+
+        function updateHeroImage() {
+            const mainImg = document.getElementById('main-hero-img');
+            if (mainImg && roomImages[activeImgIdx]) {
+                mainImg.src = roomImages[activeImgIdx];
+            }
+            // Update Thumbnail borders
+            const thumbs = document.querySelectorAll('#gallery-thumbnails button');
+            thumbs.forEach((btn, i) => {
+                if (i === activeImgIdx) {
+                    btn.className = 'relative w-20 h-20 rounded-2xl overflow-hidden shrink-0 border-2 border-[#C5A059] ring-2 ring-[#C5A059]/30 scale-105 transition-all cursor-pointer';
+                } else {
+                    btn.className = 'relative w-20 h-20 rounded-2xl overflow-hidden shrink-0 border-2 border-slate-200 opacity-70 hover:opacity-100 transition-all cursor-pointer';
+                }
+            });
+        }
+
+        function updateWishlistIcon() {
+            if (!currentRoom) return;
+            const isSaved = KaghanDB.getWishlist().includes(currentRoom.id);
+            const btn = document.getElementById('nav-wishlist-btn');
+            if (btn) {
+                btn.innerHTML = `<i class="${isSaved ? 'fa-solid text-rose-500' : 'fa-regular'} fa-heart text-xs"></i>`;
+            }
+        }
+
+        function toggleCurrentWishlist() {
+            if (!currentRoom) return;
+            KaghanDB.toggleWishlistItem(currentRoom.id);
+            updateWishlistIcon();
+        }
+
+        function calculateReservationTotal() {
+            if (!currentRoom) return;
+            const price = currentRoom.priceDaily || currentRoom.price || 0;
+
+            const checkInVal = document.getElementById('booking-checkin').value;
+            const checkOutVal = document.getElementById('booking-checkout').value;
+
+            let nights = 1;
+            if (checkInVal && checkOutVal) {
+                const d1 = new Date(checkInVal);
+                const d2 = new Date(checkOutVal);
+                const diffTime = d2 - d1;
+                nights = Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
+            }
+
+            const total = price * nights;
+
+            document.getElementById('summary-nights-label').textContent = `${KaghanUI.formatPKR(price)} x ${nights} night${nights === 1 ? '' : 's'}`;
+            document.getElementById('summary-subtotal').textContent = KaghanUI.formatPKR(total);
+            document.getElementById('summary-total').textContent = KaghanUI.formatPKR(total);
+        }
+
+        function proceedToReservation() {
+            if (!currentRoom) return;
+            const checkIn = document.getElementById('booking-checkin').value;
+            const checkOut = document.getElementById('booking-checkout').value;
+            const guests = document.getElementById('booking-guests-count').value;
+
+            window.location.href = `../booking.html?room=${currentRoom.id}&checkIn=${checkIn}&checkOut=${checkOut}&guests=${guests}`;
+        }
+    </script>
+</body>
+</html>

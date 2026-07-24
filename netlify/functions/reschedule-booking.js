@@ -1,4 +1,4 @@
-const { admin, fdb, auth } = require('./_admin-init');
+const { admin, fdb, auth, resolveIsAdmin } = require('./_admin-init');
 const { z } = require('zod');
 
 const RescheduleSchema = z.object({
@@ -73,11 +73,7 @@ exports.handler = async (event, context) => {
         try {
             const decodedToken = await auth.verifyIdToken(idToken);
             uid = decodedToken.uid;
-            isAdmin = decodedToken.role === 'admin';
-            if (!isAdmin) {
-                const userDoc = await fdb.collection('users').doc(uid).get();
-                isAdmin = userDoc.exists && userDoc.data().role === 'admin';
-            }
+            isAdmin = await resolveIsAdmin(decodedToken, fdb);
         } catch (authErr) {
             console.error("Authentication failed during rescheduling:", authErr);
             return {

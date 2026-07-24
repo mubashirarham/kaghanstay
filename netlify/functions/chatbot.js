@@ -1,4 +1,4 @@
-const { fdb, auth } = require('./_admin-init');
+const { fdb, auth, generateBookingId } = require('./_admin-init');
 
 // Helper to load collection via Admin SDK
 async function fetchCollection(collectionName) {
@@ -74,12 +74,26 @@ async function bookRoomTool(roomId, guestName, guestEmail, guestPhone, checkIn, 
         return { success: false, error: 'Invalid check-in or check-out dates.' };
     }
 
-    const bookingId = 'BK-' + Math.floor(1000 + Math.random() * 9000);
+    let bookingId = '';
     let totalPrice = 0;
     let roomName = '';
 
     try {
         await fdb.runTransaction(async (transaction) => {
+            // Allocate unique booking ID with collision check
+            let allocatedId = generateBookingId();
+            let attempts = 0;
+            let existingDoc = await transaction.get(fdb.collection('bookings').doc(allocatedId));
+            while (existingDoc.exists && attempts < 5) {
+                allocatedId = generateBookingId();
+                existingDoc = await transaction.get(fdb.collection('bookings').doc(allocatedId));
+                attempts++;
+            }
+            if (existingDoc.exists) {
+                throw new Error('Could not allocate a unique booking ID, please retry.');
+            }
+            bookingId = allocatedId;
+
             // 1. Fetch Room detail
             const roomRef = fdb.collection('rooms').doc(roomId);
             const roomDoc = await transaction.get(roomRef);

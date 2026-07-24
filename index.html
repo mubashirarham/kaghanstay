@@ -11,6 +11,8 @@
     <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
     <link rel="apple-touch-icon" href="assets/images/logo.png">
     <meta name="theme-color" content="#0F172A">
+    <!-- DOMPurify for HTML Sanitization -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
@@ -800,7 +802,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.9/dist/purify.min.js"></script>
-    <script src="assets/js/shared.js?v=3"></script>
+    <script src="assets/js/shared.js?v=4"></script>
     <script src="assets/js/users.js"></script>
     <script src="assets/js/search-widget.js"></script>
     <script src="assets/js/newsletter.js"></script>
@@ -874,7 +876,7 @@
                                     <i class="fa-solid fa-location-dot text-[#C5A059] text-[9px]"></i>
                                     <span>${KaghanSafe.escapeHTML(room.location || 'Islamabad')}</span>
                                 </div>
-                                <p class="text-slate-500 text-xs line-clamp-3 mb-6 leading-relaxed font-light">${KaghanSafe.escapeHTML(room.description || '')}</p>
+                                <p class="text-slate-500 text-xs line-clamp-3 mb-6 leading-relaxed font-light">${KaghanSafe.escapeHTML(KaghanSafe.stripTags(room.description || ''))}</p>
                                 <div class="flex flex-wrap gap-2 mb-6">
                                     ${(room.amenities || []).slice(0, 3).map(a => `<span class="bg-slate-50/50 text-slate-600 text-[9px] uppercase font-bold tracking-wider px-3.5 py-1 rounded-full border border-slate-100/50">${KaghanSafe.escapeHTML(a)}</span>`).join('')}
                                     ${(room.amenities || []).length > 3 ? `<span class="bg-slate-50/50 text-[#C5A059] text-[9px] uppercase font-bold px-2.5 py-1 rounded-full border border-slate-100/50">+${room.amenities.length - 3}</span>` : ''}
@@ -1019,7 +1021,7 @@
 
                 categories.forEach(cat => {
                     const iconOrImg = cat.image
-                        ? `<img src="${KaghanSafe.escapeHTML(cat.image)}" class="w-full h-full object-cover rounded-lg group-[.active-category]:ring-2 ring-[#D4AF37] ring-offset-2" loading="lazy">`
+                        ? `<img src="${KaghanSafe.escapeHTML(cat.image)}" alt="${KaghanSafe.escapeHTML(cat.label || 'Category')}" class="w-full h-full object-cover rounded-lg group-[.active-category]:ring-2 ring-[#D4AF37] ring-offset-2" loading="lazy">`
                         : `<i class="fa-solid ${KaghanSafe.escapeHTML(cat.icon || 'fa-home')}"></i>`;
                     html += `
                         <button data-category="${KaghanSafe.escapeHTML(cat.id)}" type="button"

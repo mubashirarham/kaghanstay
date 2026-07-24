@@ -188,7 +188,7 @@
 
             categories.forEach(cat => {
                 const iconOrImg = cat.image 
-                    ? `<img src="${cat.image}" class="w-full h-full object-cover rounded-lg group-[.active-category]:ring-2 ring-[#D4AF37] ring-offset-2">` 
+                    ? `<img src="${KaghanSafe.escapeHTML(cat.image)}" alt="${KaghanSafe.escapeHTML(cat.label || 'Category')}" class="w-full h-full object-cover rounded-lg group-[.active-category]:ring-2 ring-[#D4AF37] ring-offset-2">` 
                     : `<i class="fa-solid ${cat.icon}"></i>`;
                     
                 html += `
@@ -479,7 +479,7 @@
                                 <span>${KaghanSafe.escapeHTML(room.locationName || room.location || 'Islamabad')}</span>
                             </div>
                             <div class="text-slate-500 text-xs line-clamp-2 font-light leading-relaxed mb-4">
-                                ${KaghanSafe.sanitizeHTML(room.description)}
+                                ${KaghanSafe.escapeHTML(KaghanSafe.stripTags(room.description || ''))}
                             </div>
                             <div class="flex flex-wrap gap-1.5 mb-6">
                                 ${(room.amenities || []).slice(0, 3).map(a => `

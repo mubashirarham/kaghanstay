@@ -117,10 +117,15 @@ exports.handler = async (event, context) => {
         };
     }
 
-    // Check optional setup secret query param or header to avoid unauthorized runs
+    // Gate behind explicit opt-in env flag (default disabled)
+    if (process.env.ENABLE_SETUP_ENDPOINT !== 'true') {
+        return { statusCode: 404, body: 'Not Found' };
+    }
+
+    // Fail closed if SETUP_SECRET is missing or invalid
     const secret = event.queryStringParameters ? event.queryStringParameters.secret : null;
-    if (process.env.SETUP_SECRET && secret !== process.env.SETUP_SECRET) {
-        return { statusCode: 403, body: 'Forbidden: Invalid setup secret.' };
+    if (!process.env.SETUP_SECRET || secret !== process.env.SETUP_SECRET) {
+        return { statusCode: 403, body: 'Forbidden: Invalid or missing setup secret.' };
     }
 
     try {

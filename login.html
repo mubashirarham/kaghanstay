@@ -10,6 +10,8 @@
     <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
     <link rel="apple-touch-icon" href="assets/images/logo.png">
     <meta name="theme-color" content="#0F172A">
+    <!-- DOMPurify for HTML Sanitization -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
     <meta name="robots" content="noindex, follow">
 
     <!-- Open Graph / Facebook -->
@@ -93,7 +95,7 @@
 
                 <form id="login-form" onsubmit="handleLogin(event)" class="space-y-5">
                     <div>
-                        <label class="block text-[10px] uppercase tracking-wider text-slate-400 font-semibold mb-2">Email Address</label>
+                        <label for="login-email" class="block text-[10px] uppercase tracking-wider text-slate-400 font-semibold mb-2">Email Address</label>
                         <div class="relative">
                             <i class="fa-solid fa-envelope absolute left-4 top-3.5 text-slate-400 text-sm"></i>
                             <input type="email" id="login-email" required class="w-full bg-slate-900/60 border border-slate-800 rounded-xl pl-11 pr-4 py-3 outline-none focus:border-[#D4AF37] text-sm text-white">
@@ -101,7 +103,7 @@
                     </div>
 
                     <div>
-                        <label class="block text-[10px] uppercase tracking-wider text-slate-400 font-semibold mb-2">Password</label>
+                        <label for="login-password" class="block text-[10px] uppercase tracking-wider text-slate-400 font-semibold mb-2">Password</label>
                         <div class="relative">
                             <i class="fa-solid fa-lock absolute left-4 top-3.5 text-slate-400 text-sm"></i>
                             <input type="password" id="login-password" required class="w-full bg-slate-900/60 border border-slate-800 rounded-xl pl-11 pr-4 py-3 outline-none focus:border-[#D4AF37] text-sm text-white">
@@ -150,7 +152,7 @@
                     <!-- Step 1: Personal Details -->
                     <div id="reg-step-1-content" class="space-y-4">
                         <div>
-                            <label class="block text-[10px] uppercase tracking-wider text-slate-400 font-semibold mb-1">Full Name</label>
+                            <label for="reg-name" class="block text-[10px] uppercase tracking-wider text-slate-400 font-semibold mb-1">Full Name</label>
                             <div class="relative">
                                 <i class="fa-solid fa-user absolute left-4 top-3.5 text-slate-400 text-sm"></i>
                                 <input type="text" id="reg-name" required class="w-full bg-slate-900/60 border border-slate-800 rounded-xl pl-11 pr-4 py-3 outline-none focus:border-[#D4AF37] text-sm text-white">
@@ -158,7 +160,7 @@
                         </div>
 
                         <div>
-                            <label class="block text-[10px] uppercase tracking-wider text-slate-400 font-semibold mb-1">Email Address</label>
+                            <label for="reg-email" class="block text-[10px] uppercase tracking-wider text-slate-400 font-semibold mb-1">Email Address</label>
                             <div class="relative">
                                 <i class="fa-solid fa-envelope absolute left-4 top-3.5 text-slate-400 text-sm"></i>
                                 <input type="email" id="reg-email" required class="w-full bg-slate-900/60 border border-slate-800 rounded-xl pl-11 pr-4 py-3 outline-none focus:border-[#D4AF37] text-sm text-white">
@@ -166,7 +168,7 @@
                         </div>
 
                         <div>
-                            <label class="block text-[10px] uppercase tracking-wider text-slate-400 font-semibold mb-1">Phone Number</label>
+                            <label for="reg-phone" class="block text-[10px] uppercase tracking-wider text-slate-400 font-semibold mb-1">Phone Number</label>
                             <div class="relative">
                                 <i class="fa-solid fa-phone absolute left-4 top-3.5 text-slate-400 text-sm"></i>
                                 <input type="tel" id="reg-phone" placeholder="0300-1234567" maxlength="12" class="w-full bg-slate-900/60 border border-slate-800 rounded-xl pl-11 pr-4 py-3 outline-none focus:border-[#C5A059] text-sm text-white font-mono">
@@ -181,7 +183,7 @@
                     <!-- Step 2: Password Security -->
                     <div id="reg-step-2-content" class="space-y-4 hidden">
                         <div>
-                            <label class="block text-[10px] uppercase tracking-wider text-slate-400 font-semibold mb-1">Password</label>
+                            <label for="reg-pass" class="block text-[10px] uppercase tracking-wider text-slate-400 font-semibold mb-1">Password</label>
                             <input type="password" id="reg-pass" required oninput="checkPasswordStrength()" class="w-full bg-slate-900/60 border border-slate-800 rounded-xl px-4 py-3 outline-none focus:border-[#D4AF37] text-sm text-white">
                             <div id="pass-strength-bar" class="w-full h-1 bg-slate-800 rounded-full mt-1.5 overflow-hidden hidden">
                                 <div id="pass-strength-fill" class="h-full w-0 bg-rose-500 transition-all"></div>
@@ -189,7 +191,7 @@
                         </div>
 
                         <div>
-                            <label class="block text-[10px] uppercase tracking-wider text-slate-400 font-semibold mb-1">Confirm Password</label>
+                            <label for="reg-pass-confirm" class="block text-[10px] uppercase tracking-wider text-slate-400 font-semibold mb-1">Confirm Password</label>
                             <input type="password" id="reg-pass-confirm" required oninput="checkPasswordMatch()" class="w-full bg-slate-900/60 border border-slate-800 rounded-xl px-4 py-3 outline-none focus:border-[#D4AF37] text-sm text-white">
                             <p id="pass-match-msg" class="text-[10px] mt-1 hidden"></p>
                         </div>
@@ -284,7 +286,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <script src="assets/js/shared.js?v=3"></script>
+    <script src="assets/js/shared.js?v=4"></script>
     <script src="assets/js/users.js"></script>
     <script src="assets/js/newsletter.js"></script>
     <script>

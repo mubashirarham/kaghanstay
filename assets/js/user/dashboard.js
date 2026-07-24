@@ -17,6 +17,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 let currentListingFilter = 'all';
 
 async function initDashboard() {
+    const currentUser = KaghanDB.getCurrentUser();
+    if (currentUser && currentUser.onboarded !== true && !window.location.pathname.includes('onboarding.html')) {
+        window.location.href = 'onboarding.html';
+        return;
+    }
+
     updateHeaderUserProfile();
 
     // Initialize profile rendering and bindings
@@ -366,9 +372,9 @@ async function renderAllUserListings() {
                 <div class="border-t border-slate-100 pt-3 mt-4 flex items-center justify-between gap-2">
                     <span class="text-[10px] text-slate-500 font-semibold"><i class="fa-solid fa-user-group text-[#C5A059] mr-1"></i>Max ${room.maxGuests || 2} Guests</span>
                     <div class="flex gap-2 shrink-0 items-center">
-                        <a href="../room-details.html?id=${room.id}" class="border border-slate-200 text-slate-700 text-[10px] font-bold px-3 py-2 rounded-xl hover:bg-slate-100 transition-all">Details</a>
+                        <a href="room-details.html?id=${room.id}" class="border border-slate-200 text-slate-700 text-[10px] font-bold px-3 py-2 rounded-xl hover:bg-slate-100 transition-all">Details</a>
                         <!-- Circular Gold Action Arrow Button -->
-                        <a href="../booking.html?id=${room.id}" class="w-9 h-9 rounded-full bg-[#C5A059] hover:bg-[#0B0F19] hover:text-white text-slate-900 flex items-center justify-center transition-all shadow-md" title="Reserve Suite">
+                        <a href="../booking.html?room=${room.id}" class="w-9 h-9 rounded-full bg-[#C5A059] hover:bg-[#0B0F19] hover:text-white text-slate-900 flex items-center justify-center transition-all shadow-md" title="Reserve Suite">
                             <i class="fa-solid fa-arrow-right text-xs"></i>
                         </a>
                     </div>
@@ -401,7 +407,7 @@ async function renderGuestWishlists() {
     container.innerHTML = savedRooms.map(room => `
         <div class="bg-white rounded-3xl border border-slate-100 p-4 shadow-md flex flex-col justify-between hover-lift">
             <div class="relative h-48 rounded-2xl overflow-hidden mb-3">
-                <img src="${KaghanSafe.escapeHTML(room.image)}" class="w-full h-full object-cover">
+                <img src="${KaghanSafe.escapeHTML(room.image)}" alt="${KaghanSafe.escapeHTML(room.name || 'Room photo')}" class="w-full h-full object-cover">
                 <button type="button" class="wishlist-btn active" onclick="KaghanDB.toggleWishlistItem('${room.id}'); renderGuestWishlists();">
                     <i class="fa-solid fa-heart"></i>
                 </button>

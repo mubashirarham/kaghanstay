@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+    <title>Guest Onboarding & Preferences | Kaghan Stay</title>
+    <meta name="robots" content="noindex, nofollow">
+    <!-- Tailwind CSS (Play CDN with JIT) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Global CSS -->
+    <link rel="stylesheet" href="../assets/css/style.css?v=11">
+    <!-- DOMPurify for HTML Sanitization -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+</head>
+<body class="guest-app-body bg-[#0B0F19] text-white min-h-screen font-sans flex flex-col justify-between py-4 px-3 sm:px-6">
+
+    <!-- Top Brand Header & Stepper Progress Bar -->
+    <header class="max-w-xl mx-auto w-full flex flex-col items-center space-y-3 text-center pt-2">
+        <div class="flex items-center justify-between w-full">
+            <div class="flex items-center gap-2">
+                <img src="../assets/images/logo.png" alt="Kaghan Stay Logo" class="h-8 sm:h-9 w-auto object-contain" onerror="this.src='../assets/images/logo.png'">
+                <span class="text-[#C5A059] font-extrabold text-[10px] sm:text-xs uppercase tracking-widest">Kaghan Stay App</span>
+            </div>
+            <button type="button" onclick="finishOnboarding()" class="text-[11px] text-slate-400 hover:text-[#C5A059] font-semibold underline">
+                Skip for now
+            </button>
+        </div>
+
+        <!-- Step Progress Indicator Bar -->
+        <div class="w-full bg-white/10 h-1.5 sm:h-2 rounded-full overflow-hidden relative">
+            <div id="onboarding-progress-bar" class="h-full bg-gradient-to-r from-[#D4AF37] to-[#C5A059] w-1/4 transition-all duration-500"></div>
+        </div>
+
+        <!-- Step Counter Badge -->
+        <div class="flex items-center gap-2 text-[11px] font-bold text-slate-400">
+            <span id="step-counter-text" class="text-[#C5A059]">Step 1 of 4</span>
+            <span>•</span>
+            <span id="step-title-badge">Personal Details</span>
+        </div>
+    </header>
+
+    <!-- Main Stepper Container -->
+    <main class="max-w-xl mx-auto w-full my-auto py-4">
+
+        <!-- Step 1: Personal Details & Avatar -->
+        <div id="step-card-1" class="onboarding-step-card bg-[#161B26] border border-white/10 rounded-2xl sm:rounded-3xl p-4 sm:p-7 shadow-2xl space-y-4 sm:space-y-5">
+            <div class="text-center space-y-1">
+                <span class="text-[#C5A059] uppercase tracking-[0.2em] text-[9px] sm:text-[10px] font-bold block">Welcome to Hospitality</span>
+                <h2 class="text-xl sm:text-2xl font-bold outfit text-white">Let's Personalize Your Profile</h2>
+                <p class="text-slate-400 text-[11px] sm:text-xs font-light max-w-sm mx-auto">Tell us how our 24/7 host concierge team should address you during your stays.</p>
+            </div>
+
+            <form id="form-step-1" onsubmit="handleStep1Submit(event)" class="space-y-4">
+                <!-- Honorific / Title -->
+                <div>
+                    <label for="onboard-title" class="block text-[10px] uppercase tracking-wider text-slate-400 font-bold mb-1.5">Preferred Title / Honorific</label>
+                    <select id="onboard-title" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl sm:rounded-2xl p-3 text-xs text-white outline-none focus:border-[#C5A059]">
+                        <option value="Mr.">Mr.</option>
+                        <option value="Ms.">Ms.</option>
+                        <option value="Mrs.">Mrs.</option>
+                        <option value="Dr.">Dr.</option>
+                        <option value="Engr.">Engr.</option>
+                    </select>
+                </div>
+
+                <!-- Full Display Name -->
+                <div>
+                    <label for="onboard-name" class="block text-[10px] uppercase tracking-wider text-slate-400 font-bold mb-1.5">Full Display Name</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-user absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        <input type="text" id="onboard-name" required placeholder="Your full name" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl sm:rounded-2xl pl-10 pr-3.5 py-3 text-xs text-white outline-none focus:border-[#C5A059]">
+                    </div>
+                </div>
+
+                <!-- Contact Phone -->
+                <div>
+                    <label for="onboard-phone" class="block text-[10px] uppercase tracking-wider text-slate-400 font-bold mb-1.5">Contact Phone Number</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-phone absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        <input type="tel" id="onboard-phone" placeholder="0300-1234567" maxlength="12" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl sm:rounded-2xl pl-10 pr-3.5 py-3 text-xs text-white font-mono outline-none focus:border-[#C5A059]">
+                    </div>
+                </div>
+
+                <!-- Avatar Preference Selector -->
+                <div>
+                    <label class="block text-[10px] uppercase tracking-wider text-slate-400 font-bold mb-2 text-center sm:text-left">Choose Your Guest Avatar</label>
+                    <div class="flex items-center justify-center gap-3 sm:gap-4">
+                        <button type="button" onclick="selectAvatar('gold-crown', this)" class="avatar-option-btn w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#C5A059] text-slate-900 font-black text-sm flex items-center justify-center border-2 border-white shadow-lg shrink-0">
+                            <i class="fa-solid fa-crown text-sm sm:text-base"></i>
+                        </button>
+                        <button type="button" onclick="selectAvatar('emerald-star', this)" class="avatar-option-btn w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-emerald-600 text-white font-black text-sm flex items-center justify-center border-2 border-transparent hover:border-white opacity-70 hover:opacity-100 shrink-0">
+                            <i class="fa-solid fa-star text-sm sm:text-base"></i>
+                        </button>
+                        <button type="button" onclick="selectAvatar('indigo-gem', this)" class="avatar-option-btn w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-indigo-600 text-white font-black text-sm flex items-center justify-center border-2 border-transparent hover:border-white opacity-70 hover:opacity-100 shrink-0">
+                            <i class="fa-solid fa-gem text-sm sm:text-base"></i>
+                        </button>
+                        <button type="button" onclick="selectAvatar('rose-heart', this)" class="avatar-option-btn w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-rose-600 text-white font-black text-sm flex items-center justify-center border-2 border-transparent hover:border-white opacity-70 hover:opacity-100 shrink-0">
+                            <i class="fa-solid fa-heart text-sm sm:text-base"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-[#C5A059] text-slate-900 py-3.5 rounded-xl sm:rounded-2xl font-extrabold text-xs uppercase tracking-wider hover:bg-white transition-all shadow-lg flex items-center justify-center gap-2 mt-4">
+                    Continue to Stay Preferences <i class="fa-solid fa-arrow-right text-xs"></i>
+                </button>
+            </form>
+        </div>
+
+        <!-- Step 2: Stay & Suite Preferences -->
+        <div id="step-card-2" class="onboarding-step-card bg-[#161B26] border border-white/10 rounded-2xl sm:rounded-3xl p-4 sm:p-7 shadow-2xl space-y-4 sm:space-y-5 hidden">
+            <div class="text-center space-y-1">
+                <span class="text-[#C5A059] uppercase tracking-[0.2em] text-[9px] sm:text-[10px] font-bold block">Tailored Comfort</span>
+                <h2 class="text-xl sm:text-2xl font-bold outfit text-white">Your Suite & Stay Preferences</h2>
+                <p class="text-slate-400 text-[11px] sm:text-xs font-light max-w-sm mx-auto">We configure your room according to your bedding, view, and category desires.</p>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Preferred Room Type -->
+                <div>
+                    <label class="block text-[10px] uppercase tracking-wider text-slate-400 font-bold mb-1.5">Favorite Suite Category</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+                        <button type="button" onclick="selectPrefOption('suiteType', 'studio', this)" class="pref-type-btn p-3 rounded-xl sm:rounded-2xl border border-[#C5A059] bg-[#C5A059]/10 text-left">
+                            <span class="font-bold block text-white">Studio Apartment</span>
+                            <span class="text-[10px] text-slate-400">Cozy & Modern</span>
+                        </button>
+                        <button type="button" onclick="selectPrefOption('suiteType', '1bed', this)" class="pref-type-btn p-3 rounded-xl sm:rounded-2xl border border-white/10 bg-slate-900/60 text-left hover:border-[#C5A059]">
+                            <span class="font-bold block text-white">1 Bed Furnished</span>
+                            <span class="text-[10px] text-slate-400">Spacious Living</span>
+                        </button>
+                        <button type="button" onclick="selectPrefOption('suiteType', '2bed', this)" class="pref-type-btn p-3 rounded-xl sm:rounded-2xl border border-white/10 bg-slate-900/60 text-left hover:border-[#C5A059]">
+                            <span class="font-bold block text-white">2 Bed Suite</span>
+                            <span class="text-[10px] text-slate-400">Family Comfort</span>
+                        </button>
+                        <button type="button" onclick="selectPrefOption('suiteType', 'mountain', this)" class="pref-type-btn p-3 rounded-xl sm:rounded-2xl border border-white/10 bg-slate-900/60 text-left hover:border-[#C5A059]">
+                            <span class="font-bold block text-white">Mountain View Villa</span>
+                            <span class="text-[10px] text-slate-400">Nathia Gali Resort</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Bedding Preference -->
+                <div>
+                    <label class="block text-[10px] uppercase tracking-wider text-slate-400 font-bold mb-1.5">Bedding Preference</label>
+                    <div class="grid grid-cols-2 gap-2.5 text-xs">
+                        <button type="button" onclick="selectPrefOption('bedding', 'king', this)" class="pref-bedding-btn p-2.5 sm:p-3 rounded-xl sm:rounded-2xl border border-[#C5A059] bg-[#C5A059]/10 text-white font-bold text-center">
+                            <i class="fa-solid fa-bed text-[#C5A059] mr-1"></i> King Bed
+                        </button>
+                        <button type="button" onclick="selectPrefOption('bedding', 'twin', this)" class="pref-bedding-btn p-2.5 sm:p-3 rounded-xl sm:rounded-2xl border border-white/10 bg-slate-900/60 text-slate-300 hover:text-white text-center">
+                            <i class="fa-solid fa-bed text-slate-400 mr-1"></i> Twin Beds
+                        </button>
+                    </div>
+                </div>
+
+                <!-- View & Floor Preference -->
+                <div>
+                    <label for="pref-view" class="block text-[10px] uppercase tracking-wider text-slate-400 font-bold mb-1.5">Floor & View Preference</label>
+                    <select id="pref-view" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl sm:rounded-2xl p-3 text-xs text-white outline-none focus:border-[#C5A059]">
+                        <option value="mountain">High Floor • Mountain View</option>
+                        <option value="valley">Balcony • Valley View</option>
+                        <option value="quiet">Quiet Inner Court • Executive</option>
+                        <option value="ground">Ground Floor • Easy Access</option>
+                    </select>
+                </div>
+
+                <div class="flex gap-2.5 pt-2">
+                    <button type="button" onclick="goToStep(1)" class="w-1/3 border border-slate-700 text-slate-300 py-3.5 rounded-xl sm:rounded-2xl font-bold text-xs hover:bg-slate-800 transition-all">
+                        <i class="fa-solid fa-arrow-left mr-1"></i> Back
+                    </button>
+                    <button type="button" onclick="goToStep(3)" class="w-2/3 bg-[#C5A059] text-slate-900 py-3.5 rounded-xl sm:rounded-2xl font-extrabold text-xs uppercase tracking-wider hover:bg-white transition-all shadow-lg">
+                        Next: Concierge Add-ons <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3: Concierge Services & Upgrades -->
+        <div id="step-card-3" class="onboarding-step-card bg-[#161B26] border border-white/10 rounded-2xl sm:rounded-3xl p-4 sm:p-7 shadow-2xl space-y-4 sm:space-y-5 hidden">
+            <div class="text-center space-y-1">
+                <span class="text-[#C5A059] uppercase tracking-[0.2em] text-[9px] sm:text-[10px] font-bold block">Hospitality Extras</span>
+                <h2 class="text-xl sm:text-2xl font-bold outfit text-white">Concierge Services & Perks</h2>
+                <p class="text-slate-400 text-[11px] sm:text-xs font-light max-w-sm mx-auto">Select complementary perks and services to include in your stay profile.</p>
+            </div>
+
+            <div class="space-y-2.5">
+                <label class="flex items-center justify-between p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-white/10 bg-slate-900/60 cursor-pointer hover:border-[#C5A059] transition-all">
+                    <div class="flex items-center gap-3 pr-2">
+                        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#C5A059]/10 text-[#C5A059] flex items-center justify-center text-sm sm:text-base shrink-0">
+                            <i class="fa-solid fa-car"></i>
+                        </div>
+                        <div>
+                            <span class="font-bold text-white text-xs block leading-tight">Airport Chauffeur Shuttle</span>
+                            <span class="text-[10px] text-slate-400 font-light block leading-tight">Direct pickup from Islamabad Airport (ISB)</span>
+                        </div>
+                    </div>
+                    <input type="checkbox" id="addon-shuttle" class="accent-[#C5A059] w-4 h-4 shrink-0">
+                </label>
+
+                <label class="flex items-center justify-between p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-white/10 bg-slate-900/60 cursor-pointer hover:border-[#C5A059] transition-all">
+                    <div class="flex items-center gap-3 pr-2">
+                        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#C5A059]/10 text-[#C5A059] flex items-center justify-center text-sm sm:text-base shrink-0">
+                            <i class="fa-solid fa-utensils"></i>
+                        </div>
+                        <div>
+                            <span class="font-bold text-white text-xs block leading-tight">Continental Breakfast Delivery</span>
+                            <span class="text-[10px] text-slate-400 font-light block leading-tight">Fresh organic breakfast served in living room</span>
+                        </div>
+                    </div>
+                    <input type="checkbox" id="addon-breakfast" checked class="accent-[#C5A059] w-4 h-4 shrink-0">
+                </label>
+
+                <label class="flex items-center justify-between p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-white/10 bg-slate-900/60 cursor-pointer hover:border-[#C5A059] transition-all">
+                    <div class="flex items-center gap-3 pr-2">
+                        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#C5A059]/10 text-[#C5A059] flex items-center justify-center text-sm sm:text-base shrink-0">
+                            <i class="fa-solid fa-gift"></i>
+                        </div>
+                        <div>
+                            <span class="font-bold text-white text-xs block leading-tight">Organic Welcome Hamper</span>
+                            <span class="text-[10px] text-slate-400 font-light block leading-tight">Local honey, walnuts & chamomile teas on arrival</span>
+                        </div>
+                    </div>
+                    <input type="checkbox" id="addon-welcome-hamper" checked class="accent-[#C5A059] w-4 h-4 shrink-0">
+                </label>
+
+                <div class="flex gap-2.5 pt-3">
+                    <button type="button" onclick="goToStep(2)" class="w-1/3 border border-slate-700 text-slate-300 py-3.5 rounded-xl sm:rounded-2xl font-bold text-xs hover:bg-slate-800 transition-all">
+                        <i class="fa-solid fa-arrow-left mr-1"></i> Back
+                    </button>
+                    <button type="button" onclick="goToStep(4)" class="w-2/3 bg-[#C5A059] text-slate-900 py-3.5 rounded-xl sm:rounded-2xl font-extrabold text-xs uppercase tracking-wider hover:bg-white transition-all shadow-lg">
+                        Next: Loyalty Circle <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 4: Loyalty Program & Completion -->
+        <div id="step-card-4" class="onboarding-step-card bg-[#161B26] border border-white/10 rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-2xl space-y-4 text-center hidden">
+            <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-[#D4AF37] to-[#C5A059] text-slate-900 text-2xl sm:text-3xl font-black mx-auto flex items-center justify-center shadow-xl">
+                <i class="fa-solid fa-crown"></i>
+            </div>
+
+            <div class="space-y-1.5">
+                <span class="text-[#C5A059] uppercase tracking-[0.2em] text-[9px] sm:text-[10px] font-bold block">Kaghan Gold Loyalty Circle</span>
+                <h2 class="text-xl sm:text-2xl font-bold outfit text-white">Welcome to Executive Membership!</h2>
+                <p class="text-slate-300 text-[11px] sm:text-xs font-light max-w-sm mx-auto">You've unlocked 500 Welcome Loyalty Points, priority early check-in, and 24/7 host access.</p>
+            </div>
+
+            <div class="bg-slate-900/80 rounded-xl sm:rounded-2xl p-3.5 sm:p-4 border border-white/10 max-w-md mx-auto text-left text-xs space-y-2">
+                <div class="flex justify-between items-center text-slate-300">
+                    <span>Welcome Bonus Points:</span>
+                    <span class="font-bold text-[#C5A059]">+500 Points</span>
+                </div>
+                <div class="flex justify-between items-center text-slate-300">
+                    <span>Loyalty Status Tier:</span>
+                    <span class="font-bold text-emerald-400">Gold Member</span>
+                </div>
+                <div class="flex justify-between items-center text-slate-300">
+                    <span>Complimentary Wi-Fi Pass:</span>
+                    <span class="font-mono text-slate-200">KPH-Resort-5G!2026</span>
+                </div>
+            </div>
+
+            <button type="button" onclick="finishOnboarding()" class="w-full max-w-md mx-auto bg-gradient-to-r from-[#D4AF37] to-[#C5A059] text-slate-900 py-3.5 rounded-xl sm:rounded-2xl font-black text-xs uppercase tracking-wider hover:bg-white transition-all shadow-2xl flex items-center justify-center gap-2">
+                <i class="fa-solid fa-rocket"></i> Launch Guest Dashboard
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Footer Skip & Privacy Note -->
+    <footer class="max-w-xl mx-auto w-full text-center text-slate-500 text-[10px] space-y-1 pb-1">
+        <p>Your preferences are securely saved in your Kaghan Profile and can be updated anytime.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="../assets/js/shared.js?v=11"></script>
+    <script src="../assets/js/users.js"></script>
+    <script src="../assets/js/user/onboarding.js?v=2"></script>
+</body>
+</html>

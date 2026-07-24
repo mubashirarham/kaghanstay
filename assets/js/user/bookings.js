@@ -48,16 +48,8 @@
         function renderBookingRow(booking) {
             const room = rooms.find(r => r.id === booking.roomId) || { name: 'Unknown Room', price: 0 };
             
-            let statusBadge = '';
-            if (booking.status === 'confirmed') {
-                statusBadge = '<span class="bg-emerald-50 text-emerald-700 text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider border border-emerald-150">Confirmed</span>';
-            } else if (booking.status === 'completed') {
-                statusBadge = '<span class="bg-blue-50 text-blue-700 text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider border border-blue-150">Completed</span>';
-            } else if (booking.status === 'cancelled') {
-                statusBadge = '<span class="bg-rose-50 text-rose-700 text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider border border-rose-150">Cancelled</span>';
-            } else {
-                statusBadge = `<span class="bg-slate-50 text-slate-700 text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider border border-slate-200">${booking.status}</span>`;
-            }
+            const badgeInfo = KaghanUI.getStatusBadge(booking.status);
+            const statusBadge = `<span class="${badgeInfo.classes} text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider border">${badgeInfo.label}</span>`;
 
             let canCancel = false;
             let canReschedule = booking.status === 'confirmed';

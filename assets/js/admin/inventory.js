@@ -62,7 +62,7 @@
                         <span>${KaghanSafe.escapeHTML(room.location || 'Islamabad')}</span>
                     </div>
                     <div class="text-slate-400 text-xs line-clamp-2 mb-4 font-light leading-relaxed">
-                        ${KaghanSafe.sanitizeHTML(room.description)}
+                        ${KaghanSafe.escapeHTML(KaghanSafe.stripTags(room.description || ''))}
                     </div>
                     <div class="flex flex-wrap gap-1 mb-4">
                         ${room.amenities.slice(0, 3).map(a => `
@@ -120,7 +120,7 @@
 
         container.innerHTML = imageUrls.map((url, idx) => `
             <div class="relative w-16 h-16 shrink-0 rounded-lg overflow-hidden border border-slate-200 group">
-                <img src="${KaghanSafe.escapeHTML(url)}" class="w-full h-full object-cover">
+                <img src="${KaghanSafe.escapeHTML(url)}" alt="Room gallery preview ${idx + 1}" class="w-full h-full object-cover">
                 <button type="button" onclick="removeGalleryImage('${containerId}', '${dataInputId}', ${idx})" class="absolute top-1 right-1 bg-white rounded-full w-5 h-5 flex items-center justify-center text-rose-500 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity">
                     <i class="fa-solid fa-times text-[10px]"></i>
                 </button>

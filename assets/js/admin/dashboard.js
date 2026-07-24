@@ -27,28 +27,61 @@ if (window.KaghanUI && !window.KaghanUI.showToast) {
 
 if (window.KaghanDB) {
     window.KaghanDB.getNewsletterSubscribers = async () => {
-        const snap = await firebase.firestore().collection('newsletter').get();
-        const list = [];
-        snap.forEach(doc => list.push(doc.data()));
-        return list.sort((a, b) => new Date(b.subscribedAt) - new Date(a.subscribedAt));
+        if (window.KaghanDB_Cache.newsletter) return window.KaghanDB_Cache.newsletter;
+        try {
+            const snap = await firebase.firestore().collection('newsletter').get();
+            const list = [];
+            snap.forEach(doc => list.push(doc.data()));
+            return list.sort((a, b) => new Date(b.subscribedAt) - new Date(a.subscribedAt));
+        } catch(e) {
+            console.warn("getNewsletterSubscribers notice:", e.message);
+            return window.KaghanDB_Cache.newsletter || [];
+        }
     };
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
-    // Guard route: ensure logged-in user with role 'admin'
-    if (!KaghanDB.guardRoute('admin')) {
+document.addEventListener('DOMContentLoaded', () => {
+    // Quick synchronous localStorage check — redirects immediately if not logged in at all
+    const sessionUser = KaghanDB.getCurrentUser();
+    if (!sessionUser) {
+        window.location.href = '../login.html';
+        return;
+    }
+    if (sessionUser.role !== 'admin') {
+        window.location.href = '../user/index.html';
         return;
     }
 
-    // Set admin name in sidebar
-    const user = KaghanDB.getCurrentUser();
-    if (user && document.getElementById('sidebar-admin-name')) {
-        document.getElementById('sidebar-admin-name').innerText = user.name;
-    }
+    // Set admin name in sidebar immediately from localStorage
+    const nameEl = document.getElementById('sidebar-admin-name');
+    if (nameEl) nameEl.innerText = sessionUser.name || 'Admin';
 
-    await initAdminDashboard();
-    setupEventListeners();
-    setupActiveDatabaseListeners();
+    // Wait for Firebase Auth token before fetching any Firestore data
+    // This prevents the "Missing or insufficient permissions" race condition
+    let initialized = false;
+    firebase.auth().onAuthStateChanged(async (firebaseUser) => {
+        if (initialized) return; // Only init once
+        
+        if (!firebaseUser) {
+            // Firebase says not logged in — force login
+            localStorage.removeItem('kaghan_hotel_session');
+            window.location.href = '../login.html';
+            return;
+        }
+
+        initialized = true;
+
+        // Force token refresh to ensure custom claims / auth state is current
+        try {
+            await firebaseUser.getIdToken(true);
+        } catch(e) {
+            // Token refresh failed — proceed anyway, will get fresh token on next request
+        }
+
+        await initAdminDashboard();
+        setupEventListeners();
+        setupActiveDatabaseListeners();
+    });
 });
 
 async function initAdminDashboard() {
@@ -67,16 +100,22 @@ async function initAdminDashboard() {
 }
 
 async function refreshAll() {
-    await renderMetrics();
-    await renderOverviewBookings();
-    
-    // Core modules
-    if (window.AdminBookingsModule) await window.AdminBookingsModule.render();
-    if (window.AdminInventoryModule) await window.AdminInventoryModule.render();
-    if (window.AdminGuestsModule) await window.AdminGuestsModule.render();
-    if (window.AdminReviewsModule) await window.AdminReviewsModule.render();
-    if (window.AdminBlogsModule) await window.AdminBlogsModule.render();
-    await renderNewsletter();
+    try {
+        await renderMetrics();
+        await renderOverviewBookings();
+        
+        // Core modules
+        if (window.AdminBookingsModule) await window.AdminBookingsModule.render();
+        if (window.AdminInventoryModule) await window.AdminInventoryModule.render();
+        if (window.AdminGuestsModule) await window.AdminGuestsModule.render();
+        if (window.AdminReviewsModule) await window.AdminReviewsModule.render();
+        if (window.AdminBlogsModule) await window.AdminBlogsModule.render();
+        await renderNewsletter();
+    } catch(e) {
+        if (e && e.code !== 'permission-denied' && !String(e).includes('permission')) {
+            console.warn("Refresh all admin views notice:", e.message || e);
+        }
+    }
 }
 
 function setupEventListeners() {
@@ -126,35 +165,6 @@ window.switchTab = (tabName) => {
         activeBtn.classList.add('sidebar-active');
         activeBtn.classList.remove('text-slate-400', 'hover:text-white', 'hover:bg-slate-800/20');
     }
-
-    // Update mobile bottom nav active state
-    const bottomBtns = document.querySelectorAll('#admin-bottom-nav button');
-    bottomBtns.forEach(btn => {
-        const onClickAttr = btn.getAttribute('onclick');
-        if (onClickAttr && onClickAttr.includes(`'${tabName}'`)) {
-            btn.classList.add('text-[#D4AF37]');
-            btn.classList.remove('text-slate-400');
-        } else {
-            btn.classList.remove('text-[#D4AF37]');
-            btn.classList.add('text-slate-400');
-        }
-    });
-
-    // Auto close sidebar on mobile
-    const sidebar = document.getElementById('admin-sidebar');
-    if (sidebar && !sidebar.classList.contains('-translate-x-full')) {
-        sidebar.classList.add('-translate-x-full');
-    }
-
-    // Fix for FullCalendar rendering incorrectly in a hidden div
-    if (tabName === 'calendar' && window.AdminBookingsModule && window.AdminBookingsModule.renderCalendar) {
-        setTimeout(() => {
-            window.AdminBookingsModule.renderCalendar();
-        }, 50);
-    }
-    if (tabName === 'messages' && window.AdminMessagingModule) {
-        window.AdminMessagingModule.init();
-    }
 };
 
 window.toggleSidebar = () => {
@@ -166,31 +176,37 @@ window.toggleSidebar = () => {
 
 // Render overview dashboard numbers
 async function renderMetrics() {
-    const bookings = await KaghanDB.getBookings();
-    const rooms = await KaghanDB.getRooms();
-    const users = await KaghanDB.getUsers();
-    const activeUsers = users.filter(u => u.role === 'user');
+    try {
+        const bookings = (await KaghanDB.getBookings()) || [];
+        const rooms = (await KaghanDB.getRooms()) || [];
+        const users = (await KaghanDB.getUsers()) || [];
+        const activeUsers = users.filter(u => u.role === 'user');
 
-    // Revenue = sum of confirmed and completed stays
-    const totalRevenue = bookings
-        .filter(b => b.status === 'confirmed' || b.status === 'completed')
-        .reduce((sum, b) => sum + b.totalPrice, 0);
+        // Revenue = sum of confirmed and completed stays
+        const totalRevenue = bookings
+            .filter(b => b.status === 'confirmed' || b.status === 'completed')
+            .reduce((sum, b) => sum + (b.totalPrice || 0), 0);
 
-    // Occupancy Rate = % of rooms currently active ('confirmed')
-    const activeStays = bookings.filter(b => b.status === 'confirmed').length;
-    const occupancyRate = rooms.length > 0 ? Math.round((activeStays / rooms.length) * 100) : 0;
+        // Occupancy Rate = % of rooms currently active ('confirmed')
+        const activeStays = bookings.filter(b => b.status === 'confirmed').length;
+        const occupancyRate = rooms.length > 0 ? Math.round((activeStays / rooms.length) * 100) : 0;
 
-    const revEl = document.getElementById('metric-revenue');
-    const occEl = document.getElementById('metric-occupancy');
-    const bkEl = document.getElementById('metric-bookings');
-    const usrEl = document.getElementById('metric-users');
+        const revEl = document.getElementById('metric-revenue');
+        const occEl = document.getElementById('metric-occupancy');
+        const bkEl = document.getElementById('metric-bookings');
+        const usrEl = document.getElementById('metric-users');
 
-    if (revEl) revEl.innerText = KaghanUI.formatPKR(totalRevenue);
-    if (occEl) occEl.innerText = `${occupancyRate}%`;
-    if (bkEl) bkEl.innerText = bookings.length;
-    if (usrEl) usrEl.innerText = activeUsers.length;
+        if (revEl) revEl.innerText = KaghanUI.formatPKR(totalRevenue);
+        if (occEl) occEl.innerText = `${occupancyRate}%`;
+        if (bkEl) bkEl.innerText = bookings.length;
+        if (usrEl) usrEl.innerText = activeUsers.length;
 
-    renderCharts(bookings, rooms);
+        renderCharts(bookings, rooms);
+    } catch(e) {
+        if (e && e.code !== 'permission-denied' && !String(e).includes('permission')) {
+            console.warn("Metrics render notice:", e.message || e);
+        }
+    }
 }
 
 // Global chart variables to allow updates instead of destroying
@@ -344,16 +360,17 @@ function renderCharts(bookings, rooms) {
 
 // Render Overview tab list of stays
 async function renderOverviewBookings() {
-    const bookings = await KaghanDB.getBookings();
-    const rooms = await KaghanDB.getRooms();
-    const tbody = document.getElementById('overview-bookings-tbody');
+    try {
+        const bookings = (await KaghanDB.getBookings()) || [];
+        const rooms = (await KaghanDB.getRooms()) || [];
+        const tbody = document.getElementById('overview-bookings-tbody');
 
-    if (!tbody) return;
+        if (!tbody) return;
 
-    if (bookings.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-slate-400 text-xs">No recent bookings.</td></tr>`;
-        return;
-    }
+        if (bookings.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-slate-400 text-xs">No recent bookings.</td></tr>`;
+            return;
+        }
 
     const recentBookings = bookings.slice(0, 5);
     tbody.innerHTML = recentBookings.map(booking => {
@@ -391,6 +408,9 @@ async function renderOverviewBookings() {
             </tr>
         `;
     }).join('');
+    } catch(e) {
+        console.warn("Overview bookings render notice:", e);
+    }
 }
 
 // Render newsletter list

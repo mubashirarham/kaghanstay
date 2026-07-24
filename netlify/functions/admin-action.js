@@ -1,4 +1,4 @@
-const { fdb, auth, initError } = require('./_admin-init');
+const { fdb, auth, initError, resolveIsAdmin } = require('./_admin-init');
 const { z } = require('zod');
 
 const RequestSchema = z.object({
@@ -66,11 +66,7 @@ exports.handler = async (event, context) => {
         }
 
         // Verify Admin privilege (via custom claim OR database fallback)
-        let isAdmin = decodedToken.role === 'admin';
-        if (!isAdmin) {
-            const userDoc = await fdb.collection('users').doc(decodedToken.uid).get();
-            isAdmin = userDoc.exists && userDoc.data().role === 'admin';
-        }
+        const isAdmin = await resolveIsAdmin(decodedToken, fdb);
 
         if (!isAdmin) {
             return {

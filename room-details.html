@@ -10,6 +10,8 @@
     <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
     <link rel="apple-touch-icon" href="assets/images/logo.png">
     <meta name="theme-color" content="#0F172A">
+    <!-- DOMPurify for HTML Sanitization -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
 
     <!-- Leaflet CSS & JS for Interactive Map -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
@@ -22,7 +24,7 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
     <!-- Global CSS -->
-    <link rel="stylesheet" href="assets/css/style.css?v=4">
+    <link rel="stylesheet" href="assets/css/style.css?v=5">
 </head>
 <body class="bg-[#F8FAFC] text-[#0F172A] overflow-x-hidden font-sans pt-24 min-h-screen flex flex-col justify-between pb-24 md:pb-0">
 
@@ -129,7 +131,7 @@
                         <div>
                             <div class="flex items-center gap-2 mb-2">
                                 <span id="detail-rating-pill" class="inline-flex items-center gap-1 bg-[#C5A059]/10 text-[#C5A059] text-xs font-bold px-2.5 py-1 rounded-lg">
-                                    <i class="fa-solid fa-star"></i> 5.0 â˜…
+                                    <i class="fa-solid fa-star"></i> 5.0
                                 </span>
                                 <span id="detail-location-pill" class="text-xs text-slate-500 font-semibold uppercase tracking-wider">
                                     <i class="fa-solid fa-location-dot text-[#C5A059] mr-1"></i> Islamabad
@@ -275,6 +277,8 @@
                             <span>2 Mins walk to Sector C Commercial Hub</span>
                         </div>
                     </div>
+                </div>
+
                 <!-- Availability Calendar Card -->
                 <div class="bg-white/80 backdrop-blur-md rounded-[2.5rem] border border-[#C5A059]/10 shadow-[0_12px_40px_-15px_rgba(11,15,25,0.05)] hover:border-[#C5A059]/30 transition-all duration-500 p-6 md:p-8 space-y-6">
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -361,7 +365,7 @@
                     <div>
                         <span class="text-[10px] uppercase font-bold tracking-widest text-[#C5A059] block mb-1">Instant Reservation</span>
                         <h3 class="text-2xl font-bold outfit text-[#0B0F19]">Reserve This Suite</h3>
-                        <p class="text-xs text-slate-400 font-light mt-1">Best rate guaranteed â€¢ Free cancellation</p>
+                        <p class="text-xs text-slate-400 font-light mt-1">Best rate guaranteed &bull; Free cancellation</p>
                     </div>
 
                     <!-- Stay Type Tab Selector -->
@@ -537,7 +541,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.9/dist/purify.min.js"></script>
-    <script src="assets/js/shared.js?v=3"></script>
+    <script src="assets/js/shared.js?v=4"></script>
     <script src="assets/js/messaging.js"></script>
 
     <!-- Room Details & Booking Module Script -->
@@ -696,7 +700,7 @@
                 document.getElementById('detail-category-badge').innerText = cat ? cat.label : (currentRoom.type || 'Luxury Suite');
                 const locationLabel = loc ? loc.label : (currentRoom.locationName || currentRoom.location || 'Islamabad');
                 document.getElementById('detail-location-pill').innerHTML = `<i class="fa-solid fa-location-dot text-[#C5A059] mr-1"></i> ${KaghanSafe.escapeHTML(locationLabel)}`;
-                document.getElementById('detail-rating-pill').innerHTML = `<i class="fa-solid fa-star"></i> ${currentRoom.rating || '5.0'} â˜…`;
+                document.getElementById('detail-rating-pill').innerHTML = `<i class="fa-solid fa-star"></i> ${currentRoom.rating || '5.0'}`;
 
                 // Rates & Prices directly from Firestore
                 const basePrice = Number(currentRoom.priceDaily || currentRoom.price || 0);
@@ -951,7 +955,7 @@
             if (thumbsContainer) {
                 thumbsContainer.innerHTML = roomImages.map((img, idx) => `
                     <button onclick="selectGalleryImage(${idx})" class="relative w-20 h-20 rounded-xl overflow-hidden shrink-0 border-2 transition-all cursor-pointer ${idx === activeImgIdx ? 'border-[#C5A059] ring-2 ring-[#C5A059]/30 scale-105' : 'border-slate-200 opacity-60 hover:opacity-100'}">
-                        <img src="${img}" class="w-full h-full object-cover">
+                        <img src="${img}" alt="${KaghanSafe.escapeHTML(currentRoom ? currentRoom.name : 'Gallery thumbnail')} photo ${idx + 1}" class="w-full h-full object-cover">
                     </button>
                 `).join('');
             }
@@ -1005,7 +1009,7 @@
             try {
                 const reviews = roomId ? await KaghanDB.getReviewsByRoomId(roomId) : await KaghanDB.getReviews();
                 if (reviews && reviews.length > 0) {
-                    if (badge) badge.innerText = `5.0 â˜… (${reviews.length} Review${reviews.length > 1 ? 's' : ''})`;
+                    if (badge) badge.innerText = `5.0 (${reviews.length} Review${reviews.length > 1 ? 's' : ''})`;
                     container.innerHTML = reviews.map(r => `
                         <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100 space-y-2 flex flex-col justify-between">
                             <div class="space-y-2">
@@ -1032,12 +1036,12 @@
                         </div>
                     `).join('');
                 } else {
-                    if (badge) badge.innerText = `5.0 â˜… (0 Reviews)`;
+                    if (badge) badge.innerText = `5.0 (0 Reviews)`;
                     container.innerHTML = `<div class="col-span-2 p-6 bg-slate-50 rounded-2xl border border-slate-100 text-center text-xs text-slate-400 font-medium italic">No verified guest reviews submitted for this suite yet.</div>`;
                 }
             } catch (err) {
                 console.warn("Reviews load error:", err);
-                if (badge) badge.innerText = `5.0 â˜… (0 Reviews)`;
+                if (badge) badge.innerText = `5.0 (0 Reviews)`;
                 container.innerHTML = `<div class="col-span-2 p-6 bg-slate-50 rounded-2xl border border-slate-100 text-center text-xs text-slate-400 font-medium italic">No verified guest reviews submitted for this suite yet.</div>`;
             }
 
@@ -1080,11 +1084,11 @@
                         <div class="flex items-center gap-4">
                             <label class="text-xs text-slate-600 font-semibold">Rating:</label>
                             <select id="review-rating" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs outline-none focus:border-[#C5A059] bg-white font-bold text-[#C5A059]">
-                                <option value="5">â˜…â˜…â˜…â˜…â˜… 5.0 - Excellent</option>
-                                <option value="4">â˜…â˜…â˜…â˜…â˜† 4.0 - Very Good</option>
-                                <option value="3">â˜…â˜…â˜…â˜†â˜† 3.0 - Average</option>
-                                <option value="2">â˜…â˜…â˜†â˜†â˜† 2.0 - Poor</option>
-                                <option value="1">â˜…â˜†â˜†â˜†â˜† 1.0 - Terrible</option>
+                                <option value="5">&#9733;&#9733;&#9733;&#9733;&#9733; 5.0 - Excellent</option>
+                                <option value="4">&#9733;&#9733;&#9733;&#9733;&#9734; 4.0 - Very Good</option>
+                                <option value="3">&#9733;&#9733;&#9733;&#9734;&#9734; 3.0 - Average</option>
+                                <option value="2">&#9733;&#9733;&#9734;&#9734;&#9734; 2.0 - Poor</option>
+                                <option value="1">&#9733;&#9734;&#9734;&#9734;&#9734; 1.0 - Terrible</option>
                             </select>
                         </div>
                         <textarea id="review-comment" required placeholder="Share your stay experience in this suite..." rows="3" class="w-full border border-slate-200 rounded-xl p-3 text-xs outline-none focus:border-[#C5A059] bg-white leading-relaxed"></textarea>

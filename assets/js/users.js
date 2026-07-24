@@ -104,6 +104,8 @@
     // Profile updates
     db.updateUser = async (id, updatedData) => {
         delete updatedData.password;
+        delete updatedData.role;
+        delete updatedData.loyaltyPoints;
         await fdb.collection('users').doc(id).update(updatedData);
         
         const currentUser = db.getCurrentUser();

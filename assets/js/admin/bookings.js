@@ -37,11 +37,9 @@
         tbody.innerHTML = filtered.map(booking => {
             const room = rooms.find(r => r.id === booking.roomId) || { name: 'Unknown Suite' };
             
+            const badge = KaghanUI.getStatusBadge(booking.status);
             let statusSelect = `
-                <select onchange="changeBookingStatus('${booking.id}', this.value)" class="bg-slate-50 border border-slate-200 rounded-lg text-[11px] px-2 py-1 outline-none font-bold cursor-pointer ${
-                    booking.status === 'confirmed' ? 'text-emerald-600 border-emerald-200 bg-emerald-50/20' :
-                    booking.status === 'completed' ? 'text-blue-600 border-blue-200 bg-blue-50/20' : 'text-rose-600 border-rose-200 bg-rose-50/20'
-                }">
+                <select onchange="changeBookingStatus('${booking.id}', this.value)" class="bg-slate-50 border border-slate-200 rounded-lg text-[11px] px-2 py-1 outline-none font-bold cursor-pointer ${badge.classes}">
                     <option value="confirmed" ${booking.status === 'confirmed' ? 'selected' : ''}>Confirmed</option>
                     <option value="completed" ${booking.status === 'completed' ? 'selected' : ''}>Completed</option>
                     <option value="cancelled" ${booking.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>

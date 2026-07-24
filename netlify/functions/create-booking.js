@@ -1,4 +1,4 @@
-const { admin, fdb, auth } = require('./_admin-init');
+const { admin, fdb, auth, generateBookingId, resolveIsAdmin } = require('./_admin-init');
 const { z } = require('zod');
 
 const BookingSchema = z.object({
@@ -83,22 +83,32 @@ exports.handler = async (event, context) => {
             try {
                 const decodedToken = await auth.verifyIdToken(idToken);
                 userId = decodedToken.uid;
-                isAdmin = decodedToken.role === 'admin';
-                if (!isAdmin) {
-                    const userDoc = await fdb.collection('users').doc(userId).get();
-                    isAdmin = userDoc.exists && userDoc.data().role === 'admin';
-                }
+                isAdmin = await resolveIsAdmin(decodedToken, fdb);
             } catch (authErr) {
                 console.warn("Invalid ID Token provided, falling back to guest walk-in:", authErr);
             }
         }
 
-        const bookingId = 'BK-' + Math.floor(1000 + Math.random() * 9000);
+        let bookingId = '';
         let calculatedPrice = 0;
         let roomName = 'Luxury Suite';
 
         // 3. Perform Availability Check and Write inside Transaction to prevent TOCTOU race condition (M-04)
         await fdb.runTransaction(async (transaction) => {
+            // Allocate unique booking ID with collision check
+            let allocatedId = generateBookingId();
+            let attempts = 0;
+            let existingDoc = await transaction.get(fdb.collection('bookings').doc(allocatedId));
+            while (existingDoc.exists && attempts < 5) {
+                allocatedId = generateBookingId();
+                existingDoc = await transaction.get(fdb.collection('bookings').doc(allocatedId));
+                attempts++;
+            }
+            if (existingDoc.exists) {
+                throw new Error('Could not allocate a unique booking ID, please retry.');
+            }
+            bookingId = allocatedId;
+
             // A. Fetch Room detail to compute price server-side
             const roomRef = fdb.collection('rooms').doc(roomId);
             const roomDoc = await transaction.get(roomRef);

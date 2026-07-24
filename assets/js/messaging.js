@@ -120,6 +120,18 @@
         // Real-time listener for Admin watching all guest chat threads
         subscribeToAllThreads: function(onThreadsUpdate, onError) {
             try {
+                const authUser = firebase.auth().currentUser;
+                if (!authUser) {
+                    // Auth token loading, wait for authStateChanged
+                    const unsubscribeAuth = firebase.auth().onAuthStateChanged(user => {
+                        if (user) {
+                            unsubscribeAuth();
+                            this.subscribeToAllThreads(onThreadsUpdate, onError);
+                        }
+                    });
+                    return () => {};
+                }
+
                 const fdb = firebase.firestore();
                 return fdb.collection('chats')
                     .orderBy('lastMessageAt', 'desc')
@@ -130,7 +142,6 @@
                             onThreadsUpdate(threads);
                         }
                     }, err => {
-                        console.warn("Admin threads real-time listener error:", err);
                         if (typeof onError === 'function') onError(err);
                     });
             } catch (e) {
