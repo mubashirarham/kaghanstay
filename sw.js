@@ -32,9 +32,15 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-    // Only handle GET requests and skip API / Firestore network requests
     if (event.request.method !== 'GET') return;
-    if (event.request.url.includes('firestore.googleapis.com') || event.request.url.includes('/.netlify/')) return;
+
+    const url = new URL(event.request.url);
+
+    // Bypass Firestore, Netlify API, and external cross-origin requests
+    if (url.origin.includes('firestore.googleapis.com') || url.pathname.includes('/.netlify/')) return;
+
+    // Bypass cross-origin requests — let browser handle them natively under page CSP
+    if (url.origin !== self.location.origin) return;
 
     event.respondWith(
         caches.match(event.request).then((cachedResponse) => {
@@ -42,10 +48,10 @@ self.addEventListener('fetch', (event) => {
                 return cachedResponse;
             }
             return fetch(event.request).catch(() => {
-                // If offline and requesting page, return fallback
                 if (event.request.mode === 'navigate') {
-                    return caches.match('/index.html');
+                    return caches.match('/index.html').then(r => r || new Response('Offline', { status: 503 }));
                 }
+                return new Response('', { status: 503 });
             });
         })
     );

@@ -165,12 +165,22 @@ window.switchTab = (tabName) => {
         activeBtn.classList.add('sidebar-active');
         activeBtn.classList.remove('text-slate-400', 'hover:text-white', 'hover:bg-slate-800/20');
     }
+
+    // Automatically close sidebar on mobile after choosing a tab
+    const sidebar = document.getElementById('admin-sidebar');
+    if (sidebar && !sidebar.classList.contains('-translate-x-full') && window.innerWidth < 768) {
+        window.toggleSidebar();
+    }
 };
 
 window.toggleSidebar = () => {
     const sidebar = document.getElementById('admin-sidebar');
+    const backdrop = document.getElementById('admin-sidebar-backdrop');
     if (sidebar) {
         sidebar.classList.toggle('-translate-x-full');
+    }
+    if (backdrop) {
+        backdrop.classList.toggle('hidden');
     }
 };
 
