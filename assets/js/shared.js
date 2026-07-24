@@ -581,16 +581,50 @@ const db = {
         return doc.exists ? doc.data() : null;
     },
     addBooking: async (booking, pdfBase64 = null) => {
-        const bookingId = booking.id || ('BK-' + Math.floor(1000 + Math.random() * 9000));
-        booking.id = bookingId;
-        booking.createdAt = booking.createdAt || new Date().toISOString();
-        booking.updatedAt = new Date().toISOString();
-        booking.status = booking.status || 'confirmed';
+        let idToken = null;
+        if (typeof firebase !== 'undefined' && firebase.auth && firebase.auth().currentUser) {
+            try {
+                idToken = await firebase.auth().currentUser.getIdToken();
+            } catch (_) {}
+        }
 
-        await fdb.collection('bookings').doc(bookingId).set(booking);
+        const payload = {
+            roomId: booking.roomId,
+            checkIn: booking.checkIn,
+            checkOut: booking.checkOut,
+            guestName: booking.guestName,
+            guestEmail: booking.guestEmail,
+            guestPhone: booking.guestPhone || '',
+            couponCode: booking.couponCode || null,
+            billingCycle: booking.billingCycle || booking.stayType || 'daily',
+            pdfBase64: pdfBase64 || booking.pdfBase64 || null,
+            idToken: idToken,
+            upgrades: booking.upgrades || []
+        };
+
+        const res = await window.safeFetch('/.netlify/functions/create-booking', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+            let errMsg = 'Failed to create reservation.';
+            try {
+                const data = await res.json();
+                errMsg = data.error || errMsg;
+            } catch (_) {}
+            throw new Error(errMsg);
+        }
+
+        const data = await res.json();
+        const createdBooking = data.booking || booking;
+        if (data.booking && data.booking.id) {
+            booking.id = data.booking.id;
+        }
 
         if (window.KaghanDB_Cache.bookings) {
-            window.KaghanDB_Cache.bookings.unshift(booking);
+            window.KaghanDB_Cache.bookings.unshift(createdBooking);
         }
         window.dispatchEvent(new CustomEvent('kaghan-db-bookings', { detail: window.KaghanDB_Cache.bookings }));
 
