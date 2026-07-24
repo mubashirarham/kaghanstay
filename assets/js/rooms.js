@@ -338,6 +338,7 @@
                     const rType = (room.type || '').toLowerCase();
                     const rLoc = (room.location || '').toLowerCase();
                     const rLocName = (room.locationName || '').toLowerCase();
+                    const rLocId = (room.locationId || '').toLowerCase();
                     const rAmenities = Array.isArray(room.amenities) ? room.amenities : [];
                     const rPrice = Number(room.priceDaily || room.price || 0);
 
@@ -350,13 +351,35 @@
                                            rLocName.includes(keyword) ||
                                            rAmenities.some(a => (a || '').toLowerCase().includes(keyword));
 
-                    const matchesCategory = category === 'all' || rType === category.toLowerCase();
-                    
-                    const matchesLocation = location === 'all' || 
-                                           rLoc === location.toLowerCase() || 
-                                           rLocName === location.toLowerCase() ||
-                                           rLoc.includes(location.toLowerCase()) ||
-                                           (room.locationId && room.locationId.toLowerCase() === location.toLowerCase());
+                    // Flexible Category Matcher
+                    let matchesCategory = (category === 'all');
+                    if (!matchesCategory) {
+                        const cat = category.toLowerCase().trim();
+                        if (rType === cat || rName.includes(cat) || rType.includes(cat) || cat.includes(rType)) {
+                            matchesCategory = true;
+                        } else if (cat === 'studio' && (rType.includes('studio') || rName.includes('studio'))) {
+                            matchesCategory = true;
+                        } else if (cat === '1bed' && (rType.includes('1') || rName.includes('1') || rType.includes('one') || rType.includes('studio'))) {
+                            matchesCategory = true;
+                        } else if (cat === '2bed' && (rType.includes('2') || rName.includes('2') || rType.includes('two'))) {
+                            matchesCategory = true;
+                        } else if (cat === '3bed' && (rType.includes('3') || rName.includes('3') || rType.includes('three'))) {
+                            matchesCategory = true;
+                        } else if (cat === '4bed' && (rType.includes('4') || rName.includes('4') || rType.includes('four'))) {
+                            matchesCategory = true;
+                        } else if (cat === 'farmhouse' && (rType.includes('farm') || rName.includes('farm') || rType.includes('villa') || rName.includes('villa'))) {
+                            matchesCategory = true;
+                        }
+                    }
+
+                    // Flexible Location Matcher
+                    let matchesLocation = (location === 'all');
+                    if (!matchesLocation) {
+                        const loc = location.toLowerCase().trim();
+                        if (rLoc === loc || rLocName === loc || rLocId === loc || rLoc.includes(loc) || rLocName.includes(loc) || loc.includes(rLoc) || (rLocId && loc.includes(rLocId))) {
+                            matchesLocation = true;
+                        }
+                    }
 
                     const matchesPrice = isMaxCeiling || rPrice <= sliderVal;
 
@@ -467,15 +490,15 @@
                                 ${(room.amenities || []).length > 3 ? `<span class="bg-slate-50/50 text-[#C5A059] text-[9px] uppercase font-bold px-2 py-1 rounded border border-slate-100/50">+${room.amenities.length - 3}</span>` : ''}
                             </div>
                         </div>
-                        <div class="border-t border-slate-100/70 pt-4 mt-auto flex justify-between items-center">
-                            <div class="flex items-center gap-1.5 text-slate-500 text-xs font-semibold">
+                        <div class="border-t border-slate-100/70 pt-4 mt-auto flex flex-wrap justify-between items-center gap-2">
+                            <div class="flex items-center gap-1.5 text-slate-500 text-[11px] font-semibold">
                                 <i class="fa-solid fa-user-group text-[#C5A059] text-xs"></i> Max ${room.maxGuests} Guests • ${room.bedrooms || 1} Bed
                             </div>
-                            <div class="flex items-center gap-2">
-                                <button onclick="event.stopPropagation(); window.location.href='room-details.html?id=${room.id}'" class="bg-[#0B0F19] text-white text-[10px] uppercase tracking-wider font-bold px-3.5 py-2.5 rounded-xl hover:bg-[#C5A059] transition-all shadow-sm">
+                            <div class="flex items-center gap-1.5 shrink-0">
+                                <button onclick="event.stopPropagation(); window.location.href='room-details.html?id=${room.id}'" class="bg-[#0B0F19] text-white text-[10px] uppercase tracking-wider font-bold px-3 py-2 rounded-xl hover:bg-[#C5A059] transition-all shadow-sm">
                                     View Details
                                 </button>
-                                <button onclick="event.stopPropagation(); window.location.href='booking.html?id=${room.id}'" class="bg-[#C5A059] text-white text-[10px] uppercase tracking-wider font-bold px-3.5 py-2.5 rounded-xl hover:bg-[#0B0F19] transition-all shadow-sm">
+                                <button onclick="event.stopPropagation(); window.location.href='booking.html?id=${room.id}'" class="bg-[#C5A059] text-white text-[10px] uppercase tracking-wider font-bold px-3 py-2 rounded-xl hover:bg-[#0B0F19] transition-all shadow-sm">
                                     Book Now
                                 </button>
                             </div>

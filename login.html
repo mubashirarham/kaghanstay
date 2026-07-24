@@ -461,36 +461,69 @@
         }
 
         // Google Sign-In handler
+        async function processGoogleUserSession(user) {
+            let dbUser = await KaghanDB.getUserById(user.uid);
+            if (!dbUser) {
+                dbUser = {
+                    id: user.uid,
+                    uid: user.uid,
+                    name: user.displayName || 'Google Guest',
+                    email: (user.email || '').toLowerCase().trim(),
+                    role: 'user',
+                    loyaltyPoints: 100,
+                    phone: user.phoneNumber || ''
+                };
+                await firebase.firestore().collection('users').doc(user.uid).set(dbUser, { merge: true });
+            }
+            localStorage.setItem('kaghan_hotel_session', JSON.stringify(dbUser));
+            KaghanUI.showToast(`Welcome, ${dbUser.name}!`, 'success');
+            setTimeout(() => redirectUser(dbUser), 600);
+        }
+
         async function loginWithGoogle() {
             try {
-                if (typeof firebase.auth === 'function') {
+                if (typeof firebase !== 'undefined' && firebase.auth) {
                     const provider = new firebase.auth.GoogleAuthProvider();
-                    const result = await firebase.auth().signInWithPopup(provider);
-                    const user = result.user;
-                    if (user) {
-                        let dbUser = await KaghanDB.getUserById(user.uid);
-                        if (!dbUser) {
-                            dbUser = {
-                                id: user.uid,
-                                name: user.displayName || 'Google Guest',
-                                email: user.email.toLowerCase().trim(),
-                                role: 'user',
-                                loyaltyPoints: 100,
-                                phone: user.phoneNumber || ''
-                            };
-                            await firebase.firestore().collection('users').doc(user.uid).set(dbUser);
+                    provider.addScope('email');
+                    provider.addScope('profile');
+                    
+                    let result;
+                    try {
+                        result = await firebase.auth().signInWithPopup(provider);
+                    } catch (popupErr) {
+                        console.warn("Popup sign-in error, falling back to redirect:", popupErr);
+                        if (popupErr.code === 'auth/popup-blocked' || popupErr.code === 'auth/popup-closed-by-user' || popupErr.code === 'auth/cancelled-popup-request') {
+                            await firebase.auth().signInWithRedirect(provider);
+                            return;
                         }
-                        localStorage.setItem('kaghan_hotel_session', JSON.stringify(dbUser));
-                        KaghanUI.showToast(`Welcome, ${dbUser.name}! (Google)`, 'success');
-                        setTimeout(() => redirectUser(dbUser), 800);
-                        return;
+                        throw popupErr;
                     }
+
+                    if (result && result.user) {
+                        await processGoogleUserSession(result.user);
+                    }
+                } else {
+                    KaghanUI.showToast("Firebase Authentication is loading. Please retry.", "warning");
                 }
             } catch(err) {
                 console.error("Firebase Auth Google sign-in failed:", err);
-                KaghanUI.showToast(`Google Sign-In failed: ${err.message}`, 'error');
+                KaghanUI.showToast(`Google Sign-In: ${err.message}`, 'error');
             }
         }
+        window.handleGoogleSignIn = loginWithGoogle;
+
+        // Check for redirect result on load
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof firebase !== 'undefined' && firebase.auth) {
+                firebase.auth().getRedirectResult().then(async (result) => {
+                    if (result && result.user) {
+                        await processGoogleUserSession(result.user);
+                    }
+                }).catch(err => {
+                    console.error("Redirect sign-in error:", err);
+                });
+            }
+        });
 
         // Set Tab from URL Param
         function parseUrlState() {

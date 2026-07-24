@@ -229,9 +229,10 @@ function startActiveListeners() {
                 window.KaghanDB_Cache.newsletter = sorted;
                 window.dispatchEvent(new CustomEvent('kaghan-db-newsletter', { detail: sorted }));
             }, err => console.warn("Newsletter listener error:", err));
-        } else {
+        } else if (firebase.auth() && firebase.auth().currentUser) {
             // Subscribe to user-specific bookings (Guest)
-            window.KaghanDB_Listeners.bookings = fdb.collection('bookings').where('userId', '==', user.id).onSnapshot(snap => {
+            const authUid = firebase.auth().currentUser.uid;
+            window.KaghanDB_Listeners.bookings = fdb.collection('bookings').where('userId', '==', authUid).onSnapshot(snap => {
                 const list = [];
                 const seen = new Set();
                 snap.forEach(doc => {
@@ -245,7 +246,9 @@ function startActiveListeners() {
                 const sorted = list.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
                 window.KaghanDB_Cache.bookings = sorted;
                 window.dispatchEvent(new CustomEvent('kaghan-db-bookings', { detail: sorted }));
-            }, err => console.warn("User Bookings listener error:", err));
+            }, err => {
+                // Silently handle auth sync
+            });
         }
     }
 }
@@ -690,9 +693,9 @@ const db = {
 
     // Wishlist CRUD (Owner-scoped user data)
     getWishlist: async () => {
-        const user = db.getCurrentUser ? db.getCurrentUser() : null;
-        if (!user || (!user.uid && !user.id)) return [];
-        const uid = user.uid || user.id;
+        const authUser = firebase.auth() ? firebase.auth().currentUser : null;
+        if (!authUser) return [];
+        const uid = authUser.uid;
         try {
             const doc = await fdb.collection('wishlists').doc(uid).get();
             if (doc.exists) {
@@ -700,7 +703,6 @@ const db = {
             }
             return [];
         } catch (err) {
-            console.warn("Error getting wishlist:", err);
             return [];
         }
     },
@@ -975,7 +977,7 @@ const UI = {
         if (!container) {
             container = document.createElement('div');
             container.id = 'toast-container';
-            container.className = 'fixed bottom-5 right-5 z-[9999] flex flex-col gap-3 max-w-sm';
+            container.className = 'fixed bottom-20 md:bottom-5 right-4 left-4 md:left-auto md:right-5 z-[100000] flex flex-col gap-3 max-w-sm mx-auto md:mx-0';
             document.body.appendChild(container);
         }
 
@@ -1022,9 +1024,11 @@ const UI = {
     }
 };
 
+// Export UI
+window.KaghanUI = UI;
+
 // Export to window
 window.KaghanDB = db;
-window.KaghanUI = UI;
 
 // Dynamic Chatbot UI Injection
 function injectChatbot() {
@@ -1109,6 +1113,7 @@ function injectChatbot() {
         chatBox.classList.remove('scale-95', 'opacity-0');
         trigger.innerHTML = '<i class="fa-solid fa-minus text-xl"></i>';
         messagesArea.scrollTop = messagesArea.scrollHeight;
+        document.body.classList.add('chat-open');
     }
 
     // Toggle actions
@@ -1122,6 +1127,7 @@ function injectChatbot() {
             }
 
             chatBox.classList.remove('hidden');
+            document.body.classList.add('chat-open');
             setTimeout(() => {
                 chatBox.classList.remove('scale-95', 'opacity-0');
                 messagesArea.scrollTop = messagesArea.scrollHeight;
@@ -1139,6 +1145,7 @@ function injectChatbot() {
         chatBox.classList.add('scale-95', 'opacity-0');
         trigger.innerHTML = '<i class="fa-solid fa-comments text-xl"></i>';
         localStorage.setItem('kph_chat_open', 'false');
+        document.body.classList.remove('chat-open');
         setTimeout(() => {
             chatBox.classList.add('hidden');
         }, 300);
@@ -1713,11 +1720,13 @@ function injectWhatsApp() {
             }
 
             chatBox.classList.remove('hidden');
+            document.body.classList.add('chat-open');
             setTimeout(() => {
                 chatBox.classList.remove('scale-95', 'opacity-0');
             }, 10);
         } else {
             chatBox.classList.add('scale-95', 'opacity-0');
+            document.body.classList.remove('chat-open');
             setTimeout(() => {
                 chatBox.classList.add('hidden');
             }, 300);
@@ -1728,6 +1737,7 @@ function injectWhatsApp() {
     if (closeBtn) {
         closeBtn.addEventListener('click', () => {
             chatBox.classList.add('scale-95', 'opacity-0');
+            document.body.classList.remove('chat-open');
             setTimeout(() => {
                 chatBox.classList.add('hidden');
             }, 300);
@@ -1738,6 +1748,7 @@ function injectWhatsApp() {
     if (waBtn) {
         waBtn.addEventListener('click', () => {
             chatBox.classList.add('scale-95', 'opacity-0');
+            document.body.classList.remove('chat-open');
             setTimeout(() => {
                 chatBox.classList.add('hidden');
             }, 300);

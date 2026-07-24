@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+    <title>Alerts & Offers | KPH Stay Guest App</title>
+    <meta name="robots" content="noindex, nofollow">
+    <!-- Tailwind CSS (Play CDN with JIT) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Global CSS -->
+    <link rel="stylesheet" href="../assets/css/style.css?v=6">
+</head>
+<body class="guest-app-body bg-[#F8FAFC] text-[#0B0F19] overflow-x-hidden font-sans pt-20 pb-20 md:pb-12">
+
+    <!-- Desktop Luxury Guest App Top Header -->
+    <nav id="guest-app-navbar" class="fixed top-0 left-0 right-0 z-50 py-3 px-4 md:px-8 bg-[#070A12]/95 backdrop-blur-xl border-b border-white/10 shadow-2xl text-white flex items-center justify-between gap-4">
+        <div class="flex items-center gap-3 shrink-0">
+            <a href="index.html" class="flex items-center gap-2.5 hover:opacity-90 transition-opacity">
+                <img src="../assets/images/logo.png" alt="KPH Stay Logo" class="h-9 w-auto object-contain">
+                <div class="flex flex-col">
+                    <span class="text-base font-black tracking-wider uppercase outfit leading-none text-white">KPH STAY</span>
+                    <span class="text-[9px] text-[#C5A059] tracking-[0.25em] uppercase font-extrabold flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Guest Super App
+                    </span>
+                </div>
+            </a>
+        </div>
+
+        <div class="hidden xl:flex items-center gap-1.5 bg-white/5 border border-white/10 p-1.5 rounded-2xl">
+            <a href="index.html?tab=overview" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/10"><i class="fa-solid fa-hotel text-xs"></i> Explore Suites</a>
+            <a href="trips.html" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/10"><i class="fa-solid fa-suitcase text-xs"></i> My Stays</a>
+            <a href="wishlists.html" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/10"><i class="fa-solid fa-heart text-xs text-rose-400"></i> Wishlist</a>
+            <a href="notifications.html" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#C5A059] text-white shadow-md"><i class="fa-solid fa-bell text-xs"></i> Alerts</a>
+            <a href="support.html" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/10"><i class="fa-solid fa-headset text-xs text-emerald-400"></i> Host Support</a>
+            <a href="profile.html" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-white/10"><i class="fa-solid fa-user-shield text-xs"></i> Account</a>
+        </div>
+
+        <div class="flex items-center gap-3 shrink-0">
+            <button onclick="KaghanDB.logout()" class="border border-white/20 text-white px-3.5 py-1.5 rounded-full hover:bg-rose-600 transition-all text-xs font-bold shrink-0">
+                <i class="fa-solid fa-power-off"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="py-6 px-4 md:px-12 max-w-7xl mx-auto space-y-8">
+        <div class="bg-gradient-to-r from-[#070A12] via-[#121826] to-[#070A12] rounded-3xl p-6 md:p-8 border border-white/10 shadow-2xl text-white flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+            <div>
+                <span class="inline-flex items-center gap-2 text-[#C5A059] text-[10px] font-extrabold uppercase tracking-widest bg-[#C5A059]/10 px-3 py-1 rounded-full border border-[#C5A059]/20 mb-2">
+                    <i class="fa-solid fa-bell text-xs"></i> Guest Alert Feed
+                </span>
+                <h1 class="text-2xl md:text-3xl font-bold outfit text-white">Alerts & Special Offers</h1>
+                <p class="text-slate-400 text-xs mt-1 font-light">Booking status notifications, check-in reminders, and promotional resort coupons.</p>
+            </div>
+            <button onclick="KaghanUI.showToast('All notifications marked as read', 'success')" class="bg-white/10 text-white text-xs font-bold px-5 py-3 rounded-2xl hover:bg-white hover:text-slate-900 transition-all shadow-md">
+                <i class="fa-solid fa-check-double text-xs text-[#C5A059] mr-1"></i> Mark All Read
+            </button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2 space-y-4">
+                <h3 class="font-bold outfit text-slate-900 text-base">Recent Feed</h3>
+                <div id="guest-notifications-list" class="space-y-4">
+                    <!-- Loaded dynamically -->
+                </div>
+            </div>
+
+            <div class="space-y-6">
+                <div class="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm space-y-5">
+                    <h3 class="font-bold outfit text-slate-900 text-base flex items-center gap-2">
+                        <i class="fa-solid fa-sliders text-[#C5A059]"></i> Notification Preferences
+                    </h3>
+                    <p class="text-xs text-slate-500 font-light leading-relaxed">Choose how KPH Stay contacts you regarding reservation updates and special deals.</p>
+                    <div class="space-y-4 text-xs font-semibold text-slate-700">
+                        <label class="flex items-center justify-between cursor-pointer p-3 bg-slate-50 rounded-2xl border border-slate-100">
+                            <span>Email Check-in Reminders</span>
+                            <input type="checkbox" checked class="accent-[#C5A059] w-4 h-4 cursor-pointer">
+                        </label>
+                        <label class="flex items-center justify-between cursor-pointer p-3 bg-slate-50 rounded-2xl border border-slate-100">
+                            <span>Host Message Alerts</span>
+                            <input type="checkbox" checked class="accent-[#C5A059] w-4 h-4 cursor-pointer">
+                        </label>
+                        <label class="flex items-center justify-between cursor-pointer p-3 bg-slate-50 rounded-2xl border border-slate-100">
+                            <span>Promotional Deal Vouchers</span>
+                            <input type="checkbox" checked class="accent-[#C5A059] w-4 h-4 cursor-pointer">
+                        </label>
+                    </div>
+                    <button onclick="KaghanUI.showToast('Notification preferences saved!', 'success')" class="w-full bg-[#070A12] text-white text-xs font-bold py-3 rounded-2xl hover:bg-[#C5A059] hover:text-slate-900 transition-all shadow-md">
+                        Save Preferences
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Mobile Floating Navigation Dock -->
+    <nav class="guest-app-dock md:hidden flex justify-around items-center">
+        <a href="index.html?tab=overview" class="dock-item">
+            <i class="fa-solid fa-hotel"></i>
+            <span>Explore</span>
+        </a>
+        <a href="trips.html" class="dock-item">
+            <i class="fa-solid fa-suitcase"></i>
+            <span>Stays</span>
+        </a>
+        <a href="support.html" class="dock-item">
+            <i class="fa-solid fa-comments text-emerald-400"></i>
+            <span>Host Chat</span>
+        </a>
+        <a href="wishlists.html" class="dock-item">
+            <i class="fa-solid fa-heart text-rose-400"></i>
+            <span>Wishlist</span>
+        </a>
+        <a href="profile.html" class="dock-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+
+    <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="../assets/js/shared.js?v=4"></script>
+    <script src="../assets/js/users.js"></script>
+    <script src="../assets/js/newsletter.js"></script>
+    <script src="../assets/js/user/bookings.js"></script>
+    <script src="../assets/js/user/reviews.js"></script>
+    <script src="../assets/js/user/profile.js"></script>
+    <script src="../assets/js/messaging.js"></script>
+    <script src="../assets/js/user/dashboard.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof renderGuestNotifications === 'function') {
+                renderGuestNotifications();
+            }
+        });
+    </script>
+</body>
+</html>

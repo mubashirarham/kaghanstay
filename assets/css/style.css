@@ -995,9 +995,52 @@ img {
 /* NOTE: Do NOT add opacity:0 on lazy images — browser handles lazy loading natively */
 
 
-/* ── CHATBOT BUTTON SAFE AREA ── */
-#chatbot-fab, #whatsapp-fab {
-    bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px)) !important;
+/* ── CHATBOT & WHATSAPP FAB STACKING SAFE AREA ── */
+#kph-chat-trigger {
+    bottom: 1.5rem;
+    right: 1.25rem;
+    z-index: 9990;
+}
+#wa-chat-trigger {
+    bottom: 5.5rem;
+    right: 1.25rem;
+    z-index: 9990;
+}
+
+@media (max-width: 767px) {
+    #kph-chat-trigger, #chatbot-fab {
+        bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px)) !important;
+        right: 0.75rem !important;
+        width: 3rem !important;
+        height: 3rem !important;
+    }
+    #wa-chat-trigger, #whatsapp-fab {
+        bottom: calc(8.5rem + env(safe-area-inset-bottom, 0px)) !important;
+        right: 0.75rem !important;
+        width: 3rem !important;
+        height: 3rem !important;
+    }
+    #kph-chat-box, #wa-chat-box {
+        right: 0.5rem !important;
+        left: 0.5rem !important;
+        width: auto !important;
+        max-width: calc(100vw - 1rem) !important;
+        bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px)) !important;
+        z-index: 99999 !important;
+    }
+}
+
+/* Hide FABs when chat boxes or full screen modals are open */
+body.chat-open #wa-chat-trigger,
+body.chat-open #whatsapp-fab,
+body.modal-open #kph-chat-trigger,
+body.modal-open #wa-chat-trigger,
+body.modal-open #chatbot-fab,
+body.modal-open #whatsapp-fab {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transform: scale(0.8) !important;
+    transition: opacity 0.25s ease, transform 0.25s ease;
 }
 
 /* ── LEAFLET CUSTOM PRICE BUBBLE MARKERS ── */
@@ -1030,13 +1073,23 @@ img {
     z-index: 999 !important;
 }
 
+/* ── RESPONSIVE TABLE & BADGE OVERFLOW FIXES ── */
+.table-scroll-container th,
+.table-scroll-container td {
+    white-space: nowrap;
+}
 @media (max-width: 767px) {
-    #chatbot-fab, #whatsapp-fab {
-        bottom: calc(5rem + env(safe-area-inset-bottom, 0px)) !important;
+    .table-scroll-container th,
+    .table-scroll-container td {
+        padding-left: 0.75rem !important;
+        padding-right: 0.75rem !important;
+        padding-top: 0.625rem !important;
+        padding-bottom: 0.625rem !important;
+        font-size: 0.75rem !important;
     }
 }
 
-/* â”€â”€ SEARCH WIDGET RESPONSIVE â”€â”€ */
+/* ── SEARCH WIDGET RESPONSIVE ── */
 @media (max-width: 639px) {
     .kph-search-widget {
         border-radius: 1.5rem !important;
@@ -1044,8 +1097,102 @@ img {
     }
 }
 
-/* â”€â”€ PREVENT FIXED NAV OVERLAP â”€â”€ */
+/* ── PREVENT FIXED NAV OVERLAP ── */
 main, .main-content {
     padding-top: 5rem;
 }
+
+/* ── GUEST SUPER APP STYLES & MOBILE BOTTOM DOCK ── */
+.glass-obsidian {
+    background: rgba(7, 10, 18, 0.92);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(197, 160, 89, 0.25);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+}
+
+/* ── KAGHAN STAY GUEST APP LUXURY GOLD & OBSIDIAN DESIGN SYSTEM ── */
+.squircle-thumb {
+    border-radius: 1.25rem;
+    overflow: hidden;
+    transition: transform 0.3s var(--ease-spring), box-shadow 0.3s var(--ease-spring);
+}
+
+.squircle-thumb:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 25px -5px rgba(197, 160, 89, 0.3);
+}
+
+.gold-price-pill {
+    background: #C5A059;
+    color: #0B0F19;
+    font-weight: 800;
+    font-size: 0.75rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+    box-shadow: 0 4px 14px rgba(197, 160, 89, 0.35);
+}
+
+.gold-fab-btn {
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #D4AF37, #C5A059);
+    color: #0B0F19;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 25px rgba(197, 160, 89, 0.5);
+    transition: transform 0.25s var(--ease-spring);
+}
+
+.gold-fab-btn:hover {
+    transform: scale(1.08);
+}
+
+.app-bottom-dock {
+    position: fixed;
+    bottom: 1rem;
+    left: 1rem;
+    right: 1rem;
+    z-index: 9999;
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    border-radius: 1.75rem;
+    box-shadow: 0 15px 35px -5px rgba(11, 15, 25, 0.12);
+    padding: 0.5rem 1rem;
+}
+
+.dock-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    color: #64748B;
+    font-size: 0.65rem;
+    font-weight: 600;
+    transition: all 0.25s ease;
+}
+
+.dock-item.active {
+    color: #C5A059;
+    font-weight: 800;
+}
+
+.dock-item.active i {
+    color: #C5A059;
+    transform: scale(1.15);
+    filter: drop-shadow(0 2px 6px rgba(197, 160, 89, 0.4));
+}
+
+@media (max-width: 767px) {
+    body.guest-app-body {
+        padding-bottom: 6rem !important;
+    }
+}
+
+
 

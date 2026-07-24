@@ -109,6 +109,13 @@
                 `;
             }
             if (booking.status === 'confirmed' || booking.status === 'completed') {
+                if (booking.status === 'confirmed') {
+                    actionsHtml += `
+                        <button onclick="openDigitalPassModal('${booking.id}')" class="bg-emerald-50 border border-emerald-200 text-emerald-700 text-[10px] font-bold px-2 py-1 rounded hover:bg-emerald-100 transition-all inline-flex items-center gap-1 ml-1.5" title="Digital Key & Pass">
+                            <i class="fa-solid fa-qrcode text-[9px]"></i> Digital Key
+                        </button>
+                    `;
+                }
                 actionsHtml += `
                     <button onclick="downloadPDFInvoice('${booking.id}')" class="bg-indigo-50 border border-indigo-200 text-indigo-700 text-[10px] font-bold px-2 py-1 rounded hover:bg-indigo-100 transition-all inline-flex items-center gap-1 ml-1.5" title="Download PDF Invoice">
                         <i class="fa-solid fa-file-pdf text-[9px]"></i> PDF
