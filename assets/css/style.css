@@ -802,10 +802,7 @@ html, body {
         font-size: 0.7rem;
         padding: 0.3rem 0.75rem;
     }
-    /* Hero background cover on small screens */
-    header {
-        min-height: 100svh;
-    }
+    /* Hero section min-height is handled by Tailwind min-h-screen class on the element */
 }
 
 @media (min-width: 640px) and (max-width: 1023px) {

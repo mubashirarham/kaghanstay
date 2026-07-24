@@ -27,26 +27,115 @@
     <link rel="stylesheet" href="../assets/css/style.css?v=10">
     <!-- Leaflet JS loaded at bottom of body -->
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
+        /* === ADMIN LAYOUT SYSTEM ===
+           Bulletproof fixed-header + fixed-sidebar pattern.
+           Works regardless of global overflow settings. */
+
+        html, body { margin: 0; padding: 0; height: 100%; overflow-x: hidden; }
+        body { font-family: 'Inter', sans-serif; background: #F8FAFC; }
+        .outfit { font-family: 'Outfit', sans-serif; }
+
+        /* Fixed header bar — no external stylesheet can override these */
+        #admin-topbar {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            height: 56px !important;
+            min-height: 56px !important;
+            max-height: 56px !important;
+            background: #ffffff !important;
+            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 1px 4px rgba(15,23,42,0.06);
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between;
+            padding: 0 1rem;
+            z-index: 9999 !important;
+            box-sizing: border-box !important;
         }
-        .outfit {
-            font-family: 'Outfit', sans-serif;
+
+        /* Sidebar — starts below the header bar */
+        #admin-sidebar {
+            position: fixed;
+            top: 56px;       /* sits below the header */
+            left: 0;
+            bottom: 0;
+            width: 256px;
+            background: #0B0F19;
+            border-right: 1px solid #1e293b;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 4px 0 24px rgba(0,0,0,0.2);
+            z-index: 40;
+            transform: translateX(-100%);
+            transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);
+            overflow-y: auto;
         }
+        @media (min-width: 768px) {
+            #admin-sidebar { transform: translateX(0); }
+            #admin-topbar { padding: 0 2rem; }
+        }
+        @media (min-width: 1024px) {
+            #admin-sidebar { width: 288px; }
+            #admin-content-wrap { padding-left: 288px; }
+        }
+
+        /* Main content wrapper — pushed right on desktop, padded top always */
+        #admin-content-wrap {
+            padding-top: 56px; /* clear the fixed header */
+            min-height: 100vh;
+        }
+        @media (min-width: 768px) {
+            #admin-content-wrap { padding-left: 256px; }
+        }
+
+        /* Sidebar active state */
         .sidebar-active {
             color: #D4AF37 !important;
-            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(212, 175, 55, 0.04) 100%) !important;
+            background: linear-gradient(135deg, rgba(212,175,55,0.1) 0%, rgba(212,175,55,0.04) 100%) !important;
             border-left: 3px solid #D4AF37 !important;
         }
     </style>
 </head>
-<body class="bg-[#F8FAFC] text-[#0F172A] font-sans min-h-screen flex flex-col">
+<body class="text-[#0F172A]">
+
+    <!-- ===== FIXED TOP HEADER ===== -->
+    <header id="admin-topbar">
+        <!-- Left: Hamburger + Brand -->
+        <div style="display:flex;align-items:center;gap:12px;min-width:0">
+            <button onclick="toggleSidebar()" id="admin-menu-btn" class="md:hidden" style="display:flex;align-items:center;justify-content:center;width:36px;height:36px;border:none;background:transparent;cursor:pointer;border-radius:10px;color:#475569" aria-label="Menu">
+                <i class="fa-solid fa-bars" style="font-size:16px"></i>
+            </button>
+            <img src="../assets/images/logo.png" alt="KPH Stay" style="height:28px;width:auto;object-fit:contain;flex-shrink:0">
+            <div class="hidden sm:flex" style="flex-direction:column;line-height:1">
+                <span style="font-size:9px;text-transform:uppercase;font-weight:800;letter-spacing:0.18em;color:#D4AF37">Hotel Management</span>
+                <span style="font-size:14px;font-weight:700;color:#0f172a;letter-spacing:-0.01em">Admin Console</span>
+            </div>
+            <!-- Mobile: current tab label -->
+            <span class="sm:hidden" id="admin-current-tab-label" style="font-size:14px;font-weight:700;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Overview</span>
+        </div>
+        <!-- Right: Actions -->
+        <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+            <a href="../index.html" title="View Website" style="display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:8px;color:#64748b;font-size:12px;font-weight:600;text-decoration:none;transition:color 0.2s">
+                <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:11px"></i>
+                <span class="hidden sm:inline">Website</span>
+            </a>
+            <div style="width:1px;height:16px;background:#e2e8f0"></div>
+            <button onclick="KaghanDB.logout()" title="Log Out" style="display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:8px;border:none;background:transparent;color:#ef4444;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s">
+                <i class="fa-solid fa-sign-out-alt" style="font-size:11px"></i>
+                <span class="hidden sm:inline">Logout</span>
+            </button>
+        </div>
+    </header>
 
     <!-- Mobile Sidebar Backdrop -->
-    <div id="admin-sidebar-backdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-950/70 z-40 md:hidden hidden transition-opacity"></div>
+    <div id="admin-sidebar-backdrop" onclick="toggleSidebar()" class="hidden" style="position:fixed;inset:0;background:rgba(2,6,23,0.7);z-index:39"></div>
 
-    <!-- Sidebar -->
-    <aside id="admin-sidebar" class="fixed inset-y-0 left-0 z-50 w-64 lg:w-72 bg-[#0B0F19] border-r border-slate-800 text-white transform -translate-x-full md:translate-x-0 transition-transform duration-300 flex flex-col justify-between shadow-2xl">
+    <!-- ===== SIDEBAR (starts below header) ===== -->
+    <aside id="admin-sidebar">
         <div>
             <!-- Branding -->
             <div class="p-6 border-b border-slate-800 flex items-center justify-between">
@@ -121,34 +210,10 @@
         </div>
     </aside>
 
-    <!-- Main Content Area -->
-    <div class="md:pl-64 lg:pl-72 flex flex-col min-h-screen">
-        
-        <!-- Top Nav Header -->
-        <header class="bg-white/95 backdrop-blur-md border-b border-slate-100 py-3.5 px-4 md:px-8 flex justify-between items-center sticky top-0 z-30 shadow-xs w-full">
-            <div class="flex items-center gap-2.5">
-                <button onclick="toggleSidebar()" class="md:hidden text-slate-700 hover:text-slate-900 p-2 rounded-xl hover:bg-slate-100 transition-colors" aria-label="Toggle Sidebar Menu">
-                    <i class="fa-solid fa-bars text-lg"></i>
-                </button>
-                <img src="../assets/images/logo.png" alt="Logo" class="h-7 w-auto md:block hidden object-contain">
-                <div class="flex flex-col">
-                    <span class="text-[9px] uppercase font-extrabold tracking-widest text-[#D4AF37] leading-tight sm:block hidden">Hotel Management System</span>
-                    <h2 class="text-xs sm:text-sm font-bold text-slate-800 leading-tight">Admin Console</h2>
-                </div>
-            </div>
-            <div class="flex items-center gap-3">
-                <a href="../index.html" class="text-xs font-bold text-slate-500 hover:text-[#D4AF37] transition-all flex items-center gap-1">
-                    <i class="fa-solid fa-house text-xs"></i> <span class="sm:inline hidden">View Website</span>
-                </a>
-                <div class="h-4 w-px bg-slate-200"></div>
-                <button onclick="KaghanDB.logout()" class="text-xs font-bold text-rose-600 hover:text-rose-700 transition-all flex items-center gap-1">
-                    <i class="fa-solid fa-sign-out-alt text-xs"></i> <span class="sm:inline hidden">Log Out</span>
-                </button>
-            </div>
-        </header>
-
+    <!-- ===== MAIN CONTENT AREA ===== -->
+    <div id="admin-content-wrap">
         <!-- Main View Space -->
-        <main class="flex-grow p-4 sm:p-6 md:p-8 max-w-7xl w-full mx-auto space-y-8 pb-24 md:pb-8">
+        <main class="p-4 sm:p-6 md:p-8 max-w-7xl w-full mx-auto space-y-8 pb-24 md:pb-8">
             
             <!-- VIEW: OVERVIEW -->
             <div id="view-overview" class="tab-view space-y-8">
