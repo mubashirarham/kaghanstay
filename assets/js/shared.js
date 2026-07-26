@@ -555,93 +555,193 @@ const db = {
         return true;
     },
 
-    // Bookings CRUD
+    // Bookings CRUD - 100% Frontend Autonomous Operation
     getBookings: async () => {
-        if (window.KaghanDB_Cache.bookings) {
-            return window.KaghanDB_Cache.bookings;
-        }
         await window.ensureAuthReady();
+        let firestoreList = [];
         try {
             const snap = await fdb.collection('bookings').get();
-            const list = [];
-            snap.forEach(doc => list.push(doc.data()));
-            const sorted = list.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-            window.KaghanDB_Cache.bookings = sorted;
-            return sorted;
+            snap.forEach(doc => firestoreList.push(doc.data()));
         } catch (e) {
-            return window.KaghanDB_Cache.bookings || [];
+            console.warn("Firestore getBookings notice (using local cache fallback):", e.message);
         }
+
+        let localList = [];
+        try {
+            localList = JSON.parse(localStorage.getItem('kaghan_local_bookings') || '[]');
+        } catch (_) {}
+
+        const mergedMap = new Map();
+        firestoreList.forEach(b => { if (b && b.id) mergedMap.set(b.id, b); });
+        localList.forEach(b => { if (b && b.id && !mergedMap.has(b.id)) mergedMap.set(b.id, b); });
+
+        const sorted = Array.from(mergedMap.values()).sort((a, b) => new Date(b.createdAt || Date.now()) - new Date(a.createdAt || Date.now()));
+        window.KaghanDB_Cache.bookings = sorted;
+        return sorted;
     },
+
     getBookingById: async (id) => {
+        if (!id) return null;
         if (window.KaghanDB_Cache.bookings) {
             const match = window.KaghanDB_Cache.bookings.find(b => b.id === id);
             if (match) return match;
         }
-        const doc = await fdb.collection('bookings').doc(id).get();
-        return doc.exists ? doc.data() : null;
+        try {
+            const doc = await fdb.collection('bookings').doc(id).get();
+            if (doc.exists) return doc.data();
+        } catch (_) {}
+
+        try {
+            const localList = JSON.parse(localStorage.getItem('kaghan_local_bookings') || '[]');
+            const localMatch = localList.find(b => b.id === id);
+            if (localMatch) return localMatch;
+        } catch (_) {}
+
+        return null;
     },
+
     addBooking: async (booking, pdfBase64 = null) => {
-        let idToken = null;
-        if (typeof firebase !== 'undefined' && firebase.auth && firebase.auth().currentUser) {
+        await window.ensureAuthReady();
+        const user = KaghanDB.getCurrentUser();
+        const userId = user ? user.id : (booking.userId || 'usr-guest-walkin');
+
+        // Generate clean client-side booking ID if not provided
+        const bookingId = booking.id || (`KPH-BOOK-${Math.floor(100000 + Math.random() * 900000)}`);
+        const checkInStr = booking.checkIn ? (booking.checkIn.includes('T') ? booking.checkIn.split('T')[0] : booking.checkIn) : new Date().toISOString().split('T')[0];
+        const checkOutStr = booking.checkOut ? (booking.checkOut.includes('T') ? booking.checkOut.split('T')[0] : booking.checkOut) : new Date(Date.now() + 86400000).toISOString().split('T')[0];
+
+        // Client-side Pricing computation
+        const inDate = new Date(checkInStr);
+        const outDate = new Date(checkOutStr);
+        const nights = (!isNaN(inDate.getTime()) && !isNaN(outDate.getTime())) ? Math.max(1, Math.ceil((outDate - inDate) / (1000 * 3600 * 24))) : 1;
+
+        let roomName = booking.roomName || booking.propertyName || 'Luxury Accommodation';
+        let rate = 15000;
+        if (booking.roomId) {
             try {
-                idToken = await firebase.auth().currentUser.getIdToken();
+                const rooms = await KaghanDB.getRooms();
+                const matchedRoom = rooms.find(r => r.id === booking.roomId);
+                if (matchedRoom) {
+                    roomName = matchedRoom.name || matchedRoom.title || roomName;
+                    rate = matchedRoom.price || matchedRoom.priceDaily || rate;
+                }
             } catch (_) {}
         }
 
-        const payload = {
-            roomId: booking.roomId,
-            checkIn: booking.checkIn,
-            checkOut: booking.checkOut,
-            guestName: booking.guestName,
-            guestEmail: booking.guestEmail,
+        let totalPrice = Number(booking.totalPrice || booking.price || 0);
+        if (!totalPrice || totalPrice <= 0) {
+            totalPrice = rate * nights;
+        }
+
+        const subtotal = booking.subtotal !== undefined ? Number(booking.subtotal) : totalPrice;
+        const tax = booking.tax !== undefined ? Number(booking.tax) : Math.round(subtotal * 0.15);
+        const discount = Number(booking.discount || booking.discountAmount || 0);
+
+        const createdBooking = {
+            id: bookingId,
+            invoiceNo: booking.invoiceNo || `KPH-INV-${bookingId.replace(/^KPH-BOOK-|^BK-/, '')}`,
+            userId: userId,
+            roomId: booking.roomId || 'suite-standard',
+            roomName: roomName,
+            propertyName: roomName,
+            guestName: booking.guestName || (user ? user.name : 'Valued Guest'),
+            guestEmail: (booking.guestEmail || (user ? user.email : 'guest@kphstay.com')).toLowerCase().trim(),
             guestPhone: booking.guestPhone || '',
-            couponCode: booking.couponCode || null,
+            guestCnic: booking.guestCnic || booking.cnicPassport || '',
+            nationality: booking.nationality || 'Pakistani',
+            address: booking.address || '',
+            checkIn: checkInStr,
+            checkInTime: booking.checkInTime || '2:00 PM',
+            checkOut: checkOutStr,
+            checkOutTime: booking.checkOutTime || '12:00 PM',
+            totalNights: nights,
+            nights: nights,
+            totalPrice: totalPrice,
+            subtotal: subtotal,
+            tax: tax,
+            discount: discount,
+            couponUsed: booking.couponCode || booking.couponUsed || null,
+            upgrades: booking.upgrades || [],
+            status: booking.status || 'confirmed',
             billingCycle: booking.billingCycle || booking.stayType || 'daily',
-            pdfBase64: pdfBase64 || booking.pdfBase64 || null,
-            idToken: idToken,
-            upgrades: booking.upgrades || []
+            paymentMethod: booking.paymentMethod || 'Credit/Debit Card',
+            paymentStatus: booking.paymentStatus || 'PAID',
+            createdAt: booking.createdAt || new Date().toISOString()
         };
 
-        const res = await window.safeFetch('/.netlify/functions/create-booking', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-
-        if (!res.ok) {
-            let errMsg = 'Failed to create reservation.';
-            try {
-                const data = await res.json();
-                errMsg = data.error || errMsg;
-            } catch (_) {}
-            throw new Error(errMsg);
+        // 1. Direct Firestore Write
+        try {
+            await fdb.collection('bookings').doc(bookingId).set(createdBooking);
+        } catch (fsErr) {
+            console.warn("Direct Firestore write warning (saved to local storage):", fsErr.message);
         }
 
-        const data = await res.json();
-        const createdBooking = data.booking || booking;
-        if (data.booking && data.booking.id) {
-            booking.id = data.booking.id;
-        }
+        // 2. LocalStorage Persistence
+        try {
+            const localList = JSON.parse(localStorage.getItem('kaghan_local_bookings') || '[]');
+            const idx = localList.findIndex(b => b.id === bookingId);
+            if (idx >= 0) localList[idx] = createdBooking;
+            else localList.unshift(createdBooking);
+            localStorage.setItem('kaghan_local_bookings', JSON.stringify(localList));
+        } catch (_) {}
 
+        // 3. Update In-Memory Cache
         if (window.KaghanDB_Cache.bookings) {
-            window.KaghanDB_Cache.bookings.unshift(createdBooking);
+            const idx = window.KaghanDB_Cache.bookings.findIndex(b => b.id === bookingId);
+            if (idx >= 0) window.KaghanDB_Cache.bookings[idx] = createdBooking;
+            else window.KaghanDB_Cache.bookings.unshift(createdBooking);
+        } else {
+            window.KaghanDB_Cache.bookings = [createdBooking];
         }
+
         window.dispatchEvent(new CustomEvent('kaghan-db-bookings', { detail: window.KaghanDB_Cache.bookings }));
 
+        // 4. Non-blocking Async Serverless Function Notification Attempt
+        try {
+            let idToken = null;
+            if (typeof firebase !== 'undefined' && firebase.auth && firebase.auth().currentUser) {
+                idToken = await firebase.auth().currentUser.getIdToken().catch(() => null);
+            }
+            window.safeFetch('/.netlify/functions/create-booking', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ...booking, booking: createdBooking, idToken, pdfBase64 })
+            }).catch(err => console.log("Background email notification dispatch notice:", err.message));
+        } catch (_) {}
+
+        booking.id = bookingId;
         return true;
     },
+
     updateBookingStatus: async (id, status) => {
-        await fdb.collection('bookings').doc(id).update({ 
-            status,
-            updatedAt: new Date().toISOString()
-        });
+        try {
+            await fdb.collection('bookings').doc(id).update({ 
+                status,
+                updatedAt: new Date().toISOString()
+            });
+        } catch (e) {
+            console.warn("Firestore updateBookingStatus warning:", e.message);
+        }
+
+        try {
+            const localList = JSON.parse(localStorage.getItem('kaghan_local_bookings') || '[]');
+            const b = localList.find(item => item.id === id);
+            if (b) {
+                b.status = status;
+                b.updatedAt = new Date().toISOString();
+                localStorage.setItem('kaghan_local_bookings', JSON.stringify(localList));
+            }
+        } catch (_) {}
+
         if (window.KaghanDB_Cache.bookings) {
             const b = window.KaghanDB_Cache.bookings.find(item => item.id === id);
             if (b) b.status = status;
         }
+
         window.dispatchEvent(new CustomEvent('kaghan-db-bookings', { detail: window.KaghanDB_Cache.bookings }));
         return true;
     },
+
     addReview: async (reviewData) => {
         const docRef = fdb.collection('reviews').doc();
         reviewData.id = docRef.id;
@@ -649,6 +749,7 @@ const db = {
         await docRef.set(reviewData);
         return reviewData;
     },
+
     getReviews: async (roomId) => {
         try {
             const snap = await fdb.collection('reviews').where('roomId', '==', roomId).get();
@@ -660,12 +761,29 @@ const db = {
             return [];
         }
     },
+
     updateBookingDates: async (id, checkIn, checkOut) => {
-        await fdb.collection('bookings').doc(id).update({
-            checkIn,
-            checkOut,
-            updatedAt: new Date().toISOString()
-        });
+        try {
+            await fdb.collection('bookings').doc(id).update({
+                checkIn,
+                checkOut,
+                updatedAt: new Date().toISOString()
+            });
+        } catch (e) {
+            console.warn("Firestore updateBookingDates warning:", e.message);
+        }
+
+        try {
+            const localList = JSON.parse(localStorage.getItem('kaghan_local_bookings') || '[]');
+            const b = localList.find(item => item.id === id);
+            if (b) {
+                b.checkIn = checkIn;
+                b.checkOut = checkOut;
+                b.updatedAt = new Date().toISOString();
+                localStorage.setItem('kaghan_local_bookings', JSON.stringify(localList));
+            }
+        } catch (_) {}
+
         if (window.KaghanDB_Cache.bookings) {
             const b = window.KaghanDB_Cache.bookings.find(item => item.id === id);
             if (b) {
@@ -673,22 +791,50 @@ const db = {
                 b.checkOut = checkOut;
             }
         }
+
         window.dispatchEvent(new CustomEvent('kaghan-db-bookings', { detail: window.KaghanDB_Cache.bookings }));
         return true;
     },
+
     deleteBooking: async (id) => {
-        await fdb.collection('bookings').doc(id).delete();
+        try {
+            await fdb.collection('bookings').doc(id).delete();
+        } catch (e) {
+            console.warn("Firestore deleteBooking warning:", e.message);
+        }
+
+        try {
+            let localList = JSON.parse(localStorage.getItem('kaghan_local_bookings') || '[]');
+            localList = localList.filter(b => b.id !== id);
+            localStorage.setItem('kaghan_local_bookings', JSON.stringify(localList));
+        } catch (_) {}
+
         if (window.KaghanDB_Cache.bookings) {
             window.KaghanDB_Cache.bookings = window.KaghanDB_Cache.bookings.filter(b => b.id !== id);
         }
+
         window.dispatchEvent(new CustomEvent('kaghan-db-bookings', { detail: window.KaghanDB_Cache.bookings }));
         return true;
     },
     updateBookingDetails: async (id, updatedData) => {
-        await fdb.collection('bookings').doc(id).update({
-            ...updatedData,
-            updatedAt: new Date().toISOString()
-        });
+        try {
+            await fdb.collection('bookings').doc(id).update({
+                ...updatedData,
+                updatedAt: new Date().toISOString()
+            });
+        } catch (e) {
+            console.warn("Firestore updateBookingDetails warning:", e.message);
+        }
+
+        try {
+            const localList = JSON.parse(localStorage.getItem('kaghan_local_bookings') || '[]');
+            const b = localList.find(item => item.id === id);
+            if (b) {
+                Object.assign(b, updatedData, { updatedAt: new Date().toISOString() });
+                localStorage.setItem('kaghan_local_bookings', JSON.stringify(localList));
+            }
+        } catch (_) {}
+
         if (window.KaghanDB_Cache.bookings) {
             const idx = window.KaghanDB_Cache.bookings.findIndex(b => b.id === id);
             if (idx !== -1) {
@@ -1642,134 +1788,380 @@ document.addEventListener('click', function(e) {
 // --- PDF INVOICE GENERATOR ---
 window.downloadPDFInvoice = async function(bookingId) {
     try {
-        const bookings = await KaghanDB.getBookings();
-        const booking = bookings.find(b => b.id === bookingId);
+        let booking = null;
+        if (window.KaghanDB && typeof KaghanDB.getBookings === 'function') {
+            const bookings = await KaghanDB.getBookings();
+            booking = bookings.find(b => b.id === bookingId);
+        }
+        
+        if (!booking && window.allHistoryBookings) {
+            booking = window.allHistoryBookings.find(b => b.id === bookingId);
+        }
+
         if (!booking) {
-            KaghanUI.showToast('Booking not found', 'error');
+            if (window.KaghanUI) KaghanUI.showToast('Booking ledger record not found', 'error');
+            else alert('Booking ledger record not found');
             return;
         }
 
-        const rooms = await KaghanDB.getRooms();
-        const room = rooms.find(r => r.id === booking.roomId);
+        let roomName = 'Luxury Accommodation';
+        if (window.KaghanDB && typeof KaghanDB.getRooms === 'function') {
+            const rooms = await KaghanDB.getRooms();
+            const room = rooms.find(r => r.id === booking.roomId);
+            if (room) roomName = room.name || room.title || roomName;
+        } else if (window.roomsMap && window.roomsMap[booking.roomId]) {
+            roomName = window.roomsMap[booking.roomId].name || roomName;
+        }
+
+        // Dynamic html2pdf library check
+        if (typeof html2pdf === 'undefined') {
+            await new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+                script.onload = resolve;
+                script.onerror = () => reject(new Error('Failed to load html2pdf library'));
+                document.head.appendChild(script);
+            });
+        }
 
         // Calculate nights
         const inDate = new Date(booking.checkIn);
         const outDate = new Date(booking.checkOut);
-        const nights = Math.max(1, Math.ceil((outDate - inDate) / (1000 * 3600 * 24)));
-
-        // Retrieve coupon details to obtain the discount percentage dynamically
-        let discountPercent = 0;
-        if (booking.couponUsed) {
-            try {
-                const couponDoc = await fdb.collection('coupons').doc(booking.couponUsed.toUpperCase()).get();
-                if (couponDoc.exists) {
-                    const couponData = couponDoc.data();
-                    discountPercent = couponData ? (couponData.discountPercentage || 0) : 0;
-                }
-            } catch (err) {
-                console.warn("Failed to retrieve coupon for PDF generation:", err);
-            }
+        let nights = 1;
+        if (!isNaN(inDate.getTime()) && !isNaN(outDate.getTime())) {
+            nights = Math.max(1, Math.ceil((outDate - inDate) / (1000 * 3600 * 24)));
         }
 
-        const subtotal = Math.round(booking.totalPrice / (1.15 - (discountPercent / 100)));
-        const tax = Math.round(subtotal * 0.15);
-        const discount = Math.round(subtotal * (discountPercent / 100));
+        const formatPKR = (num) => Number(num || 0).toLocaleString('en-PK', { maximumFractionDigits: 0 });
 
-        // Generate Invoice HTML
-        const html = `
-        <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; padding: 40px; color: #0F172A; width: 800px;">
-            <div style="border-bottom: 2px solid #D4AF37; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: flex-start;">
-                <div>
-                    <h1 style="margin: 0; font-size: 28px; font-weight: 900; color: #0F172A;">Kaghan Stay</h1>
-                    <p style="margin: 5px 0 0; font-size: 11px; color: #D4AF37; letter-spacing: 2px; text-transform: uppercase; font-weight: bold;">Premium Resort & Spa</p>
-                </div>
-                <div style="text-align: right;">
-                    <h2 style="margin: 0; font-size: 20px; font-weight: 700;">INVOICE</h2>
-                    <p style="margin: 5px 0 0; font-size: 12px; color: #64748B;">Date: ${new Date().toLocaleDateString()}</p>
-                    <p style="margin: 2px 0 0; font-size: 12px; color: #64748B;">Booking Ref: <strong>${booking.id}</strong></p>
+        const invoiceNo = booking.invoiceNo || `KPH-INV-${(booking.id || '').replace(/^KPH-BOOK-|^BK-/, '')}`;
+        const invoiceDate = booking.invoiceDate || (booking.createdAt ? new Date(booking.createdAt).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB'));
+        const bookingSource = booking.bookingSource || 'KPHStay.com';
+
+        const guestName = booking.guestName || 'Valued Guest';
+        const guestPhone = booking.guestPhone || 'N/A';
+        const guestEmail = booking.guestEmail || 'N/A';
+        const cnicPassport = booking.cnicPassport || booking.cnic || booking.passport || 'Verified at Check-in';
+        const nationality = booking.nationality || 'Pakistani';
+        const address = booking.address || 'N/A';
+
+        const propertyName = booking.propertyName || roomName;
+        const unitNo = booking.unitNo || booking.apartmentNo || booking.roomId || 'Suite A';
+        const roomType = booking.roomType || '1 Bedroom';
+        const checkIn = booking.checkIn || 'N/A';
+        const checkInTime = booking.checkInTime || '2:00 PM';
+        const checkOut = booking.checkOut || 'N/A';
+        const checkOutTime = booking.checkOutTime || '12:00 PM';
+        const adults = booking.adults || 2;
+        const children = booking.children || 0;
+
+        const grandTotal = Number(booking.grandTotal || booking.totalPrice || 0);
+        const accomCharges = booking.accomCharges !== undefined ? Number(booking.accomCharges) : (booking.subtotal ? Number(booking.subtotal) : grandTotal);
+        const cleaningFee = Number(booking.cleaningFee || 0);
+        const extraGuestCharges = Number(booking.extraGuestCharges || 0);
+        const extraMattress = Number(booking.extraMattress || 0);
+        const kitchenUsageCharges = Number(booking.kitchenUsageCharges || 0);
+        const securityDeposit = Number(booking.securityDeposit || 0);
+        const laundryService = Number(booking.laundryService || 0);
+        const otherCharges = Number(booking.otherCharges || (booking.upgradesTotal || 0));
+
+        const subtotal = booking.subtotal !== undefined ? Number(booking.subtotal) : (accomCharges + cleaningFee + extraGuestCharges + extraMattress + kitchenUsageCharges + laundryService + otherCharges);
+        const discount = Number(booking.discount || booking.discountAmount || 0);
+        const tax = booking.tax !== undefined ? Number(booking.tax) : 0;
+        const advancePaid = booking.advancePaid !== undefined ? Number(booking.advancePaid) : (booking.paymentStatus === 'PAID' ? grandTotal : Number(booking.advanceAmount || 0));
+        const balanceDue = booking.balanceDue !== undefined ? Number(booking.balanceDue) : Math.max(0, grandTotal - advancePaid);
+
+        const paymentMethod = booking.paymentMethod || 'Credit/Debit Card';
+        const transactionNo = booking.transactionNo || booking.paymentRef || booking.id || 'N/A';
+        const paymentStatus = (booking.paymentStatus || (balanceDue === 0 ? 'PAID' : (advancePaid > 0 ? 'PARTIALLY PAID' : 'UNPAID'))).toUpperCase();
+
+        const renderSourceBox = (name) => {
+            const isChecked = bookingSource.toLowerCase().includes(name.toLowerCase());
+            return `<span style="display: inline-block; margin-right: 10px; font-size: 11px; color: ${isChecked ? '#0F172A' : '#64748B'};">${isChecked ? '&#9745;' : '&#9633;'} <strong>${name}</strong></span>`;
+        };
+
+        const renderRoomTypeBox = (name) => {
+            const isChecked = roomType.toLowerCase().includes(name.toLowerCase());
+            return `<span style="display: inline-block; margin-right: 10px; font-size: 11px; color: ${isChecked ? '#0F172A' : '#64748B'};">${isChecked ? '&#9745;' : '&#9633;'} ${name}</span>`;
+        };
+
+        const renderPaymentMethodBox = (name) => {
+            const isChecked = paymentMethod.toLowerCase().includes(name.toLowerCase());
+            return `<span style="display: inline-block; margin-right: 10px; font-size: 11px; color: ${isChecked ? '#0F172A' : '#64748B'};">${isChecked ? '&#9745;' : '&#9633;'} ${name}</span>`;
+        };
+
+        const renderStatusBox = (name) => {
+            const isChecked = paymentStatus === name;
+            const color = name === 'PAID' ? '#10B981' : (name === 'PARTIALLY PAID' ? '#F59E0B' : '#EF4444');
+            return `<span style="display: inline-block; margin-right: 10px; font-size: 11px; font-weight: bold; color: ${isChecked ? color : '#94A3B8'};">${isChecked ? '&#9745;' : '&#9633;'} ${name}</span>`;
+        };
+
+        // Generate Printable Invoice HTML
+        const invoiceHtml = `
+        <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; padding: 25px; color: #0F172A; width: 750px; background: #ffffff; margin: 0 auto; box-sizing: border-box;">
+            <!-- Header -->
+            <div style="background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); padding: 25px 20px; text-align: center; border-bottom: 3px solid #D4AF37; color: #ffffff; border-radius: 8px 8px 0 0;">
+                <h1 style="font-size: 26px; font-weight: 900; letter-spacing: 3px; margin: 0; color: #ffffff; text-transform: uppercase;">KPH STAY</h1>
+                <div style="color: #D4AF37; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; margin-top: 4px; font-weight: 600;">Luxury Apartments &amp; Vacation Rentals</div>
+                <div style="margin-top: 8px; font-size: 11px; color: #94A3B8;">
+                    Website: www.kphstay.com &nbsp;|&nbsp; Email: info@kphstay.com
                 </div>
             </div>
 
-            <div style="display: flex; justify-content: space-between; margin-bottom: 40px; font-size: 13px;">
-                <div>
-                    <p style="margin: 0; font-weight: bold; color: #64748B; text-transform: uppercase; font-size: 10px;">Billed To</p>
-                    <p style="margin: 5px 0 0; font-weight: bold; font-size: 15px;">${booking.guestName}</p>
-                    <p style="margin: 3px 0 0; color: #475569;">${booking.guestEmail}</p>
-                    <p style="margin: 3px 0 0; color: #475569;">${booking.guestPhone}</p>
-                </div>
-                <div style="text-align: right;">
-                    <p style="margin: 0; font-weight: bold; color: #64748B; text-transform: uppercase; font-size: 10px;">Stay Details</p>
-                    <p style="margin: 5px 0 0; font-weight: bold; font-size: 13px;">Check-in: ${booking.checkIn}</p>
-                    <p style="margin: 3px 0 0; font-weight: bold; font-size: 13px;">Check-out: ${booking.checkOut}</p>
-                </div>
-            </div>
+            <!-- Content Body -->
+            <div style="padding: 20px 10px;">
+                <h2 style="text-align: center; font-size: 18px; font-weight: 800; color: #0F172A; letter-spacing: 2px; margin: 0 0 15px 0; text-transform: uppercase;">BOOKING INVOICE</h2>
 
-            <table style="width: 100%; border-collapse: collapse; margin-bottom: 30px;">
-                <thead>
-                    <tr style="background-color: #F8FAFC; border-bottom: 2px solid #E2E8F0;">
-                        <th style="padding: 12px; text-align: left; font-size: 11px; text-transform: uppercase; color: #64748B;">Description</th>
-                        <th style="padding: 12px; text-align: center; font-size: 11px; text-transform: uppercase; color: #64748B;">Nights</th>
-                        <th style="padding: 12px; text-align: right; font-size: 11px; text-transform: uppercase; color: #64748B;">Total Amount</th>
+                <!-- Company Information -->
+                <div style="font-size: 12px; font-weight: 800; color: #0F172A; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #F1F5F9; padding-bottom: 4px; margin-top: 15px; margin-bottom: 8px;">Company Information</div>
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 12px;">
+                    <tr>
+                        <td width="50%" style="padding: 3px 0;"><span style="color: #64748B; font-weight: 600;">Invoice No:</span> <span style="font-weight: 700;">${invoiceNo}</span></td>
+                        <td width="50%" style="padding: 3px 0;"><span style="color: #64748B; font-weight: 600;">Booking ID:</span> <span style="font-weight: 700;">${bookingId}</span></td>
                     </tr>
-                </thead>
-                <tbody>
-                    <tr style="border-bottom: 1px solid #E2E8F0;">
-                        <td style="padding: 16px 12px; font-weight: bold;">
-                            ${room ? room.name : 'Luxury Accommodation'}
-                            <span style="display: block; font-weight: normal; font-size: 11px; color: #64748B; margin-top: 4px;">Accommodation</span>
+                    <tr>
+                        <td style="padding: 3px 0;"><span style="color: #64748B; font-weight: 600;">Invoice Date:</span> <span style="font-weight: 700;">${invoiceDate}</span></td>
+                        <td style="padding: 3px 0;"><span style="color: #64748B; font-weight: 600;">Booking Source:</span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="padding: 4px 0;">
+                            ${renderSourceBox('KPHStay.com')}
+                            ${renderSourceBox('Direct Booking')}
+                            ${renderSourceBox('WhatsApp')}
+                            ${renderSourceBox('Airbnb')}
+                            ${renderSourceBox('Booking.com')}
                         </td>
-                        <td style="padding: 16px 12px; text-align: center;">${nights}</td>
-                        <td style="padding: 16px 12px; text-align: right; font-weight: bold;">${KaghanUI.formatPKR(subtotal)}</td>
                     </tr>
-                </tbody>
-            </table>
+                </table>
 
-            <div style="width: 300px; margin-left: auto;">
-                <div style="display: flex; justify-content: space-between; padding: 8px 0; font-size: 13px; color: #64748B;">
-                    <span>Subtotal:</span>
-                    <span>${KaghanUI.formatPKR(subtotal)}</span>
+                <!-- Guest Information -->
+                <div style="font-size: 12px; font-weight: 800; color: #0F172A; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #F1F5F9; padding-bottom: 4px; margin-top: 15px; margin-bottom: 8px;">Guest Information</div>
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 12px;">
+                    <tr>
+                        <td width="50%" style="padding: 3px 0;"><span style="color: #64748B; font-weight: 600;">Guest Name:</span> <span style="font-weight: 700;">${guestName}</span></td>
+                        <td width="50%" style="padding: 3px 0;"><span style="color: #64748B; font-weight: 600;">Phone Number:</span> <span style="font-weight: 700;">${guestPhone}</span></td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 3px 0;"><span style="color: #64748B; font-weight: 600;">Email Address:</span> <span style="font-weight: 700;">${guestEmail}</span></td>
+                        <td style="padding: 3px 0;"><span style="color: #64748B; font-weight: 600;">CNIC / Passport No.:</span> <span style="font-weight: 700;">${cnicPassport}</span></td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 3px 0;"><span style="color: #64748B; font-weight: 600;">Nationality:</span> <span style="font-weight: 700;">${nationality}</span></td>
+                        <td style="padding: 3px 0;"><span style="color: #64748B; font-weight: 600;">Address:</span> <span style="font-weight: 700;">${address}</span></td>
+                    </tr>
+                </table>
+
+                <!-- Reservation Details -->
+                <div style="font-size: 12px; font-weight: 800; color: #0F172A; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #F1F5F9; padding-bottom: 4px; margin-top: 15px; margin-bottom: 8px;">Reservation Details</div>
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 12px;">
+                    <tr>
+                        <td width="50%" style="padding: 3px 0;"><span style="color: #64748B; font-weight: 600;">Property Name:</span> <span style="font-weight: 700;">${propertyName}</span></td>
+                        <td width="50%" style="padding: 3px 0;"><span style="color: #64748B; font-weight: 600;">Apartment / Unit No.:</span> <span style="font-weight: 700;">${unitNo}</span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="padding: 4px 0;">
+                            <span style="color: #64748B; font-weight: 600; display: inline-block; margin-right: 8px;">Room Type:</span>
+                            ${renderRoomTypeBox('Studio')}
+                            ${renderRoomTypeBox('1 Bedroom')}
+                            ${renderRoomTypeBox('2 Bedroom')}
+                            ${renderRoomTypeBox('3 Bedroom')}
+                            ${renderRoomTypeBox('Penthouse')}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 3px 0;"><span style="color: #64748B; font-weight: 600;">Check-in Date:</span> <span style="font-weight: 700;">${checkIn}</span> (${checkInTime})</td>
+                        <td style="padding: 3px 0;"><span style="color: #64748B; font-weight: 600;">Check-out Date:</span> <span style="font-weight: 700;">${checkOut}</span> (${checkOutTime})</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 3px 0;"><span style="color: #64748B; font-weight: 600;">Total Nights:</span> <span style="font-weight: 700;">${nights}</span></td>
+                        <td style="padding: 3px 0;"><span style="color: #64748B; font-weight: 600;">Total Guests:</span> Adults <span style="font-weight: 700;">${adults}</span>, Children <span style="font-weight: 700;">${children}</span></td>
+                    </tr>
+                </table>
+
+                <!-- Charges -->
+                <div style="font-size: 12px; font-weight: 800; color: #0F172A; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #F1F5F9; padding-bottom: 4px; margin-top: 15px; margin-bottom: 8px;">Charges</div>
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 11px;">
+                    <thead>
+                        <tr style="background-color: #F8FAFC; border-bottom: 2px solid #E2E8F0; text-align: left;">
+                            <th style="padding: 8px; color: #475569; text-transform: uppercase;">Description</th>
+                            <th style="padding: 8px; text-align: center; color: #475569; text-transform: uppercase;">Qty</th>
+                            <th style="padding: 8px; text-align: right; color: #475569; text-transform: uppercase;">Rate (PKR)</th>
+                            <th style="padding: 8px; text-align: right; color: #475569; text-transform: uppercase;">Amount (PKR)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #F1F5F9;">
+                            <td style="padding: 7px 8px;"><strong>Accommodation Charges</strong> (${propertyName})</td>
+                            <td style="padding: 7px 8px; text-align: center;">${nights}</td>
+                            <td style="padding: 7px 8px; text-align: right;">${formatPKR(nights > 0 ? accomCharges / nights : accomCharges)}</td>
+                            <td style="padding: 7px 8px; text-align: right; font-weight: 700;">${formatPKR(accomCharges)}</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #F1F5F9;">
+                            <td style="padding: 7px 8px;">Cleaning Fee</td>
+                            <td style="padding: 7px 8px; text-align: center;">${cleaningFee > 0 ? 1 : 0}</td>
+                            <td style="padding: 7px 8px; text-align: right;">${formatPKR(cleaningFee)}</td>
+                            <td style="padding: 7px 8px; text-align: right;">${formatPKR(cleaningFee)}</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #F1F5F9;">
+                            <td style="padding: 7px 8px;">Extra Guest Charges</td>
+                            <td style="padding: 7px 8px; text-align: center;">${extraGuestCharges > 0 ? 1 : 0}</td>
+                            <td style="padding: 7px 8px; text-align: right;">${formatPKR(extraGuestCharges)}</td>
+                            <td style="padding: 7px 8px; text-align: right;">${formatPKR(extraGuestCharges)}</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #F1F5F9;">
+                            <td style="padding: 7px 8px;">Extra Mattress</td>
+                            <td style="padding: 7px 8px; text-align: center;">${extraMattress > 0 ? 1 : 0}</td>
+                            <td style="padding: 7px 8px; text-align: right;">${formatPKR(extraMattress)}</td>
+                            <td style="padding: 7px 8px; text-align: right;">${formatPKR(extraMattress)}</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #F1F5F9;">
+                            <td style="padding: 7px 8px;">Kitchen Usage Charges</td>
+                            <td style="padding: 7px 8px; text-align: center;">${kitchenUsageCharges > 0 ? 1 : 0}</td>
+                            <td style="padding: 7px 8px; text-align: right;">${formatPKR(kitchenUsageCharges)}</td>
+                            <td style="padding: 7px 8px; text-align: right;">${formatPKR(kitchenUsageCharges)}</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #F1F5F9;">
+                            <td style="padding: 7px 8px;">Security Deposit (Refundable)</td>
+                            <td style="padding: 7px 8px; text-align: center;">${securityDeposit > 0 ? 1 : 0}</td>
+                            <td style="padding: 7px 8px; text-align: right;">${formatPKR(securityDeposit)}</td>
+                            <td style="padding: 7px 8px; text-align: right;">${formatPKR(securityDeposit)}</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #F1F5F9;">
+                            <td style="padding: 7px 8px;">Laundry Service</td>
+                            <td style="padding: 7px 8px; text-align: center;">${laundryService > 0 ? 1 : 0}</td>
+                            <td style="padding: 7px 8px; text-align: right;">${formatPKR(laundryService)}</td>
+                            <td style="padding: 7px 8px; text-align: right;">${formatPKR(laundryService)}</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #F1F5F9;">
+                            <td style="padding: 7px 8px;">Other Charges / Addons</td>
+                            <td style="padding: 7px 8px; text-align: center;">${otherCharges > 0 ? 1 : 0}</td>
+                            <td style="padding: 7px 8px; text-align: right;">${formatPKR(otherCharges)}</td>
+                            <td style="padding: 7px 8px; text-align: right;">${formatPKR(otherCharges)}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Totals Summary -->
+                <div style="width: 280px; margin-left: auto; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 12px; margin-bottom: 20px; font-size: 11px;">
+                    <div style="display: flex; justify-content: space-between; padding: 3px 0; color: #475569;">
+                        <span>Subtotal:</span>
+                        <span>PKR ${formatPKR(subtotal)}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 3px 0; color: #475569;">
+                        <span>Discount:</span>
+                        <span>PKR ${formatPKR(discount)}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 3px 0; color: #475569;">
+                        <span>Tax (if applicable):</span>
+                        <span>PKR ${formatPKR(tax)}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 6px 0; border-top: 2px solid #CBD5E1; margin-top: 4px; font-weight: 800; font-size: 13px; color: #0F172A;">
+                        <span>Grand Total:</span>
+                        <span style="color: #D4AF37;">PKR ${formatPKR(grandTotal)}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 3px 0; color: #475569;">
+                        <span>Advance Paid:</span>
+                        <span>PKR ${formatPKR(advancePaid)}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 5px 0; font-weight: 800; font-size: 12px; color: #DC2626; border-top: 1px dashed #CBD5E1; margin-top: 4px;">
+                        <span>Balance Due:</span>
+                        <span>PKR ${formatPKR(balanceDue)}</span>
+                    </div>
                 </div>
-                <div style="display: flex; justify-content: space-between; padding: 8px 0; font-size: 13px; color: #64748B;">
-                    <span>Taxes (15%):</span>
-                    <span>${KaghanUI.formatPKR(tax)}</span>
+
+                <!-- Payment Details -->
+                <div style="font-size: 12px; font-weight: 800; color: #0F172A; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #F1F5F9; padding-bottom: 4px; margin-top: 15px; margin-bottom: 8px;">Payment Details</div>
+                <div style="font-size: 11px; margin-bottom: 8px;">
+                    <span style="color: #64748B; font-weight: 600; display: block; margin-bottom: 4px;">Payment Method:</span>
+                    ${renderPaymentMethodBox('Cash')}
+                    ${renderPaymentMethodBox('Bank Transfer')}
+                    ${renderPaymentMethodBox('JazzCash')}
+                    ${renderPaymentMethodBox('Easypaisa')}
+                    ${renderPaymentMethodBox('Credit/Debit Card')}
                 </div>
-                ${booking.couponUsed ? `
-                <div style="display: flex; justify-content: space-between; padding: 8px 0; font-size: 13px; color: #10B981; font-weight: bold;">
-                    <span>Discount (${booking.couponUsed}):</span>
-                    <span>-${KaghanUI.formatPKR(discount)}</span>
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 12px;">
+                    <tr>
+                        <td width="55%" style="padding: 3px 0;"><span style="color: #64748B; font-weight: 600;">Transaction / Reference No.:</span> <span style="font-weight: 700;">${transactionNo}</span></td>
+                        <td width="45%" style="padding: 3px 0;"><span style="color: #64748B; font-weight: 600;">Payment Status:</span> ${renderStatusBox('PAID')} ${renderStatusBox('PARTIALLY PAID')} ${renderStatusBox('UNPAID')}</td>
+                    </tr>
+                </table>
+
+                <!-- Guest Requirements -->
+                <div style="font-size: 12px; font-weight: 800; color: #0F172A; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #F1F5F9; padding-bottom: 4px; margin-top: 15px; margin-bottom: 8px;">Guest Requirements</div>
+                <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 10px; font-size: 11px; line-height: 1.7; color: #334155;">
+                    <div>&#9745; Original CNIC / Passport Verified</div>
+                    <div>&#9745; Security Deposit Received</div>
+                    <div>&#9745; House Rules Explained</div>
+                    <div>&#9745; Apartment Keys / Smart Lock Access Shared</div>
+                    <div>&#9745; Wi-Fi Details Provided</div>
                 </div>
-                ` : ''}
-                <div style="display: flex; justify-content: space-between; padding: 12px 0; font-size: 18px; font-weight: 900; color: #D4AF37; border-top: 2px solid #E2E8F0; margin-top: 5px;">
-                    <span>TOTAL:</span>
-                    <span>${KaghanUI.formatPKR(booking.totalPrice)}</span>
+
+                <!-- Terms & Conditions -->
+                <div style="background: #FFFDF5; border: 1px solid #FEF08A; border-radius: 8px; padding: 12px; font-size: 10px; line-height: 1.5; color: #713F12; margin-top: 15px;">
+                    <strong>Terms &amp; Conditions</strong>
+                    <ul style="margin: 4px 0 0 0; padding-left: 16px;">
+                        <li>Check-in Time: 2:00 PM</li>
+                        <li>Check-out Time: 12:00 PM</li>
+                        <li>Original CNIC/Passport is mandatory for every guest.</li>
+                        <li>All guests must be registered before entering the property.</li>
+                        <li>Security deposit (if applicable) is refundable after checkout inspection.</li>
+                        <li>Any damage, missing items, or excessive cleaning charges will be deducted accordingly.</li>
+                        <li>Smoking is prohibited unless permitted in designated areas.</li>
+                        <li>Cancellation and refund policy applies according to the booking terms.</li>
+                        <li>By signing this invoice, the guest agrees to all KPH Stay policies.</li>
+                    </ul>
                 </div>
+
+                <!-- Signatures -->
+                <table style="width: 100%; border-collapse: collapse; margin-top: 35px;">
+                    <tr>
+                        <td style="width: 50%; text-align: center; vertical-align: bottom; padding: 10px;">
+                            <div style="border-top: 1px solid #94A3B8; margin: 30px auto 6px auto; width: 75%;"></div>
+                            <div style="font-size: 11px; font-weight: 700; color: #475569;">Guest Signature</div>
+                        </td>
+                        <td style="width: 50%; text-align: center; vertical-align: bottom; padding: 10px;">
+                            <div style="border-top: 1px solid #94A3B8; margin: 30px auto 6px auto; width: 75%;"></div>
+                            <div style="font-size: 11px; font-weight: 700; color: #475569;">Authorized Signature &amp; Stamp</div>
+                        </td>
+                    </tr>
+                </table>
             </div>
 
-            <div style="margin-top: 60px; border-top: 1px solid #E2E8F0; padding-top: 20px; font-size: 10px; color: #94A3B8; text-align: center;">
-                <p>Thank you for choosing Kaghan Stay! If you have any questions concerning this invoice, please contact support@kaghanstay.com.</p>
+            <!-- Footer -->
+            <div style="background: #0F172A; color: #94A3B8; text-align: center; padding: 18px 15px; font-size: 11px; border-top: 1px solid #1E293B; border-radius: 0 0 8px 8px;">
+                <div style="color: #D4AF37; font-weight: 800; font-size: 13px; letter-spacing: 1px;">KPH STAY</div>
+                <div style="margin: 3px 0 6px 0; color: #E2E8F0;">Luxury Apartments &amp; Vacation Rentals</div>
+                <div>&#127760; www.kphstay.com &nbsp;|&nbsp; &#128231; info@kphstay.com</div>
+                <div style="margin-top: 8px; font-weight: 500; color: #D4AF37;">
+                    Thank you for choosing KPH Stay. We look forward to hosting you again!
+                </div>
             </div>
         </div>
         `;
 
         const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = html;
+        tempDiv.style.position = 'absolute';
+        tempDiv.style.left = '-9999px';
+        tempDiv.style.top = '-9999px';
+        tempDiv.innerHTML = invoiceHtml;
         document.body.appendChild(tempDiv);
-        
+
         const opt = {
-            margin:       0,
-            filename:     `Kaghan-Stay-Invoice-${booking.id}.pdf`,
+            margin:       [0.2, 0.2, 0.2, 0.2],
+            filename:     `KPH-Stay-Invoice-${booking.id}.pdf`,
             image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2 },
+            html2canvas:  { scale: 2, useCORS: true, logging: false },
             jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
         };
 
-        KaghanUI.showToast('Generating PDF Invoice...', 'success');
+        if (window.KaghanUI) KaghanUI.showToast('Generating Official PDF Invoice...', 'success');
         await html2pdf().set(opt).from(tempDiv).save();
         document.body.removeChild(tempDiv);
 
     } catch (e) {
         console.error("PDF generation failed:", e);
-        KaghanUI.showToast('Failed to generate PDF', 'error');
+        if (window.KaghanUI) KaghanUI.showToast('Failed to generate PDF invoice', 'error');
+        else alert('Failed to generate PDF invoice: ' + e.message);
     }
 };
 

@@ -106,74 +106,18 @@
         }).join('');
     }
 
+    // Delegate PDF invoice generation to shared.js master generator
     window.downloadPDFInvoice = function(bookingId) {
-        const booking = allHistoryBookings.find(b => b.id === bookingId);
-        if (!booking) {
-            alert('Invoice not found.');
-            return;
+        if (typeof window.downloadPDFInvoiceMaster === 'function') {
+            return window.downloadPDFInvoiceMaster(bookingId);
+        } else {
+            // Store reference to history bookings for shared.js lookup
+            window.allHistoryBookings = allHistoryBookings;
+            // Call global handler
+            if (typeof window.downloadPDFInvoice === 'function' && window.downloadPDFInvoice !== this) {
+                return window.downloadPDFInvoice(bookingId);
+            }
         }
-
-        const room = roomsMap[booking.roomId] || { name: 'Luxury Suite' };
-
-        const invoiceHtml = `
-            <div style="font-family: Arial, sans-serif; padding: 30px; color: #0B0F19; max-width: 700px; margin: auto;">
-                <div style="display: flex; justify-content: space-between; border-bottom: 2px solid #C5A059; padding-bottom: 15px; margin-bottom: 20px;">
-                    <div>
-                        <h2 style="color: #C5A059; margin: 0; font-size: 24px;">KAGHAN STAY</h2>
-                        <p style="margin: 3px 0 0 0; font-size: 11px; color: #64748B;">Official VAT & Guest Tax Receipt</p>
-                    </div>
-                    <div style="text-align: right;">
-                        <h4 style="margin: 0; font-size: 16px; color: #0B0F19;">INVOICE #${booking.id}</h4>
-                        <p style="margin: 3px 0 0 0; font-size: 11px; color: #64748B;">Date: ${new Date().toLocaleDateString('en-US')}</p>
-                    </div>
-                </div>
-
-                <div style="margin-bottom: 25px; font-size: 12px; line-height: 1.6;">
-                    <p><strong>Guest Name:</strong> ${booking.guestName || 'Valued Guest'}</p>
-                    <p><strong>Email:</strong> ${booking.guestEmail || 'N/A'}</p>
-                    <p><strong>Contact Phone:</strong> ${booking.guestPhone || 'N/A'}</p>
-                    <p><strong>Suite Style:</strong> ${room.name}</p>
-                    <p><strong>Stay Window:</strong> ${booking.checkIn} to ${booking.checkOut}</p>
-                </div>
-
-                <table style="width: 100%; border-collapse: collapse; margin-bottom: 25px; font-size: 12px;">
-                    <thead>
-                        <tr style="background: #F8FAFC; border-bottom: 1px solid #E2E8F0; text-align: left;">
-                            <th style="padding: 10px;">Item Description</th>
-                            <th style="padding: 10px; text-align: right;">Amount (PKR)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td style="padding: 10px; border-bottom: 1px solid #EDEDED;">Accommodation Fee (${room.name})</td>
-                            <td style="padding: 10px; border-bottom: 1px solid #EDEDED; text-align: right;">${KaghanUI.formatPKR(booking.totalPrice || 0)}</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 10px; border-bottom: 1px solid #EDEDED;">Services & Housekeeping</td>
-                            <td style="padding: 10px; border-bottom: 1px solid #EDEDED; text-align: right; color: #059669;">INCLUDED</td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <div style="text-align: right; margin-top: 20px; font-size: 14px;">
-                    <p style="font-[#C5A059] font-size: 18px; font-weight: bold;">Total Paid: ${KaghanUI.formatPKR(booking.totalPrice || 0)}</p>
-                </div>
-
-                <div style="margin-top: 40px; border-top: 1px solid #E2E8F0; padding-top: 15px; text-align: center; font-size: 10px; color: #94A3B8;">
-                    Thank you for staying with Kaghan Stay. For inquiries, contact support@kaghanstay.com.
-                </div>
-            </div>
-        `;
-
-        const opt = {
-            margin: 0.5,
-            filename: `KaghanStay_Invoice_${booking.id}.pdf`,
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2 },
-            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-        };
-
-        html2pdf().set(opt).from(invoiceHtml).save();
     };
 
     window.openReviewModal = function(bookingId, roomId, roomTitle) {

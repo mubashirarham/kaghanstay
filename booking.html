@@ -93,19 +93,19 @@
     <!-- Booking Content -->
     <!-- Booking Content -->
     <main class="py-8 px-6 md:px-12 max-w-7xl mx-auto">
-        <!-- Stepper Indicator -->
-        <div class="mb-10 max-w-3xl mx-auto" data-animate="fade-down">
+        <!-- Stepper Indicator Card -->
+        <div class="mb-10 max-w-3xl mx-auto bg-white/90 backdrop-blur-md rounded-3xl border-2 border-slate-200/80 p-5 shadow-xl shadow-slate-200/50" data-animate="fade-down">
             <div class="relative flex items-center justify-between">
                 <!-- Progress Line -->
-                <div class="absolute left-0 right-0 top-1/2 h-[2px] bg-slate-200 -translate-y-1/2 z-0"></div>
-                <div class="absolute left-0 w-1/3 top-1/2 h-[2px] bg-[#C5A059] -translate-y-1/2 z-0 transition-all duration-500" id="stepper-progress-bar"></div>
+                <div class="absolute left-0 right-0 top-1/2 h-[3px] bg-slate-200 -translate-y-1/2 z-0"></div>
+                <div class="absolute left-0 w-1/3 top-1/2 h-[3px] bg-[#C5A059] -translate-y-1/2 z-0 transition-all duration-500" id="stepper-progress-bar"></div>
                 
                 <!-- Step 1 -->
                 <div class="relative z-10 flex flex-col items-center gap-2">
-                    <div class="w-10 h-10 rounded-full bg-[#C5A059] text-white flex items-center justify-center text-xs font-bold shadow-lg shadow-[#C5A059]/20 transition-all duration-300">
+                    <div class="w-10 h-10 rounded-full bg-[#C5A059] text-white flex items-center justify-center text-xs font-bold shadow-lg shadow-[#C5A059]/30 transition-all duration-300">
                         <i class="fa-solid fa-calendar-days"></i>
                     </div>
-                    <span class="text-[9px] uppercase tracking-widest text-[#0B0F19] font-bold">1. Stay Details</span>
+                    <span class="text-[9px] uppercase tracking-widest text-[#0B0F19] font-black">1. Stay Details</span>
                 </div>
                 
                 <!-- Step 2 -->
@@ -140,7 +140,7 @@
             <div class="w-full lg:w-2/3 space-y-8">
                 
                 <!-- Stay Details (Calendar & Room) -->
-                <div data-animate="fade-up" class="bg-white rounded-[2rem] border border-slate-100 p-6 md:p-8 shadow-xl shadow-slate-200/50 relative overflow-hidden group">
+                <div data-animate="fade-up" class="bg-white rounded-[2.25rem] border-2 border-slate-200/90 p-6 md:p-8 shadow-2xl shadow-slate-200/60 relative overflow-hidden group">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#C5A059]/10 to-transparent rounded-bl-full pointer-events-none"></div>
                     <h2 class="text-xl font-bold outfit text-slate-900 mb-8 flex items-center gap-3">
                         <span class="w-10 h-10 bg-gradient-to-br from-[#C5A059] to-[#A88443] text-white rounded-full flex items-center justify-center text-sm font-black shadow-lg shadow-[#C5A059]/30">1</span>
@@ -150,11 +150,11 @@
                     <!-- Interactive Calendar -->
                     <div class="mb-8">
                         <label class="block text-[10px] uppercase tracking-widest text-[#C5A059] font-black mb-3 ml-1">Choose Stay Dates on Calendar</label>
-                        <div class="bg-slate-50 border border-slate-100 rounded-3xl p-5 md:p-6 shadow-inner">
+                        <div class="bg-slate-50/80 border-2 border-slate-200 rounded-3xl p-5 md:p-6 shadow-sm">
                             <div class="flex justify-between items-center mb-6">
-                                <button type="button" onclick="changeCalendarMonth(-1)" class="w-10 h-10 rounded-2xl bg-white border border-slate-200 shadow-sm hover:border-[#C5A059] hover:text-[#C5A059] flex items-center justify-center text-slate-500 transition-all active:scale-95"><i class="fa-solid fa-chevron-left text-sm"></i></button>
+                                <button type="button" onclick="changeCalendarMonth(-1)" class="w-10 h-10 rounded-2xl bg-white border-2 border-slate-200 shadow-sm hover:border-[#C5A059] hover:text-[#C5A059] flex items-center justify-center text-slate-600 transition-all active:scale-95"><i class="fa-solid fa-chevron-left text-sm"></i></button>
                                 <span id="calendar-month-year" class="font-black text-sm outfit text-slate-800 uppercase tracking-[0.1em]"></span>
-                                <button type="button" onclick="changeCalendarMonth(1)" class="w-10 h-10 rounded-2xl bg-white border border-slate-200 shadow-sm hover:border-[#C5A059] hover:text-[#C5A059] flex items-center justify-center text-slate-500 transition-all active:scale-95"><i class="fa-solid fa-chevron-right text-sm"></i></button>
+                                <button type="button" onclick="changeCalendarMonth(1)" class="w-10 h-10 rounded-2xl bg-white border-2 border-slate-200 shadow-sm hover:border-[#C5A059] hover:text-[#C5A059] flex items-center justify-center text-slate-600 transition-all active:scale-95"><i class="fa-solid fa-chevron-right text-sm"></i></button>
                             </div>
                             
                             <div class="grid grid-cols-7 gap-1 text-center text-[10px] uppercase font-bold text-slate-400 mb-3">
@@ -172,14 +172,14 @@
                             <label class="block text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 ml-1">Check In Date</label>
                             <div class="relative">
                                 <i class="fa-regular fa-calendar absolute left-4 top-4 text-slate-400"></i>
-                                <input type="date" id="book-check-in" required class="w-full border border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none text-sm bg-white text-slate-800 font-medium focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/10 transition-all cursor-pointer">
+                                <input type="date" id="book-check-in" required class="w-full border-2 border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none text-sm bg-white text-slate-800 font-medium focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 shadow-xs transition-all cursor-pointer">
                             </div>
                         </div>
                         <div>
                             <label class="block text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 ml-1">Check Out Date</label>
                             <div class="relative">
                                 <i class="fa-regular fa-calendar-check absolute left-4 top-4 text-slate-400"></i>
-                                <input type="date" id="book-check-out" required class="w-full border border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none text-sm bg-white text-slate-800 font-medium focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/10 transition-all cursor-pointer">
+                                <input type="date" id="book-check-out" required class="w-full border-2 border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none text-sm bg-white text-slate-800 font-medium focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 shadow-xs transition-all cursor-pointer">
                             </div>
                         </div>
                     </div>
@@ -189,7 +189,7 @@
                             <label class="block text-[10px] uppercase tracking-widest text-[#C5A059] font-black mb-2 ml-1">Select Location</label>
                             <div class="relative">
                                 <i class="fa-solid fa-map-location-dot absolute left-4 top-4 text-slate-400"></i>
-                                <select id="book-location" onchange="filterRoomsByLocation()" class="w-full border border-slate-200 rounded-2xl pl-11 pr-11 py-3.5 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/10 text-sm bg-slate-50 text-slate-800 font-semibold cursor-pointer appearance-none transition-all">
+                                <select id="book-location" onchange="filterRoomsByLocation()" class="w-full border-2 border-slate-200 rounded-2xl pl-11 pr-11 py-3.5 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 text-sm bg-slate-50 text-slate-800 font-semibold cursor-pointer appearance-none shadow-xs transition-all">
                                     <option value="all">All Locations</option>
                                     <!-- Dynamically loaded -->
                                 </select>
@@ -200,7 +200,7 @@
                             <label class="block text-[10px] uppercase tracking-widest text-[#C5A059] font-black mb-2 ml-1">Select Category</label>
                             <div class="relative">
                                 <i class="fa-solid fa-hotel absolute left-4 top-4 text-slate-400"></i>
-                                <select id="book-category" onchange="filterRoomsByLocation()" class="w-full border border-slate-200 rounded-2xl pl-11 pr-11 py-3.5 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/10 text-sm bg-slate-50 text-slate-800 font-semibold cursor-pointer appearance-none transition-all">
+                                <select id="book-category" onchange="filterRoomsByLocation()" class="w-full border-2 border-slate-200 rounded-2xl pl-11 pr-11 py-3.5 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 text-sm bg-slate-50 text-slate-800 font-semibold cursor-pointer appearance-none shadow-xs transition-all">
                                     <option value="all">All Categories</option>
                                     <!-- Dynamically loaded -->
                                 </select>
@@ -222,11 +222,11 @@
                     </div>
 
                     <!-- Rent Billing Cycle (Visible/Enabled for Apartments) -->
-                    <div id="billing-cycle-box" class="mt-8 hidden p-5 bg-gradient-to-r from-slate-50 to-white rounded-2xl border border-slate-100">
+                    <div id="billing-cycle-box" class="mt-8 hidden p-5 bg-gradient-to-r from-slate-50 to-white rounded-2xl border-2 border-slate-200/90 shadow-sm">
                         <label class="block text-[10px] uppercase tracking-widest text-[#C5A059] font-black mb-3">Rent Billing Cycle</label>
                         <div class="relative mb-2">
                             <i class="fa-solid fa-clock-rotate-left absolute left-4 top-4 text-slate-400"></i>
-                            <select id="book-billing-cycle" onchange="onBillingCycleChange()" class="w-full border border-slate-200 rounded-xl pl-11 pr-11 py-3.5 outline-none focus:border-[#C5A059] text-sm bg-white text-slate-800 font-semibold cursor-pointer appearance-none">
+                            <select id="book-billing-cycle" onchange="onBillingCycleChange()" class="w-full border-2 border-slate-200 rounded-xl pl-11 pr-11 py-3.5 outline-none focus:border-[#C5A059] text-sm bg-white text-slate-800 font-semibold cursor-pointer appearance-none shadow-xs">
                                 <option value="daily">Daily Basis</option>
                                 <option value="weekly">Weekly Basis</option>
                                 <option value="monthly">Monthly Basis</option>
@@ -236,21 +236,176 @@
                         <p class="text-slate-500 text-[10px] font-medium leading-relaxed"><i class="fa-solid fa-circle-info text-[#C5A059] mr-1"></i> Select daily, weekly, or monthly cycle to unlock discounted rates for longer stays.</p>
                     </div>
                     <!-- Upcoming Reserved Dates Box -->
-                    <div id="reserved-dates-box" class="mt-6 hidden bg-rose-50/50 border border-rose-100 p-5 rounded-2xl">
-                        <span class="block text-[10px] uppercase tracking-widest text-rose-500 font-bold mb-3 flex items-center gap-2"><i class="fa-solid fa-calendar-xmark text-sm"></i> Suite Reserved Dates:</span>
+                    <div id="reserved-dates-box" class="mt-6 hidden bg-rose-50/70 border-2 border-rose-200 p-5 rounded-2xl shadow-xs">
+                        <span class="block text-[10px] uppercase tracking-widest text-rose-600 font-extrabold mb-3 flex items-center gap-2"><i class="fa-solid fa-calendar-xmark text-sm"></i> Suite Reserved Dates:</span>
                         <div id="reserved-dates-list" class="flex flex-wrap gap-2 text-xs"></div>
                     </div>
                 </div>
 
-                <!-- Guest Information -->
-                <div data-animate="fade-up" class="bg-white rounded-[2rem] border border-slate-100 p-6 md:p-8 shadow-xl shadow-slate-200/50 relative overflow-hidden">
+                <!-- Selected Property Details Showcase Section -->
+                <div id="property-details-section" data-animate="fade-up" class="bg-white rounded-[2.25rem] border-2 border-slate-200/90 p-6 md:p-8 shadow-2xl shadow-slate-200/60 relative overflow-hidden transition-all duration-500 hidden">
+                    <div class="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-[#C5A059]/10 to-transparent rounded-bl-full pointer-events-none"></div>
+                    
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b-2 border-slate-100 pb-5">
+                        <div>
+                            <div class="flex items-center gap-2 mb-2 flex-wrap">
+                                <span id="prop-category-badge" class="bg-[#0B0F19] text-[#C5A059] text-[10px] font-extrabold uppercase tracking-widest px-3 py-1 rounded-full border border-[#C5A059]/30 shadow-xs">
+                                    Luxury Suite
+                                </span>
+                                <span id="prop-location-badge" class="bg-slate-100 text-slate-800 text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full border border-slate-200 flex items-center gap-1">
+                                    <i class="fa-solid fa-location-dot text-[#C5A059]"></i> <span id="prop-location-text">Islamabad</span>
+                                </span>
+                                <span id="prop-rating-badge" class="bg-amber-50 text-amber-800 text-[10px] font-black px-2.5 py-1 rounded-full border border-amber-200 flex items-center gap-1">
+                                    <i class="fa-solid fa-star text-amber-400"></i> 5.0 (Verified)
+                                </span>
+                            </div>
+                            <h3 id="prop-title" class="text-2xl md:text-3xl font-bold outfit text-slate-900 leading-tight">Selected Suite Name</h3>
+                        </div>
+
+                        <a id="prop-full-details-link" href="room-details.html" target="_blank" class="inline-flex items-center gap-2 text-xs font-bold text-[#C5A059] bg-[#C5A059]/10 hover:bg-[#C5A059] hover:text-white px-4 py-2.5 rounded-xl transition-all shadow-sm border-2 border-[#C5A059]/30 self-start md:self-center">
+                            <span>View Full Details</span>
+                            <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                        </a>
+                    </div>
+
+                    <!-- Media Showcase & Highlights Grid -->
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
+                        
+                        <!-- Main Media Showcase (LG: 7 cols) -->
+                        <div class="lg:col-span-7 space-y-3">
+                            <div class="relative h-64 md:h-80 rounded-2xl overflow-hidden bg-slate-900 group shadow-lg border-2 border-slate-200">
+                                <img id="prop-main-img" src="assets/images/logo.png" alt="Property View" class="w-full h-full object-cover transition-all duration-500">
+                                
+                                <!-- Overlay Gallery Navigation Buttons -->
+                                <button type="button" onclick="navigatePropGallery(-1)" class="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-slate-900/60 hover:bg-[#C5A059] text-white flex items-center justify-center backdrop-blur-md transition-all shadow-md active:scale-95">
+                                    <i class="fa-solid fa-chevron-left text-xs"></i>
+                                </button>
+                                <button type="button" onclick="navigatePropGallery(1)" class="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-slate-900/60 hover:bg-[#C5A059] text-white flex items-center justify-center backdrop-blur-md transition-all shadow-md active:scale-95">
+                                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                                </button>
+
+                                <!-- Photo Counter Pill -->
+                                <div class="absolute bottom-3 right-3 bg-black/70 backdrop-blur-md text-white text-[10px] font-bold px-3 py-1 rounded-full border border-white/20 flex items-center gap-1.5 shadow-md">
+                                    <i class="fa-solid fa-camera text-[#C5A059]"></i>
+                                    <span id="prop-photo-counter">1 / 1</span>
+                                </div>
+                            </div>
+
+                            <!-- Thumbnails Strip -->
+                            <div id="prop-thumbnails-container" class="flex gap-2.5 overflow-x-auto pb-1 custom-scrollbar">
+                                <!-- Dynamically rendered thumbnails -->
+                            </div>
+                        </div>
+
+                        <!-- Highlights & Base Rate Sidebar (LG: 5 cols) -->
+                        <div class="lg:col-span-5 flex flex-col justify-between space-y-4 bg-slate-50/90 border-2 border-slate-200 rounded-2xl p-5 shadow-sm">
+                            <div class="space-y-3">
+                                <h4 class="text-xs uppercase font-extrabold tracking-widest text-[#C5A059] flex items-center gap-2">
+                                    <i class="fa-solid fa-crown text-xs"></i> Luxury Accommodation
+                                </h4>
+                                <p class="text-slate-600 text-xs leading-relaxed font-normal">
+                                    Meticulously designed alpine suite featuring luxury bedding, climate control, fast Wi-Fi, and 24/7 guest services.
+                                </p>
+                            </div>
+
+                            <!-- Rate Badge Container -->
+                            <div class="bg-white p-4 rounded-xl border-2 border-[#C5A059]/40 flex flex-wrap items-center justify-between gap-2 shadow-md">
+                                <div>
+                                    <span class="text-[9px] uppercase tracking-widest text-slate-500 font-extrabold block">Base Rate</span>
+                                    <div class="flex items-baseline gap-1 mt-0.5">
+                                        <span id="prop-rate-amount" class="text-xl font-black outfit text-[#0B0F19]">PKR 0</span>
+                                        <span class="text-[10px] text-slate-500 font-semibold">/ night</span>
+                                    </div>
+                                </div>
+                                <div id="prop-rate-tag" class="bg-emerald-50 border border-emerald-200 text-emerald-800 text-[10px] font-extrabold px-2.5 py-1 rounded-lg flex items-center gap-1 shadow-2xs">
+                                    <i class="fa-solid fa-bolt text-emerald-500"></i> Best Available Rate
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Suite Key Features (Full-Width 4-Column Bar) -->
+                    <div class="mb-6 bg-slate-50/90 border-2 border-slate-200 rounded-2xl p-4 md:p-5 shadow-xs">
+                        <h4 class="text-xs uppercase font-extrabold tracking-widest text-[#C5A059] mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-sliders text-xs"></i> Suite Key Features
+                        </h4>
+                        
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                            <div class="bg-white p-3 rounded-xl border-2 border-slate-200/90 shadow-xs flex items-center gap-3 hover:border-[#C5A059]/50 transition-colors">
+                                <div class="w-9 h-9 rounded-xl bg-[#C5A059]/10 text-[#C5A059] flex items-center justify-center shrink-0 text-sm">
+                                    <i class="fa-solid fa-user-group"></i>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <span class="text-[10px] uppercase tracking-wider text-slate-500 font-extrabold block">Capacity</span>
+                                    <span id="prop-spec-guests" class="text-xs md:text-sm font-black text-slate-900 leading-snug block break-words">Max 2 Guests</span>
+                                </div>
+                            </div>
+
+                            <div class="bg-white p-3 rounded-xl border-2 border-slate-200/90 shadow-xs flex items-center gap-3 hover:border-[#C5A059]/50 transition-colors">
+                                <div class="w-9 h-9 rounded-xl bg-[#C5A059]/10 text-[#C5A059] flex items-center justify-center shrink-0 text-sm">
+                                    <i class="fa-solid fa-bed"></i>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <span class="text-[10px] uppercase tracking-wider text-slate-500 font-extrabold block">Bedrooms</span>
+                                    <span id="prop-spec-beds" class="text-xs md:text-sm font-black text-slate-900 leading-snug block break-words">1 Bed</span>
+                                </div>
+                            </div>
+
+                            <div class="bg-white p-3 rounded-xl border-2 border-slate-200/90 shadow-xs flex items-center gap-3 hover:border-[#C5A059]/50 transition-colors">
+                                <div class="w-9 h-9 rounded-xl bg-[#C5A059]/10 text-[#C5A059] flex items-center justify-center shrink-0 text-sm">
+                                    <i class="fa-solid fa-bath"></i>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <span class="text-[10px] uppercase tracking-wider text-slate-500 font-extrabold block">Bathrooms</span>
+                                    <span id="prop-spec-baths" class="text-xs md:text-sm font-black text-slate-900 leading-snug block break-words">1 Bath</span>
+                                </div>
+                            </div>
+
+                            <div class="bg-white p-3 rounded-xl border-2 border-slate-200/90 shadow-xs flex items-center gap-3 hover:border-[#C5A059]/50 transition-colors">
+                                <div class="w-9 h-9 rounded-xl bg-[#C5A059]/10 text-[#C5A059] flex items-center justify-center shrink-0 text-sm">
+                                    <i class="fa-solid fa-ruler-combined"></i>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <span class="text-[10px] uppercase tracking-wider text-slate-500 font-extrabold block">Suite Type</span>
+                                    <span id="prop-spec-size" class="text-xs md:text-sm font-black text-slate-900 leading-snug block break-words">Luxury Suite</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Description & Amenities Grid Row -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-5 border-t-2 border-slate-100">
+                        <!-- About Property Description -->
+                        <div>
+                            <h4 class="text-xs uppercase font-extrabold tracking-widest text-slate-900 mb-2 flex items-center gap-2">
+                                <i class="fa-solid fa-circle-info text-[#C5A059]"></i> About This Suite
+                            </h4>
+                            <div id="prop-description" class="text-slate-600 text-xs leading-relaxed font-normal space-y-1">
+                                Experience luxury accommodation designed for comfort and modern aesthetic elegance.
+                            </div>
+                        </div>
+
+                        <!-- Amenities Chips Grid -->
+                        <div>
+                            <h4 class="text-xs uppercase font-extrabold tracking-widest text-slate-900 mb-2 flex items-center gap-2">
+                                <i class="fa-solid fa-sparkles text-[#C5A059]"></i> Key Amenities
+                            </h4>
+                            <div id="prop-amenities-list" class="flex flex-wrap gap-2">
+                                <!-- Dynamically populated amenities chips -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Guest Information Card -->
+                <div data-animate="fade-up" class="bg-white rounded-[2.25rem] border-2 border-slate-200/90 p-6 md:p-8 shadow-2xl shadow-slate-200/60 relative overflow-hidden">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#C5A059]/10 to-transparent rounded-bl-full pointer-events-none"></div>
                     <h2 class="text-xl font-bold outfit text-slate-900 mb-6 flex items-center gap-3">
                         <span class="w-10 h-10 bg-slate-900 text-[#C5A059] rounded-full flex items-center justify-center text-sm font-black shadow-lg">2</span>
                         Guest Details
                     </h2>
                     
-                    <div id="guest-login-promo" class="mb-8 p-5 bg-gradient-to-r from-[#C5A059]/10 to-transparent border-l-4 border-[#C5A059] rounded-r-2xl text-xs flex flex-col md:flex-row justify-between items-center text-slate-700 gap-4">
+                    <div id="guest-login-promo" class="mb-8 p-5 bg-gradient-to-r from-[#C5A059]/10 to-amber-50/50 border-l-4 border-2 border-[#C5A059] rounded-r-2xl text-xs flex flex-col md:flex-row justify-between items-center text-slate-800 gap-4 shadow-sm">
                         <span class="font-medium leading-relaxed"><i class="fa-solid fa-gift text-[#C5A059] mr-2 text-lg"></i> Are you a registered member? Log in to easily manage your stay!</span>
                         <a href="login.html?redirect=booking.html" class="font-black text-white bg-[#C5A059] px-6 py-2.5 rounded-xl hover:bg-slate-900 whitespace-nowrap transition-all shadow-md">Login Now</a>
                     </div>
@@ -261,29 +416,29 @@
                                 <label class="block text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 ml-1">Full Name</label>
                                 <div class="relative">
                                     <i class="fa-solid fa-user absolute left-4 top-4 text-slate-400"></i>
-                                    <input type="text" id="guest-name" required placeholder="John Doe" class="w-full border border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/10 text-sm bg-slate-50 focus:bg-white text-slate-800 transition-all font-medium">
+                                    <input type="text" id="guest-name" required placeholder="John Doe" class="w-full border-2 border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 text-sm bg-slate-50/50 focus:bg-white text-slate-800 transition-all font-medium shadow-2xs">
                                 </div>
                             </div>
-                                <div>
-                                    <label class="block text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 ml-1">Phone Number</label>
-                                    <div class="relative">
-                                        <i class="fa-solid fa-phone absolute left-4 top-4 text-slate-400"></i>
-                                        <input type="tel" id="guest-phone" required placeholder="0300-1234567" maxlength="12" class="w-full border border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/10 text-sm bg-slate-50 focus:bg-white text-slate-800 transition-all font-medium font-mono">
-                                    </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 ml-1">Phone Number</label>
+                                <div class="relative">
+                                    <i class="fa-solid fa-phone absolute left-4 top-4 text-slate-400"></i>
+                                    <input type="tel" id="guest-phone" required placeholder="0300-1234567" maxlength="12" class="w-full border-2 border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 text-sm bg-slate-50/50 focus:bg-white text-slate-800 transition-all font-medium font-mono shadow-2xs">
                                 </div>
+                            </div>
                         </div>
                         <div>
                             <label class="block text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 ml-1">Email Address</label>
                             <div class="relative">
                                 <i class="fa-solid fa-envelope absolute left-4 top-4 text-slate-400"></i>
-                                <input type="email" id="guest-email" required placeholder="john@example.com" class="w-full border border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/10 text-sm bg-slate-50 focus:bg-white text-slate-800 transition-all font-medium">
+                                <input type="email" id="guest-email" required placeholder="john@example.com" class="w-full border-2 border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 text-sm bg-slate-50/50 focus:bg-white text-slate-800 transition-all font-medium shadow-2xs">
                             </div>
                         </div>
                     </form>
                 </div>
 
-                <!-- Custom Upgrades (Dynamically loaded strictly from Firestore if at least 1 upgrade exists) -->
-                <div id="upgrades-section-wrapper" data-animate="fade-up" class="bg-white rounded-[2rem] border border-slate-100 p-6 md:p-8 shadow-xl shadow-slate-200/50 relative overflow-hidden hidden">
+                <!-- Custom Upgrades Card -->
+                <div id="upgrades-section-wrapper" data-animate="fade-up" class="bg-white rounded-[2.25rem] border-2 border-slate-200/90 p-6 md:p-8 shadow-2xl shadow-slate-200/60 relative overflow-hidden hidden">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#C5A059]/10 to-transparent rounded-bl-full pointer-events-none"></div>
                     <h2 class="text-xl font-bold outfit text-slate-900 mb-6 flex items-center gap-3">
                         <span class="w-10 h-10 bg-slate-900 text-[#C5A059] rounded-full flex items-center justify-center text-sm font-black shadow-lg">3</span>
@@ -294,7 +449,7 @@
                     </p>
                     <div id="upgrades-container" class="space-y-4">
                         <!-- Upgrade Skeletons -->
-                        <div class="border border-slate-100 rounded-2xl p-4 flex justify-between items-center h-20">
+                        <div class="border-2 border-slate-200 rounded-2xl p-4 flex justify-between items-center h-20">
                             <div class="flex gap-4 items-center w-full">
                                 <div class="w-10 h-10 skeleton rounded-full shrink-0"></div>
                                 <div class="space-y-2 flex-grow">
@@ -304,27 +459,17 @@
                             </div>
                             <div class="w-16 h-6 skeleton rounded shrink-0"></div>
                         </div>
-                        <div class="border border-slate-100 rounded-2xl p-4 flex justify-between items-center h-20">
-                            <div class="flex gap-4 items-center w-full">
-                                <div class="w-10 h-10 skeleton rounded-full shrink-0"></div>
-                                <div class="space-y-2 flex-grow">
-                                    <div class="w-20 h-4 skeleton rounded"></div>
-                                    <div class="w-32 h-3 skeleton rounded"></div>
-                                </div>
-                            </div>
-                            <div class="w-16 h-6 skeleton rounded shrink-0"></div>
-                        </div>
                     </div>
                 </div>
 
-                <!-- Payment Selection -->
-                <div class="bg-white rounded-[2rem] border border-slate-100 p-6 md:p-8 shadow-xl shadow-slate-200/50 relative overflow-hidden">
+                <!-- Payment Selection Card -->
+                <div class="bg-white rounded-[2.25rem] border-2 border-slate-200/90 p-6 md:p-8 shadow-2xl shadow-slate-200/60 relative overflow-hidden">
                     <h2 class="text-xl font-bold outfit text-slate-900 mb-6 flex items-center gap-3">
                         <span class="w-10 h-10 bg-slate-900 text-[#C5A059] rounded-full flex items-center justify-center text-sm font-black shadow-lg">4</span>
                         Payment Selection
                     </h2>
 
-                    <div class="bg-gradient-to-r from-slate-50 to-white border border-slate-200 rounded-2xl p-5 md:p-6 flex items-start gap-5 group cursor-pointer hover:border-[#C5A059] transition-all">
+                    <div class="bg-gradient-to-r from-slate-50 to-white border-2 border-slate-200 hover:border-[#C5A059] rounded-2xl p-5 md:p-6 flex items-start gap-5 group cursor-pointer shadow-sm hover:shadow-md transition-all">
                         <div class="w-12 h-12 rounded-full bg-[#D4AF37]/10 text-[#D4AF37] flex items-center justify-center text-xl shrink-0 mt-0.5 group-hover:scale-110 transition-transform">
                             <i class="fa-solid fa-hotel"></i>
                         </div>
@@ -335,8 +480,8 @@
                     </div>
                 </div>
 
-                <!-- Guest Reviews -->
-                <div class="bg-white rounded-[2rem] border border-slate-100 p-6 md:p-8 shadow-xl shadow-slate-200/50 relative overflow-hidden hidden" id="booking-reviews-section">
+                <!-- Guest Reviews Card -->
+                <div class="bg-white rounded-[2.25rem] border-2 border-slate-200/90 p-6 md:p-8 shadow-2xl shadow-slate-200/60 relative overflow-hidden hidden" id="booking-reviews-section">
                     <h2 class="text-xl font-bold outfit text-slate-900 mb-6 flex items-center justify-between">
                         <div class="flex items-center gap-3">
                             <span class="w-10 h-10 bg-slate-100 text-[#D4AF37] rounded-full flex items-center justify-center text-sm font-black shadow-inner"><i class="fa-solid fa-star"></i></span>
@@ -355,25 +500,25 @@
 
             <!-- Price Summary Sidebar (Right) -->
             <div class="w-full lg:w-1/3" data-animate="fade-up">
-                <div class="bg-white rounded-[2rem] border border-slate-100 shadow-2xl shadow-slate-200/50 p-6 md:p-8 space-y-7 sticky top-28">
-                    <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                <div class="bg-white rounded-[2.25rem] border-2 border-slate-200/90 shadow-2xl shadow-slate-300/60 p-6 md:p-8 space-y-7 sticky top-28">
+                    <div class="flex items-center justify-between border-b-2 border-slate-100 pb-4">
                         <h3 class="font-bold text-xl outfit text-slate-900">Stay Summary</h3>
                         <i class="fa-solid fa-receipt text-slate-300 text-xl"></i>
                     </div>
                     
                     <!-- Selected Room Card Preview -->
-                    <div id="room-preview-box" class="flex gap-5 border-b border-dashed border-slate-200 pb-6">
-                        <div class="relative group cursor-pointer w-24 h-24 flex-shrink-0" onclick="openBookingLightbox()" title="View full gallery">
-                            <img id="preview-room-img" src="" alt="Suite Preview" class="w-full h-full object-cover rounded-2xl shadow-md">
+                    <div id="room-preview-box" class="flex gap-4 border-2 border-slate-200 bg-slate-50/70 p-4 rounded-2xl shadow-sm overflow-hidden">
+                        <div class="relative group cursor-pointer w-20 h-20 md:w-24 md:h-24 flex-shrink-0" onclick="openBookingLightbox()" title="View full gallery">
+                            <img id="preview-room-img" src="" alt="Suite Preview" class="w-full h-full object-cover rounded-2xl border-2 border-slate-200 shadow-md">
                             <div class="absolute inset-0 bg-black/40 rounded-2xl opacity-0 group-hover:opacity-100 flex items-center justify-center text-white transition-opacity duration-300">
                                 <i class="fa-solid fa-magnifying-glass-plus text-base"></i>
                             </div>
                         </div>
-                        <div class="flex flex-col justify-center">
-                            <h4 id="preview-room-name" class="font-bold text-slate-900 outfit text-base leading-tight">Deluxe Alpine Room</h4>
-                            <span id="preview-room-location" class="text-[10px] uppercase tracking-widest text-slate-400 font-bold mt-1.5 flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-[#C5A059]"></i> Islamabad</span>
-                            <span id="preview-room-price" class="text-sm font-black text-[#C5A059] mt-1.5 bg-[#C5A059]/10 inline-block px-2 py-0.5 rounded-lg w-max">25,000 PKR / Night</span>
-                            <span id="preview-room-guests" class="text-[10px] text-slate-500 font-medium mt-1">Capacity: Max 2 guests</span>
+                        <div class="flex flex-col justify-center min-w-0 flex-1">
+                            <h4 id="preview-room-name" class="font-black text-slate-900 outfit text-sm leading-snug break-words">Deluxe Alpine Room</h4>
+                            <span id="preview-room-location" class="text-[10px] uppercase tracking-widest text-slate-500 font-bold mt-1 flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-[#C5A059]"></i> Islamabad</span>
+                            <div id="preview-room-price" class="mt-1.5 flex flex-wrap gap-1 items-center min-w-0"></div>
+                            <span id="preview-room-guests" class="text-[10px] text-slate-500 font-semibold mt-1">Capacity: Max 2 guests</span>
                         </div>
                     </div>
 
@@ -739,6 +884,7 @@
                 selector.innerHTML = '<option value="">No suites available in this location or category</option>';
                 if (grid) grid.innerHTML = '<div class="col-span-2 text-center py-8 text-slate-400 text-xs">No suites available in this location or category.</div>';
                 selectedRoom = null;
+                renderSelectedPropertyDetails(null);
                 // Clear preview
                 document.getElementById('preview-room-img').src = 'assets/images/logo.png';
                 document.getElementById('preview-room-name').innerText = 'No Suite Selected';
@@ -780,14 +926,14 @@
             if (grid) {
                 grid.innerHTML = filteredRooms.map(room => {
                     const isSelected = room.id === selector.value;
-                    const borderClass = isSelected ? 'border-[#D4AF37] bg-[#D4AF37]/5 ring-2 ring-[#D4AF37]' : 'border-slate-100 bg-white hover:border-slate-300';
+                    const borderClass = isSelected ? 'border-2 border-[#C5A059] bg-[#C5A059]/10 ring-2 ring-[#C5A059]/20 shadow-md' : 'border-2 border-slate-200 bg-white hover:border-[#C5A059]/60 hover:shadow-md';
                     return `
-                        <div onclick="selectRoomCard('${room.id}')" id="room-card-${room.id}" class="border rounded-2xl p-4 flex gap-4 cursor-pointer transition-all bg-white hover:border-slate-350 border-slate-100 hover:shadow-md ${borderClass}">
-                            <img src="${room.image}" alt="${room.name}" class="w-16 h-16 object-cover rounded-xl shrink-0">
-                            <div class="flex flex-col justify-center flex-grow">
-                                <h4 class="font-bold text-slate-800 text-xs outfit leading-snug">${room.name}</h4>
-                                <span class="text-[9px] text-[#D4AF37] font-bold mt-0.5 flex items-center gap-0.5"><i class="fa-solid fa-location-dot"></i> ${room.location || 'Islamabad'}</span>
-                                <span class="text-xs font-semibold text-slate-500 mt-1">${KaghanUI.formatPKR(room.price)} / Night</span>
+                        <div onclick="selectRoomCard('${room.id}')" id="room-card-${room.id}" class="rounded-2xl p-4 flex gap-4 cursor-pointer transition-all ${borderClass}">
+                            <img src="${room.image}" alt="${room.name}" class="w-16 h-16 object-cover rounded-xl shrink-0 border border-slate-200 shadow-xs">
+                            <div class="flex flex-col justify-center flex-grow min-w-0">
+                                <h4 class="font-bold text-slate-800 text-xs outfit leading-snug truncate">${room.name}</h4>
+                                <span class="text-[9px] text-[#C5A059] font-bold mt-0.5 flex items-center gap-0.5"><i class="fa-solid fa-location-dot"></i> ${room.location || 'Islamabad'}</span>
+                                <span class="text-xs font-semibold text-slate-600 mt-1">${KaghanUI.formatPKR(room.price)} / Night</span>
                             </div>
                         </div>
                     `;
@@ -805,20 +951,167 @@
             }
         };
 
+        let propGalleryImages = [];
+        let propGalleryCurrentIdx = 0;
+
+        function renderSelectedPropertyDetails(room) {
+            const section = document.getElementById('property-details-section');
+            if (!section) return;
+
+            if (!room) {
+                section.classList.add('hidden');
+                return;
+            }
+
+            section.classList.remove('hidden');
+
+            // Header & badges
+            const titleEl = document.getElementById('prop-title');
+            if (titleEl) titleEl.innerText = room.name || 'Selected Suite';
+
+            const catEl = document.getElementById('prop-category-badge');
+            if (catEl) catEl.innerText = room.type ? (room.type.charAt(0).toUpperCase() + room.type.slice(1)) : 'Luxury Suite';
+
+            const locEl = document.getElementById('prop-location-text');
+            if (locEl) locEl.innerText = room.location || 'Islamabad';
+
+            const ratingEl = document.getElementById('prop-rating-badge');
+            if (ratingEl) {
+                const ratingVal = room.rating || 5.0;
+                ratingEl.innerHTML = `<i class="fa-solid fa-star text-amber-400"></i> ${Number(ratingVal).toFixed(1)} (Verified)`;
+            }
+
+            const linkEl = document.getElementById('prop-full-details-link');
+            if (linkEl) {
+                linkEl.href = `room-details.html?id=${room.id}`;
+            }
+
+            // Key Specs
+            const specGuests = document.getElementById('prop-spec-guests');
+            if (specGuests) specGuests.innerText = `Max ${room.maxGuests || 2} Guests`;
+
+            const specBeds = document.getElementById('prop-spec-beds');
+            if (specBeds) specBeds.innerText = `${room.bedrooms || 1} Bed${(room.bedrooms || 1) > 1 ? 's' : ''}`;
+
+            const specBaths = document.getElementById('prop-spec-baths');
+            if (specBaths) specBaths.innerText = `${room.bathrooms || 1} Bath${(room.bathrooms || 1) > 1 ? 's' : ''}`;
+
+            const specSize = document.getElementById('prop-spec-size');
+            if (specSize) specSize.innerText = room.size ? `${room.size} Sq Ft` : (room.isApartment ? 'Service Apartment' : 'Luxury Suite');
+
+            // Base Rate
+            const rateAmount = document.getElementById('prop-rate-amount');
+            if (rateAmount) {
+                const displayPrice = room.priceDaily || room.price || 0;
+                rateAmount.innerText = KaghanUI.formatPKR(displayPrice);
+            }
+
+            // Description (Safely parse HTML string so rich text paragraphs render properly instead of showing raw <p> tags)
+            const descEl = document.getElementById('prop-description');
+            if (descEl) {
+                const rawDesc = room.description || 'Experience luxury accommodation designed for comfort, panoramic views, and modern aesthetic elegance at KPH Stay.';
+                if (typeof DOMPurify !== 'undefined') {
+                    descEl.innerHTML = DOMPurify.sanitize(rawDesc);
+                } else {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(rawDesc, 'text/html');
+                    descEl.innerHTML = doc.body.innerHTML || KaghanSafe.escapeHTML(rawDesc);
+                }
+            }
+
+            // Gallery
+            propGalleryImages = (room.images && room.images.length > 0) ? room.images : [room.image || 'assets/images/logo.png'];
+            propGalleryCurrentIdx = 0;
+            updatePropGalleryView();
+
+            // Amenities List
+            const amenitiesContainer = document.getElementById('prop-amenities-list');
+            if (amenitiesContainer) {
+                const defaultAmenities = ['High-Speed Wi-Fi', 'Air Conditioning', 'Scenic View', 'Smart TV', 'Hot Water', 'Housekeeping'];
+                const listToRender = (room.amenities && room.amenities.length > 0) ? room.amenities : defaultAmenities;
+
+                amenitiesContainer.innerHTML = listToRender.map(item => {
+                    const icon = getAmenityIcon(item);
+                    return `
+                        <span class="bg-white border-2 border-slate-200/90 text-slate-800 text-[11px] font-bold px-3.5 py-1.5 rounded-xl shadow-2xs flex items-center gap-1.5 hover:border-[#C5A059]/40 transition-colors">
+                            <i class="${icon} text-[#C5A059]"></i> ${KaghanSafe.escapeHTML(item)}
+                        </span>
+                    `;
+                }).join('');
+            }
+        }
+
+        function updatePropGalleryView() {
+            const mainImg = document.getElementById('prop-main-img');
+            const counter = document.getElementById('prop-photo-counter');
+            const thumbnailsContainer = document.getElementById('prop-thumbnails-container');
+
+            if (!propGalleryImages || propGalleryImages.length === 0) return;
+
+            if (mainImg) {
+                mainImg.src = propGalleryImages[propGalleryCurrentIdx];
+            }
+
+            if (counter) {
+                counter.innerText = `${propGalleryCurrentIdx + 1} / ${propGalleryImages.length}`;
+            }
+
+            if (thumbnailsContainer) {
+                thumbnailsContainer.innerHTML = propGalleryImages.map((imgSrc, idx) => {
+                    const isActive = idx === propGalleryCurrentIdx;
+                    const borderClass = isActive ? 'border-2 border-[#C5A059] ring-2 ring-[#C5A059]/30 scale-105 shadow-md' : 'border-2 border-slate-200 opacity-70 hover:opacity-100 hover:border-slate-350 shadow-xs';
+                    return `
+                        <button type="button" onclick="setPropGalleryIndex(${idx})" class="w-14 h-11 rounded-xl overflow-hidden shrink-0 transition-all ${borderClass}">
+                            <img src="${imgSrc}" alt="Thumbnail ${idx + 1}" class="w-full h-full object-cover">
+                        </button>
+                    `;
+                }).join('');
+            }
+        }
+
+        window.setPropGalleryIndex = (idx) => {
+            if (idx >= 0 && idx < propGalleryImages.length) {
+                propGalleryCurrentIdx = idx;
+                updatePropGalleryView();
+            }
+        };
+
+        window.navigatePropGallery = (direction) => {
+            if (!propGalleryImages || propGalleryImages.length <= 1) return;
+            propGalleryCurrentIdx = (propGalleryCurrentIdx + direction + propGalleryImages.length) % propGalleryImages.length;
+            updatePropGalleryView();
+        };
+
+        function getAmenityIcon(amenityName) {
+            const lower = (amenityName || '').toLowerCase();
+            if (lower.includes('wifi') || lower.includes('wi-fi') || lower.includes('internet')) return 'fa-solid fa-wifi';
+            if (lower.includes('air') || lower.includes('ac') || lower.includes('climate')) return 'fa-solid fa-snowflake';
+            if (lower.includes('view') || lower.includes('mountain') || lower.includes('scenic')) return 'fa-solid fa-mountain-sun';
+            if (lower.includes('tv') || lower.includes('smart')) return 'fa-solid fa-tv';
+            if (lower.includes('water') || lower.includes('hot') || lower.includes('shower')) return 'fa-solid fa-shower';
+            if (lower.includes('housekeeping') || lower.includes('cleaning')) return 'fa-solid fa-broom';
+            if (lower.includes('kitchen') || lower.includes('dining')) return 'fa-solid fa-utensils';
+            if (lower.includes('park')) return 'fa-solid fa-square-parking';
+            if (lower.includes('security') || lower.includes('lock')) return 'fa-solid fa-shield-halved';
+            if (lower.includes('balcony') || lower.includes('terrace')) return 'fa-solid fa-building';
+            return 'fa-solid fa-circle-check';
+        }
+
         async function onRoomChange() {
             const roomId = document.getElementById('book-room-id').value;
             if (!roomId) return;
             selectedRoom = await KaghanDB.getRoomById(roomId);
             
             if (selectedRoom) {
+                renderSelectedPropertyDetails(selectedRoom);
                 // Update active state in grid cards
                 const allCards = document.querySelectorAll('#book-rooms-grid > div');
                 allCards.forEach(c => {
-                    c.className = "border rounded-2xl p-4 flex gap-4 cursor-pointer transition-all bg-white hover:border-slate-350 border-slate-100 hover:shadow-md";
+                    c.className = "rounded-2xl p-4 flex gap-4 cursor-pointer transition-all border-2 border-slate-200 bg-white hover:border-[#C5A059]/60 hover:shadow-md";
                 });
                 const activeCard = document.getElementById(`room-card-${roomId}`);
                 if (activeCard) {
-                    activeCard.className = "border rounded-2xl p-4 flex gap-4 cursor-pointer transition-all bg-[#D4AF37]/5 border-[#D4AF37] ring-2 ring-[#D4AF37] shadow-md";
+                    activeCard.className = "rounded-2xl p-4 flex gap-4 cursor-pointer transition-all border-2 border-[#C5A059] bg-[#C5A059]/10 ring-2 ring-[#C5A059]/20 shadow-md";
                 }
 
                 const galleryImages = selectedRoom.images && selectedRoom.images.length > 0 ? selectedRoom.images : [selectedRoom.image];
@@ -833,14 +1126,19 @@
                 if (selectedRoom.isApartment || selectedRoom.priceWeekly || selectedRoom.priceMonthly) {
                     billingBox.classList.remove('hidden');
                     
-                    // Build pricing text
-                    let pText = "";
+                    // Build clean rate chips that wrap inside card
+                    let pText = `<div class="flex flex-wrap gap-1 items-center font-bold text-xs mt-1">`;
                     if (selectedRoom.originalPrice) {
-                        pText += `<span class="line-through text-slate-400 mr-1.5 text-[10px] font-semibold">${KaghanUI.formatPKR(selectedRoom.originalPrice)}/N</span>`;
+                        pText += `<span class="line-through text-slate-400 text-[10px] font-semibold">${KaghanUI.formatPKR(selectedRoom.originalPrice)}</span>`;
                     }
-                    pText += `${KaghanUI.formatPKR(selectedRoom.priceDaily || selectedRoom.price)}/N`;
-                    if (selectedRoom.priceWeekly) pText += ` | ${KaghanUI.formatPKR(selectedRoom.priceWeekly)}/W`;
-                    if (selectedRoom.priceMonthly) pText += ` | ${KaghanUI.formatPKR(selectedRoom.priceMonthly)}/M`;
+                    pText += `<span class="bg-[#C5A059]/10 border border-[#C5A059]/30 text-[#C5A059] px-2 py-0.5 rounded-md text-[11px] font-black">${KaghanUI.formatPKR(selectedRoom.priceDaily || selectedRoom.price)}/N</span>`;
+                    if (selectedRoom.priceWeekly) {
+                        pText += `<span class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-2 py-0.5 rounded-md text-[11px] font-black">${KaghanUI.formatPKR(selectedRoom.priceWeekly)}/W</span>`;
+                    }
+                    if (selectedRoom.priceMonthly) {
+                        pText += `<span class="bg-indigo-50 border border-indigo-200 text-indigo-800 px-2 py-0.5 rounded-md text-[11px] font-black">${KaghanUI.formatPKR(selectedRoom.priceMonthly)}/M</span>`;
+                    }
+                    pText += `</div>`;
                     document.getElementById('preview-room-price').innerHTML = pText;
 
                     // Update dropdown options
@@ -857,11 +1155,11 @@
                     billingCycleSelect.innerHTML = `<option value="daily">Daily Basis</option>`;
                     billingCycleSelect.value = 'daily';
                     
-                    let basePriceText = "";
+                    let basePriceText = `<div class="flex flex-wrap gap-1 items-center font-bold text-xs mt-1">`;
                     if (selectedRoom.originalPrice) {
-                        basePriceText += `<span class="line-through text-slate-400 mr-1.5 text-xs font-semibold">${KaghanUI.formatPKR(selectedRoom.originalPrice)}</span>`;
+                        basePriceText += `<span class="line-through text-slate-400 text-[10px] font-semibold">${KaghanUI.formatPKR(selectedRoom.originalPrice)}</span>`;
                     }
-                    basePriceText += `${KaghanUI.formatPKR(selectedRoom.price)} / Night`;
+                    basePriceText += `<span class="bg-[#C5A059]/10 border border-[#C5A059]/30 text-[#C5A059] px-2.5 py-0.5 rounded-md text-[11px] font-black">${KaghanUI.formatPKR(selectedRoom.price)} / Night</span></div>`;
                     document.getElementById('preview-room-price').innerHTML = basePriceText;
                 }
 
@@ -1824,7 +2122,7 @@
             if (sectionWrapper) sectionWrapper.classList.remove('hidden');
 
             container.innerHTML = availableUpgrades.map(up => `
-                <label class="flex items-start gap-4 p-5 rounded-2xl border border-slate-200 hover:border-[#C5A059]/50 bg-slate-50/55 hover:bg-white transition-all cursor-pointer group">
+                <label class="flex items-start gap-4 p-5 rounded-2xl border-2 border-slate-200 hover:border-[#C5A059] bg-white hover:bg-slate-50/70 shadow-xs transition-all cursor-pointer group">
                     <input type="checkbox" id="${up.id}" onchange="calculatePrice()" class="mt-1 w-4 h-4 rounded text-[#C5A059] border-slate-300 focus:ring-[#C5A059]">
                     <div class="flex-grow">
                         <div class="flex justify-between items-center mb-1">

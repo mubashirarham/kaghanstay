@@ -311,26 +311,55 @@
             trackBooking(idVal, contactVal);
         }
 
-        // Fetch tracking information via Netlify Function track-booking
+        // Fetch tracking information via Client-Side DB & LocalStorage (with serverless fallback)
         async function trackBooking(bookingId, contact) {
             const btn = document.querySelector('#track-form button[type="submit"]');
             const originalBtn = btn.innerHTML;
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Tracking...';
             btn.disabled = true;
 
-            try {
-                const res = await window.safeFetch('/.netlify/functions/track-booking', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ bookingId, contact })
-                });
+            const cleanId = (bookingId || '').trim().toUpperCase();
+            const cleanContact = (contact || '').trim().toLowerCase();
 
-                const data = await res.json();
-                if (!res.ok) {
-                    throw new Error(data.error || "Reservation not found. Please verify the ID and contact details.");
+            try {
+                let foundBooking = null;
+
+                // 1. Autonomous Client-Side Search (Firestore & LocalStorage)
+                try {
+                    const allBookings = await KaghanDB.getBookings();
+                    foundBooking = allBookings.find(b => {
+                        const idMatch = b.id && b.id.toUpperCase() === cleanId;
+                        const contactMatch = !cleanContact || 
+                            (b.guestEmail && b.guestEmail.toLowerCase() === cleanContact) ||
+                            (b.guestPhone && b.guestPhone.includes(cleanContact));
+                        return idMatch && contactMatch;
+                    });
+                    if (!foundBooking && cleanId) {
+                        foundBooking = await KaghanDB.getBookingById(cleanId);
+                    }
+                } catch (clientErr) {
+                    console.warn("Client-side track lookup notice:", clientErr);
                 }
 
-                currentBookingData = data;
+                // 2. Serverless Function fallback if client lookup didn't yield a match
+                if (!foundBooking) {
+                    try {
+                        const res = await window.safeFetch('/.netlify/functions/track-booking', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ bookingId: cleanId, contact: cleanContact })
+                        });
+                        if (res.ok) {
+                            foundBooking = await res.json();
+                        }
+                    } catch (_) {}
+                }
+
+                if (!foundBooking) {
+                    throw new Error("Reservation not found. Please verify the Booking ID and Email/Phone number.");
+                }
+
+                currentBookingData = foundBooking;
                 displayTrackingResult(currentBookingData);
                 KaghanUI.showToast("Tracking status synced!", "success");
 
@@ -341,6 +370,14 @@
             } finally {
                 btn.innerHTML = originalBtn;
                 btn.disabled = false;
+            }
+        }
+
+        // PDF Generation Trigger
+        async function downloadPDFReceipt() {
+            if (!currentBookingData || !currentBookingData.id) return;
+            if (typeof window.downloadPDFInvoice === 'function') {
+                return window.downloadPDFInvoice(currentBookingData.id);
             }
         }
 
