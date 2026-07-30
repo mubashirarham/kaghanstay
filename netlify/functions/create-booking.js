@@ -126,22 +126,33 @@ exports.handler = async (event, context) => {
             }
         }
 
-        // 3. Calculate pricing & addons
+        // 3. Calculate pricing & discounts strictly respecting Admin Panel prices & stay duration
         const stayNights = Math.max(1, Math.ceil((searchOut - searchIn) / (1000 * 3600 * 24)));
-        let rate = room.price || room.priceDaily || 0;
-        let subtotal = 0;
-
-        if (billingCycle === 'weekly' && room.priceWeekly) {
-            rate = room.priceWeekly;
-            subtotal = Math.round((rate / 7) * stayNights);
-        } else if (billingCycle === 'monthly' && room.priceMonthly) {
-            rate = room.priceMonthly;
-            subtotal = Math.round((rate / 30) * stayNights);
-        } else {
-            rate = room.priceDaily || room.price || 0;
-            subtotal = rate * stayNights;
+        const dailyRate = Number(room.priceDaily || room.price || 0);
+        let weeklyRatePerNight = Math.round(dailyRate * 0.85);
+        if (room.priceWeekly && Number(room.priceWeekly) > 0) {
+            const wVal = Number(room.priceWeekly);
+            weeklyRatePerNight = wVal < (dailyRate * 3) ? wVal : Math.round(wVal / 7);
         }
 
+        let monthlyRatePerNight = Math.round(dailyRate * 0.65);
+        if (room.priceMonthly && Number(room.priceMonthly) > 0) {
+            const mVal = Number(room.priceMonthly);
+            monthlyRatePerNight = mVal < (dailyRate * 10) ? mVal : Math.round(mVal / 30);
+        }
+
+        let effectiveNightlyRate = dailyRate;
+        let activeCycle = billingCycle || 'daily';
+
+        if (activeCycle === 'monthly' || stayNights >= 30) {
+            effectiveNightlyRate = monthlyRatePerNight;
+            activeCycle = 'monthly';
+        } else if (activeCycle === 'weekly' || stayNights >= 7) {
+            effectiveNightlyRate = weeklyRatePerNight;
+            activeCycle = 'weekly';
+        }
+
+        const subtotal = effectiveNightlyRate * stayNights;
         const tax = Math.round(subtotal * 0.15); // 15% GST
 
         // Fetch upgrades outside transaction

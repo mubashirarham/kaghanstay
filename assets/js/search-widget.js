@@ -31,8 +31,8 @@
             this.targetCheckOutId = options.checkOutId || 'search-check-out';
             this.targetGuestsId = options.guestsId || 'search-guests';
             
-            this.setupHeroSearchDOM();
             this.setupCalendarModalDOM();
+            this.setupHeroSearchDOM();
         },
 
         setupHeroSearchDOM: function() {
@@ -80,10 +80,22 @@
         },
 
         updateTriggerLabels: function() {
+            const checkInInput = document.getElementById(this.targetCheckInId);
+            const checkOutInput = document.getElementById(this.targetCheckOutId);
+
+            if (checkInInput && currentCheckIn) {
+                checkInInput.value = formatDateIso(currentCheckIn);
+            }
+            if (checkOutInput && currentCheckOut) {
+                checkOutInput.value = formatDateIso(currentCheckOut);
+            }
+
             const triggerText = document.getElementById('search-date-trigger-text');
             if (triggerText) {
                 if (currentCheckIn && currentCheckOut) {
-                    triggerText.textContent = `${formatDateDisplay(currentCheckIn)} – ${formatDateDisplay(currentCheckOut)}`;
+                    const diffTime = Math.abs(currentCheckOut - currentCheckIn);
+                    const nights = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    triggerText.textContent = `${formatDateDisplay(currentCheckIn)} – ${formatDateDisplay(currentCheckOut)} (${nights} night${nights > 1 ? 's' : ''})`;
                 } else if (currentCheckIn) {
                     triggerText.textContent = `${formatDateDisplay(currentCheckIn)} – Select Checkout`;
                 } else {
@@ -108,11 +120,14 @@
         },
 
         setupCalendarModalDOM: function() {
-            if (document.getElementById('kph-calendar-overlay')) return;
+            let overlay = document.getElementById('kph-calendar-overlay');
+            if (overlay) return overlay;
 
-            const overlay = document.createElement('div');
+            if (!document.body) return null;
+
+            overlay = document.createElement('div');
             overlay.id = 'kph-calendar-overlay';
-            overlay.className = 'fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[9999] hidden flex items-center justify-center p-4 transition-all duration-300';
+            overlay.style.cssText = 'position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important; width: 100vw !important; height: 100vh !important; background-color: rgba(15, 23, 42, 0.85) !important; backdrop-filter: blur(8px) !important; -webkit-backdrop-filter: blur(8px) !important; z-index: 99999999 !important; display: none; align-items: center; justify-content: center; padding: 1rem !important; overflow-y: auto !important;';
             
             overlay.innerHTML = `
                 <div class="bg-white w-full max-w-3xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
@@ -135,11 +150,11 @@
                     <!-- Calendar Body (2 Months Side by Side) -->
                     <div class="p-6 overflow-y-auto flex-grow">
                         <div class="flex justify-between items-center mb-6">
-                            <button type="button" id="prev-month-btn" class="px-4 py-2 border border-slate-300 rounded-full hover:bg-slate-100 text-sm font-semibold flex items-center gap-2">
+                            <button type="button" onclick="KaghanSearchWidget.prevMonth()" id="prev-month-btn" class="px-4 py-2 border border-slate-300 rounded-full hover:bg-slate-100 text-sm font-semibold flex items-center gap-2 cursor-pointer">
                                 <i class="fa-solid fa-chevron-left text-xs"></i> Prev
                             </button>
                             <span id="calendar-month-heading" class="font-bold text-slate-800 text-base"></span>
-                            <button type="button" id="next-month-btn" class="px-4 py-2 border border-slate-300 rounded-full hover:bg-slate-100 text-sm font-semibold flex items-center gap-2">
+                            <button type="button" onclick="KaghanSearchWidget.nextMonth()" id="next-month-btn" class="px-4 py-2 border border-slate-300 rounded-full hover:bg-slate-100 text-sm font-semibold flex items-center gap-2 cursor-pointer">
                                 Next <i class="fa-solid fa-chevron-right text-xs"></i>
                             </button>
                         </div>
@@ -168,17 +183,8 @@
                 if (e.target === overlay) this.closeCalendarModal();
             });
 
-            document.getElementById('prev-month-btn')?.addEventListener('click', () => {
-                if (activeMonthIndex > 0) {
-                    activeMonthIndex--;
-                    this.renderCalendarMonths();
-                }
-            });
-
-            document.getElementById('next-month-btn')?.addEventListener('click', () => {
-                activeMonthIndex++;
-                this.renderCalendarMonths();
-            });
+            document.getElementById('prev-month-btn')?.addEventListener('click', () => this.prevMonth());
+            document.getElementById('next-month-btn')?.addEventListener('click', () => this.nextMonth());
 
             document.getElementById('clear-dates-btn')?.addEventListener('click', () => {
                 currentCheckIn = null;
@@ -211,8 +217,15 @@
 
         openCalendarModal: function(roomBookedDates = []) {
             this.bookedDates = roomBookedDates;
-            const overlay = document.getElementById('kph-calendar-overlay');
+            let overlay = document.getElementById('kph-calendar-overlay');
+            if (!overlay) {
+                overlay = this.setupCalendarModalDOM();
+            }
             if (overlay) {
+                overlay.style.setProperty('display', 'flex', 'important');
+                overlay.style.setProperty('z-index', '99999999', 'important');
+                overlay.style.setProperty('visibility', 'visible', 'important');
+                overlay.style.setProperty('opacity', '1', 'important');
                 overlay.classList.remove('hidden');
                 this.renderCalendarMonths();
             }
@@ -220,7 +233,22 @@
 
         closeCalendarModal: function() {
             const overlay = document.getElementById('kph-calendar-overlay');
-            if (overlay) overlay.classList.add('hidden');
+            if (overlay) {
+                overlay.classList.add('hidden');
+                overlay.style.setProperty('display', 'none', 'important');
+            }
+        },
+
+        nextMonth: function() {
+            activeMonthIndex++;
+            this.renderCalendarMonths();
+        },
+
+        prevMonth: function() {
+            if (activeMonthIndex > 0) {
+                activeMonthIndex--;
+                this.renderCalendarMonths();
+            }
         },
 
         renderCalendarMonths: function() {
@@ -310,33 +338,66 @@
                 btn.addEventListener('click', () => {
                     const dateStr = btn.getAttribute('data-date');
                     const clickedDate = new Date(dateStr + 'T00:00:00');
+                    const stayType = window.activeStayType || 'daily';
 
                     if (!currentCheckIn || (currentCheckIn && currentCheckOut)) {
                         currentCheckIn = clickedDate;
-                        currentCheckOut = null;
+                        const defaultEnd = new Date(clickedDate);
+                        if (stayType === 'weekly') {
+                            defaultEnd.setDate(clickedDate.getDate() + 7);
+                            currentCheckOut = defaultEnd;
+                            if (window.KaghanUI) KaghanUI.showToast("Weekly Rate active: 7 nights minimum auto-locked. Click any later date to add more days!", "success");
+                        } else if (stayType === 'monthly') {
+                            defaultEnd.setDate(clickedDate.getDate() + 30);
+                            currentCheckOut = defaultEnd;
+                            if (window.KaghanUI) KaghanUI.showToast("Monthly Rate active: 30 nights minimum auto-locked. Click any later date to add more days!", "success");
+                        } else {
+                            currentCheckOut = null;
+                        }
                     } else if (currentCheckIn && !currentCheckOut) {
                         if (clickedDate < currentCheckIn) {
                             currentCheckIn = clickedDate;
+                            const defaultEnd = new Date(clickedDate);
+                            if (stayType === 'weekly') {
+                                defaultEnd.setDate(clickedDate.getDate() + 7);
+                                currentCheckOut = defaultEnd;
+                            } else if (stayType === 'monthly') {
+                                defaultEnd.setDate(clickedDate.getDate() + 30);
+                                currentCheckOut = defaultEnd;
+                            }
                         } else if (clickedDate.getTime() === currentCheckIn.getTime()) {
                             currentCheckIn = null;
                         } else {
-                            // Check if any date in [currentCheckIn, clickedDate] is booked
-                            let hasBookedInRange = false;
-                            for (let d = new Date(currentCheckIn); d < clickedDate; d.setDate(d.getDate() + 1)) {
-                                const dStr = formatDateIso(d);
-                                if (this.bookedDates && this.bookedDates.includes(dStr)) {
-                                    hasBookedInRange = true;
-                                    break;
-                                }
-                            }
-
-                            if (hasBookedInRange) {
-                                if (window.KaghanUI) {
-                                    KaghanUI.showToast("Selected range includes unavailable dates. Please choose continuous open dates.", "warning");
-                                }
-                                currentCheckOut = null;
+                            const nightsCount = Math.ceil((clickedDate - currentCheckIn) / (1000 * 3600 * 24));
+                            if (stayType === 'weekly' && nightsCount < 7) {
+                                const minEnd = new Date(currentCheckIn);
+                                minEnd.setDate(currentCheckIn.getDate() + 7);
+                                currentCheckOut = minEnd;
+                                if (window.KaghanUI) KaghanUI.showToast("Weekly Rate requires minimum 7 nights. 7 days auto-locked (click 8+ days to extend!).", "warning");
+                            } else if (stayType === 'monthly' && nightsCount < 30) {
+                                const minEnd = new Date(currentCheckIn);
+                                minEnd.setDate(currentCheckIn.getDate() + 30);
+                                currentCheckOut = minEnd;
+                                if (window.KaghanUI) KaghanUI.showToast("Monthly Rate requires minimum 30 nights. 30 days auto-locked (click 31+ days to extend!).", "warning");
                             } else {
-                                currentCheckOut = clickedDate;
+                                // Check if any date in [currentCheckIn, clickedDate] is booked
+                                let hasBookedInRange = false;
+                                for (let d = new Date(currentCheckIn); d < clickedDate; d.setDate(d.getDate() + 1)) {
+                                    const dStr = formatDateIso(d);
+                                    if (this.bookedDates && this.bookedDates.includes(dStr)) {
+                                        hasBookedInRange = true;
+                                        break;
+                                    }
+                                }
+
+                                if (hasBookedInRange) {
+                                    if (window.KaghanUI) {
+                                        KaghanUI.showToast("Selected range includes unavailable dates. Please choose continuous open dates.", "warning");
+                                    }
+                                    currentCheckOut = null;
+                                } else {
+                                    currentCheckOut = clickedDate;
+                                }
                             }
                         }
                     }

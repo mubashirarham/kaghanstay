@@ -1235,6 +1235,37 @@ main, .main-content {
     color: #C5A059;
 }
 
+/* TinyMCE Rich Text Editor Modal & Floating Dropdown Fixes */
+.tox-tinymce-aux,
+.tox-silver-sink,
+.tox-pop,
+.tox-menu,
+.tox-dialog-wrap,
+.tox-fullscreen,
+.tox-dialog,
+.tox-notifications-container {
+    z-index: 999999 !important;
+}
+
+.tox-menu {
+    border-radius: 1rem !important;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.25) !important;
+    border: 1px solid rgba(0,0,0,0.08) !important;
+    background-color: #ffffff !important;
+}
+
+.tox-menu .tox-collection__item {
+    cursor: pointer !important;
+}
+
+/* Ensure TinyMCE inputs/selects inside dialogs reset properly */
+.tox select, .tox input[type="text"], .tox input[type="number"] {
+    display: inline-block !important;
+    width: auto !important;
+    padding: 0.5rem 0.75rem !important;
+    border-radius: 0.5rem !important;
+}
+
 
 
 

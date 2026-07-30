@@ -5,4 +5,4 @@ dist/
 .env
 *.json.key
 *-firebase-adminsdk-*.json
-
+dns-records.md

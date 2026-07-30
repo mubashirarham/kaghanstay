@@ -10,9 +10,10 @@
         await initRoomsPage();
     });
 
-    // Pagination Globals
+    // Pagination & Filter Globals
     let currentPage = 1;
     const itemsPerPage = 6;
+    let currentFilteredRooms = [];
 
     async function initRoomsPage() {
         renderNavbar();
@@ -327,7 +328,7 @@
     };
 
     // Filter calculations (Debounced & Smooth Rendering)
-    function applyFilters() {
+    function applyFilters(resetPage = true) {
         if (filterDebounceTimer) clearTimeout(filterDebounceTimer);
         
         filterDebounceTimer = setTimeout(async () => {
@@ -438,8 +439,10 @@
                     filtered.sort((a, b) => (Number(b.rating || 0)) - (Number(a.rating || 0)));
                 }
 
-                // Reset to page 1 on filter change
-                currentPage = 1;
+                currentFilteredRooms = filtered;
+                if (resetPage) {
+                    currentPage = 1;
+                }
                 renderRooms(filtered);
                 updateMapMarkers(filtered);
             } catch (err) {
@@ -570,19 +573,19 @@
             if (pagination) {
                 let pHTML = '';
                 // Prev btn
-                pHTML += `<button onclick="changePage(${currentPage - 1})" class="w-10 h-10 rounded-xl flex items-center justify-center font-bold transition-all border ${currentPage === 1 ? 'border-slate-100 text-slate-300 cursor-not-allowed bg-slate-50' : 'border-slate-200 text-slate-600 hover:border-[#D4AF37] hover:text-[#D4AF37] bg-white shadow-sm'}" ${currentPage === 1 ? 'disabled' : ''}><i class="fa-solid fa-chevron-left"></i></button>`;
+                pHTML += `<button type="button" onclick="changePage(${currentPage - 1})" class="w-10 h-10 rounded-xl flex items-center justify-center font-bold transition-all border ${currentPage === 1 ? 'border-slate-100 text-slate-300 cursor-not-allowed bg-slate-50' : 'border-slate-200 text-slate-600 hover:border-[#D4AF37] hover:text-[#D4AF37] bg-white shadow-sm'}" ${currentPage === 1 ? 'disabled' : ''}><i class="fa-solid fa-chevron-left"></i></button>`;
                 
                 // Number btns
                 for(let i = 1; i <= totalPages; i++) {
                     if(i === currentPage) {
-                        pHTML += `<button class="w-10 h-10 rounded-xl flex items-center justify-center font-bold transition-all border border-[#D4AF37] bg-[#D4AF37] text-white shadow-md">${i}</button>`;
+                        pHTML += `<button type="button" class="w-10 h-10 rounded-xl flex items-center justify-center font-bold transition-all border border-[#D4AF37] bg-[#D4AF37] text-white shadow-md">${i}</button>`;
                     } else {
-                        pHTML += `<button onclick="changePage(${i})" class="w-10 h-10 rounded-xl flex items-center justify-center font-bold transition-all border border-slate-200 text-slate-600 hover:border-[#D4AF37] hover:text-[#D4AF37] bg-white shadow-sm">${i}</button>`;
+                        pHTML += `<button type="button" onclick="changePage(${i})" class="w-10 h-10 rounded-xl flex items-center justify-center font-bold transition-all border border-slate-200 text-slate-600 hover:border-[#D4AF37] hover:text-[#D4AF37] bg-white shadow-sm">${i}</button>`;
                     }
                 }
 
                 // Next btn
-                pHTML += `<button onclick="changePage(${currentPage + 1})" class="w-10 h-10 rounded-xl flex items-center justify-center font-bold transition-all border ${currentPage === totalPages ? 'border-slate-100 text-slate-300 cursor-not-allowed bg-slate-50' : 'border-slate-200 text-slate-600 hover:border-[#D4AF37] hover:text-[#D4AF37] bg-white shadow-sm'}" ${currentPage === totalPages ? 'disabled' : ''}><i class="fa-solid fa-chevron-right"></i></button>`;
+                pHTML += `<button type="button" onclick="changePage(${currentPage + 1})" class="w-10 h-10 rounded-xl flex items-center justify-center font-bold transition-all border ${currentPage === totalPages ? 'border-slate-100 text-slate-300 cursor-not-allowed bg-slate-50' : 'border-slate-200 text-slate-600 hover:border-[#D4AF37] hover:text-[#D4AF37] bg-white shadow-sm'}" ${currentPage === totalPages ? 'disabled' : ''}><i class="fa-solid fa-chevron-right"></i></button>`;
                 
                 if(totalPages <= 1) pHTML = ''; // Hide if only 1 page
                 
@@ -593,10 +596,17 @@
 
     // Global pagination function
     window.changePage = (page) => {
+        if (page < 1) return;
+        const totalPages = Math.ceil(currentFilteredRooms.length / itemsPerPage);
+        if (page > totalPages && totalPages > 0) return;
+
         currentPage = page;
-        // Re-run filter/render logic (it will use the current filter state but updated currentPage)
-        applyFilters(); 
-        window.scrollTo({ top: document.getElementById('rooms-grid-container').offsetTop - 100, behavior: 'smooth' });
+        renderRooms(currentFilteredRooms);
+
+        const scrollTarget = document.getElementById('rooms-grid-container') || document.getElementById('rooms-grid');
+        if (scrollTarget) {
+            scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
     };
 
     // Modal Details Display

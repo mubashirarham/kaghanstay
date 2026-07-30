@@ -1,22 +1,40 @@
-// Kaghan Hotel - Admin Guest Registry Module
+// Kaghan Hotel - Admin Guest Registry & User Roles Permission Module
 (function() {
-    let activePointsUserId = null;
+    const PERM_LABELS = {
+        manage_bookings: 'Bookings',
+        manage_rooms: 'Rooms',
+        manage_reviews: 'Reviews',
+        manage_guests: 'Guests',
+        manage_discounts: 'Discounts',
+        manage_settings: 'Settings'
+    };
+
+    const DEFAULT_ROLE_PERMS = {
+        admin: ['manage_bookings', 'manage_rooms', 'manage_reviews', 'manage_guests', 'manage_discounts', 'manage_settings'],
+        moderator: ['manage_bookings', 'manage_reviews', 'manage_guests'],
+        editor: ['manage_rooms', 'manage_discounts', 'manage_reviews'],
+        user: []
+    };
+
+    let cachedUsers = [];
 
     async function renderGuests(searchKeyword = '') {
-        const users = await KaghanDB.getUsers();
-        const guestList = users;
+        cachedUsers = await KaghanDB.getUsers();
+        const roleFilter = document.getElementById('guest-role-filter')?.value || '';
         const tbody = document.getElementById('admin-guests-tbody');
         const emptyState = document.getElementById('guests-empty-state');
 
         if (!tbody) return;
 
-        const filtered = guestList.filter(u => {
+        const filtered = cachedUsers.filter(u => {
             const keyword = searchKeyword.toLowerCase().trim();
-            const matches = !keyword ||
+            const matchesKeyword = !keyword ||
                             (u.name && u.name.toLowerCase().includes(keyword)) ||
                             (u.email && u.email.toLowerCase().includes(keyword)) ||
                             (u.phone && u.phone.includes(keyword));
-            return matches;
+            
+            const matchesRole = !roleFilter || (u.role || 'user') === roleFilter;
+            return matchesKeyword && matchesRole;
         });
 
         if (filtered.length === 0) {
@@ -26,21 +44,52 @@
         }
 
         if (emptyState) emptyState.classList.add('hidden');
+
         tbody.innerHTML = filtered.map(guest => {
-            const roleBadge = guest.role === 'admin' 
-                ? `<span class="px-2 py-1 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200">Admin</span>`
-                : `<span class="px-2 py-1 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800 border border-blue-200">User</span>`;
+            let roleBadge = '';
+            const role = guest.role || 'user';
             
+            if (role === 'admin') {
+                roleBadge = `<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300 flex items-center gap-1 w-fit"><i class="fa-solid fa-crown text-[9px]"></i> Admin</span>`;
+            } else if (role === 'moderator') {
+                roleBadge = `<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-purple-100 text-purple-800 border border-purple-300 flex items-center gap-1 w-fit"><i class="fa-solid fa-shield text-[9px]"></i> Moderator</span>`;
+            } else if (role === 'editor') {
+                roleBadge = `<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1 w-fit"><i class="fa-solid fa-[#C5A059] text-[9px]"></i> Editor</span>`;
+            } else {
+                roleBadge = `<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800 border border-blue-300 flex items-center gap-1 w-fit"><i class="fa-solid fa-user text-[9px]"></i> User</span>`;
+            }
+
+            const permissions = guest.permissions || DEFAULT_ROLE_PERMS[role] || [];
+            const permTags = permissions.length > 0
+                ? permissions.map(p => `<span class="px-2 py-0.5 rounded text-[9px] font-semibold bg-slate-100 text-slate-700 border border-slate-200">${PERM_LABELS[p] || p}</span>`).join(' ')
+                : `<span class="text-[10px] text-slate-400 italic">None</span>`;
+
+            const initials = (guest.name || 'U').split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
+
             return `
                 <tr class="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
                     <td class="px-6 py-4">
-                        <span class="font-bold text-slate-800 text-sm block">${KaghanSafe.escapeHTML(guest.name || '')}</span>
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-full bg-[#0B0F19] text-[#C5A059] font-bold text-xs flex items-center justify-center shrink-0 border border-slate-800">
+                                ${initials}
+                            </div>
+                            <div>
+                                <span class="font-bold text-slate-900 text-xs block">${KaghanSafe.escapeHTML(guest.name || 'Unnamed')}</span>
+                                <span class="text-[10px] text-slate-400 font-mono">ID: ${guest.id || guest.uid || 'N/A'}</span>
+                            </div>
+                        </div>
                     </td>
                     <td class="px-6 py-4 text-xs font-semibold text-slate-600">${KaghanSafe.escapeHTML(guest.email || '')}</td>
                     <td class="px-6 py-4 text-xs font-semibold text-slate-600">${KaghanSafe.escapeHTML(guest.phone || 'N/A')}</td>
                     <td class="px-6 py-4 text-xs font-semibold">${roleBadge}</td>
-                    <td class="px-6 py-4 text-right">
-                        <button onclick="deleteGuestAccount('${guest.id}', '${KaghanSafe.escapeHTML(guest.name || '')}')" class="text-rose-500 hover:text-rose-700 p-1.5 rounded hover:bg-rose-50 transition-colors" title="Delete Account">
+                    <td class="px-6 py-4">
+                        <div class="flex flex-wrap gap-1 max-w-xs">${permTags}</div>
+                    </td>
+                    <td class="px-6 py-4 text-right space-x-1">
+                        <button onclick="openEditUserModal('${guest.id || guest.uid}')" class="text-slate-600 hover:text-[#C5A059] p-1.5 rounded hover:bg-slate-100 transition-colors" title="Edit User & Permissions">
+                            <i class="fa-solid fa-[#C5A059] text-sm"></i> Edit
+                        </button>
+                        <button onclick="deleteGuestAccount('${guest.id || guest.uid}', '${KaghanSafe.escapeHTML(guest.name || '')}')" class="text-rose-500 hover:text-rose-700 p-1.5 rounded hover:bg-rose-50 transition-colors" title="Delete Account">
                             <i class="fa-solid fa-trash-can text-sm"></i>
                         </button>
                     </td>
@@ -48,6 +97,16 @@
             `;
         }).join('');
     }
+
+    // Role filter change listener
+    document.getElementById('guest-role-filter')?.addEventListener('change', () => {
+        const keyword = document.getElementById('guest-search-input')?.value || '';
+        renderGuests(keyword);
+    });
+
+    document.getElementById('guest-search-input')?.addEventListener('input', (e) => {
+        renderGuests(e.target.value);
+    });
 
     window.deleteGuestAccount = async (userId, name) => {
         if (!confirm(`Are you sure you want to permanently delete account "${name}" (${userId})? This will delete their credentials and profile.`)) return;
@@ -65,10 +124,20 @@
         }
     };
 
-    // Modal controls for adding user/admin
+    // Auto check/uncheck permissions checkboxes based on role selection
+    window.onRoleChangeSyncPerms = (roleSelectId, containerClass) => {
+        const role = document.getElementById(roleSelectId)?.value;
+        const defaultPerms = DEFAULT_ROLE_PERMS[role] || [];
+        document.querySelectorAll(`.${containerClass}`).forEach(cb => {
+            cb.checked = defaultPerms.includes(cb.value);
+        });
+    };
+
+    // Modal controls for adding user
     window.openAddUserModal = () => {
         const modal = document.getElementById('add-user-modal');
-        document.getElementById('add-user-form').reset();
+        document.getElementById('add-user-form')?.reset();
+        window.onRoleChangeSyncPerms('add-user-role', 'add-user-perm-cb');
         if (modal) {
             modal.classList.remove('hidden');
             setTimeout(() => modal.classList.remove('opacity-0'), 10);
@@ -83,20 +152,60 @@
         }
     };
 
+    // Modal controls for editing user
+    window.openEditUserModal = (userId) => {
+        const user = cachedUsers.find(u => (u.id === userId || u.uid === userId));
+        if (!user) {
+            KaghanUI.showToast("User record not found.", "error");
+            return;
+        }
+
+        document.getElementById('edit-user-id').value = userId;
+        document.getElementById('edit-user-name').value = user.name || '';
+        document.getElementById('edit-user-email').value = user.email || '';
+        document.getElementById('edit-user-phone').value = user.phone || '';
+        document.getElementById('edit-user-role').value = user.role || 'user';
+        if (document.getElementById('edit-user-password')) {
+            document.getElementById('edit-user-password').value = '';
+        }
+
+        const userPerms = user.permissions || DEFAULT_ROLE_PERMS[user.role || 'user'] || [];
+        document.querySelectorAll('.edit-user-perm-cb').forEach(cb => {
+            cb.checked = userPerms.includes(cb.value);
+        });
+
+        const modal = document.getElementById('edit-user-modal');
+        if (modal) {
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        }
+    };
+
+    window.closeEditUserModal = () => {
+        const modal = document.getElementById('edit-user-modal');
+        if (modal) {
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+    };
+
+    // Submit Add User Form
     document.getElementById('add-user-form')?.addEventListener('submit', async (e) => {
         e.preventDefault();
         const submitBtn = e.target.querySelector('button[type="submit"]');
         const originalText = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Saving...';
+        submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Creating...';
         submitBtn.disabled = true;
 
         try {
+            const permissions = Array.from(document.querySelectorAll('.add-user-perm-cb:checked')).map(cb => cb.value);
             const userData = {
                 name: document.getElementById('add-user-name').value.trim(),
                 email: document.getElementById('add-user-email').value.trim(),
                 phone: document.getElementById('add-user-phone').value.trim(),
                 password: document.getElementById('add-user-password').value,
-                role: document.getElementById('add-user-role').value
+                role: document.getElementById('add-user-role').value,
+                permissions: permissions
             };
 
             if (userData.password.length < 6) {
@@ -105,7 +214,7 @@
 
             await window.KaghanDB.createUser(userData);
             
-            KaghanUI.showToast("Account created successfully!", "success");
+            KaghanUI.showToast(`Account created with ${userData.role.toUpperCase()} privileges!`, "success");
             closeAddUserModal();
             
             if (window.AdminDashboardModule) {
@@ -116,6 +225,47 @@
         } catch (error) {
             console.error("Create user error:", error);
             KaghanUI.showToast(error.message || "Failed to create account.", "error");
+        } finally {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }
+    });
+
+    // Submit Edit User Form
+    document.getElementById('edit-user-form')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Saving...';
+        submitBtn.disabled = true;
+
+        try {
+            const userId = document.getElementById('edit-user-id').value;
+            const permissions = Array.from(document.querySelectorAll('.edit-user-perm-cb:checked')).map(cb => cb.value);
+            
+            const updateData = {
+                id: userId,
+                name: document.getElementById('edit-user-name').value.trim(),
+                email: document.getElementById('edit-user-email').value.trim(),
+                phone: document.getElementById('edit-user-phone').value.trim(),
+                role: document.getElementById('edit-user-role').value,
+                permissions: permissions,
+                updatedAt: new Date().toISOString()
+            };
+
+            await window.KaghanDB.adminUpdateUser(userId, updateData);
+            
+            KaghanUI.showToast(`User profile and role permissions updated!`, "success");
+            closeEditUserModal();
+            
+            if (window.AdminDashboardModule) {
+                await window.AdminDashboardModule.refreshAll();
+            } else {
+                await renderGuests();
+            }
+        } catch (error) {
+            console.error("Edit user error:", error);
+            KaghanUI.showToast(error.message || "Failed to update user profile.", "error");
         } finally {
             submitBtn.innerHTML = originalText;
             submitBtn.disabled = false;

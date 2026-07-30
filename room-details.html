@@ -258,14 +258,21 @@
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <h3 class="text-xl font-bold outfit text-[#0B0F19] flex items-center gap-2">
                             <i class="fa-solid fa-map-location-dot text-[#C5A059]"></i>
-                            Location & Map Access
+                            Google Maps Location & Access
                         </h3>
                         <span id="pdp-address-text" class="text-xs text-slate-500 font-medium flex items-center gap-1.5 bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200/80">
                             <i class="fa-solid fa-location-dot text-[#C5A059]"></i> Loading location...
                         </span>
                     </div>
 
-                    <div id="room-detail-map" class="w-full h-72 rounded-2xl border border-slate-200 overflow-hidden z-10"></div>
+                    <!-- Map Container with Google Controls -->
+                    <div class="relative">
+                        <div class="absolute top-3 right-3 z-20 bg-white/95 backdrop-blur-md p-1 rounded-xl shadow-md border border-slate-200/80 flex gap-1 text-[10px] font-bold">
+                            <button type="button" id="pdp-map-style-roadmap" onclick="switchPDPMapStyle('roadmap')" class="px-2.5 py-1 rounded-lg bg-[#0B0F19] text-white transition-all shadow-sm">Map</button>
+                            <button type="button" id="pdp-map-style-satellite" onclick="switchPDPMapStyle('satellite')" class="px-2.5 py-1 rounded-lg text-slate-600 hover:bg-slate-100 transition-all">Satellite</button>
+                        </div>
+                        <div id="room-detail-map" class="w-full h-72 rounded-2xl border border-slate-200 overflow-hidden z-10 shadow-inner"></div>
+                    </div>
                     
                     <!-- Google Maps Direct Links -->
                     <div class="flex flex-col sm:flex-row gap-3 pt-2">
@@ -416,7 +423,7 @@
                     <form id="booking-card-form" onsubmit="handleConfirmBooking(event)" class="space-y-4">
                         <div>
                             <label class="block text-[10px] uppercase font-bold tracking-widest text-slate-400 mb-1">Stay Dates</label>
-                            <button type="button" onclick="if(window.KaghanSearchWidget) KaghanSearchWidget.openCalendarModal(window.currentRoomBookedDates || []);" class="w-full bg-slate-50 border border-slate-200 hover:border-[#C5A059] rounded-xl px-3 py-2.5 text-xs text-left flex items-center justify-between font-medium text-slate-800 cursor-pointer">
+                            <button type="button" onclick="openPDPDateCalendarModal()" class="w-full bg-slate-50 border border-slate-200 hover:border-[#C5A059] rounded-xl px-3 py-2.5 text-xs text-left flex items-center justify-between font-medium text-slate-800 cursor-pointer">
                                 <span id="search-date-trigger-text">Select check-in & check-out</span>
                                 <i class="fa-solid fa-calendar-alt text-[#C5A059]"></i>
                             </button>
@@ -685,6 +692,14 @@
             if (inEl) inEl.addEventListener('change', calculateCardTotal);
             if (outEl) outEl.addEventListener('change', calculateCardTotal);
 
+            window.addEventListener('kaghan-dates-changed', (e) => {
+                if (e.detail && e.detail.checkIn && e.detail.checkOut) {
+                    if (inEl) inEl.value = e.detail.checkIn;
+                    if (outEl) outEl.value = e.detail.checkOut;
+                    calculateCardTotal();
+                }
+            });
+
             const urlParams = new URLSearchParams(window.location.search);
             const roomId = urlParams.get('id') || urlParams.get('roomId');
 
@@ -841,6 +856,14 @@
             }
         }
 
+        let pdpMonthOffset = 0;
+
+        window.changePDPMonth = function(delta) {
+            if (delta < 0 && pdpMonthOffset <= 0) return;
+            pdpMonthOffset += delta;
+            if (currentRoom) loadPDPAvailabilityCalendar(currentRoom.id);
+        };
+
         // Render PDP Availability Calendar Grid
         async function loadPDPAvailabilityCalendar(roomId) {
             const container = document.getElementById('pdp-calendar-container');
@@ -849,14 +872,31 @@
             try {
                 const avail = await KaghanDB.getRoomAvailability(roomId);
                 const unavailableDates = avail.unavailableDates || [];
+                window.currentRoomBookedDates = unavailableDates;
 
                 const today = new Date();
                 today.setHours(0,0,0,0);
 
-                let html = `<div class="grid grid-cols-1 md:grid-cols-2 gap-8">`;
+                const m1Date = new Date(today.getFullYear(), today.getMonth() + pdpMonthOffset, 1);
+                const m2Date = new Date(today.getFullYear(), today.getMonth() + pdpMonthOffset + 1, 1);
+                const m1Name = m1Date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+                const m2Name = m2Date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+                let html = `
+                    <div class="flex items-center justify-between mb-5 pb-3 border-b border-slate-200/80">
+                        <button type="button" onclick="changePDPMonth(-1)" class="px-3.5 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-100 text-xs font-bold text-slate-700 flex items-center gap-1.5 transition-all shadow-2xs ${pdpMonthOffset <= 0 ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'}">
+                            <i class="fa-solid fa-chevron-left text-[10px]"></i> Previous
+                        </button>
+                        <span class="text-xs md:text-sm font-bold outfit text-slate-900">${m1Name} &ndash; ${m2Name}</span>
+                        <button type="button" onclick="changePDPMonth(1)" class="px-3.5 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-100 text-xs font-bold text-slate-700 flex items-center gap-1.5 transition-all shadow-2xs cursor-pointer">
+                            Next Month <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                `;
 
                 for (let m = 0; m < 2; m++) {
-                    const monthDate = new Date(today.getFullYear(), today.getMonth() + m, 1);
+                    const monthDate = new Date(today.getFullYear(), today.getMonth() + pdpMonthOffset + m, 1);
                     const year = monthDate.getFullYear();
                     const month = monthDate.getMonth();
                     const monthName = monthDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
@@ -884,17 +924,26 @@
                         const isPast = cellDate < today;
                         const isUnavailable = unavailableDates.includes(isoStr);
 
+                        const isCheckIn = pdpInlineCheckIn && cellDate.getTime() === pdpInlineCheckIn.getTime();
+                        const isCheckOut = pdpInlineCheckOut && cellDate.getTime() === pdpInlineCheckOut.getTime();
+                        const isInRange = pdpInlineCheckIn && pdpInlineCheckOut && cellDate > pdpInlineCheckIn && cellDate < pdpInlineCheckOut;
+
                         let cellClass = "h-8 rounded-lg flex items-center justify-center font-semibold text-xs transition-all ";
 
                         if (isPast) {
                             cellClass += "text-slate-300 bg-transparent cursor-not-allowed";
                         } else if (isUnavailable) {
-                            cellClass += "bg-rose-100 text-rose-500 line-through cursor-not-allowed font-bold";
+                            cellClass += "bg-rose-100 text-rose-500 line-through cursor-not-allowed font-bold opacity-75";
+                        } else if (isCheckIn || isCheckOut) {
+                            cellClass += "bg-[#C5A059] text-white font-bold shadow-md";
+                        } else if (isInRange) {
+                            cellClass += "bg-[#C5A059]/20 text-slate-900 font-semibold border border-[#C5A059]/40";
                         } else {
                             cellClass += "bg-white text-slate-800 border border-slate-200/60 shadow-2xs hover:border-[#C5A059] hover:text-[#C5A059] cursor-pointer";
                         }
 
-                        html += `<div class="${cellClass}" title="${isUnavailable ? 'Reserved/Blocked' : 'Available'}">${d}</div>`;
+                        const disabledAttr = (isPast || isUnavailable) ? 'disabled' : '';
+                        html += `<button type="button" onclick="handlePDPInlineCalendarClick('${isoStr}')" class="${cellClass}" ${disabledAttr} title="${isUnavailable ? 'Reserved/Blocked' : 'Click to select date'}">${d}</button>`;
                     }
 
                     html += `</div></div>`;
@@ -908,62 +957,221 @@
             }
         }
 
-        // Stay Type Switcher (Daily, Weekly, Monthly)
+        let pdpInlineCheckIn = null;
+        let pdpInlineCheckOut = null;
+
+        window.handlePDPInlineCalendarClick = function(isoStr) {
+            const clickedDate = new Date(isoStr + 'T00:00:00');
+            const unavailable = window.currentRoomBookedDates || [];
+
+            if (!pdpInlineCheckIn || (pdpInlineCheckIn && pdpInlineCheckOut)) {
+                pdpInlineCheckIn = clickedDate;
+                pdpInlineCheckOut = null;
+                if (window.KaghanUI) KaghanUI.showToast(`Check-in: ${isoStr}. Click your check-out date.`, "info");
+            } else {
+                if (clickedDate <= pdpInlineCheckIn) {
+                    pdpInlineCheckIn = clickedDate;
+                    pdpInlineCheckOut = null;
+                    if (window.KaghanUI) KaghanUI.showToast(`Check-in updated: ${isoStr}. Click check-out date.`, "info");
+                } else {
+                    let hasOverlap = false;
+                    let curr = new Date(pdpInlineCheckIn);
+                    while (curr < clickedDate) {
+                        const currIso = curr.getFullYear() + '-' + String(curr.getMonth() + 1).padStart(2, '0') + '-' + String(curr.getDate()).padStart(2, '0');
+                        if (unavailable.includes(currIso)) {
+                            hasOverlap = true;
+                            break;
+                        }
+                        curr.setDate(curr.getDate() + 1);
+                    }
+
+                    if (hasOverlap) {
+                        if (window.KaghanUI) KaghanUI.showToast("Selected range contains reserved dates. Please pick continuous open dates.", "warning");
+                        pdpInlineCheckOut = null;
+                    } else {
+                        pdpInlineCheckOut = clickedDate;
+                        const inIso = pdpInlineCheckIn.toISOString().split('T')[0];
+                        const outIso = pdpInlineCheckOut.toISOString().split('T')[0];
+                        const diffNights = Math.ceil((pdpInlineCheckOut - pdpInlineCheckIn) / (1000 * 3600 * 24));
+
+                        document.getElementById('card-checkin').value = inIso;
+                        document.getElementById('card-checkout').value = outIso;
+
+                        const triggerText = document.getElementById('search-date-trigger-text');
+                        if (triggerText) {
+                            const formatShort = (d) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                            triggerText.innerText = `${formatShort(pdpInlineCheckIn)} – ${formatShort(pdpInlineCheckOut)} (${diffNights} night${diffNights > 1 ? 's' : ''})`;
+                        }
+
+                        calculateCardTotal();
+                        if (window.KaghanUI) KaghanUI.showToast(`${diffNights} nights selected! Rates updated.`, "success");
+                    }
+                }
+            }
+
+            if (currentRoom) loadPDPAvailabilityCalendar(currentRoom.id);
+        };
+
+        // Helper to open PDP Date Calendar Modal
+        window.openPDPDateCalendarModal = function() {
+            const calContainer = document.getElementById('pdp-calendar-container');
+            if (calContainer) {
+                calContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+
+            if (window.KaghanSearchWidget && typeof KaghanSearchWidget.openCalendarModal === 'function') {
+                KaghanSearchWidget.openCalendarModal(window.currentRoomBookedDates || []);
+            }
+        };
+
+        // Stay Type Switcher (Daily, Weekly, Monthly) with Calendar Popup & Auto-Date Adjustment
         function setStayType(type) {
             activeStayType = type;
             ['daily', 'weekly', 'monthly'].forEach(t => {
                 const btn = document.getElementById(`stay-type-${t}`);
+                if (!btn) return;
                 if (t === type) {
-                    btn.className = "py-2 rounded-lg bg-[#0B0F19] text-white transition-all font-bold";
+                    btn.className = "py-2 px-1 rounded-lg bg-[#0B0F19] text-white transition-all font-bold shadow-sm";
                 } else {
-                    btn.className = "py-2 rounded-lg text-slate-600 hover:text-slate-900 transition-all font-medium";
+                    btn.className = "py-2 px-1 rounded-lg text-slate-600 hover:text-slate-900 transition-all font-medium";
                 }
             });
+
+            // Auto-adjust Check-in & Check-out dates for 7-day Weekly or 30-day Monthly deals
+            const checkinEl = document.getElementById('card-checkin');
+            const checkoutEl = document.getElementById('card-checkout');
+
+            let startDate = checkinEl && checkinEl.value ? new Date(checkinEl.value + 'T00:00:00') : new Date();
+            startDate.setHours(0,0,0,0);
+
+            const endDate = new Date(startDate);
+            if (type === 'weekly') {
+                endDate.setDate(startDate.getDate() + 7);
+                if (window.KaghanUI) KaghanUI.showToast("Weekly Rate Selected! 7-day stay auto-set (Save 15%)", "success");
+            } else if (type === 'monthly') {
+                endDate.setDate(startDate.getDate() + 30);
+                if (window.KaghanUI) KaghanUI.showToast("Monthly Rate Selected! 30-day stay auto-set (Save 35%)", "success");
+            } else {
+                endDate.setDate(startDate.getDate() + 1);
+            }
+
+            const startIso = startDate.toISOString().split('T')[0];
+            const endIso = endDate.toISOString().split('T')[0];
+
+            if (checkinEl) checkinEl.value = startIso;
+            if (checkoutEl) checkoutEl.value = endIso;
+
+            const triggerText = document.getElementById('search-date-trigger-text');
+            if (triggerText) {
+                const formatShort = (d) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                triggerText.innerText = `${formatShort(startDate)} – ${formatShort(endDate)} (${type === 'weekly' ? '7 nights' : (type === 'monthly' ? '30 nights' : '1 night')})`;
+            }
+
             calculateCardTotal();
+
+            // Auto pop-up Calendar Modal so user can review and adjust selected stay dates
+            if (window.KaghanSearchWidget && typeof KaghanSearchWidget.openCalendarModal === 'function') {
+                KaghanSearchWidget.openCalendarModal(window.currentRoomBookedDates || []);
+            }
         }
 
-        // Live Price Calculation in BookingCard
+        // Live Price Calculation in BookingCard with Dynamic Comparison & Button Label
         function calculateCardTotal() {
             if (!currentRoom) return;
+
+            const dailyRate = Number(currentRoom.priceDaily || currentRoom.price || 0);
+            let weeklyRatePerNight = Math.round(dailyRate * 0.85);
+            if (currentRoom.priceWeekly && Number(currentRoom.priceWeekly) > 0) {
+                const wVal = Number(currentRoom.priceWeekly);
+                weeklyRatePerNight = wVal < (dailyRate * 3) ? wVal : Math.round(wVal / 7);
+            }
+
+            let monthlyRatePerNight = Math.round(dailyRate * 0.65);
+            if (currentRoom.priceMonthly && Number(currentRoom.priceMonthly) > 0) {
+                const mVal = Number(currentRoom.priceMonthly);
+                monthlyRatePerNight = mVal < (dailyRate * 10) ? mVal : Math.round(mVal / 30);
+            }
+
+            // Update Tab Button Labels with Rates Comparison
+            const btnDaily = document.getElementById('stay-type-daily');
+            const btnWeekly = document.getElementById('stay-type-weekly');
+            const btnMonthly = document.getElementById('stay-type-monthly');
+
+            if (btnDaily) btnDaily.innerText = `Daily (${KaghanUI.formatPKR(dailyRate)}/nt)`;
+            if (btnWeekly) btnWeekly.innerText = `Weekly (${KaghanUI.formatPKR(weeklyRatePerNight)}/nt)`;
+            if (btnMonthly) btnMonthly.innerText = `Monthly (${KaghanUI.formatPKR(monthlyRatePerNight)}/nt)`;
 
             const checkinVal = document.getElementById('card-checkin').value;
             const checkoutVal = document.getElementById('card-checkout').value;
 
-            if (!checkinVal || !checkoutVal) return;
+            let nights = 1;
+            if (checkinVal && checkoutVal) {
+                const dIn = new Date(checkinVal);
+                const dOut = new Date(checkoutVal);
+                const diffTime = dOut - dIn;
+                nights = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                if (isNaN(nights) || nights < 1) nights = 1;
+            }
 
-            const dIn = new Date(checkinVal);
-            const dOut = new Date(checkoutVal);
-            const diffTime = dOut - dIn;
-            let nights = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            if (isNaN(nights) || nights < 1) nights = 1;
+            // Auto-detect tier based on selected nights
+            if (nights >= 30) {
+                activeStayType = 'monthly';
+            } else if (nights >= 7) {
+                activeStayType = 'weekly';
+            }
+
+            // Sync visual tab highlights
+            ['daily', 'weekly', 'monthly'].forEach(t => {
+                const btn = document.getElementById(`stay-type-${t}`);
+                if (!btn) return;
+                if (t === activeStayType) {
+                    btn.className = "py-2 px-1 rounded-lg bg-[#0B0F19] text-white transition-all font-bold shadow-sm";
+                } else {
+                    btn.className = "py-2 px-1 rounded-lg text-slate-600 hover:text-slate-900 transition-all font-medium";
+                }
+            });
 
             document.getElementById('calc-nights-lbl').innerText = `${nights} night${nights > 1 ? 's' : ''}`;
 
-            const baseRate = Number(currentRoom.priceDaily || currentRoom.price || 0);
-            let subtotal = baseRate * nights;
-
+            let ratePerNight = dailyRate;
             let discountPct = 0;
-            if (activeStayType === 'weekly' || nights >= 7) {
-                discountPct = 15;
-            } else if (activeStayType === 'monthly' || nights >= 30) {
+            let planLabel = 'Daily Rate';
+
+            if (activeStayType === 'monthly' || nights >= 30) {
+                ratePerNight = monthlyRatePerNight;
                 discountPct = 35;
+                planLabel = `Monthly Deal -35% (${nights} Nights)`;
+            } else if (activeStayType === 'weekly' || nights >= 7) {
+                ratePerNight = weeklyRatePerNight;
+                discountPct = 15;
+                planLabel = `Weekly Deal -15% (${nights} Nights)`;
             }
 
-            let discountVal = Math.round(subtotal * (discountPct / 100));
-            let finalTotal = subtotal - discountVal;
+            const subtotal = dailyRate * nights;
+            const finalTotal = ratePerNight * nights;
+            const discountVal = subtotal - finalTotal;
 
             document.getElementById('calc-base-subtotal').innerText = KaghanUI.formatPKR(subtotal);
 
             const discountRow = document.getElementById('calc-discount-row');
-            if (discountPct > 0) {
-                document.getElementById('calc-discount-pct').innerText = `${discountPct}%`;
+            const actualDiscountPct = dailyRate > 0 ? Math.round(((dailyRate - ratePerNight) / dailyRate) * 100) : 0;
+            if (discountVal > 0) {
+                document.getElementById('calc-discount-pct').innerText = `${actualDiscountPct}%`;
                 document.getElementById('calc-discount-val').innerText = `- ${KaghanUI.formatPKR(discountVal)}`;
                 discountRow.classList.remove('hidden');
+                discountRow.classList.add('flex');
             } else {
                 discountRow.classList.add('hidden');
+                discountRow.classList.remove('flex');
             }
 
             document.getElementById('calc-total-price').innerText = KaghanUI.formatPKR(finalTotal);
+
+            // Dynamic CTA Submit Button Text
+            const submitBtn = document.getElementById('card-submit-btn');
+            if (submitBtn) {
+                submitBtn.innerHTML = `<i class="fa-solid fa-calendar-check text-xs"></i> Confirm Booking — ${KaghanUI.formatPKR(finalTotal)} (${planLabel})`;
+            }
         }
 
         // Handle Confirm Booking CTA Submit
@@ -1197,7 +1405,26 @@
             }
         }
 
-        // Initialize Leaflet Map from Firestore lat/lng & room data
+        let pdpMapTileLayer = null;
+        window.switchPDPMapStyle = function(style) {
+            if (!detailMap) return;
+            const tileUrl = style === 'satellite' 
+                ? 'https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}' 
+                : 'https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}';
+
+            if (pdpMapTileLayer) detailMap.removeLayer(pdpMapTileLayer);
+            pdpMapTileLayer = L.tileLayer(tileUrl, { maxZoom: 20, attribution: '&copy; Google Maps' }).addTo(detailMap);
+
+            const roadmapBtn = document.getElementById('pdp-map-style-roadmap');
+            const satelliteBtn = document.getElementById('pdp-map-style-satellite');
+
+            if (roadmapBtn && satelliteBtn) {
+                roadmapBtn.className = `px-2.5 py-1 rounded-lg transition-all ${style === 'roadmap' ? 'bg-[#0B0F19] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`;
+                satelliteBtn.className = `px-2.5 py-1 rounded-lg transition-all ${style === 'satellite' ? 'bg-[#0B0F19] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`;
+            }
+        };
+
+        // Initialize Google Maps Locator from Firestore lat/lng & room data
         function initDetailMap(room) {
             const mapContainer = document.getElementById('room-detail-map');
             if (!mapContainer || typeof L === 'undefined') return;
@@ -1212,12 +1439,28 @@
             const locStr = (room.location || '').toLowerCase();
             if (locStr.includes('nathia')) { lat = 34.0722; lng = 73.3831; }
 
-            detailMap = L.map('room-detail-map').setView([lat, lng], 14);
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-                attribution: '&copy; OpenStreetMap contributors'
+            detailMap = L.map('room-detail-map').setView([lat, lng], 15);
+            pdpMapTileLayer = L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                maxZoom: 20,
+                attribution: '&copy; Google Maps'
             }).addTo(detailMap);
 
-            L.marker([lat, lng]).addTo(detailMap)
+            const googlePinHtml = `
+                <div class="relative flex items-center justify-center -translate-x-1/2 -translate-y-full">
+                    <div class="w-9 h-9 rounded-full bg-red-600 border-2 border-white shadow-xl flex items-center justify-center text-white text-xs font-bold ring-4 ring-red-500/20">
+                        <i class="fa-solid fa-hotel"></i>
+                    </div>
+                    <div class="absolute -bottom-1 w-2.5 h-2.5 bg-red-600 rotate-45 border-r border-b border-white"></div>
+                </div>
+            `;
+            const icon = L.divIcon({
+                className: 'custom-pdp-google-pin',
+                html: googlePinHtml,
+                iconSize: [36, 40],
+                iconAnchor: [18, 40]
+            });
+
+            L.marker([lat, lng], { icon }).addTo(detailMap)
                 .bindPopup(`<b>${KaghanSafe.escapeHTML(room.name)}</b><br>${KaghanUI.formatPKR(room.priceDaily || room.price)} / night`)
                 .openPopup();
 

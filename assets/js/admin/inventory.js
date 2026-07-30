@@ -6,66 +6,434 @@
     let addRoomMap = null;
     let addRoomMarker = null;
 
+    let addMapTileLayer = null;
+    let editMapTileLayer = null;
+
+    const GOOGLE_MAPS_TILES = {
+        roadmap: 'https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
+        satellite: 'https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}' // Google Hybrid Satellite
+    };
+
+    // Curated Popular Locations, Resorts, Malls, Shops & Attractions Database
+    const POPULAR_LOCATIONS = [
+        // Resorts & Luxury Apartments
+        { title: "KPH Stay Luxury Apartments & Resort", category: "resort", city: "Islamabad", lat: 33.6844, lng: 73.2045, address: "Asian Arcade, Sector C, Bahria Enclave, Islamabad" },
+        { title: "KPH Stay Nathia Gali Resort", category: "resort", city: "Nathia Gali", lat: 34.0722, lng: 73.3831, address: "Main Resort Road, Nathia Gali, Abbottabad" },
+        { title: "Serena Hotel Islamabad", category: "resort", city: "Islamabad", lat: 33.7225, lng: 73.0968, address: "Khayaban-e-Suhrawardy, G-5, Islamabad" },
+        { title: "Marriott Hotel Islamabad", category: "resort", city: "Islamabad", lat: 33.7212, lng: 73.0822, address: "Aga Khan Road, G-5/1, Islamabad" },
+        { title: "Pearl Continental Hotel Bhurban", category: "resort", city: "Murree", lat: 33.9555, lng: 73.4510, address: "Bhurban, Murree, Punjab" },
+        { title: "Monal Restaurant & Resort", category: "resort", city: "Islamabad", lat: 33.7431, lng: 73.0645, address: "Pir Sohawa, Margalla Hills, Islamabad" },
+        { title: "La Montana Restaurant & Resort", category: "resort", city: "Islamabad", lat: 33.7420, lng: 73.0640, address: "Margalla Hills, Islamabad" },
+        { title: "Pine Park Hotel & Resort", category: "resort", city: "Kaghan", lat: 34.7733, lng: 73.5280, address: "Kaghan Valley, Mansehra, KP" },
+        { title: "Arcadian Riverside Resort", category: "resort", city: "Naran", lat: 34.9089, lng: 73.6508, address: "River Kunhar Bank, Naran, Kaghan Valley" },
+        { title: "Alpine Hotel & Resort", category: "resort", city: "Nathia Gali", lat: 34.0750, lng: 73.3850, address: "Pine Road, Nathia Gali" },
+
+        // Malls & Shopping Centers
+        { title: "Centaurus Mall & Residences", category: "mall", city: "Islamabad", lat: 33.7077, lng: 73.0501, address: "Jinnah Avenue, F-8, Islamabad" },
+        { title: "Giga Mall & World Trade Center", category: "mall", city: "Islamabad", lat: 33.5244, lng: 73.1678, address: "Main GT Road, DHA Phase 2, Islamabad" },
+        { title: "Safa Gold Mall", category: "mall", city: "Islamabad", lat: 33.7215, lng: 73.0567, address: "F-7 Markaz, Islamabad" },
+        { title: "Amazon Mall", category: "mall", city: "Islamabad", lat: 33.5350, lng: 73.1590, address: "GT Road, Islamabad" },
+        { title: "Gulberg Galleria Mall", category: "mall", city: "Islamabad", lat: 33.5930, lng: 73.1550, address: "Gulberg Greens, Islamabad" },
+        { title: "Asian Arcade & Shopping Hub", category: "mall", city: "Islamabad", lat: 33.6844, lng: 73.2045, address: "Sector C Commercial, Bahria Enclave, Islamabad" },
+
+        // Markets, Shops & Commercial Markaz
+        { title: "F-6 Markaz (Super Market)", category: "shop", city: "Islamabad", lat: 33.7294, lng: 73.0768, address: "Sector F-6 Markaz, Islamabad" },
+        { title: "F-7 Markaz (Jinnah Super Market)", category: "shop", city: "Islamabad", lat: 33.7215, lng: 73.0567, address: "Sector F-7 Markaz, Islamabad" },
+        { title: "F-8 Markaz", category: "shop", city: "Islamabad", lat: 33.7050, lng: 73.0380, address: "Sector F-8 Markaz, Islamabad" },
+        { title: "F-10 Markaz", category: "shop", city: "Islamabad", lat: 33.6922, lng: 73.0166, address: "Sector F-10 Markaz, Islamabad" },
+        { title: "F-11 Markaz", category: "shop", city: "Islamabad", lat: 33.6841, lng: 72.9885, address: "Sector F-11 Markaz, Islamabad" },
+        { title: "G-9 Markaz (Karachi Company)", category: "shop", city: "Islamabad", lat: 33.6930, lng: 73.0300, address: "Sector G-9 Markaz, Islamabad" },
+        { title: "I-8 Markaz", category: "shop", city: "Islamabad", lat: 33.6680, lng: 73.0750, address: "Sector I-8 Markaz, Islamabad" },
+        { title: "Blue Area Commercial Hub", category: "shop", city: "Islamabad", lat: 33.7128, lng: 73.0607, address: "Jinnah Avenue, Blue Area, Islamabad" },
+        { title: "Commercial Market Satellite Town", category: "shop", city: "Rawalpindi", lat: 33.6360, lng: 73.0700, address: "Commercial Market, Rawalpindi" },
+        { title: "Mall Road Shopping Bazaar", category: "shop", city: "Murree", lat: 33.9070, lng: 73.3943, address: "Mall Road, Murree" },
+        { title: "Naran Main Shopping Bazaar", category: "shop", city: "Naran", lat: 34.9089, lng: 73.6508, address: "Main Bazaar, Naran, Kaghan" },
+
+        // Areas & Housing Societies
+        { title: "Bahria Enclave, Sector C", category: "area", city: "Islamabad", lat: 33.6844, lng: 73.2045, address: "Sector C, Bahria Enclave, Islamabad" },
+        { title: "Bahria Enclave, Main Boulevard", category: "area", city: "Islamabad", lat: 33.6890, lng: 73.1990, address: "Main Boulevard, Bahria Enclave, Islamabad" },
+        { title: "Sector E-11", category: "area", city: "Islamabad", lat: 33.6990, lng: 72.9750, address: "Sector E-11, Islamabad" },
+        { title: "DHA Phase 2", category: "area", city: "Islamabad", lat: 33.5280, lng: 73.1610, address: "DHA Phase 2, Islamabad" },
+        { title: "Gulberg Greens", category: "area", city: "Islamabad", lat: 33.5930, lng: 73.1550, address: "Gulberg Greens Executive, Islamabad" },
+
+        // Landmarks, Parks & Attractions
+        { title: "Faisal Mosque", category: "landmark", city: "Islamabad", lat: 33.7297, lng: 73.0372, address: "Shah Faisal Avenue, Islamabad" },
+        { title: "Daman-e-Koh Viewpoint", category: "landmark", city: "Islamabad", lat: 33.7380, lng: 73.0580, address: "Margalla Hills National Park, Islamabad" },
+        { title: "Rawal Lake & Lake View Park", category: "landmark", city: "Islamabad", lat: 33.7020, lng: 73.1250, address: "Murree Road, Islamabad" },
+        { title: "Lake Saif-ul-Malook", category: "landmark", city: "Naran", lat: 34.8770, lng: 73.6980, address: "Saif-ul-Malook National Park, Naran" },
+        { title: "Babusar Top Pass", category: "landmark", city: "Kaghan Valley", lat: 35.1466, lng: 74.0478, address: "Babusar Pass, N-15 Highway, Kaghan" },
+        { title: "Pipeline Walking Track", category: "landmark", city: "Nathia Gali", lat: 34.0620, lng: 73.3910, address: "Pipeline Track, Ayubia to Nathia Gali" }
+    ];
+
+    function getLocationCategoryIcon(category) {
+        switch (category) {
+            case 'resort':
+                return '<i class="fa-solid fa-hotel text-amber-600 mt-0.5 text-sm shrink-0"></i>';
+            case 'mall':
+                return '<i class="fa-solid fa-bag-shopping text-purple-600 mt-0.5 text-sm shrink-0"></i>';
+            case 'shop':
+                return '<i class="fa-solid fa-store text-indigo-600 mt-0.5 text-sm shrink-0"></i>';
+            case 'landmark':
+                return '<i class="fa-solid fa-mountain-sun text-emerald-600 mt-0.5 text-sm shrink-0"></i>';
+            default:
+                return '<i class="fa-solid fa-location-dot text-red-500 mt-0.5 text-sm shrink-0"></i>';
+        }
+    }
+
+    function createGooglePinMarker(lat, lng) {
+        if (typeof L === 'undefined') return null;
+        const googlePinHtml = `
+            <div class="relative flex items-center justify-center -translate-x-1/2 -translate-y-full">
+                <div class="w-8 h-8 rounded-full bg-red-600 border-2 border-white shadow-xl flex items-center justify-center text-white text-xs font-bold ring-4 ring-red-500/20">
+                    <i class="fa-solid fa-location-dot"></i>
+                </div>
+                <div class="absolute -bottom-1 w-2.5 h-2.5 bg-red-600 rotate-45 border-r border-b border-white"></div>
+            </div>
+        `;
+        const icon = L.divIcon({
+            className: 'custom-google-maps-pin',
+            html: googlePinHtml,
+            iconSize: [32, 36],
+            iconAnchor: [16, 36]
+        });
+        return L.marker([lat, lng], { draggable: true, icon });
+    }
+
+    window.switchMapTileStyle = function(mode, style) {
+        const mapObj = mode === 'add' ? addRoomMap : editRoomMap;
+        if (!mapObj) return;
+
+        const tileUrl = GOOGLE_MAPS_TILES[style] || GOOGLE_MAPS_TILES.roadmap;
+
+        if (mode === 'add') {
+            if (addMapTileLayer) mapObj.removeLayer(addMapTileLayer);
+            addMapTileLayer = L.tileLayer(tileUrl, { maxZoom: 20, attribution: '&copy; Google Maps' }).addTo(mapObj);
+        } else {
+            if (editMapTileLayer) mapObj.removeLayer(editMapTileLayer);
+            editMapTileLayer = L.tileLayer(tileUrl, { maxZoom: 20, attribution: '&copy; Google Maps' }).addTo(mapObj);
+        }
+
+        const roadmapBtn = document.getElementById(`${mode}-map-style-roadmap`);
+        const satelliteBtn = document.getElementById(`${mode}-map-style-satellite`);
+        if (roadmapBtn && satelliteBtn) {
+            roadmapBtn.className = `px-2.5 py-1 rounded-lg transition-all ${style === 'roadmap' ? 'bg-[#0B0F19] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`;
+            satelliteBtn.className = `px-2.5 py-1 rounded-lg transition-all ${style === 'satellite' ? 'bg-[#0B0F19] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`;
+        }
+    };
+
+    window.locateCurrentPosition = function(mode) {
+        if (!navigator.geolocation) {
+            if (window.KaghanUI) KaghanUI.showToast('GPS is not supported by your browser', 'error');
+            return;
+        }
+
+        if (window.KaghanUI) KaghanUI.showToast('Detecting your GPS position...', 'info');
+
+        navigator.geolocation.getCurrentPosition(
+            (pos) => {
+                const lat = pos.coords.latitude;
+                const lng = pos.coords.longitude;
+                selectLocationPrediction(lat, lng, 'My GPS Position', mode);
+                if (window.KaghanUI) KaghanUI.showToast('GPS location pinned on Google Maps!', 'success');
+            },
+            (err) => {
+                console.warn("GPS error:", err);
+                if (window.KaghanUI) KaghanUI.showToast('Could not retrieve GPS coordinates. Please allow location access.', 'warning');
+            },
+            { enableHighAccuracy: true, timeout: 10000 }
+        );
+    };
+
     async function reverseGeocodeAdminMap(lat, lng, mode) {
         try {
             const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
             if (!res.ok) return;
             const data = await res.json();
             if (data && data.display_name) {
-                const addrInput = document.getElementById(`${mode}-room-address`);
-                const detectedText = document.getElementById(`${mode}-map-detected-text`);
-                const detectedBox = document.getElementById(`${mode}-map-detected-address`);
-                if (addrInput) addrInput.value = data.display_name;
-                if (detectedText) detectedText.textContent = data.display_name;
-                if (detectedBox) detectedBox.classList.remove('hidden');
+                updateMapBadgeDisplay(lat, lng, data.display_name, mode);
             }
         } catch (err) {
             console.warn("Reverse geocode error:", err);
         }
     }
 
+    function updateMapBadgeDisplay(lat, lng, address, mode) {
+        const addrInput = document.getElementById(`${mode}-room-address`);
+        const detectedText = document.getElementById(`${mode}-map-detected-text`);
+        const coordsBadge = document.getElementById(`${mode}-map-coords-badge`);
+
+        if (addrInput) addrInput.value = address;
+        if (detectedText) detectedText.textContent = address;
+        if (coordsBadge) coordsBadge.textContent = `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+
+        // Auto-select location dropdown if city matches
+        const lowerAddr = address.toLowerCase();
+        const locSelect = document.getElementById(`${mode}-room-location`);
+        if (locSelect) {
+            if (lowerAddr.includes('nathia')) locSelect.value = 'nathia-gali';
+            else if (lowerAddr.includes('murree')) locSelect.value = 'murree';
+            else if (lowerAddr.includes('islamabad')) locSelect.value = 'islamabad';
+        }
+    }
+
+    window.selectLocationPrediction = function(lat, lng, address, mode) {
+        document.getElementById(`${mode}-room-lat`).value = lat;
+        document.getElementById(`${mode}-room-lng`).value = lng;
+
+        const mapObj = mode === 'add' ? addRoomMap : editRoomMap;
+        const markerObj = mode === 'add' ? addRoomMarker : editRoomMarker;
+
+        if (mapObj && markerObj) {
+            mapObj.setView([lat, lng], 16);
+            markerObj.setLatLng([lat, lng]);
+        }
+
+        updateMapBadgeDisplay(lat, lng, address, mode);
+
+        const searchInput = document.getElementById(`${mode}-room-map-search`);
+        if (searchInput) searchInput.value = address.split(',')[0] || address;
+
+        const suggestionsContainer = document.getElementById(`${mode}-map-search-suggestions`);
+        if (suggestionsContainer) suggestionsContainer.classList.add('hidden');
+    };
+
+    // Phonetic & Common Typo Normalizer for Pakistani Locations, Resorts & Malls
+    function normalizeQueryForLocation(rawQuery) {
+        if (!rawQuery) return '';
+        let q = rawQuery.toLowerCase().trim();
+
+        // Standardize phonetic variations & remove duplicated consecutive letters
+        let clean = q.replace(/ee/g, 'i')
+                     .replace(/ph/g, 'f')
+                     .replace(/ck/g, 'k')
+                     .replace(/([a-z])\1+/g, '$1');
+
+        // Common Pakistan Location Misspelling Dictionary & Alias Mapping
+        if (clean.includes('isba') || clean.includes('isla') || clean.includes('islm') || clean.includes('isb') || clean.includes('isambad')) return 'Islamabad';
+        if (clean.includes('bahr') || clean.includes('baha') || clean.includes('enclav') || clean.includes('enclv')) return 'Bahria Enclave, Islamabad';
+        if (clean.includes('nati') || clean.includes('nath') || clean.includes('gali') || clean.includes('galy')) return 'Nathia Gali';
+        if (clean.includes('mure') || clean.includes('muri') || clean.includes('muree')) return 'Murree';
+        if (clean.includes('centa') || clean.includes('centu') || clean.includes('centar') || clean.includes('cntaurus')) return 'Centaurus Mall, Islamabad';
+        if (clean.includes('giga') || clean.includes('gigamal') || clean.includes('gig')) return 'Giga Mall, Islamabad';
+        if (clean.includes('blu') || clean.includes('bluearia') || clean.includes('blue')) return 'Blue Area, Islamabad';
+        if (clean.includes('gulb') || clean.includes('gulbburg') || clean.includes('gulbrg')) return 'Gulberg Greens, Islamabad';
+        if (clean.includes('nara') || clean.includes('kagh') || clean.includes('narann')) return 'Naran, Kaghan Valley';
+        if (clean.includes('dha') || clean.includes('dha2') || clean.includes('dha 2')) return 'DHA Phase 2, Islamabad';
+        if (clean.includes('seren') || clean.includes('srena')) return 'Serena Hotel, Islamabad';
+        if (clean.includes('mariot') || clean.includes('marriot')) return 'Marriott Hotel, Islamabad';
+        if (clean.includes('monal') || clean.includes('monl')) return 'Monal Restaurant, Islamabad';
+        if (clean.includes('bhurba') || clean.includes('burban')) return 'Bhurban, Murree';
+
+        return rawQuery.trim();
+    }
+
+    // Levenshtein Distance Algorithm for Fuzzy String Matching
+    function getLevenshteinDistance(a, b) {
+        if (a.length === 0) return b.length;
+        if (b.length === 0) return a.length;
+        const matrix = [];
+        for (let i = 0; i <= b.length; i++) matrix[i] = [i];
+        for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
+
+        for (let i = 1; i <= b.length; i++) {
+            for (let j = 1; j <= a.length; j++) {
+                if (b.charAt(i - 1) === a.charAt(j - 1)) {
+                    matrix[i][j] = matrix[i - 1][j - 1];
+                } else {
+                    matrix[i][j] = Math.min(
+                        matrix[i - 1][j - 1] + 1,
+                        Math.min(matrix[i][j - 1] + 1, matrix[i - 1][j] + 1)
+                    );
+                }
+            }
+        }
+        return matrix[b.length][a.length];
+    }
+
+    // Fuzzy Match Confidence Scorer (Returns 0.0 to 1.0)
+    function calculateFuzzyMatchScore(query, targetText) {
+        const q = query.toLowerCase().trim();
+        const target = targetText.toLowerCase().trim();
+
+        if (target.includes(q)) return 1.0;
+
+        const qTokens = q.split(/\s+/);
+        const targetTokens = target.split(/\s+/);
+
+        let score = 0;
+        for (const qt of qTokens) {
+            if (qt.length <= 1) continue;
+            let bestTokenScore = 0;
+            for (const tt of targetTokens) {
+                if (tt.includes(qt) || qt.includes(tt)) {
+                    bestTokenScore = Math.max(bestTokenScore, 0.85);
+                } else {
+                    const dist = getLevenshteinDistance(qt, tt);
+                    const maxLen = Math.max(qt.length, tt.length);
+                    const similarity = 1 - (dist / maxLen);
+                    if (similarity >= 0.4) {
+                        bestTokenScore = Math.max(bestTokenScore, similarity);
+                    }
+                }
+            }
+            score += bestTokenScore;
+        }
+
+        return score / Math.max(1, qTokens.length);
+    }
+
+    function setupMapSearchAutocomplete(mode) {
+        const input = document.getElementById(`${mode}-room-map-search`);
+        const suggestionsBox = document.getElementById(`${mode}-map-search-suggestions`);
+        if (!input || !suggestionsBox) return;
+
+        let debounceTimer = null;
+
+        input.addEventListener('input', (e) => {
+            const rawQuery = e.target.value.trim();
+            clearTimeout(debounceTimer);
+
+            if (rawQuery.length < 2) {
+                suggestionsBox.classList.add('hidden');
+                suggestionsBox.innerHTML = '';
+                return;
+            }
+
+            debounceTimer = setTimeout(async () => {
+                let html = '';
+                const normalized = normalizeQueryForLocation(rawQuery);
+
+                // Fuzzy Match on POPULAR_LOCATIONS
+                const scoredLocations = POPULAR_LOCATIONS.map(loc => {
+                    const fullStr = `${loc.title} ${loc.city} ${loc.address} ${loc.category}`;
+                    const score = Math.max(
+                        calculateFuzzyMatchScore(rawQuery, fullStr),
+                        calculateFuzzyMatchScore(normalized, fullStr)
+                    );
+                    return { ...loc, score };
+                }).filter(l => l.score >= 0.35)
+                  .sort((a, b) => b.score - a.score);
+
+                scoredLocations.forEach(item => {
+                    const iconHtml = getLocationCategoryIcon(item.category);
+                    const catBadge = item.category ? item.category.toUpperCase() : 'PLACE';
+                    html += `
+                        <div onclick="selectLocationPrediction(${item.lat}, ${item.lng}, '${item.address.replace(/'/g, "\\'")}', '${mode}')" class="p-3 hover:bg-slate-50 cursor-pointer transition-colors flex items-start justify-between gap-3 text-xs border-b border-slate-50">
+                            <div class="flex items-start gap-2.5">
+                                ${iconHtml}
+                                <div>
+                                    <div class="font-bold text-slate-900 flex items-center gap-1.5">
+                                        ${KaghanSafe.escapeHTML(item.title)}
+                                    </div>
+                                    <div class="text-[10px] text-slate-500">${KaghanSafe.escapeHTML(item.address)}</div>
+                                </div>
+                            </div>
+                            <span class="text-[9px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded font-semibold shrink-0">${catBadge}</span>
+                        </div>
+                    `;
+                });
+
+                // Fetch live API predictions from Nominatim (using normalized query for high accuracy)
+                try {
+                    const searchTerms = Array.from(new Set([rawQuery, normalized]));
+                    for (const term of searchTerms) {
+                        const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(term)}&limit=5`);
+                        const apiResults = await res.json();
+                        if (apiResults && apiResults.length > 0) {
+                            apiResults.forEach(item => {
+                                const lat = parseFloat(item.lat);
+                                const lng = parseFloat(item.lon);
+                                const name = item.display_name.split(',')[0];
+                                const typeBadge = (item.type || 'MAP').toUpperCase();
+                                html += `
+                                    <div onclick="selectLocationPrediction(${lat}, ${lng}, '${item.display_name.replace(/'/g, "\\'")}', '${mode}')" class="p-3 hover:bg-slate-50 cursor-pointer transition-colors flex items-start justify-between gap-3 text-xs border-b border-slate-50">
+                                        <div class="flex items-start gap-2.5">
+                                            <i class="fa-solid fa-magnifying-glass text-blue-500 mt-0.5 text-xs shrink-0"></i>
+                                            <div>
+                                                <div class="font-bold text-slate-900">${KaghanSafe.escapeHTML(name)}</div>
+                                                <div class="text-[10px] text-slate-500">${KaghanSafe.escapeHTML(item.display_name)}</div>
+                                            </div>
+                                        </div>
+                                        <span class="text-[9px] bg-blue-50 text-blue-700 px-2 py-0.5 rounded font-semibold shrink-0">${typeBadge}</span>
+                                    </div>
+                                `;
+                            });
+                            break; // Stop after first successful result list
+                        }
+                    }
+                } catch (err) {
+                    console.warn("Autocomplete API fetch error:", err);
+                }
+
+                if (html) {
+                    suggestionsBox.innerHTML = html;
+                    suggestionsBox.classList.remove('hidden');
+                } else {
+                    suggestionsBox.classList.add('hidden');
+                }
+            }, 250);
+        });
+
+        // Hide suggestions when clicking outside
+        document.addEventListener('click', (evt) => {
+            if (!input.contains(evt.target) && !suggestionsBox.contains(evt.target)) {
+                suggestionsBox.classList.add('hidden');
+            }
+        });
+    }
+
     window.searchAdminMapLocation = async function(mode) {
         const searchInput = document.getElementById(`${mode}-room-map-search`);
         if (!searchInput || !searchInput.value.trim()) {
-            if (window.KaghanUI) KaghanUI.showToast('Please type an area or city name', 'warning');
+            if (window.KaghanUI) KaghanUI.showToast('Please type an area, resort, mall, or place name', 'warning');
             return;
         }
 
-        const query = searchInput.value.trim();
-        const btn = searchInput.nextElementSibling;
+        const rawQuery = searchInput.value.trim();
+        const normalized = normalizeQueryForLocation(rawQuery);
+        const btn = document.getElementById(`${mode}-room-map-search-btn`) || searchInput.nextElementSibling;
         const origBtnText = btn ? btn.textContent : 'Search';
         if (btn) btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
 
         try {
-            const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`);
-            const results = await res.json();
+            // Try 1: Raw Query
+            let res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(rawQuery)}&limit=1`);
+            let results = await res.json();
+
+            // Try 2: Normalized / Corrected Spelling Query
+            if ((!results || results.length === 0) && normalized !== rawQuery) {
+                res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(normalized)}&limit=1`);
+                results = await res.json();
+            }
+
+            // Try 3: Normalized Query + " Pakistan"
+            if (!results || results.length === 0) {
+                res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(normalized + ', Pakistan')}&limit=1`);
+                results = await res.json();
+            }
+
+            // Try 4: Top Fuzzy Local Match Fallback (Resorts, Malls, Shops, Attractions)
+            if (!results || results.length === 0) {
+                const bestLocal = POPULAR_LOCATIONS.map(loc => ({
+                    ...loc,
+                    score: calculateFuzzyMatchScore(rawQuery, `${loc.title} ${loc.city} ${loc.address} ${loc.category}`)
+                })).sort((a, b) => b.score - a.score)[0];
+
+                if (bestLocal && bestLocal.score >= 0.25) {
+                    selectLocationPrediction(bestLocal.lat, bestLocal.lng, bestLocal.address, mode);
+                    if (window.KaghanUI) KaghanUI.showToast(`Found location: ${bestLocal.title}`, 'success');
+                    return;
+                }
+            }
 
             if (results && results.length > 0) {
                 const loc = results[0];
                 const lat = parseFloat(loc.lat);
                 const lng = parseFloat(loc.lon);
-
-                document.getElementById(`${mode}-room-lat`).value = lat;
-                document.getElementById(`${mode}-room-lng`).value = lng;
-
-                const mapObj = mode === 'add' ? addRoomMap : editRoomMap;
-                const markerObj = mode === 'add' ? addRoomMarker : editRoomMarker;
-
-                if (mapObj && markerObj) {
-                    mapObj.setView([lat, lng], 15);
-                    markerObj.setLatLng([lat, lng]);
-                }
-
-                const detectedText = document.getElementById(`${mode}-map-detected-text`);
-                const detectedBox = document.getElementById(`${mode}-map-detected-address`);
-                const addrInput = document.getElementById(`${mode}-room-address`);
-                if (addrInput) addrInput.value = loc.display_name;
-                if (detectedText) detectedText.textContent = loc.display_name;
-                if (detectedBox) detectedBox.classList.remove('hidden');
-
+                selectLocationPrediction(lat, lng, loc.display_name, mode);
                 if (window.KaghanUI) KaghanUI.showToast(`Pinned location: ${loc.display_name.split(',')[0]}`, 'success');
             } else {
-                if (window.KaghanUI) KaghanUI.showToast('Location not found. Try specifying city e.g. "Islamabad"', 'warning');
+                if (window.KaghanUI) KaghanUI.showToast(`Location not found for "${rawQuery}". Try typing city e.g. "Islamabad"`, 'warning');
             }
         } catch (err) {
             console.error("Map search error:", err);
@@ -284,35 +652,44 @@
         setTimeout(() => {
             modal.classList.remove('opacity-0');
             
-            // Initialize Edit Map
+            // Initialize Edit Map with Google Maps Tiles & Marker
             const lat = room.lat || 33.7294; // Default to Islamabad
             const lng = room.lng || 73.0931;
             document.getElementById('edit-room-lat').value = lat;
             document.getElementById('edit-room-lng').value = lng;
+
+            setupMapSearchAutocomplete('edit');
+            const initialAddr = room.address || (room.locationName ? `${room.locationName}, ${room.location}` : 'Islamabad, Pakistan');
+            updateMapBadgeDisplay(lat, lng, initialAddr, 'edit');
             
             if (!editRoomMap) {
-                editRoomMap = L.map('edit-room-map').setView([lat, lng], 11);
-                L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-                    attribution: '&copy; OpenStreetMap'
+                editRoomMap = L.map('edit-room-map').setView([lat, lng], 14);
+                editMapTileLayer = L.tileLayer(GOOGLE_MAPS_TILES.roadmap, {
+                    maxZoom: 20,
+                    attribution: '&copy; Google Maps'
                 }).addTo(editRoomMap);
-                editRoomMarker = L.marker([lat, lng], {draggable: true}).addTo(editRoomMap);
+
+                editRoomMarker = createGooglePinMarker(lat, lng);
+                if (editRoomMarker) editRoomMarker.addTo(editRoomMap);
                 
                 editRoomMap.on('click', (e) => {
-                    editRoomMarker.setLatLng(e.latlng);
+                    if (editRoomMarker) editRoomMarker.setLatLng(e.latlng);
                     document.getElementById('edit-room-lat').value = e.latlng.lat;
                     document.getElementById('edit-room-lng').value = e.latlng.lng;
                     reverseGeocodeAdminMap(e.latlng.lat, e.latlng.lng, 'edit');
                 });
                 
-                editRoomMarker.on('dragend', (e) => {
-                    const position = editRoomMarker.getLatLng();
-                    document.getElementById('edit-room-lat').value = position.lat;
-                    document.getElementById('edit-room-lng').value = position.lng;
-                    reverseGeocodeAdminMap(position.lat, position.lng, 'edit');
-                });
+                if (editRoomMarker) {
+                    editRoomMarker.on('dragend', (e) => {
+                        const position = editRoomMarker.getLatLng();
+                        document.getElementById('edit-room-lat').value = position.lat;
+                        document.getElementById('edit-room-lng').value = position.lng;
+                        reverseGeocodeAdminMap(position.lat, position.lng, 'edit');
+                    });
+                }
             } else {
-                editRoomMap.setView([lat, lng], 11);
-                editRoomMarker.setLatLng([lat, lng]);
+                editRoomMap.setView([lat, lng], 14);
+                if (editRoomMarker) editRoomMarker.setLatLng([lat, lng]);
                 editRoomMap.invalidateSize();
             }
         }, 300); // give time for transition so map size calculates correctly
@@ -481,35 +858,43 @@
             setTimeout(() => {
                 modal.classList.remove('opacity-0');
                 
-                // Initialize Add Map
+                // Initialize Add Map with Google Maps Tiles & Marker
                 const lat = 33.7294; // Default to Islamabad
                 const lng = 73.0931;
                 document.getElementById('add-room-lat').value = lat;
                 document.getElementById('add-room-lng').value = lng;
+
+                setupMapSearchAutocomplete('add');
+                updateMapBadgeDisplay(lat, lng, 'Islamabad, Pakistan', 'add');
                 
                 if (!addRoomMap) {
-                    addRoomMap = L.map('add-room-map').setView([lat, lng], 11);
-                    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-                        attribution: '&copy; OpenStreetMap'
+                    addRoomMap = L.map('add-room-map').setView([lat, lng], 14);
+                    addMapTileLayer = L.tileLayer(GOOGLE_MAPS_TILES.roadmap, {
+                        maxZoom: 20,
+                        attribution: '&copy; Google Maps'
                     }).addTo(addRoomMap);
-                    addRoomMarker = L.marker([lat, lng], {draggable: true}).addTo(addRoomMap);
+
+                    addRoomMarker = createGooglePinMarker(lat, lng);
+                    if (addRoomMarker) addRoomMarker.addTo(addRoomMap);
                     
                     addRoomMap.on('click', (e) => {
-                        addRoomMarker.setLatLng(e.latlng);
+                        if (addRoomMarker) addRoomMarker.setLatLng(e.latlng);
                         document.getElementById('add-room-lat').value = e.latlng.lat;
                         document.getElementById('add-room-lng').value = e.latlng.lng;
                         reverseGeocodeAdminMap(e.latlng.lat, e.latlng.lng, 'add');
                     });
                     
-                    addRoomMarker.on('dragend', (e) => {
-                        const position = addRoomMarker.getLatLng();
-                        document.getElementById('add-room-lat').value = position.lat;
-                        document.getElementById('add-room-lng').value = position.lng;
-                        reverseGeocodeAdminMap(position.lat, position.lng, 'add');
-                    });
+                    if (addRoomMarker) {
+                        addRoomMarker.on('dragend', (e) => {
+                            const position = addRoomMarker.getLatLng();
+                            document.getElementById('add-room-lat').value = position.lat;
+                            document.getElementById('add-room-lng').value = position.lng;
+                            reverseGeocodeAdminMap(position.lat, position.lng, 'add');
+                        });
+                    }
                 } else {
-                    addRoomMap.setView([lat, lng], 11);
-                    addRoomMarker.setLatLng([lat, lng]);
+                    addRoomMap.setView([lat, lng], 14);
+                    if (addRoomMarker) addRoomMarker.setLatLng([lat, lng]);
                     addRoomMap.invalidateSize();
                 }
             }, 300);
@@ -851,21 +1236,29 @@
             setupCloudinaryGallery('upload-edit-room-img-btn', 'edit-room-gallery-preview', 'edit-room-images-data');
             setupCloudinaryGallery('upload-add-room-img-btn', 'add-room-gallery-preview', 'add-room-images-data');
             
-            // Initialize TinyMCE editors
+            // Initialize TinyMCE editors with high z-index for dropdowns & popups
             if (typeof tinymce !== 'undefined') {
                 tinymce.init({
                     selector: '#add-room-desc, #edit-room-desc',
                     plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
                     toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
-                    height: 300,
+                    height: 320,
                     promotion: false,
                     branding: false,
+                    zIndex: 999999,
                     setup: function (editor) {
-                        editor.on('change', function () {
+                        editor.on('change keyup NodeChange', function () {
                             editor.save();
                         });
                     }
                 });
+
+                // Prevent modal focus trap from blocking TinyMCE dropdowns, popups, and dialogs
+                document.addEventListener('focusin', (e) => {
+                    if (e.target.closest && e.target.closest('.tox-tinymce-aux, .tox-dialog, .tox-menu, .tox-pop, .tox')) {
+                        e.stopImmediatePropagation();
+                    }
+                }, true);
             }
         }
     };

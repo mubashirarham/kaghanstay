@@ -129,4 +129,17 @@
         const doc = await fdb.collection('users').doc(uid).get();
         return doc.exists ? doc.data() : null;
     };
+
+    // Admin updates user role, profile details, and assigned permissions
+    db.adminUpdateUser = async (id, data) => {
+        delete data.password;
+        await fdb.collection('users').doc(id).set(data, { merge: true });
+        
+        const currentUser = db.getCurrentUser();
+        if (currentUser && (currentUser.id === id || currentUser.uid === id)) {
+            const mergedUser = { ...currentUser, ...data };
+            localStorage.setItem('kaghan_hotel_session', JSON.stringify(mergedUser));
+        }
+        return true;
+    };
 })();

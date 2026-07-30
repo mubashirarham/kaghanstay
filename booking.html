@@ -199,19 +199,55 @@
                     <!-- Hidden field for compatibility with booking form submit -->
                     <input type="hidden" id="book-room-id" value="">
 
-                    <!-- Rent Billing Cycle (Visible/Enabled for Apartments) -->
-                    <div id="billing-cycle-box" class="mt-8 hidden p-5 bg-gradient-to-r from-slate-50 to-white rounded-2xl border-2 border-slate-200/90 shadow-sm">
-                        <label class="block text-[10px] uppercase tracking-widest text-[#C5A059] font-black mb-3">Rent Billing Cycle</label>
-                        <div class="relative mb-2">
-                            <i class="fa-solid fa-clock-rotate-left absolute left-4 top-4 text-slate-400"></i>
-                            <select id="book-billing-cycle" onchange="onBillingCycleChange()" class="w-full border-2 border-slate-200 rounded-xl pl-11 pr-11 py-3.5 outline-none focus:border-[#C5A059] text-sm bg-white text-slate-800 font-semibold cursor-pointer appearance-none shadow-xs">
-                                <option value="daily">Daily Basis</option>
-                                <option value="weekly">Weekly Basis</option>
-                                <option value="monthly">Monthly Basis</option>
-                            </select>
-                            <i class="fa-solid fa-chevron-down absolute right-4 top-4.5 text-slate-400 pointer-events-none text-xs"></i>
+                    <!-- Rent Billing Cycle & Interactive Rate Plan Comparison -->
+                    <div id="billing-cycle-box" class="mt-8 hidden p-6 bg-gradient-to-br from-slate-50 via-white to-amber-50/20 rounded-3xl border-2 border-[#C5A059]/30 shadow-md">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <span class="text-[10px] uppercase font-black tracking-widest text-[#C5A059] block">Rate Plan & Rate Comparison</span>
+                                <h4 class="text-sm font-bold text-slate-900 outfit">Select Your Preferred Duration Rate Plan</h4>
+                            </div>
+                            <span class="text-[9px] bg-emerald-50 text-emerald-700 font-extrabold px-2.5 py-1 rounded-full border border-emerald-200 uppercase">Save Up to 35%</span>
                         </div>
-                        <p class="text-slate-500 text-[10px] font-medium leading-relaxed"><i class="fa-solid fa-circle-info text-[#C5A059] mr-1"></i> Select daily, weekly, or monthly cycle to unlock discounted rates for longer stays.</p>
+
+                        <!-- Dropdown Select (Hidden visually, synced with cards) -->
+                        <select id="book-billing-cycle" onchange="onBillingCycleChange()" class="hidden">
+                            <option value="daily" selected>Daily Basis</option>
+                            <option value="weekly">Weekly Basis</option>
+                            <option value="monthly">Monthly Basis</option>
+                        </select>
+
+                        <!-- Interactive 3-Card Rate Comparison Grid -->
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3" id="booking-rate-cards-grid">
+                            <!-- Daily Plan Card -->
+                            <div onclick="selectBookingRatePlan('daily')" id="rate-card-daily" class="rate-card-item p-4 rounded-2xl border-2 border-[#C5A059] bg-white cursor-pointer transition-all shadow-sm relative hover:scale-[1.02]">
+                                <div class="flex justify-between items-center mb-1.5">
+                                    <span class="text-xs font-black uppercase text-slate-900">Daily Stay</span>
+                                    <span class="w-3 h-3 rounded-full border-2 border-[#C5A059] bg-[#C5A059]" id="rate-dot-daily"></span>
+                                </div>
+                                <div class="text-lg font-black text-slate-900 outfit" id="rate-price-daily">PKR 0</div>
+                                <div class="text-[10px] text-slate-400 font-medium">Standard nightly rate</div>
+                            </div>
+
+                            <!-- Weekly Plan Card (-15%) -->
+                            <div onclick="selectBookingRatePlan('weekly')" id="rate-card-weekly" class="rate-card-item p-4 rounded-2xl border-2 border-slate-200 bg-white hover:border-[#C5A059]/60 cursor-pointer transition-all shadow-sm relative hover:scale-[1.02]">
+                                <div class="flex justify-between items-center mb-1.5">
+                                    <span class="text-xs font-black uppercase text-emerald-700">Weekly Stay</span>
+                                    <span class="text-[8px] bg-emerald-100 text-emerald-800 font-extrabold px-1.5 py-0.5 rounded">SAVE 15%</span>
+                                </div>
+                                <div class="text-lg font-black text-emerald-700 outfit" id="rate-price-weekly">PKR 0</div>
+                                <div class="text-[10px] text-emerald-600 font-bold" id="rate-save-weekly">Save 15% / night</div>
+                            </div>
+
+                            <!-- Monthly Plan Card (-35%) -->
+                            <div onclick="selectBookingRatePlan('monthly')" id="rate-card-monthly" class="rate-card-item p-4 rounded-2xl border-2 border-slate-200 bg-white hover:border-[#C5A059]/60 cursor-pointer transition-all shadow-sm relative hover:scale-[1.02]">
+                                <div class="flex justify-between items-center mb-1.5">
+                                    <span class="text-xs font-black uppercase text-indigo-700">Monthly Stay</span>
+                                    <span class="text-[8px] bg-indigo-100 text-indigo-800 font-extrabold px-1.5 py-0.5 rounded">BEST VALUE -35%</span>
+                                </div>
+                                <div class="text-lg font-black text-indigo-700 outfit" id="rate-price-monthly">PKR 0</div>
+                                <div class="text-[10px] text-indigo-600 font-bold" id="rate-save-monthly">Save 35% / night</div>
+                            </div>
+                        </div>
                     </div>
                     <!-- Upcoming Reserved Dates Box -->
                     <div id="reserved-dates-box" class="mt-6 hidden bg-rose-50/70 border-2 border-rose-200 p-5 rounded-2xl shadow-xs">
@@ -1238,35 +1274,79 @@
         };
 
         window.handleCalendarDayClick = (dateStr) => {
+            const cycle = document.getElementById('book-billing-cycle')?.value || 'daily';
+
             if (!selectedStartDate || (selectedStartDate && selectedEndDate)) {
                 selectedStartDate = dateStr;
-                selectedEndDate = null;
-                KaghanUI.showToast("Check-in date selected. Choose check-out date.", "info");
+                const startObj = new Date(dateStr + 'T00:00:00');
+                const defaultEndObj = new Date(startObj);
+                
+                if (cycle === 'weekly') {
+                    defaultEndObj.setDate(startObj.getDate() + 7);
+                    selectedEndDate = defaultEndObj.toISOString().split('T')[0];
+                    if (window.KaghanUI) KaghanUI.showToast("Weekly Rate active: 7 nights minimum auto-locked. Click any later date to extend your stay!", "success");
+                } else if (cycle === 'monthly') {
+                    defaultEndObj.setDate(startObj.getDate() + 30);
+                    selectedEndDate = defaultEndObj.toISOString().split('T')[0];
+                    if (window.KaghanUI) KaghanUI.showToast("Monthly Rate active: 30 nights minimum auto-locked. Click any later date to extend your stay!", "success");
+                } else {
+                    selectedEndDate = null;
+                    if (window.KaghanUI) KaghanUI.showToast("Check-in date selected. Choose check-out date.", "info");
+                }
             } else if (selectedStartDate && !selectedEndDate) {
                 if (dateStr <= selectedStartDate) {
                     selectedStartDate = dateStr;
-                    KaghanUI.showToast("Check-in date updated. Choose check-out date.", "info");
+                    const startObj = new Date(dateStr + 'T00:00:00');
+                    const defaultEndObj = new Date(startObj);
+                    
+                    if (cycle === 'weekly') {
+                        defaultEndObj.setDate(startObj.getDate() + 7);
+                        selectedEndDate = defaultEndObj.toISOString().split('T')[0];
+                        if (window.KaghanUI) KaghanUI.showToast("Weekly Rate active: 7 nights minimum auto-locked. Click a later date to add more days!", "success");
+                    } else if (cycle === 'monthly') {
+                        defaultEndObj.setDate(startObj.getDate() + 30);
+                        selectedEndDate = defaultEndObj.toISOString().split('T')[0];
+                        if (window.KaghanUI) KaghanUI.showToast("Monthly Rate active: 30 nights minimum auto-locked. Click a later date to add more days!", "success");
+                    } else {
+                        selectedEndDate = null;
+                        if (window.KaghanUI) KaghanUI.showToast("Check-in date updated. Choose check-out date.", "info");
+                    }
                 } else {
-                    // Check if there is any booked date in between selected range
-                    let hasOverlap = false;
-                    let curr = new Date(selectedStartDate);
-                    let target = new Date(dateStr);
-                    while (curr < target) {
-                        const currStr = curr.toISOString().split('T')[0];
-                        if (bookedDatesList.includes(currStr)) {
-                            hasOverlap = true;
-                            break;
+                    const startObj = new Date(selectedStartDate + 'T00:00:00');
+                    const clickedObj = new Date(dateStr + 'T00:00:00');
+                    const nNights = Math.ceil((clickedObj - startObj) / (1000 * 3600 * 24));
+
+                    if (cycle === 'weekly' && nNights < 7) {
+                        const minEnd = new Date(startObj);
+                        minEnd.setDate(startObj.getDate() + 7);
+                        selectedEndDate = minEnd.toISOString().split('T')[0];
+                        if (window.KaghanUI) KaghanUI.showToast("Weekly Rate requires minimum 7 nights. 7 days auto-locked (click 8+ days to add extra nights!).", "warning");
+                    } else if (cycle === 'monthly' && nNights < 30) {
+                        const minEnd = new Date(startObj);
+                        minEnd.setDate(startObj.getDate() + 30);
+                        selectedEndDate = minEnd.toISOString().split('T')[0];
+                        if (window.KaghanUI) KaghanUI.showToast("Monthly Rate requires minimum 30 nights. 30 days auto-locked (click 31+ days to add extra nights!).", "warning");
+                    } else {
+                        // Check for booked date overlaps
+                        let hasOverlap = false;
+                        let curr = new Date(selectedStartDate + 'T00:00:00');
+                        while (curr < clickedObj) {
+                            const currStr = curr.toISOString().split('T')[0];
+                            if (bookedDatesList.includes(currStr)) {
+                                hasOverlap = true;
+                                break;
+                            }
+                            curr.setDate(curr.getDate() + 1);
                         }
-                        curr.setDate(curr.getDate() + 1);
-                    }
 
-                    if (hasOverlap) {
-                        KaghanUI.showToast("Selected range overlaps with an existing booking. Please choose free dates.", "error");
-                        return;
-                    }
+                        if (hasOverlap) {
+                            if (window.KaghanUI) KaghanUI.showToast("Selected range overlaps with an existing booking. Please choose free dates.", "error");
+                            return;
+                        }
 
-                    selectedEndDate = dateStr;
-                    KaghanUI.showToast("Stay dates selected!", "success");
+                        selectedEndDate = dateStr;
+                        if (window.KaghanUI) KaghanUI.showToast(`Stay extended to ${nNights} nights! Weekly/Monthly discount applied to all days.`, "success");
+                    }
                 }
             }
 
@@ -1403,7 +1483,72 @@
             }
         }
 
-        // Live calculation logic
+        // Select Booking Rate Plan (Daily / Weekly / Monthly)
+        window.selectBookingRatePlan = function(type) {
+            const selectEl = document.getElementById('book-billing-cycle');
+            if (selectEl) {
+                selectEl.value = type;
+            }
+
+            const cards = ['daily', 'weekly', 'monthly'];
+            cards.forEach(c => {
+                const card = document.getElementById(`rate-card-${c}`);
+                const dot = document.getElementById(`rate-dot-${c}`);
+                if (!card) return;
+
+                if (c === type) {
+                    card.className = "rate-card-item p-4 rounded-2xl border-2 border-[#C5A059] bg-amber-50/20 shadow-md relative cursor-pointer transition-all scale-[1.02]";
+                    if (dot) dot.className = "w-3 h-3 rounded-full border-2 border-[#C5A059] bg-[#C5A059]";
+                } else {
+                    card.className = "rate-card-item p-4 rounded-2xl border-2 border-slate-200 bg-white hover:border-[#C5A059]/60 cursor-pointer transition-all shadow-sm relative hover:scale-[1.01]";
+                    if (dot) dot.className = "w-3 h-3 rounded-full border-2 border-slate-300 bg-white";
+                }
+            });
+
+            // Auto-adjust Check-in and Check-out dates for Weekly (7 days) and Monthly (30 days)
+            const checkInInput = document.getElementById('book-check-in');
+            const checkOutInput = document.getElementById('book-check-out');
+
+            let checkInVal = checkInInput ? checkInInput.value : '';
+            if (!checkInVal) {
+                checkInVal = new Date().toISOString().split('T')[0];
+                if (checkInInput) checkInInput.value = checkInVal;
+                selectedStartDate = checkInVal;
+            } else {
+                selectedStartDate = checkInVal;
+            }
+
+            const startDateObj = new Date(checkInVal + 'T00:00:00');
+            const endDateObj = new Date(startDateObj);
+
+            if (type === 'weekly') {
+                endDateObj.setDate(startDateObj.getDate() + 7);
+                selectedEndDate = endDateObj.toISOString().split('T')[0];
+                if (checkOutInput) checkOutInput.value = selectedEndDate;
+                if (window.KaghanUI) KaghanUI.showToast("Weekly Rate Selected! 7 Nights auto-selected on calendar (Save 15%)", "success");
+            } else if (type === 'monthly') {
+                endDateObj.setDate(startDateObj.getDate() + 30);
+                selectedEndDate = endDateObj.toISOString().split('T')[0];
+                if (checkOutInput) checkOutInput.value = selectedEndDate;
+                if (window.KaghanUI) KaghanUI.showToast("Monthly Rate Selected! 30 Nights auto-selected on calendar (Save 35%)", "success");
+            } else {
+                endDateObj.setDate(startDateObj.getDate() + 1);
+                selectedEndDate = endDateObj.toISOString().split('T')[0];
+                if (checkOutInput) checkOutInput.value = selectedEndDate;
+                if (window.KaghanUI) KaghanUI.showToast("Daily Rate Selected (Standard Nightly Rate)", "info");
+            }
+
+            renderCalendar();
+            calculatePrice();
+
+            // Scroll to interactive calendar view so user sees highlighted range
+            const calendarGrid = document.getElementById('calendar-days-grid');
+            if (calendarGrid) {
+                calendarGrid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        };
+
+        // Live calculation logic with Dynamic Rate Comparison & CTA Button Label
         async function calculatePrice() {
             if (!selectedRoom) return;
 
@@ -1416,24 +1561,81 @@
             const timeDiff = checkOutDate.getTime() - checkInDate.getTime();
             stayNights = Math.ceil(timeDiff / (1000 * 3600 * 24)) || 1;
             
-            let rate = selectedRoom.price;
-            let cycleText = 'Night';
-            let subtotal = rate * stayNights;
-            
-            const billingCycle = document.getElementById('book-billing-cycle').value;
-            if (billingCycle === 'weekly' && selectedRoom.priceWeekly) {
-                rate = selectedRoom.priceWeekly;
-                cycleText = 'Week';
-                subtotal = Math.round((rate / 7) * stayNights);
-            } else if (billingCycle === 'monthly' && selectedRoom.priceMonthly) {
-                rate = selectedRoom.priceMonthly;
-                cycleText = 'Month';
-                subtotal = Math.round((rate / 30) * stayNights);
-            } else {
-                rate = selectedRoom.priceDaily || selectedRoom.price;
-                cycleText = 'Night';
-                subtotal = rate * stayNights;
+            const dailyRate = Number(selectedRoom.priceDaily || selectedRoom.price || 0);
+            let weeklyRatePerNight = Math.round(dailyRate * 0.85);
+            if (selectedRoom.priceWeekly && Number(selectedRoom.priceWeekly) > 0) {
+                const wVal = Number(selectedRoom.priceWeekly);
+                weeklyRatePerNight = wVal < (dailyRate * 3) ? wVal : Math.round(wVal / 7);
             }
+
+            let monthlyRatePerNight = Math.round(dailyRate * 0.65);
+            if (selectedRoom.priceMonthly && Number(selectedRoom.priceMonthly) > 0) {
+                const mVal = Number(selectedRoom.priceMonthly);
+                monthlyRatePerNight = mVal < (dailyRate * 10) ? mVal : Math.round(mVal / 30);
+            }
+
+            // Update Rate Comparison Cards Grid Text & Savings
+            const priceDailyEl = document.getElementById('rate-price-daily');
+            const priceWeeklyEl = document.getElementById('rate-price-weekly');
+            const priceMonthlyEl = document.getElementById('rate-price-monthly');
+            const saveWeeklyEl = document.getElementById('rate-save-weekly');
+            const saveMonthlyEl = document.getElementById('rate-save-monthly');
+
+            if (priceDailyEl) priceDailyEl.innerText = `${KaghanUI.formatPKR(dailyRate)}/nt`;
+            if (priceWeeklyEl) priceWeeklyEl.innerText = `${KaghanUI.formatPKR(weeklyRatePerNight)}/nt`;
+            if (priceMonthlyEl) priceMonthlyEl.innerText = `${KaghanUI.formatPKR(monthlyRatePerNight)}/nt`;
+
+            if (saveWeeklyEl) {
+                const diffW = dailyRate - weeklyRatePerNight;
+                saveWeeklyEl.innerText = diffW > 0 ? `Save ${KaghanUI.formatPKR(diffW)}/night` : 'Save 15% / night';
+            }
+            if (saveMonthlyEl) {
+                const diffM = dailyRate - monthlyRatePerNight;
+                saveMonthlyEl.innerText = diffM > 0 ? `Save ${KaghanUI.formatPKR(diffM)}/night` : 'Best Value -35%';
+            }
+
+            // Auto-detect & auto-upgrade rate plan tier based on stayNights (7+ days = Weekly 15% OFF, 30+ days = Monthly 35% OFF)
+            const billingCycleSelect = document.getElementById('book-billing-cycle');
+            let billingCycle = billingCycleSelect ? billingCycleSelect.value : 'daily';
+
+            if (stayNights >= 30) {
+                billingCycle = 'monthly';
+                if (billingCycleSelect) billingCycleSelect.value = 'monthly';
+            } else if (stayNights >= 7) {
+                billingCycle = 'weekly';
+                if (billingCycleSelect) billingCycleSelect.value = 'weekly';
+            }
+
+            // Sync rate plan cards visual highlight state
+            ['daily', 'weekly', 'monthly'].forEach(c => {
+                const card = document.getElementById(`rate-card-${c}`);
+                const dot = document.getElementById(`rate-dot-${c}`);
+                if (!card) return;
+
+                if (c === billingCycle) {
+                    card.className = "rate-card-item p-4 rounded-2xl border-2 border-[#C5A059] bg-amber-50/20 shadow-md relative cursor-pointer transition-all scale-[1.02]";
+                    if (dot) dot.className = "w-3 h-3 rounded-full border-2 border-[#C5A059] bg-[#C5A059]";
+                } else {
+                    card.className = "rate-card-item p-4 rounded-2xl border-2 border-slate-200 bg-white hover:border-[#C5A059]/60 cursor-pointer transition-all shadow-sm relative hover:scale-[1.01]";
+                    if (dot) dot.className = "w-3 h-3 rounded-full border-2 border-slate-300 bg-white";
+                }
+            });
+
+            let effectiveRatePerNight = dailyRate;
+            let cycleText = 'Night';
+
+            if (billingCycle === 'monthly' || stayNights >= 30) {
+                effectiveRatePerNight = monthlyRatePerNight;
+                cycleText = 'Month';
+            } else if (billingCycle === 'weekly' || stayNights >= 7) {
+                effectiveRatePerNight = weeklyRatePerNight;
+                cycleText = 'Week';
+            }
+
+            // Subtotal calculated with full discount for ALL nights (including 7+ and 30+ extra days)
+            const rawSubtotal = dailyRate * stayNights;
+            const subtotal = effectiveRatePerNight * stayNights;
+            const stayDiscountAmount = rawSubtotal - subtotal;
             
             const tax = Math.round(subtotal * 0.15); // 15% GST
             
@@ -1490,7 +1692,7 @@
             
             finalPrice = (subtotal + tax + addonsTotal) - couponDiscount;
             
-            document.getElementById('calc-rate').innerText = `${KaghanUI.formatPKR(rate)} / ${cycleText}`;
+            document.getElementById('calc-rate').innerText = `${KaghanUI.formatPKR(effectiveRatePerNight)} / night`;
             document.getElementById('calc-nights').innerText = `${stayNights} Night${stayNights > 1 ? 's' : ''}`;
             document.getElementById('calc-subtotal').innerText = KaghanUI.formatPKR(subtotal);
             document.getElementById('calc-tax').innerText = KaghanUI.formatPKR(tax);
@@ -1503,10 +1705,15 @@
             const prevWarning = document.getElementById('booking-availability-warning');
             if (prevWarning) prevWarning.remove();
 
+            const cycleTag = billingCycle === 'monthly' || stayNights >= 30 
+                ? `Monthly Deal -35% (${stayNights} Nights)` 
+                : (billingCycle === 'weekly' || stayNights >= 7 ? `Weekly Deal -15% (${stayNights} Nights)` : 'Daily Rate');
+
             if (!isAvailable) {
                 submitBtn.disabled = true;
                 submitBtn.classList.remove('hover:bg-[#0B0F19]', 'bg-[#C5A059]');
                 submitBtn.classList.add('bg-slate-400', 'cursor-not-allowed');
+                submitBtn.innerHTML = `<i class="fa-solid fa-lock text-xs"></i> Dates Unavailable`;
 
                 const warningDiv = document.createElement('div');
                 warningDiv.id = 'booking-availability-warning';
@@ -1517,6 +1724,7 @@
                 submitBtn.disabled = false;
                 submitBtn.classList.remove('bg-slate-400', 'cursor-not-allowed');
                 submitBtn.classList.add('bg-[#C5A059]', 'hover:bg-[#0B0F19]');
+                submitBtn.innerHTML = `<i class="fa-solid fa-lock text-xs"></i> Confirm Stay — ${KaghanUI.formatPKR(finalPrice)} (${cycleTag})`;
             }
 
             // Trigger progress stepper state updates

@@ -112,22 +112,30 @@ exports.handler = async (event, context) => {
             // Calculate nights
             const stayNights = Math.max(1, Math.ceil((searchOut - searchIn) / (1000 * 3600 * 24)));
             
-            // Subtotal based on billing cycle
-            let rate = room.price || room.priceDaily || 0;
-            let subtotal = 0;
-            const cycle = booking.billingCycle || 'daily';
-
-            if (cycle === 'weekly' && room.priceWeekly) {
-                rate = room.priceWeekly;
-                subtotal = Math.round((rate / 7) * stayNights);
-            } else if (cycle === 'monthly' && room.priceMonthly) {
-                rate = room.priceMonthly;
-                subtotal = Math.round((rate / 30) * stayNights);
-            } else {
-                rate = room.priceDaily || room.price || 0;
-                subtotal = rate * stayNights;
+            // Subtotal based on billing cycle & Admin Panel set prices
+            const dailyRate = Number(room.priceDaily || room.price || 0);
+            let weeklyRatePerNight = Math.round(dailyRate * 0.85);
+            if (room.priceWeekly && Number(room.priceWeekly) > 0) {
+                const wVal = Number(room.priceWeekly);
+                weeklyRatePerNight = wVal < (dailyRate * 3) ? wVal : Math.round(wVal / 7);
             }
 
+            let monthlyRatePerNight = Math.round(dailyRate * 0.65);
+            if (room.priceMonthly && Number(room.priceMonthly) > 0) {
+                const mVal = Number(room.priceMonthly);
+                monthlyRatePerNight = mVal < (dailyRate * 10) ? mVal : Math.round(mVal / 30);
+            }
+
+            let effectiveNightlyRate = dailyRate;
+            let activeCycle = booking.billingCycle || 'daily';
+
+            if (activeCycle === 'monthly' || stayNights >= 30) {
+                effectiveNightlyRate = monthlyRatePerNight;
+            } else if (activeCycle === 'weekly' || stayNights >= 7) {
+                effectiveNightlyRate = weeklyRatePerNight;
+            }
+
+            const subtotal = effectiveNightlyRate * stayNights;
             const tax = Math.round(subtotal * 0.15); // 15% GST
 
             // Upgrades calculations

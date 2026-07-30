@@ -456,12 +456,21 @@
 
                 <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md space-y-6">
                     <div class="flex gap-4 items-center justify-between flex-wrap">
-                        <div class="relative w-full sm:w-80">
-                            <input type="text" id="guest-search-input" placeholder="Search by name, email, phone..." class="w-full border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-xs bg-slate-50 outline-none focus:border-[#D4AF37]">
-                            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-400 text-xs"></i>
+                        <div class="flex gap-3 items-center flex-wrap w-full sm:w-auto">
+                            <div class="relative w-full sm:w-72">
+                                <input type="text" id="guest-search-input" placeholder="Search by name, email, phone..." class="w-full border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-xs bg-slate-50 outline-none focus:border-[#D4AF37]">
+                                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-400 text-xs"></i>
+                            </div>
+                            <select id="guest-role-filter" class="border border-slate-200 rounded-xl px-3 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37] font-medium cursor-pointer">
+                                <option value="">All User Roles</option>
+                                <option value="admin">Admin</option>
+                                <option value="moderator">Moderator</option>
+                                <option value="editor">Editor</option>
+                                <option value="user">User / Guest</option>
+                            </select>
                         </div>
                         <button onclick="openAddUserModal()" class="bg-gradient-to-r from-[#D4AF37] to-[#DC2626] text-white font-bold px-5 py-2.5 rounded-xl hover:opacity-90 transition-all text-xs shadow-md flex items-center gap-2">
-                            <i class="fa-solid fa-user-plus"></i> Add User / Admin
+                            <i class="fa-solid fa-user-plus"></i> Add Account
                         </button>
                     </div>
 
@@ -469,11 +478,12 @@
                         <table class="w-full text-left border-collapse">
                             <thead>
                                 <tr class="border-b border-slate-100 text-slate-400 text-[9px] uppercase tracking-wider font-bold">
-                                    <th class="px-6 py-3">Name</th>
+                                    <th class="px-6 py-3">User Details</th>
                                     <th class="px-6 py-3">Email Address</th>
                                     <th class="px-6 py-3">Phone Line</th>
                                     <th class="px-6 py-3">Role</th>
-                                    <th class="px-6 py-3">Actions</th>
+                                    <th class="px-6 py-3">Granted Permissions</th>
+                                    <th class="px-6 py-3 text-right">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="admin-guests-tbody">
@@ -943,36 +953,64 @@
                         </div>
                         <div class="grid grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Weekly Basis Rate (opt)</label>
-                                <input type="number" id="edit-room-price-weekly" class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Weekly Basis Rate / night (opt)</label>
+                                <input type="number" id="edit-room-price-weekly" class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]" placeholder="e.g. 11000">
                             </div>
                             <div>
-                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Monthly Basis Rate (opt)</label>
-                                <input type="number" id="edit-room-price-monthly" class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Monthly Basis Rate / night (opt)</label>
+                                <input type="number" id="edit-room-price-monthly" class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]" placeholder="e.g. 10000">
                             </div>
                         </div>
                     </div>
 
                     <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm space-y-4">
-                        <h4 class="text-sm font-bold uppercase tracking-wider text-[#D4AF37] mb-2">Location Map & Pinning</h4>
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-sm font-bold uppercase tracking-wider text-[#D4AF37] flex items-center gap-2">
+                                <i class="fa-solid fa-map-location-dot text-[#D4AF37]"></i> Google Maps Location & Pinning
+                            </h4>
+                            <span class="text-[10px] bg-blue-50 text-blue-700 px-2.5 py-1 rounded-full font-bold border border-blue-200/80 flex items-center gap-1">
+                                <i class="fa-brands fa-google text-red-500"></i> Google Maps
+                            </span>
+                        </div>
                         
-                        <!-- Location Search Bar -->
-                        <div>
-                            <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Search City / Area on Map (Google Maps / OpenStreetMap)</label>
+                        <!-- Enhanced Location Search Bar with Live Autocomplete -->
+                        <div class="relative">
+                            <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Search Resorts, Hotels, Malls, Shops, Areas & Landmarks</label>
                             <div class="flex gap-2">
                                 <div class="relative flex-grow">
                                     <i class="fa-solid fa-magnifying-glass-location absolute left-3 top-3 text-slate-400 text-xs"></i>
-                                    <input type="text" id="edit-room-map-search" placeholder="Type city or area e.g. Sector C, Bahria Enclave, Islamabad" class="w-full border border-slate-200 rounded-xl pl-8 pr-3 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]" onkeydown="if(event.key==='Enter'){event.preventDefault();searchAdminMapLocation('edit');}">
+                                    <input type="text" id="edit-room-map-search" placeholder="Type resort, mall, shop, area e.g. Centaurus Mall, Bahria Enclave, Nathia Gali" class="w-full border border-slate-200 rounded-xl pl-8 pr-3 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37] focus:bg-white transition-all" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();searchAdminMapLocation('edit');}">
                                 </div>
-                                <button type="button" onclick="searchAdminMapLocation('edit')" class="bg-[#0B0F19] text-white px-4 py-2.5 rounded-xl text-xs font-bold hover:bg-[#D4AF37] transition-all">Search</button>
+                                <button type="button" onclick="locateCurrentPosition('edit')" class="bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 px-3 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1" title="Detect GPS Location">
+                                    <i class="fa-solid fa-crosshairs text-blue-600"></i> <span class="hidden sm:inline">GPS</span>
+                                </button>
+                                <button type="button" id="edit-room-map-search-btn" onclick="searchAdminMapLocation('edit')" class="bg-[#0B0F19] text-white px-4 py-2.5 rounded-xl text-xs font-bold hover:bg-[#D4AF37] transition-all">Search</button>
                             </div>
-                            <div id="edit-map-detected-address" class="mt-2 text-[10px] text-emerald-600 font-semibold hidden flex items-center gap-1">
-                                <i class="fa-solid fa-location-dot"></i> <span id="edit-map-detected-text"></span>
-                            </div>
+                            
+                            <!-- Live Autocomplete Suggestions Dropdown -->
+                            <div id="edit-map-search-suggestions" class="absolute left-0 right-0 top-full mt-1 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 max-h-60 overflow-y-auto hidden divide-y divide-slate-100"></div>
                         </div>
 
-                        <div id="edit-room-map" class="w-full h-52 rounded-xl border border-slate-200 overflow-hidden z-10"></div>
-                        <p class="text-[10px] text-slate-400 mt-1">Click anywhere on the map or drag the pin to set exact coordinates.</p>
+                        <!-- Map Container & Controls -->
+                        <div class="relative">
+                            <div class="absolute top-3 right-3 z-20 bg-white/95 backdrop-blur-md p-1 rounded-xl shadow-md border border-slate-200/80 flex gap-1 text-[10px] font-bold">
+                                <button type="button" id="edit-map-style-roadmap" onclick="switchMapTileStyle('edit', 'roadmap')" class="px-2.5 py-1 rounded-lg bg-[#0B0F19] text-white transition-all">Map</button>
+                                <button type="button" id="edit-map-style-satellite" onclick="switchMapTileStyle('edit', 'satellite')" class="px-2.5 py-1 rounded-lg text-slate-600 hover:bg-slate-100 transition-all">Satellite</button>
+                            </div>
+                            <div id="edit-room-map" class="w-full h-56 rounded-2xl border border-slate-200 overflow-hidden z-10 shadow-inner"></div>
+                        </div>
+
+                        <!-- Location Address Badge -->
+                        <div id="edit-map-detected-address" class="p-3 bg-slate-50 rounded-xl border border-slate-200/80 space-y-1">
+                            <div class="flex items-center justify-between text-[11px]">
+                                <span class="font-bold text-slate-900 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-location-dot text-red-500"></i> Pinned Google Maps Location:
+                                </span>
+                                <span id="edit-map-coords-badge" class="font-mono text-[10px] text-slate-500">33.7294, 73.0931</span>
+                            </div>
+                            <div id="edit-map-detected-text" class="text-xs text-slate-600 font-medium leading-relaxed">Islamabad, Pakistan</div>
+                        </div>
+
                         <input type="hidden" id="edit-room-lat">
                         <input type="hidden" id="edit-room-lng">
                         <input type="hidden" id="edit-room-address">
@@ -1124,36 +1162,64 @@
                         </div>
                         <div class="grid grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Weekly Basis Rate (opt)</label>
-                                <input type="number" id="add-room-price-weekly" placeholder="PKR" class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Weekly Basis Rate / night (opt)</label>
+                                <input type="number" id="add-room-price-weekly" placeholder="e.g. 11000" class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
                             </div>
                             <div>
-                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Monthly Basis Rate (opt)</label>
-                                <input type="number" id="add-room-price-monthly" placeholder="PKR" class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Monthly Basis Rate / night (opt)</label>
+                                <input type="number" id="add-room-price-monthly" placeholder="e.g. 10000" class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
                             </div>
                         </div>
                     </div>
 
                     <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm space-y-4">
-                        <h4 class="text-sm font-bold uppercase tracking-wider text-[#D4AF37] mb-2">Location Map & Pinning</h4>
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-sm font-bold uppercase tracking-wider text-[#D4AF37] flex items-center gap-2">
+                                <i class="fa-solid fa-map-location-dot text-[#D4AF37]"></i> Google Maps Location & Pinning
+                            </h4>
+                            <span class="text-[10px] bg-blue-50 text-blue-700 px-2.5 py-1 rounded-full font-bold border border-blue-200/80 flex items-center gap-1">
+                                <i class="fa-brands fa-google text-red-500"></i> Google Maps
+                            </span>
+                        </div>
                         
-                        <!-- Location Search Bar -->
-                        <div>
-                            <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Search City / Area on Map (Google Maps / OpenStreetMap)</label>
+                        <!-- Enhanced Location Search Bar with Live Autocomplete -->
+                        <div class="relative">
+                            <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Search Resorts, Hotels, Malls, Shops, Areas & Landmarks</label>
                             <div class="flex gap-2">
                                 <div class="relative flex-grow">
                                     <i class="fa-solid fa-magnifying-glass-location absolute left-3 top-3 text-slate-400 text-xs"></i>
-                                    <input type="text" id="add-room-map-search" placeholder="Type city or area e.g. Bahria Enclave Sector C, Islamabad" class="w-full border border-slate-200 rounded-xl pl-8 pr-3 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]" onkeydown="if(event.key==='Enter'){event.preventDefault();searchAdminMapLocation('add');}">
+                                    <input type="text" id="add-room-map-search" placeholder="Type resort, mall, shop, area e.g. Centaurus Mall, Bahria Enclave, Nathia Gali" class="w-full border border-slate-200 rounded-xl pl-8 pr-3 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37] focus:bg-white transition-all" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();searchAdminMapLocation('add');}">
                                 </div>
-                                <button type="button" onclick="searchAdminMapLocation('add')" class="bg-[#0B0F19] text-white px-4 py-2.5 rounded-xl text-xs font-bold hover:bg-[#D4AF37] transition-all">Search</button>
+                                <button type="button" onclick="locateCurrentPosition('add')" class="bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 px-3 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1" title="Detect GPS Location">
+                                    <i class="fa-solid fa-crosshairs text-blue-600"></i> <span class="hidden sm:inline">GPS</span>
+                                </button>
+                                <button type="button" id="add-room-map-search-btn" onclick="searchAdminMapLocation('add')" class="bg-[#0B0F19] text-white px-4 py-2.5 rounded-xl text-xs font-bold hover:bg-[#D4AF37] transition-all">Search</button>
                             </div>
-                            <div id="add-map-detected-address" class="mt-2 text-[10px] text-emerald-600 font-semibold hidden flex items-center gap-1">
-                                <i class="fa-solid fa-location-dot"></i> <span id="add-map-detected-text"></span>
-                            </div>
+                            
+                            <!-- Live Autocomplete Suggestions Dropdown -->
+                            <div id="add-map-search-suggestions" class="absolute left-0 right-0 top-full mt-1 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 max-h-60 overflow-y-auto hidden divide-y divide-slate-100"></div>
                         </div>
 
-                        <div id="add-room-map" class="w-full h-52 rounded-xl border border-slate-200 overflow-hidden z-10"></div>
-                        <p class="text-[10px] text-slate-400 mt-1">Click anywhere on the map or drag the pin to set exact coordinates.</p>
+                        <!-- Map Container & Controls -->
+                        <div class="relative">
+                            <div class="absolute top-3 right-3 z-20 bg-white/95 backdrop-blur-md p-1 rounded-xl shadow-md border border-slate-200/80 flex gap-1 text-[10px] font-bold">
+                                <button type="button" id="add-map-style-roadmap" onclick="switchMapTileStyle('add', 'roadmap')" class="px-2.5 py-1 rounded-lg bg-[#0B0F19] text-white transition-all">Map</button>
+                                <button type="button" id="add-map-style-satellite" onclick="switchMapTileStyle('add', 'satellite')" class="px-2.5 py-1 rounded-lg text-slate-600 hover:bg-slate-100 transition-all">Satellite</button>
+                            </div>
+                            <div id="add-room-map" class="w-full h-56 rounded-2xl border border-slate-200 overflow-hidden z-10 shadow-inner"></div>
+                        </div>
+
+                        <!-- Location Address Badge -->
+                        <div id="add-map-detected-address" class="p-3 bg-slate-50 rounded-xl border border-slate-200/80 space-y-1">
+                            <div class="flex items-center justify-between text-[11px]">
+                                <span class="font-bold text-slate-900 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-location-dot text-red-500"></i> Pinned Google Maps Location:
+                                </span>
+                                <span id="add-map-coords-badge" class="font-mono text-[10px] text-slate-500">33.7294, 73.0931</span>
+                            </div>
+                            <div id="add-map-detected-text" class="text-xs text-slate-600 font-medium leading-relaxed">Islamabad, Pakistan</div>
+                        </div>
+
                         <input type="hidden" id="add-room-lat">
                         <input type="hidden" id="add-room-lng">
                         <input type="hidden" id="add-room-address">
@@ -1450,38 +1516,142 @@
 
     <!-- MODAL: ADD USER / ADMIN -->
     <div id="add-user-modal" class="fixed inset-0 bg-[#0F172A]/70 z-[100] flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
-        <div class="bg-white rounded-3xl max-w-sm w-full overflow-hidden shadow-2xl relative border border-slate-100 transform scale-95 transition-transform duration-300 p-8 text-slate-800">
+        <div class="bg-white rounded-3xl max-w-md w-full overflow-hidden shadow-2xl relative border border-slate-100 transform scale-95 transition-transform duration-300 p-8 text-slate-800">
             <button onclick="closeAddUserModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700">
                 <i class="fa-solid fa-times text-lg"></i>
             </button>
-            <h3 class="text-lg font-bold outfit text-slate-950 mb-6">Add User or Admin</h3>
+            <h3 class="text-lg font-bold outfit text-slate-950 mb-4">Add User Account</h3>
             <form id="add-user-form" class="space-y-4">
                 <div>
                     <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Full Name</label>
-                    <input type="text" id="add-user-name" required placeholder="e.g. Ali Ahmed" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800">
+                    <input type="text" id="add-user-name" required placeholder="e.g. Ali Ahmed" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
                 </div>
                 <div>
                     <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Email Address</label>
-                    <input type="email" id="add-user-email" required placeholder="e.g. ali@gmail.com" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800">
+                    <input type="email" id="add-user-email" required placeholder="e.g. ali@gmail.com" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Phone Line</label>
+                        <input type="text" id="add-user-phone" placeholder="e.g. +923001234567" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Password</label>
+                        <input type="password" id="add-user-password" required placeholder="Min 6 characters" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                    </div>
                 </div>
                 <div>
-                    <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Phone Line (Optional)</label>
-                    <input type="text" id="add-user-phone" placeholder="e.g. +923001234567" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800">
-                </div>
-                <div>
-                    <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Password</label>
-                    <input type="password" id="add-user-password" required placeholder="Min 6 characters" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800">
-                </div>
-                <div>
-                    <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Account Role</label>
-                    <select id="add-user-role" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none">
+                    <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">User Role</label>
+                    <select id="add-user-role" required onchange="onRoleChangeSyncPerms('add-user-role', 'add-user-perm-cb')" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none cursor-pointer focus:border-[#D4AF37] font-semibold">
                         <option value="user">User / Guest</option>
-                        <option value="admin">Administrator</option>
+                        <option value="editor">Editor (Catalog & Suites Content)</option>
+                        <option value="moderator">Moderator (Bookings & Guest Reviews)</option>
+                        <option value="admin">Administrator (Full Access)</option>
                     </select>
                 </div>
-                <div class="flex gap-4 pt-4">
+                <div>
+                    <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-2">Granted Actions & Permissions</label>
+                    <div class="grid grid-cols-2 gap-2 text-xs font-medium text-slate-700 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" value="manage_bookings" class="add-user-perm-cb rounded text-[#D4AF37]">
+                            <span>Bookings</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" value="manage_rooms" class="add-user-perm-cb rounded text-[#D4AF37]">
+                            <span>Suites / Rooms</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" value="manage_reviews" class="add-user-perm-cb rounded text-[#D4AF37]">
+                            <span>Reviews</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" value="manage_guests" class="add-user-perm-cb rounded text-[#D4AF37]">
+                            <span>Guest Accounts</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" value="manage_discounts" class="add-user-perm-cb rounded text-[#D4AF37]">
+                            <span>Discounts</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" value="manage_settings" class="add-user-perm-cb rounded text-[#D4AF37]">
+                            <span>Settings</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="flex gap-4 pt-2">
                     <button type="button" onclick="closeAddUserModal()" class="w-1/2 border border-slate-200 text-slate-800 font-bold py-3 rounded-xl hover:bg-slate-100 transition-all text-xs">Cancel</button>
                     <button type="submit" class="w-1/2 bg-gradient-to-r from-[#D4AF37] to-[#DC2626] text-white font-bold py-3 rounded-xl hover:opacity-90 transition-all text-xs shadow-md">Add Account</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: EDIT USER & PERMISSIONS -->
+    <div id="edit-user-modal" class="fixed inset-0 bg-[#0F172A]/70 z-[100] flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl max-w-md w-full overflow-hidden shadow-2xl relative border border-slate-100 transform scale-95 transition-transform duration-300 p-8 text-slate-800">
+            <button onclick="closeEditUserModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700">
+                <i class="fa-solid fa-times text-lg"></i>
+            </button>
+            <h3 class="text-lg font-bold outfit text-slate-950 mb-1">Edit User Profile & Permissions</h3>
+            <p class="text-xs text-slate-400 font-light mb-4">Modify user role and check allowed management actions.</p>
+            
+            <form id="edit-user-form" class="space-y-4">
+                <input type="hidden" id="edit-user-id">
+                <div>
+                    <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Full Name</label>
+                    <input type="text" id="edit-user-name" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Email Address</label>
+                        <input type="email" id="edit-user-email" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Phone Line</label>
+                        <input type="text" id="edit-user-phone" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">User Role</label>
+                    <select id="edit-user-role" required onchange="onRoleChangeSyncPerms('edit-user-role', 'edit-user-perm-cb')" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none cursor-pointer focus:border-[#D4AF37] font-semibold">
+                        <option value="user">User / Guest</option>
+                        <option value="editor">Editor (Catalog & Suites Content)</option>
+                        <option value="moderator">Moderator (Bookings & Guest Reviews)</option>
+                        <option value="admin">Administrator (Full Access)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-2">Allowed Actions & Permissions</label>
+                    <div class="grid grid-cols-2 gap-2 text-xs font-medium text-slate-700 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" value="manage_bookings" class="edit-user-perm-cb rounded text-[#D4AF37]">
+                            <span>Bookings</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" value="manage_rooms" class="edit-user-perm-cb rounded text-[#D4AF37]">
+                            <span>Suites / Rooms</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" value="manage_reviews" class="edit-user-perm-cb rounded text-[#D4AF37]">
+                            <span>Reviews</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" value="manage_guests" class="edit-user-perm-cb rounded text-[#D4AF37]">
+                            <span>Guest Accounts</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" value="manage_discounts" class="edit-user-perm-cb rounded text-[#D4AF37]">
+                            <span>Discounts</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" value="manage_settings" class="edit-user-perm-cb rounded text-[#D4AF37]">
+                            <span>Settings</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="flex gap-4 pt-2">
+                    <button type="button" onclick="closeEditUserModal()" class="w-1/2 border border-slate-200 text-slate-800 font-bold py-3 rounded-xl hover:bg-slate-100 transition-all text-xs">Cancel</button>
+                    <button type="submit" class="w-1/2 bg-gradient-to-r from-[#D4AF37] to-[#DC2626] text-white font-bold py-3 rounded-xl hover:opacity-90 transition-all text-xs shadow-md">Save Changes</button>
                 </div>
             </form>
         </div>
