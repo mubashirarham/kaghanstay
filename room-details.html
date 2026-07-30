@@ -26,7 +26,7 @@
     <!-- Global CSS -->
     <link rel="stylesheet" href="assets/css/style.css?v=5">
 </head>
-<body class="bg-[#F8FAFC] text-[#0F172A] overflow-x-hidden font-sans pt-24 min-h-screen flex flex-col justify-between pb-24 md:pb-0">
+<body class="bg-[#F8FAFC] text-[#0F172A] overflow-x-clip font-sans pt-24 min-h-screen flex flex-col justify-between pb-24 md:pb-0">
 
     <!-- Header / Navigation -->
     <nav id="hotel-navbar" class="fixed top-0 left-0 right-0 z-50 py-5 px-6 md:px-12 flex justify-between items-center text-white bg-[#0B0F19] border-b border-white/10">
@@ -80,7 +80,7 @@
 
     <!-- Main Content Grid -->
     <main class="py-10 px-6 md:px-12 max-w-7xl mx-auto w-full flex-grow">
-        <div class="flex flex-col lg:flex-row gap-10 items-start relative">
+        <div class="flex flex-col lg:flex-row gap-10 relative">
 
             <!-- LEFT COLUMN: RoomHero Gallery & Detailed Information (68% Desktop Width) -->
             <div class="w-full lg:w-2/3 space-y-10">
@@ -255,13 +255,31 @@
 
                 <!-- LocationSection Component -->
                 <div class="bg-white/80 backdrop-blur-md rounded-[2.5rem] border border-[#C5A059]/10 shadow-[0_12px_40px_-15px_rgba(11,15,25,0.05)] hover:border-[#C5A059]/30 transition-all duration-500 p-6 md:p-8 space-y-6">
-                    <h3 class="text-xl font-bold outfit text-[#0B0F19] flex items-center gap-2">
-                        <i class="fa-solid fa-map-location-dot text-[#C5A059]"></i>
-                        Location & Map Access
-                    </h3>
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <h3 class="text-xl font-bold outfit text-[#0B0F19] flex items-center gap-2">
+                            <i class="fa-solid fa-map-location-dot text-[#C5A059]"></i>
+                            Location & Map Access
+                        </h3>
+                        <span id="pdp-address-text" class="text-xs text-slate-500 font-medium flex items-center gap-1.5 bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200/80">
+                            <i class="fa-solid fa-location-dot text-[#C5A059]"></i> Loading location...
+                        </span>
+                    </div>
+
                     <div id="room-detail-map" class="w-full h-72 rounded-2xl border border-slate-200 overflow-hidden z-10"></div>
                     
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs text-slate-600">
+                    <!-- Google Maps Direct Links -->
+                    <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                        <a id="pdp-gmaps-link" href="#" target="_blank" class="flex-1 bg-[#0B0F19] hover:bg-[#C5A059] text-white text-xs font-bold py-3 px-5 rounded-xl flex items-center justify-center gap-2 transition-all shadow-md">
+                            <i class="fa-solid fa-map-location-dot text-[#C5A059]"></i>
+                            <span>View Pinned Location on Google Maps</span>
+                        </a>
+                        <a id="pdp-gmaps-dir-link" href="#" target="_blank" class="bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold py-3 px-5 rounded-xl flex items-center justify-center gap-2 transition-all border border-slate-200">
+                            <i class="fa-solid fa-diamond-turn-right text-[#C5A059]"></i>
+                            <span>Get Directions</span>
+                        </a>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs text-slate-600 border-t border-slate-100 pt-4">
                         <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
                             <span class="font-bold text-slate-900 block mb-0.5"><i class="fa-solid fa-car text-[#C5A059] mr-1"></i> City Center</span>
                             <span>15 Mins to Blue Area & Centaurus Mall</span>
@@ -301,6 +319,24 @@
                     <div id="pdp-calendar-container" class="bg-slate-50 rounded-2xl p-4 md:p-6 border border-slate-100 min-h-[300px]">
                         <!-- Rendered dynamically -->
                     </div>
+                </div>
+
+                <!-- Book Now Callout Banner (Above Reviews) -->
+                <div class="bg-gradient-to-r from-[#0B0F19] via-[#1E293B] to-[#0B0F19] text-white p-6 md:p-8 rounded-[2.5rem] border-2 border-[#C5A059]/40 shadow-2xl flex flex-col sm:flex-row items-center justify-between gap-6 relative overflow-hidden group">
+                    <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-[#C5A059]/10 rounded-full blur-2xl pointer-events-none"></div>
+                    <div class="space-y-2 text-center sm:text-left z-10">
+                        <span class="text-[10px] uppercase font-extrabold tracking-widest text-[#C5A059] flex items-center justify-center sm:justify-start gap-1.5">
+                            <i class="fa-solid fa-crown"></i> Exclusive Accommodation Guarantee
+                        </span>
+                        <h3 class="text-xl md:text-2xl font-bold outfit tracking-tight">Ready to Book Your Luxury Stay?</h3>
+                        <p class="text-slate-300 text-xs font-light max-w-md">
+                            Lock in your preferred dates today with instant confirmation, 100% price guarantee, and 48-hour free cancellation policy.
+                        </p>
+                    </div>
+                    <button type="button" onclick="scrollToBookingCard()" class="shrink-0 bg-gradient-to-r from-[#C5A059] to-[#9A7B38] hover:from-white hover:to-white hover:text-slate-900 text-white font-black px-8 py-4 rounded-2xl text-xs uppercase tracking-wider transition-all duration-300 shadow-xl flex items-center gap-2 group-hover:scale-105 btn-shimmer z-10 cursor-pointer">
+                        <i class="fa-solid fa-calendar-check text-sm"></i>
+                        <span>Book This Suite Now</span>
+                    </button>
                 </div>
 
                 <!-- ReviewsSection Component (Dynamically Loaded from Firestore) -->
@@ -355,8 +391,8 @@
 
             </div>
 
-            <!-- RIGHT COLUMN: BookingCard Module (32% Desktop Width) -->
-            <div class="w-full lg:w-1/3 space-y-8 lg:sticky lg:top-24 z-30">
+            <!-- RIGHT COLUMN: BookingCard Module & Explore Listings Sidebar (32% Desktop Width) -->
+            <div class="w-full lg:w-1/3 space-y-8 lg:sticky lg:top-28 z-30">
                 
                 <!-- Interactive BookingCard Module -->
                 <div id="booking-card-module" class="bg-white/90 backdrop-blur-md rounded-[2.5rem] border border-[#C5A059]/20 shadow-[0_20px_50px_-15px_rgba(11,15,25,0.1)] p-6 md:p-8 space-y-6">
@@ -539,6 +575,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.9/dist/purify.min.js"></script>
     <script src="assets/js/shared.js?v=5"></script>
+    <script src="assets/js/search-widget.js"></script>
     <script src="assets/js/messaging.js"></script>
 
     <!-- Room Details & Booking Module Script -->
@@ -634,6 +671,19 @@
         window.addEventListener('DOMContentLoaded', async () => {
             renderNavbar();
             initDateDefaults();
+
+            if (window.KaghanSearchWidget) {
+                window.KaghanSearchWidget.init({
+                    checkInId: 'card-checkin',
+                    checkOutId: 'card-checkout',
+                    guestsId: 'card-guests'
+                });
+            }
+
+            const inEl = document.getElementById('card-checkin');
+            const outEl = document.getElementById('card-checkout');
+            if (inEl) inEl.addEventListener('change', calculateCardTotal);
+            if (outEl) outEl.addEventListener('change', calculateCardTotal);
 
             const urlParams = new URLSearchParams(window.location.search);
             const roomId = urlParams.get('id') || urlParams.get('roomId');
@@ -1162,7 +1212,7 @@
             const locStr = (room.location || '').toLowerCase();
             if (locStr.includes('nathia')) { lat = 34.0722; lng = 73.3831; }
 
-            detailMap = L.map('room-detail-map').setView([lat, lng], 13);
+            detailMap = L.map('room-detail-map').setView([lat, lng], 14);
             L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
                 attribution: '&copy; OpenStreetMap contributors'
             }).addTo(detailMap);
@@ -1170,6 +1220,19 @@
             L.marker([lat, lng]).addTo(detailMap)
                 .bindPopup(`<b>${KaghanSafe.escapeHTML(room.name)}</b><br>${KaghanUI.formatPKR(room.priceDaily || room.price)} / night`)
                 .openPopup();
+
+            // Set Google Maps Pinned Links
+            const gmapsLink = document.getElementById('pdp-gmaps-link');
+            const gmapsDirLink = document.getElementById('pdp-gmaps-dir-link');
+            const addrText = document.getElementById('pdp-address-text');
+
+            if (gmapsLink) gmapsLink.href = `https://www.google.com/maps?q=${lat},${lng}`;
+            if (gmapsDirLink) gmapsDirLink.href = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+
+            if (addrText) {
+                const displayName = room.address || (room.locationName ? `${room.locationName}, ${room.location || ''}` : (room.location || 'Islamabad, Pakistan'));
+                addrText.innerHTML = `<i class="fa-solid fa-location-dot text-[#C5A059]"></i> ${KaghanSafe.escapeHTML(displayName)}`;
+            }
         }
 
         // More Listings Feed (Loads other rooms dynamically from Firestore)

@@ -6,6 +6,75 @@
     let addRoomMap = null;
     let addRoomMarker = null;
 
+    async function reverseGeocodeAdminMap(lat, lng, mode) {
+        try {
+            const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
+            if (!res.ok) return;
+            const data = await res.json();
+            if (data && data.display_name) {
+                const addrInput = document.getElementById(`${mode}-room-address`);
+                const detectedText = document.getElementById(`${mode}-map-detected-text`);
+                const detectedBox = document.getElementById(`${mode}-map-detected-address`);
+                if (addrInput) addrInput.value = data.display_name;
+                if (detectedText) detectedText.textContent = data.display_name;
+                if (detectedBox) detectedBox.classList.remove('hidden');
+            }
+        } catch (err) {
+            console.warn("Reverse geocode error:", err);
+        }
+    }
+
+    window.searchAdminMapLocation = async function(mode) {
+        const searchInput = document.getElementById(`${mode}-room-map-search`);
+        if (!searchInput || !searchInput.value.trim()) {
+            if (window.KaghanUI) KaghanUI.showToast('Please type an area or city name', 'warning');
+            return;
+        }
+
+        const query = searchInput.value.trim();
+        const btn = searchInput.nextElementSibling;
+        const origBtnText = btn ? btn.textContent : 'Search';
+        if (btn) btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+
+        try {
+            const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`);
+            const results = await res.json();
+
+            if (results && results.length > 0) {
+                const loc = results[0];
+                const lat = parseFloat(loc.lat);
+                const lng = parseFloat(loc.lon);
+
+                document.getElementById(`${mode}-room-lat`).value = lat;
+                document.getElementById(`${mode}-room-lng`).value = lng;
+
+                const mapObj = mode === 'add' ? addRoomMap : editRoomMap;
+                const markerObj = mode === 'add' ? addRoomMarker : editRoomMarker;
+
+                if (mapObj && markerObj) {
+                    mapObj.setView([lat, lng], 15);
+                    markerObj.setLatLng([lat, lng]);
+                }
+
+                const detectedText = document.getElementById(`${mode}-map-detected-text`);
+                const detectedBox = document.getElementById(`${mode}-map-detected-address`);
+                const addrInput = document.getElementById(`${mode}-room-address`);
+                if (addrInput) addrInput.value = loc.display_name;
+                if (detectedText) detectedText.textContent = loc.display_name;
+                if (detectedBox) detectedBox.classList.remove('hidden');
+
+                if (window.KaghanUI) KaghanUI.showToast(`Pinned location: ${loc.display_name.split(',')[0]}`, 'success');
+            } else {
+                if (window.KaghanUI) KaghanUI.showToast('Location not found. Try specifying city e.g. "Islamabad"', 'warning');
+            }
+        } catch (err) {
+            console.error("Map search error:", err);
+            if (window.KaghanUI) KaghanUI.showToast('Error searching location', 'error');
+        } finally {
+            if (btn) btn.textContent = origBtnText;
+        }
+    };
+
     async function populateSelects() {
         const typeSelects = [document.getElementById('add-room-type'), document.getElementById('edit-room-type')];
         const locationSelects = [document.getElementById('add-room-location'), document.getElementById('edit-room-location')];
@@ -232,12 +301,14 @@
                     editRoomMarker.setLatLng(e.latlng);
                     document.getElementById('edit-room-lat').value = e.latlng.lat;
                     document.getElementById('edit-room-lng').value = e.latlng.lng;
+                    reverseGeocodeAdminMap(e.latlng.lat, e.latlng.lng, 'edit');
                 });
                 
                 editRoomMarker.on('dragend', (e) => {
                     const position = editRoomMarker.getLatLng();
                     document.getElementById('edit-room-lat').value = position.lat;
                     document.getElementById('edit-room-lng').value = position.lng;
+                    reverseGeocodeAdminMap(position.lat, position.lng, 'edit');
                 });
             } else {
                 editRoomMap.setView([lat, lng], 11);
@@ -311,6 +382,8 @@
                     ? highlightsInput.split(',').map(h => h.trim()).filter(h => h !== '')
                     : [];
 
+                const address = document.getElementById('edit-room-address')?.value.trim() || '';
+
                 const updatedData = {
                     name,
                     type,
@@ -329,6 +402,7 @@
                     description,
                     amenities,
                     location,
+                    address,
                     lat: isNaN(lat) ? null : lat,
                     lng: isNaN(lng) ? null : lng,
                     images: imagesArray,
@@ -424,12 +498,14 @@
                         addRoomMarker.setLatLng(e.latlng);
                         document.getElementById('add-room-lat').value = e.latlng.lat;
                         document.getElementById('add-room-lng').value = e.latlng.lng;
+                        reverseGeocodeAdminMap(e.latlng.lat, e.latlng.lng, 'add');
                     });
                     
                     addRoomMarker.on('dragend', (e) => {
                         const position = addRoomMarker.getLatLng();
                         document.getElementById('add-room-lat').value = position.lat;
                         document.getElementById('add-room-lng').value = position.lng;
+                        reverseGeocodeAdminMap(position.lat, position.lng, 'add');
                     });
                 } else {
                     addRoomMap.setView([lat, lng], 11);
@@ -505,6 +581,8 @@
                     ? amenitiesInput.split(',').map(a => a.trim()).filter(a => a !== '')
                     : ['King Bed', 'High-Speed Wi-Fi', 'Smart TV'];
 
+                const address = document.getElementById('add-room-address')?.value.trim() || '';
+
                 const newRoom = {
                     id: 'room-' + type + '-' + Date.now(),
                     name,
@@ -526,6 +604,7 @@
                     description,
                     amenities,
                     location,
+                    address,
                     lat: isNaN(lat) ? null : lat,
                     lng: isNaN(lng) ? null : lng,
                     status: 'available',

@@ -846,7 +846,7 @@
     </nav>
 
     <!-- FULL-SCREEN: EDIT ROOM DETAILS -->
-    <div id="edit-room-modal" class="fixed inset-0 bg-[#F8FAFC] z-[100] hidden flex-col opacity-0 transition-opacity duration-300 overflow-y-auto">
+    <div id="edit-room-modal" class="fixed inset-0 bg-[#F8FAFC] z-[20000] hidden flex-col opacity-0 transition-opacity duration-300 overflow-y-auto">
         <form id="edit-room-form" class="min-h-screen flex flex-col relative">
             
             <!-- Sticky Header -->
@@ -954,11 +954,28 @@
                     </div>
 
                     <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm space-y-4">
-                        <h4 class="text-sm font-bold uppercase tracking-wider text-[#D4AF37] mb-4">Location Map</h4>
-                        <div id="edit-room-map" class="w-full h-48 rounded-xl border border-slate-200 overflow-hidden z-10"></div>
-                        <p class="text-[10px] text-slate-400 mt-1">Click to place the location pin.</p>
+                        <h4 class="text-sm font-bold uppercase tracking-wider text-[#D4AF37] mb-2">Location Map & Pinning</h4>
+                        
+                        <!-- Location Search Bar -->
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Search City / Area on Map (Google Maps / OpenStreetMap)</label>
+                            <div class="flex gap-2">
+                                <div class="relative flex-grow">
+                                    <i class="fa-solid fa-magnifying-glass-location absolute left-3 top-3 text-slate-400 text-xs"></i>
+                                    <input type="text" id="edit-room-map-search" placeholder="Type city or area e.g. Sector C, Bahria Enclave, Islamabad" class="w-full border border-slate-200 rounded-xl pl-8 pr-3 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]" onkeydown="if(event.key==='Enter'){event.preventDefault();searchAdminMapLocation('edit');}">
+                                </div>
+                                <button type="button" onclick="searchAdminMapLocation('edit')" class="bg-[#0B0F19] text-white px-4 py-2.5 rounded-xl text-xs font-bold hover:bg-[#D4AF37] transition-all">Search</button>
+                            </div>
+                            <div id="edit-map-detected-address" class="mt-2 text-[10px] text-emerald-600 font-semibold hidden flex items-center gap-1">
+                                <i class="fa-solid fa-location-dot"></i> <span id="edit-map-detected-text"></span>
+                            </div>
+                        </div>
+
+                        <div id="edit-room-map" class="w-full h-52 rounded-xl border border-slate-200 overflow-hidden z-10"></div>
+                        <p class="text-[10px] text-slate-400 mt-1">Click anywhere on the map or drag the pin to set exact coordinates.</p>
                         <input type="hidden" id="edit-room-lat">
                         <input type="hidden" id="edit-room-lng">
+                        <input type="hidden" id="edit-room-address">
                     </div>
                 </div>
 
@@ -1006,7 +1023,7 @@
     </div>
 
     <!-- FULL-SCREEN: ADD NEW ROOM -->
-    <div id="add-room-modal" class="fixed inset-0 bg-[#F8FAFC] z-[100] hidden flex-col opacity-0 transition-opacity duration-300 overflow-y-auto">
+    <div id="add-room-modal" class="fixed inset-0 bg-[#F8FAFC] z-[20000] hidden flex-col opacity-0 transition-opacity duration-300 overflow-y-auto">
         <form id="add-room-form" class="min-h-screen flex flex-col relative">
             
             <!-- Sticky Header -->
@@ -1118,11 +1135,28 @@
                     </div>
 
                     <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm space-y-4">
-                        <h4 class="text-sm font-bold uppercase tracking-wider text-[#D4AF37] mb-4">Location Map</h4>
-                        <div id="add-room-map" class="w-full h-48 rounded-xl border border-slate-200 overflow-hidden z-10"></div>
-                        <p class="text-[10px] text-slate-400 mt-1">Click to place the location pin.</p>
+                        <h4 class="text-sm font-bold uppercase tracking-wider text-[#D4AF37] mb-2">Location Map & Pinning</h4>
+                        
+                        <!-- Location Search Bar -->
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Search City / Area on Map (Google Maps / OpenStreetMap)</label>
+                            <div class="flex gap-2">
+                                <div class="relative flex-grow">
+                                    <i class="fa-solid fa-magnifying-glass-location absolute left-3 top-3 text-slate-400 text-xs"></i>
+                                    <input type="text" id="add-room-map-search" placeholder="Type city or area e.g. Bahria Enclave Sector C, Islamabad" class="w-full border border-slate-200 rounded-xl pl-8 pr-3 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]" onkeydown="if(event.key==='Enter'){event.preventDefault();searchAdminMapLocation('add');}">
+                                </div>
+                                <button type="button" onclick="searchAdminMapLocation('add')" class="bg-[#0B0F19] text-white px-4 py-2.5 rounded-xl text-xs font-bold hover:bg-[#D4AF37] transition-all">Search</button>
+                            </div>
+                            <div id="add-map-detected-address" class="mt-2 text-[10px] text-emerald-600 font-semibold hidden flex items-center gap-1">
+                                <i class="fa-solid fa-location-dot"></i> <span id="add-map-detected-text"></span>
+                            </div>
+                        </div>
+
+                        <div id="add-room-map" class="w-full h-52 rounded-xl border border-slate-200 overflow-hidden z-10"></div>
+                        <p class="text-[10px] text-slate-400 mt-1">Click anywhere on the map or drag the pin to set exact coordinates.</p>
                         <input type="hidden" id="add-room-lat">
                         <input type="hidden" id="add-room-lng">
+                        <input type="hidden" id="add-room-address">
                     </div>
                 </div>
 
@@ -1170,7 +1204,7 @@
     </div>
 
     <!-- MODAL: ADD BOOKING -->
-    <div id="add-booking-modal" class="fixed inset-0 bg-[#0F172A]/70 z-[100] flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+    <div id="add-booking-modal" class="fixed inset-0 bg-[#0F172A]/70 z-[20000] flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
         <div class="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl relative border border-slate-100 transform scale-95 transition-transform duration-300 p-8 text-slate-800">
             <button type="button" onclick="closeAddBookingModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700">
                 <i class="fa-solid fa-times text-lg"></i>
@@ -1242,7 +1276,7 @@
     </div>
 
     <!-- MODAL: EDIT BOOKING -->
-    <div id="edit-booking-modal" class="fixed inset-0 bg-[#0F172A]/70 z-[100] flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+    <div id="edit-booking-modal" class="fixed inset-0 bg-[#0F172A]/70 z-[20000] flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
         <div class="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl relative border border-slate-100 transform scale-95 transition-transform duration-300 p-8 text-slate-800">
             <button type="button" onclick="closeEditBookingModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700">
                 <i class="fa-solid fa-times text-lg"></i>
