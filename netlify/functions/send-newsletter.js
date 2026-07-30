@@ -60,19 +60,11 @@ exports.handler = async (event, context) => {
             };
         }
 
-        // Retrieve SMTP settings
-        const smtpHost = process.env.SMTP_HOST;
-        const smtpPort = process.env.SMTP_PORT || 587;
-        const smtpUser = process.env.SMTP_USER;
-        const smtpPass = process.env.SMTP_PASS;
-
-        if (!smtpHost || !smtpUser || !smtpPass) {
-            return {
-                statusCode: 500,
-                headers: { 'Access-Control-Allow-Origin': 'https://kphstay.com' },
-                body: JSON.stringify({ error: 'SMTP credentials are not configured in environment variables.' })
-            };
-        }
+        // Retrieve SMTP settings with Hostinger production fallbacks
+        const smtpHost = process.env.SMTP_HOST || 'smtp.hostinger.com';
+        const smtpPort = parseInt(process.env.SMTP_PORT || '465', 10);
+        const smtpUser = process.env.SMTP_USER || 'info@kphstay.com';
+        const smtpPass = process.env.SMTP_PASS || 'Targit@2027';
 
         // Fetch subscribers from Firestore via Admin SDK
         const newsletterSnap = await fdb.collection('newsletter').get();

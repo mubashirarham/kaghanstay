@@ -1,4 +1,5 @@
 const { admin, fdb, auth, generateBookingId, resolveIsAdmin } = require('./_admin-init');
+const { sendBookingEmail } = require('./booking-email');
 const { z } = require('zod');
 
 const BookingSchema = z.object({
@@ -230,40 +231,26 @@ exports.handler = async (event, context) => {
         // 5. Dispatch Notifications
         const host = event.headers.host || 'kphstay.com';
         const scheme = host.includes('localhost') ? 'http' : 'https';
-        const payload = {
-            booking: {
-                id: bookingId,
-                guestName,
-                guestEmail,
-                guestPhone,
-                roomId,
-                roomName,
-                checkIn: checkInStr,
-                checkOut: checkOutStr,
-                totalPrice: calculatedPrice
-            },
-            pdfAttachment: pdfBase64,
-            internalSecret: process.env.INTERNAL_API_SECRET
+        const bookingPayload = {
+            id: bookingId,
+            guestName,
+            guestEmail,
+            guestPhone,
+            roomId,
+            roomName,
+            checkIn: checkInStr,
+            checkOut: checkOutStr,
+            totalNights: stayNights,
+            subtotal,
+            tax,
+            discount: couponDiscount,
+            grandTotal: calculatedPrice,
+            totalPrice: calculatedPrice,
+            paymentStatus: 'PAID'
         };
 
         try {
-            await Promise.all([
-                fetch(`${scheme}://${host}/.netlify/functions/booking-email`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                }).then(res => {
-                    if (!res.ok) console.error(`Booking email function returned status ${res.status}`);
-                }).catch(err => console.error("Async booking email dispatch failure:", err.message)),
-
-                fetch(`${scheme}://${host}/.netlify/functions/admin-notify`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                }).then(res => {
-                    if (!res.ok) console.error(`Admin notify function returned status ${res.status}`);
-                }).catch(err => console.error("Async admin alert dispatch failure:", err.message))
-            ]);
+            await sendBookingEmail(bookingPayload, pdfBase64).catch(err => console.error("Direct booking email dispatch failure:", err.message));
         } catch (dispatchErr) {
             console.error("Notification dispatch failed:", dispatchErr.message);
         }

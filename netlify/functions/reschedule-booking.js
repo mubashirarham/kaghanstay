@@ -1,4 +1,5 @@
 const { admin, fdb, auth, resolveIsAdmin } = require('./_admin-init');
+const { sendBookingEmail } = require('./booking-email');
 const { z } = require('zod');
 
 const RescheduleSchema = z.object({
@@ -180,25 +181,8 @@ exports.handler = async (event, context) => {
         });
 
         // Trigger dispatch notifications async (re-use host context)
-        const host = event.headers.host || 'kphstay.com';
-        const scheme = host.includes('localhost') ? 'http' : 'https';
-        const payload = {
-            booking: {
-                id: bookingId,
-                checkIn,
-                checkOut,
-                totalPrice: calculatedPrice
-            },
-            internalSecret: process.env.INTERNAL_API_SECRET
-        };
-
-        // Fire-and-forget notifications (safely caught)
-        const fetch = require('node-fetch'); // import fetch if needed, but fetch is global in Deno, and standard node global in newer node. Since we are using standard Netlify functions we can import node-fetch if needed. Wait, in create-booking they used global fetch, node-fetch isn't imported. Node 18+ has fetch natively!
-        fetch(`${scheme}://${host}/.netlify/functions/booking-email`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        }).catch(err => console.warn("Reschedule email notification dispatch failed:", err));
+        const updatedBooking = { ...booking, checkIn, checkOut, totalPrice: calculatedPrice };
+        sendBookingEmail(updatedBooking).catch(err => console.warn("Reschedule email notification dispatch failed:", err.message));
 
         return {
             statusCode: 200,

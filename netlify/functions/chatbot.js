@@ -1,4 +1,5 @@
 const { fdb, auth, generateBookingId } = require('./_admin-init');
+const { sendBookingEmail } = require('./booking-email');
 
 // Helper to load collection via Admin SDK
 async function fetchCollection(collectionName) {
@@ -143,41 +144,22 @@ async function bookRoomTool(roomId, guestName, guestEmail, guestPhone, checkIn, 
         // Trigger Email & WhatsApp invoices and await them to prevent container freezing (C-04)
         try {
             const dispatches = [];
-            const payload = {
-                booking: {
-                    id: bookingId,
-                    guestName,
-                    guestEmail,
-                    guestPhone,
-                    roomId,
-                    roomName,
-                    checkIn,
-                    checkOut,
-                    totalPrice
-                },
-                internalSecret: process.env.INTERNAL_API_SECRET
+            const bookingObject = {
+                id: bookingId,
+                guestName,
+                guestEmail,
+                guestPhone,
+                roomId,
+                roomName,
+                checkIn,
+                checkOut,
+                totalPrice,
+                paymentStatus: 'PAID'
             };
 
-            if (host) {
-                const scheme = host.includes('localhost') ? 'http' : 'https';
-                dispatches.push(
-                    fetch(`${scheme}://${host}/.netlify/functions/booking-email`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    }).then(res => {
-                        if (!res.ok) console.error(`Chatbot email function returned status ${res.status}`);
-                    }).catch(e => console.warn("Chatbot failed to dispatch email receipt:", e)),
-
-                    fetch(`${scheme}://${host}/.netlify/functions/admin-notify`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    }).then(res => {
-                        if (!res.ok) console.error(`Chatbot admin alert function returned status ${res.status}`);
-                    }).catch(e => console.warn("Chatbot failed to dispatch admin alert:", e))
-                );
-            }
+            dispatches.push(
+                sendBookingEmail(bookingObject).catch(e => console.warn("Chatbot failed to dispatch email receipt:", e.message))
+            );
 
             if (guestPhone && process.env.WHATSAPP_API_URL) {
                 dispatches.push(

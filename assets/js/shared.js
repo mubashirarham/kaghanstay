@@ -716,10 +716,10 @@ const db = {
             if (typeof firebase !== 'undefined' && firebase.auth && firebase.auth().currentUser) {
                 idToken = await firebase.auth().currentUser.getIdToken().catch(() => null);
             }
-            window.safeFetch('/.netlify/functions/create-booking', {
+            window.safeFetch('/.netlify/functions/booking-email', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...booking, booking: createdBooking, idToken, pdfBase64 })
+                body: JSON.stringify({ booking: createdBooking, idToken, pdfBase64, internalSecret: 'kphstay_internal_secret_2026' })
             }).catch(err => console.log("Background email notification dispatch notice:", err.message));
         } catch (_) {}
 

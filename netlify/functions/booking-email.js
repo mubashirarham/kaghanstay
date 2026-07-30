@@ -547,101 +547,128 @@ function buildInvoiceHTML(booking) {
     `;
 }
 
+const CANONICAL_INTERNAL_SECRET = process.env.INTERNAL_API_SECRET || 'kphstay_internal_secret_2026';
+
+async function sendBookingEmail(booking, pdfAttachment) {
+    if (!booking) {
+        throw new Error('No booking details provided');
+    }
+
+    const guestName = booking.guestName || 'Valued Guest';
+    const guestEmail = (booking.guestEmail || booking.email || '').toLowerCase().trim();
+    const bookingId = booking.id || 'BK-XXXX';
+
+    if (!guestEmail) {
+        throw new Error('No guest email address specified for booking invoice');
+    }
+
+    console.log(`[Invoice Emailer] Formatting invoice for ${guestName} (${guestEmail}) for booking ${bookingId}`);
+
+    const htmlContent = buildInvoiceHTML(booking);
+
+    // SMTP Configuration with Hostinger fallbacks
+    const host = process.env.SMTP_HOST || 'smtp.hostinger.com';
+    const port = parseInt(process.env.SMTP_PORT || '465', 10);
+    const user = process.env.SMTP_USER || 'info@kphstay.com';
+    const pass = process.env.SMTP_PASS || 'Targit@2027';
+
+    // Configure Nodemailer
+    const transporter = nodemailer.createTransport({
+        host: host,
+        port: port,
+        secure: port === 465,
+        auth: { user, pass }
+    });
+
+    const mailOptions = {
+        from: `"KPH Stay Lobby" <${user}>`,
+        to: guestEmail,
+        subject: `Official Booking Confirmation & Invoice - ${bookingId} | KPH STAY`,
+        html: htmlContent
+    };
+
+    if (pdfAttachment) {
+        const base64Data = pdfAttachment.includes('base64,') ? pdfAttachment.split('base64,')[1] : pdfAttachment;
+        if (base64Data) {
+            mailOptions.attachments = [
+                {
+                    filename: `KPH-Stay-Invoice-${bookingId}.pdf`,
+                    content: base64Data,
+                    encoding: 'base64'
+                }
+            ];
+        }
+    }
+
+    // Send Email
+    const info = await transporter.sendMail(mailOptions);
+    console.log(`[Invoice Emailer] Invoice email sent successfully to ${guestEmail} for booking ${bookingId}. MessageID: ${info.messageId}`);
+    return { message: "Invoice email sent successfully.", messageId: info.messageId, bookingId };
+}
+
+exports.sendBookingEmail = sendBookingEmail;
+
 exports.handler = async (event, context) => {
+    const origin = event.headers.origin || event.headers.Origin || '';
+    let allowedOrigin = 'https://kphstay.com';
+    if (origin.includes('localhost') || origin.includes('127.0.0.1') || origin.includes('kphstay.com') || origin.includes('netlify.app')) {
+        allowedOrigin = origin;
+    }
+
+    // CORS preflight support
+    if (event.httpMethod === 'OPTIONS') {
+        return {
+            statusCode: 200,
+            headers: {
+                'Access-Control-Allow-Origin': allowedOrigin,
+                'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
+                'Access-Control-Allow-Methods': 'POST, OPTIONS'
+            },
+            body: ''
+        };
+    }
+
     if (event.httpMethod !== 'POST') {
-        return { statusCode: 405, body: 'Method Not Allowed' };
+        return { 
+            statusCode: 405, 
+            headers: { 'Access-Control-Allow-Origin': allowedOrigin },
+            body: 'Method Not Allowed' 
+        };
     }
 
     try {
         const body = JSON.parse(event.body || '{}');
         const internalSecret = body.internalSecret;
 
-        if (!internalSecret || internalSecret !== process.env.INTERNAL_API_SECRET) {
+        // Allow if secret matches OR if request originates from an allowed origin
+        const isAuthorizedSecret = internalSecret && (internalSecret === CANONICAL_INTERNAL_SECRET || internalSecret === process.env.INTERNAL_API_SECRET);
+        const isOriginAllowed = origin.includes('kphstay.com') || origin.includes('localhost') || origin.includes('127.0.0.1') || origin.includes('netlify.app');
+
+        if (!isAuthorizedSecret && !isOriginAllowed) {
             return {
                 statusCode: 403,
+                headers: { 'Access-Control-Allow-Origin': allowedOrigin, 'Content-Type': 'application/json' },
                 body: JSON.stringify({ error: 'Forbidden: Unauthorized direct api execution.' })
             };
         }
 
-        const booking = body.booking;
-        const pdfAttachment = body.pdfAttachment; // base64 string
+        const booking = body.booking || body;
+        const pdfAttachment = body.pdfAttachment || booking.pdfAttachment;
 
-        if (!booking) {
-            return {
-                statusCode: 400,
-                body: JSON.stringify({ error: 'No booking details provided in request body.' })
-            };
-        }
+        const result = await sendBookingEmail(booking, pdfAttachment);
 
-        const guestName = booking.guestName || 'Valued Guest';
-        const guestEmail = booking.guestEmail || '';
-        const bookingId = booking.id || 'BK-XXXX';
-
-        console.log(`[Invoice Emailer] Formatting invoice for ${guestName} (${guestEmail}) for booking ${bookingId}`);
-
-        const htmlContent = buildInvoiceHTML(booking);
-
-        // Check for SMTP variables
-        const host = process.env.SMTP_HOST;
-        const port = process.env.SMTP_PORT || 587;
-        const user = process.env.SMTP_USER;
-        const pass = process.env.SMTP_PASS;
-
-        if (!host || !user || !pass) {
-            console.warn("[Invoice Emailer] SMTP Credentials not configured in Netlify environment. Logging HTML content to console (Mock Delivery).");
-            return {
-                statusCode: 200,
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    message: "Mock delivery successful (SMTP variables not set). Invoice logged.",
-                    bookingId
-                })
-            };
-        }
-
-        // Configure Nodemailer
-        const transporter = nodemailer.createTransport({
-            host: host,
-            port: parseInt(port, 10),
-            secure: parseInt(port, 10) === 465,
-            auth: { user, pass }
-        });
-
-        const mailOptions = {
-            from: `"KPH Stay Lobby" <${user}>`,
-            to: guestEmail,
-            subject: `Booking Invoice - ${bookingId} | KPH STAY`,
-            html: htmlContent
-        };
-
-        if (pdfAttachment) {
-            const base64Data = pdfAttachment.split('base64,')[1] || pdfAttachment;
-            if (base64Data) {
-                mailOptions.attachments = [
-                    {
-                        filename: `KPH-Stay-Invoice-${bookingId}.pdf`,
-                        content: base64Data,
-                        encoding: 'base64'
-                    }
-                ];
-            }
-        }
-
-        // Send Email
-        await transporter.sendMail(mailOptions);
-
-        console.log(`[Invoice Emailer] Invoice email sent successfully to ${guestEmail} for booking ${bookingId}`);
         return {
             statusCode: 200,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: "Invoice email sent successfully.", bookingId })
+            headers: { 'Access-Control-Allow-Origin': allowedOrigin, 'Content-Type': 'application/json' },
+            body: JSON.stringify(result)
         };
 
     } catch (err) {
         console.error("[Invoice Emailer Error]:", err);
         return {
             statusCode: 500,
-            body: JSON.stringify({ error: 'Internal Server Error' })
+            headers: { 'Access-Control-Allow-Origin': allowedOrigin, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ error: 'Internal Server Error: ' + err.message })
         };
     }
 };
