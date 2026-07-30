@@ -7,34 +7,33 @@ function formatPKR(val) {
 }
 
 function buildInvoiceHTML(booking) {
-    const bookingId = booking.id || 'BK-9842';
-    const guestName = booking.guestName || 'Valued Guest';
-    const guestCountry = booking.nationality || booking.address || 'Pakistan';
-    const adults = booking.adults || 2;
-    const children = booking.children || 0;
-    const checkInTime = booking.checkInTime || '2:00 PM';
-    
-    // Format checkin / checkout dates nicely
-    const formatNiceDate = (dateStr) => {
-        if (!dateStr || dateStr === 'N/A') return 'N/A';
-        try {
-            const d = new Date(dateStr);
-            if (isNaN(d.getTime())) return dateStr;
-            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-            return `${days[d.getDay()]}, ${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
-        } catch (_) {
-            return dateStr;
-        }
-    };
+    const b = booking || {};
+    const bookingId = b.id || 'KPH-BOOK-9842';
+    const invoiceNo = b.invoiceNo || `KPH-INV-${(bookingId).replace(/^KPH-BOOK-|^BK-/, '')}`;
+    const invoiceDate = b.invoiceDate || (b.createdAt ? new Date(b.createdAt).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB'));
+    const bookingSource = b.bookingSource || 'KPHStay.com';
 
-    const checkInFormatted = formatNiceDate(booking.checkIn);
-    const checkOutFormatted = formatNiceDate(booking.checkOut);
+    // Guest Information
+    const guestName = b.guestName || 'Valued Guest';
+    const guestPhone = b.guestPhone || 'N/A';
+    const guestEmail = b.guestEmail || b.email || 'N/A';
+    const cnicPassport = b.cnicPassport || b.cnic || b.passport || 'Verified at Check-in';
+    const nationality = b.nationality || 'Pakistani';
+    const address = b.address || 'N/A';
 
-    let nights = booking.totalNights || booking.nights;
-    if (!nights && booking.checkIn && booking.checkOut) {
-        const d1 = new Date(booking.checkIn);
-        const d2 = new Date(booking.checkOut);
+    // Reservation Details
+    const propertyName = b.propertyName || b.roomName || 'KPH Stay Luxury Suite';
+    const unitNo = b.unitNo || b.apartmentNo || b.roomId || 'Suite A';
+    const roomType = b.roomType || '1 Bedroom';
+    const checkIn = b.checkIn || 'N/A';
+    const checkInTime = b.checkInTime || '2:00 PM';
+    const checkOut = b.checkOut || 'N/A';
+    const checkOutTime = b.checkOutTime || '12:00 PM';
+
+    let nights = b.totalNights || b.nights;
+    if (!nights && checkIn !== 'N/A' && checkOut !== 'N/A') {
+        const d1 = new Date(checkIn);
+        const d2 = new Date(checkOut);
         if (!isNaN(d1.getTime()) && !isNaN(d2.getTime())) {
             nights = Math.max(1, Math.ceil((d2 - d1) / (1000 * 3600 * 24)));
         } else {
@@ -43,297 +42,496 @@ function buildInvoiceHTML(booking) {
     }
     nights = nights || 1;
 
-    const propertyName = booking.propertyName || booking.roomName || 'KPH Stay Luxury Suite';
-    const mealPlan = booking.mealPlan || 'Complimentary In-suite Breakfast';
+    const adults = b.adults || 2;
+    const children = b.children || 0;
 
-    const grandTotal = Number(booking.grandTotal || booking.totalPrice || 0);
-    const accomCharges = booking.accomCharges !== undefined ? Number(booking.accomCharges) : (booking.subtotal ? Number(booking.subtotal) : grandTotal);
-    const cleaningFee = Number(booking.cleaningFee || 0);
-    const upgradesTotal = Number(booking.upgradesTotal || (booking.otherCharges || 0));
-    const tax = booking.tax !== undefined ? Number(booking.tax) : Math.round(accomCharges * 0.15);
-    const discount = Number(booking.discount || booking.discountAmount || 0);
-    const advancePaid = booking.advancePaid !== undefined ? Number(booking.advancePaid) : (booking.paymentStatus === 'PAID' ? grandTotal : Number(booking.advanceAmount || 0));
-    const paymentStatus = (booking.paymentStatus || (grandTotal - advancePaid === 0 ? 'PAID' : 'PARTIALLY PAID')).toUpperCase();
+    // Charges Breakdown
+    const grandTotal = Number(b.grandTotal || b.totalPrice || 0);
+    const accomCharges = b.accomCharges !== undefined ? Number(b.accomCharges) : (b.subtotal ? Number(b.subtotal) : grandTotal);
+    const cleaningFee = Number(b.cleaningFee || 0);
+    const extraGuestCharges = Number(b.extraGuestCharges || 0);
+    const extraMattress = Number(b.extraMattress || 0);
+    const kitchenUsageCharges = Number(b.kitchenUsageCharges || 0);
+    const securityDeposit = Number(b.securityDeposit || 0);
+    const laundryService = Number(b.laundryService || 0);
+    const otherCharges = Number(b.otherCharges || (b.upgradesTotal || 0));
+
+    const subtotal = b.subtotal !== undefined ? Number(b.subtotal) : (accomCharges + cleaningFee + extraGuestCharges + extraMattress + kitchenUsageCharges + laundryService + otherCharges);
+    const discount = Number(b.discount || b.discountAmount || 0);
+    const tax = b.tax !== undefined ? Number(b.tax) : 0;
+    const advancePaid = b.advancePaid !== undefined ? Number(b.advancePaid) : (b.paymentStatus === 'PAID' ? grandTotal : Number(b.advanceAmount || 0));
+    const balanceDue = b.balanceDue !== undefined ? Number(b.balanceDue) : Math.max(0, grandTotal - advancePaid);
+
+    // Payment Details
+    const paymentMethod = b.paymentMethod || 'Credit/Debit Card';
+    const transactionNo = b.transactionNo || b.paymentRef || b.id || 'N/A';
+    const paymentStatus = (b.paymentStatus || (balanceDue === 0 ? 'PAID' : (advancePaid > 0 ? 'PARTIALLY PAID' : 'UNPAID'))).toUpperCase();
+
+    // Checkbox Renderers
+    const renderCheckbox = (label, isChecked, isBold = false) => {
+        const box = isChecked ? '&#9745;' : '&#9633;';
+        const color = isChecked ? '#0F172A' : '#64748B';
+        const text = isBold ? `<strong>${label}</strong>` : label;
+        return `<span style="display: inline-block; margin-right: 14px; font-size: 12px; color: ${color};">${box} ${text}</span>`;
+    };
+
+    const renderStatusBox = (statusName) => {
+        const isChecked = paymentStatus === statusName;
+        const box = isChecked ? '&#9745;' : '&#9633;';
+        const color = isChecked ? (statusName === 'PAID' ? '#10B981' : (statusName === 'PARTIALLY PAID' ? '#F59E0B' : '#EF4444')) : '#94A3B8';
+        return `<span style="display: inline-block; margin-right: 14px; font-size: 13px; font-weight: bold; color: ${color};">${box} ${statusName}</span>`;
+    };
 
     return `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Booking Confirmation Invoice - KPH Stay</title>
+    <title>Booking Invoice - KPH Stay</title>
     <style>
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: #F8FAFC;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #F1F5F9;
             margin: 0;
             padding: 30px 15px;
-            color: #1F2937;
-            line-height: 1.5;
+            color: #0F172A;
             -webkit-font-smoothing: antialiased;
         }
         .invoice-card {
-            max-width: 720px;
+            max-width: 780px;
             margin: 0 auto;
             background: #ffffff;
             border-radius: 16px;
-            padding: 40px;
-            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
-            border: 1px solid #E5E7EB;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+            border: 1px solid #E2E8F0;
         }
-        .top-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            padding-bottom: 20px;
+        .header-banner {
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+            padding: 35px 30px;
+            text-align: center;
+            border-bottom: 3px solid #C5A059;
+            color: #ffffff;
         }
-        .brand-logo {
-            font-size: 30px;
+        .brand-title {
+            font-size: 28px;
             font-weight: 900;
-            color: #0B0F19;
-            letter-spacing: -0.5px;
-            line-height: 1;
-        }
-        .brand-logo .dot {
-            color: #C5A059;
+            letter-spacing: 3px;
+            margin: 0;
+            color: #ffffff;
+            text-transform: uppercase;
         }
         .brand-sub {
-            font-size: 10px;
-            font-weight: 800;
             color: #C5A059;
-            letter-spacing: 2.5px;
-            text-transform: uppercase;
-            margin-top: 5px;
-        }
-        .header-meta {
-            text-align: right;
-        }
-        .booking-num-label {
-            font-size: 13px;
-            color: #6B7280;
-        }
-        .booking-num-val {
-            font-size: 17px;
-            font-weight: 800;
-            color: #0B0F19;
-            letter-spacing: 0.5px;
-        }
-        .divider {
-            border-top: 1px solid #E5E7EB;
-            margin: 22px 0;
-        }
-        .info-grid {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-        .info-col {
-            width: 48%;
-        }
-        .info-group {
-            margin-bottom: 16px;
-        }
-        .info-label {
             font-size: 12px;
-            color: #6B7280;
-            margin-bottom: 2px;
-        }
-        .info-val {
-            font-size: 14px;
-            font-weight: 500;
-            color: #111827;
-        }
-        .info-val-bold {
-            font-size: 15px;
-            font-weight: 700;
-            color: #0B0F19;
-        }
-        .price-summary-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            padding: 4px 0;
-        }
-        .price-large {
-            font-size: 22px;
-            font-weight: 900;
-            color: #0B0F19;
-            margin-top: 2px;
-        }
-        .breakdown-title {
-            font-size: 16px;
-            font-weight: 800;
-            color: #0B0F19;
-            margin-bottom: 3px;
-        }
-        .breakdown-sub {
-            font-size: 13px;
-            color: #6B7280;
-            margin-bottom: 16px;
-        }
-        .line-item-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 12px;
-        }
-        .line-item-table td {
-            padding: 10px 0;
-            font-size: 13px;
-            color: #1F2937;
-        }
-        .line-item-table .item-label {
-            color: #4B5563;
-        }
-        .line-item-table .item-val {
-            text-align: right;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: 6px;
             font-weight: 600;
         }
-        .total-row td {
-            font-size: 16px;
-            font-weight: 800;
-            color: #0B0F19;
-            border-top: 1px solid #E5E7EB;
-            padding-top: 14px;
+        .brand-contacts {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #94A3B8;
         }
-        .badge-paid {
-            display: inline-block;
-            background-color: #ECFDF5;
-            color: #059669;
-            border: 1px solid #A7F3D0;
-            padding: 3px 10px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        .brand-contacts a {
+            color: #C5A059;
+            text-decoration: none;
         }
-        .footer-note {
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid #E5E7EB;
-            font-size: 11px;
-            color: #9CA3AF;
+        .invoice-body {
+            padding: 35px;
+        }
+        .doc-title {
             text-align: center;
+            font-size: 22px;
+            font-weight: 800;
+            color: #0F172A;
+            letter-spacing: 2px;
+            margin: 0 0 25px 0;
+            text-transform: uppercase;
+        }
+        .section-header {
+            font-size: 13px;
+            font-weight: 800;
+            color: #0F172A;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #F1F5F9;
+            padding-bottom: 6px;
+            margin-top: 25px;
+            margin-bottom: 12px;
+        }
+        .grid-2 {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+        .grid-2 td {
+            padding: 5px 0;
+            font-size: 13px;
+            vertical-align: top;
+        }
+        .label {
+            color: #64748B;
+            font-weight: 600;
+        }
+        .val {
+            color: #0F172A;
+            font-weight: 700;
+        }
+        .table-charges {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            margin-bottom: 20px;
+        }
+        .table-charges th {
+            background-color: #F8FAFC;
+            color: #475569;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 10px 12px;
+            border-bottom: 2px solid #E2E8F0;
+            text-align: left;
+        }
+        .table-charges td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #F1F5F9;
+            font-size: 13px;
+            color: #1E293B;
+        }
+        .totals-box {
+            width: 330px;
+            margin-left: auto;
+            background-color: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 25px;
+        }
+        .totals-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            padding: 4px 0;
+            color: #475569;
+        }
+        .totals-row.grand {
+            border-top: 2px solid #CBD5E1;
+            margin-top: 8px;
+            padding-top: 8px;
+            font-weight: 800;
+            font-size: 15px;
+            color: #0F172A;
+        }
+        .totals-row.grand .amount {
+            color: #C5A059;
+        }
+        .totals-row.due {
+            font-weight: 800;
+            font-size: 14px;
+            color: #DC2626;
+            border-top: 1px dashed #CBD5E1;
+            margin-top: 6px;
+            padding-top: 6px;
+        }
+        .checklist {
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 12px;
+            line-height: 1.9;
+            color: #334155;
+        }
+        .terms-box {
+            background-color: #FFFDF5;
+            border: 1px solid #FEF08A;
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 11px;
+            line-height: 1.7;
+            color: #713F12;
+            margin-top: 20px;
+        }
+        .terms-box ul {
+            margin: 6px 0 0 0;
+            padding-left: 18px;
+        }
+        .signatures {
+            margin-top: 40px;
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .signatures td {
+            width: 50%;
+            text-align: center;
+            vertical-align: bottom;
+            padding: 10px;
+        }
+        .sig-line {
+            border-top: 1px solid #94A3B8;
+            margin: 40px auto 8px auto;
+            width: 80%;
+        }
+        .sig-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #475569;
+        }
+        .footer-banner {
+            background-color: #0F172A;
+            color: #94A3B8;
+            text-align: center;
+            padding: 25px 20px;
+            font-size: 12px;
+            border-top: 1px solid #1E293B;
+        }
+        .footer-brand {
+            color: #C5A059;
+            font-weight: 800;
+            font-size: 14px;
+            letter-spacing: 1px;
         }
     </style>
 </head>
 <body>
     <div class="invoice-card">
-        <!-- Top Header -->
-        <div class="top-header">
-            <div>
-                <div class="brand-logo">KPH Stay<span class="dot">.</span>com</div>
-                <div class="brand-sub">Luxury Suites &amp; Mountain Resorts</div>
-            </div>
-            <div class="header-meta">
-                <div class="booking-num-label">Booking number:</div>
-                <div class="booking-num-val">${bookingId}</div>
+        <!-- Header Banner -->
+        <div class="header-banner">
+            <div class="brand-title">KPH STAY</div>
+            <div class="brand-sub">Luxury Apartments &amp; Vacation Rentals</div>
+            <div class="brand-contacts">
+                Website: <a href="https://www.kphstay.com">www.kphstay.com</a> &nbsp;|&nbsp; Email: <a href="mailto:info@kphstay.com">info@kphstay.com</a>
             </div>
         </div>
 
-        <div class="divider"></div>
+        <div class="invoice-body">
+            <div class="doc-title">BOOKING INVOICE</div>
 
-        <!-- 2 Column Guest & Checkin Info -->
-        <div class="info-grid">
-            <div class="info-col">
-                <div class="info-group">
-                    <div class="info-label">Guest information:</div>
-                    <div class="info-val-bold">${guestName}</div>
-                    <div class="info-val">${guestCountry}</div>
+            <!-- Company Information -->
+            <div class="section-header">Company Information</div>
+            <table class="grid-2">
+                <tr>
+                    <td width="50%"><span class="label">Invoice No:</span> <span class="val">${invoiceNo}</span></td>
+                    <td width="50%"><span class="label">Booking ID:</span> <span class="val">${bookingId}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="label">Invoice Date:</span> <span class="val">${invoiceDate}</span></td>
+                    <td><span class="label">Booking Source:</span></td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="padding-top: 4px;">
+                        ${renderCheckbox('KPHStay.com', bookingSource.toLowerCase().includes('kphstay'), true)}
+                        ${renderCheckbox('Direct Booking', bookingSource.toLowerCase().includes('direct'), true)}
+                        ${renderCheckbox('WhatsApp', bookingSource.toLowerCase().includes('whatsapp'), true)}
+                        ${renderCheckbox('Airbnb', bookingSource.toLowerCase().includes('airbnb'), true)}
+                        ${renderCheckbox('Booking.com', bookingSource.toLowerCase().includes('booking.com'), true)}
+                    </td>
+                </tr>
+            </table>
+
+            <!-- Guest Information -->
+            <div class="section-header">Guest Information</div>
+            <table class="grid-2">
+                <tr>
+                    <td width="50%"><span class="label">Guest Name:</span> <span class="val">${guestName}</span></td>
+                    <td width="50%"><span class="label">Phone Number:</span> <span class="val">${guestPhone}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="label">Email Address:</span> <span class="val">${guestEmail}</span></td>
+                    <td><span class="label">CNIC / Passport No.:</span> <span class="val">${cnicPassport}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="label">Nationality:</span> <span class="val">${nationality}</span></td>
+                    <td><span class="label">Address:</span> <span class="val">${address}</span></td>
+                </tr>
+            </table>
+
+            <!-- Reservation Details -->
+            <div class="section-header">Reservation Details</div>
+            <table class="grid-2">
+                <tr>
+                    <td width="50%"><span class="label">Property Name:</span> <span class="val">${propertyName}</span></td>
+                    <td width="50%"><span class="label">Apartment / Unit No.:</span> <span class="val">${unitNo}</span></td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="padding-top: 4px; padding-bottom: 6px;">
+                        <span class="label" style="display: block; margin-bottom: 4px;">Room Type:</span>
+                        ${renderCheckbox('Studio', roomType.toLowerCase().includes('studio'))}
+                        ${renderCheckbox('1 Bedroom', roomType.toLowerCase().includes('1 bed') || roomType.toLowerCase().includes('1bedroom'))}
+                        ${renderCheckbox('2 Bedroom', roomType.toLowerCase().includes('2 bed') || roomType.toLowerCase().includes('2bedroom'))}
+                        ${renderCheckbox('3 Bedroom', roomType.toLowerCase().includes('3 bed') || roomType.toLowerCase().includes('3bedroom'))}
+                        ${renderCheckbox('Penthouse', roomType.toLowerCase().includes('penthouse'))}
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="label">Check-in Date:</span> <span class="val">${checkIn}</span> &nbsp;(<span class="val">${checkInTime}</span>)</td>
+                    <td><span class="label">Check-out Date:</span> <span class="val">${checkOut}</span> &nbsp;(<span class="val">${checkOutTime}</span>)</td>
+                </tr>
+                <tr>
+                    <td><span class="label">Total Nights:</span> <span class="val">${nights}</span></td>
+                    <td><span class="label">Total Guests:</span> Adults <span class="val">${adults}</span>, Children <span class="val">${children}</span></td>
+                </tr>
+            </table>
+
+            <!-- Charges Table -->
+            <div class="section-header">Charges</div>
+            <table class="table-charges">
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th style="text-align: center;">Qty</th>
+                        <th style="text-align: right;">Rate (PKR)</th>
+                        <th style="text-align: right;">Amount (PKR)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Accommodation Charges</strong> (${propertyName})</td>
+                        <td style="text-align: center;">${nights}</td>
+                        <td style="text-align: right;">${formatPKR(nights > 0 ? accomCharges / nights : accomCharges)}</td>
+                        <td style="text-align: right;"><strong>${formatPKR(accomCharges)}</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Cleaning Fee</td>
+                        <td style="text-align: center;">${cleaningFee > 0 ? 1 : 0}</td>
+                        <td style="text-align: right;">${formatPKR(cleaningFee)}</td>
+                        <td style="text-align: right;">${formatPKR(cleaningFee)}</td>
+                    </tr>
+                    <tr>
+                        <td>Extra Guest Charges</td>
+                        <td style="text-align: center;">${extraGuestCharges > 0 ? 1 : 0}</td>
+                        <td style="text-align: right;">${formatPKR(extraGuestCharges)}</td>
+                        <td style="text-align: right;">${formatPKR(extraGuestCharges)}</td>
+                    </tr>
+                    <tr>
+                        <td>Extra Mattress</td>
+                        <td style="text-align: center;">${extraMattress > 0 ? 1 : 0}</td>
+                        <td style="text-align: right;">${formatPKR(extraMattress)}</td>
+                        <td style="text-align: right;">${formatPKR(extraMattress)}</td>
+                    </tr>
+                    <tr>
+                        <td>Kitchen Usage Charges</td>
+                        <td style="text-align: center;">${kitchenUsageCharges > 0 ? 1 : 0}</td>
+                        <td style="text-align: right;">${formatPKR(kitchenUsageCharges)}</td>
+                        <td style="text-align: right;">${formatPKR(kitchenUsageCharges)}</td>
+                    </tr>
+                    <tr>
+                        <td>Security Deposit (Refundable)</td>
+                        <td style="text-align: center;">${securityDeposit > 0 ? 1 : 0}</td>
+                        <td style="text-align: right;">${formatPKR(securityDeposit)}</td>
+                        <td style="text-align: right;">${formatPKR(securityDeposit)}</td>
+                    </tr>
+                    <tr>
+                        <td>Laundry Service</td>
+                        <td style="text-align: center;">${laundryService > 0 ? 1 : 0}</td>
+                        <td style="text-align: right;">${formatPKR(laundryService)}</td>
+                        <td style="text-align: right;">${formatPKR(laundryService)}</td>
+                    </tr>
+                    <tr>
+                        <td>Other Charges / Upgrades</td>
+                        <td style="text-align: center;">${otherCharges > 0 ? 1 : 0}</td>
+                        <td style="text-align: right;">${formatPKR(otherCharges)}</td>
+                        <td style="text-align: right;">${formatPKR(otherCharges)}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Totals Box -->
+            <div class="totals-box">
+                <div class="totals-row">
+                    <span>Subtotal:</span>
+                    <span>PKR ${formatPKR(subtotal)}</span>
                 </div>
-                <div class="info-group">
-                    <div class="info-label">Total guests:</div>
-                    <div class="info-val">${adults} adults${children ? `, ${children} children` : ''}</div>
+                <div class="totals-row">
+                    <span>Discount:</span>
+                    <span>PKR ${formatPKR(discount)}</span>
                 </div>
-                <div class="info-group">
-                    <div class="info-label">Total units/rooms:</div>
-                    <div class="info-val">1</div>
+                <div class="totals-row">
+                    <span>Tax (if applicable):</span>
+                    <span>PKR ${formatPKR(tax)}</span>
                 </div>
-                <div class="info-group">
-                    <div class="info-label">Preferred language:</div>
-                    <div class="info-val">English</div>
+                <div class="totals-row grand">
+                    <span>Grand Total:</span>
+                    <span class="amount">PKR ${formatPKR(grandTotal)}</span>
                 </div>
-                <div class="info-group">
-                    <div class="info-label">Approximate arrival time:</div>
-                    <div class="info-val">${checkInTime}</div>
+                <div class="totals-row">
+                    <span>Advance Paid:</span>
+                    <span>PKR ${formatPKR(advancePaid)}</span>
+                </div>
+                <div class="totals-row due">
+                    <span>Balance Due:</span>
+                    <span>PKR ${formatPKR(balanceDue)}</span>
                 </div>
             </div>
 
-            <div class="info-col" style="text-align: right;">
-                <div class="info-group">
-                    <div class="info-label">Check-in:</div>
-                    <div class="info-val-bold">${checkInFormatted}</div>
-                </div>
-                <div class="info-group">
-                    <div class="info-label">Check-out:</div>
-                    <div class="info-val-bold">${checkOutFormatted}</div>
-                </div>
-                <div class="info-group">
-                    <div class="info-label">Length of stay:</div>
-                    <div class="info-val-bold">${nights} night${nights > 1 ? 's' : ''}</div>
-                </div>
-                <div class="info-group">
-                    <div class="info-label">Payment status:</div>
-                    <div style="margin-top: 4px;"><span class="badge-paid">&#10004; ${paymentStatus}</span></div>
-                </div>
+            <!-- Payment Details -->
+            <div class="section-header">Payment Details</div>
+            <div style="font-size: 13px; margin-bottom: 8px;">
+                <span class="label" style="display: block; margin-bottom: 4px;">Payment Method:</span>
+                ${renderCheckbox('Cash', paymentMethod.toLowerCase().includes('cash'))}
+                ${renderCheckbox('Bank Transfer', paymentMethod.toLowerCase().includes('bank'))}
+                ${renderCheckbox('JazzCash', paymentMethod.toLowerCase().includes('jazzcash'))}
+                ${renderCheckbox('Easypaisa', paymentMethod.toLowerCase().includes('easypaisa'))}
+                ${renderCheckbox('Credit/Debit Card', paymentMethod.toLowerCase().includes('card') || paymentMethod.toLowerCase().includes('credit'))}
             </div>
-        </div>
+            <table class="grid-2">
+                <tr>
+                    <td width="60%"><span class="label">Transaction / Reference No.:</span> <span class="val">${transactionNo}</span></td>
+                    <td width="40%"><span class="label">Payment Status:</span> ${renderStatusBox('PAID')} ${renderStatusBox('PARTIALLY PAID')} ${renderStatusBox('UNPAID')}</td>
+                </tr>
+            </table>
 
-        <div class="divider"></div>
-
-        <!-- Total Price Summary Bar -->
-        <div class="price-summary-row">
-            <div>
-                <div class="info-label">Total price:</div>
-                <div class="price-large">PKR ${formatPKR(grandTotal)}</div>
+            <!-- Guest Requirements -->
+            <div class="section-header">Guest Requirements</div>
+            <div class="checklist">
+                <div>&#9745; Original CNIC / Passport Verified</div>
+                <div>&#9745; Security Deposit Received</div>
+                <div>&#9745; House Rules Explained</div>
+                <div>&#9745; Apartment Keys / Smart Lock Access Shared</div>
+                <div>&#9745; Wi-Fi Details Provided</div>
             </div>
-            <div style="text-align: right;">
-                <div class="info-label">Advance Paid:</div>
-                <div class="info-val-bold" style="color: #059669;">PKR ${formatPKR(advancePaid)}</div>
+
+            <!-- Terms & Conditions -->
+            <div class="terms-box">
+                <strong>Terms &amp; Conditions</strong>
+                <ul>
+                    <li>Check-in Time: 2:00 PM</li>
+                    <li>Check-out Time: 12:00 PM</li>
+                    <li>Original CNIC/Passport is mandatory for every guest.</li>
+                    <li>All guests must be registered before entering the property.</li>
+                    <li>Security deposit (if applicable) is refundable after checkout inspection.</li>
+                    <li>Any damage, missing items, or excessive cleaning charges will be deducted accordingly.</li>
+                    <li>Smoking is prohibited unless permitted in designated areas.</li>
+                    <li>Cancellation and refund policy applies according to the booking terms.</li>
+                    <li>By signing this invoice, the guest agrees to all KPH Stay policies.</li>
+                </ul>
             </div>
-        </div>
 
-        <div class="divider"></div>
-
-        <!-- Detailed Unit/Room Breakdown -->
-        <div>
-            <div class="breakdown-title">${propertyName}</div>
-            <div class="breakdown-sub">${mealPlan}</div>
-
-            <table class="line-item-table">
+            <!-- Signatures -->
+            <table class="signatures">
                 <tr>
-                    <td class="item-label">${booking.checkIn && booking.checkOut ? `${booking.checkIn} - ${booking.checkOut}` : 'Stay Period'} &nbsp;&bull;&nbsp; Standard Member Rate</td>
-                    <td class="item-val">1 x PKR ${formatPKR(accomCharges)}</td>
-                </tr>
-                ${cleaningFee ? `
-                <tr>
-                    <td class="item-label">Cleaning &amp; Housekeeping Service</td>
-                    <td class="item-val">PKR ${formatPKR(cleaningFee)}</td>
-                </tr>
-                ` : ''}
-                ${upgradesTotal ? `
-                <tr>
-                    <td class="item-label">Add-on Upgrades &amp; Luxury Packages</td>
-                    <td class="item-val">PKR ${formatPKR(upgradesTotal)}</td>
-                </tr>
-                ` : ''}
-                <tr>
-                    <td class="item-label">TAX (GST 15%)</td>
-                    <td class="item-val">PKR ${formatPKR(tax)}</td>
-                </tr>
-                ${discount ? `
-                <tr style="color: #059669;">
-                    <td class="item-label" style="color: #059669; font-weight: 600;">Discount (${booking.couponCode || 'PROMO'})</td>
-                    <td class="item-val">-PKR ${formatPKR(discount)}</td>
-                </tr>
-                ` : ''}
-                <tr class="total-row">
-                    <td>Total unit/room price</td>
-                    <td class="item-val">PKR ${formatPKR(grandTotal)}</td>
+                    <td>
+                        <div class="sig-line"></div>
+                        <div class="sig-label">Guest Signature</div>
+                    </td>
+                    <td>
+                        <div class="sig-line"></div>
+                        <div class="sig-label">Authorized Signature &amp; Stamp</div>
+                    </td>
                 </tr>
             </table>
         </div>
 
-        <div class="footer-note">
-            KPH Stay Resort &amp; Spa &bull; Official Confirmation Receipt &bull; www.kphstay.com &bull; support@kphstay.com
+        <!-- Footer Banner -->
+        <div class="footer-banner">
+            <div class="footer-brand">KPH STAY</div>
+            <div style="margin: 4px 0 8px 0; color: #E2E8F0;">Luxury Apartments &amp; Vacation Rentals</div>
+            <div>&#127760; www.kphstay.com &nbsp;|&nbsp; &#128231; info@kphstay.com</div>
+            <div style="margin-top: 10px; font-weight: 500; color: #C5A059;">
+                Thank you for choosing KPH Stay. We look forward to hosting you again!
+            </div>
         </div>
     </div>
 </body>

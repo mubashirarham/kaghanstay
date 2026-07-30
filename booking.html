@@ -587,54 +587,31 @@
     </main>
 
     <!-- Booking Confirmation Success Modal -->
-    <div id="confirmation-modal" class="fixed inset-0 bg-[#0F172A]/70 z-[10000] flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300 overflow-y-auto">
-        <div class="bg-white rounded-3xl max-w-md w-full overflow-hidden shadow-2xl relative border border-slate-100 transform scale-95 transition-transform duration-300 p-8 text-center text-slate-800 my-auto">
-            <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
+    <div id="confirmation-modal" class="fixed inset-0 bg-[#0F172A]/80 z-[10000] flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300 overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-4xl w-full overflow-hidden shadow-2xl relative border border-slate-100 transform scale-95 transition-transform duration-300 p-6 text-center text-slate-800 my-8">
+            <div class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-3 shadow-inner">
                 <i class="fa-solid fa-check text-2xl"></i>
             </div>
             
-            <h2 class="text-2xl font-bold outfit text-slate-900 mb-1">Booking Confirmed!</h2>
-            <p class="text-slate-400 text-xs px-4 mb-6 leading-relaxed">
-                Thank you for choosing KPH Stay. Your reservation is pending final check-in.
+            <h2 class="text-2xl font-black outfit text-slate-900 mb-1">Booking Confirmed!</h2>
+            <p class="text-slate-500 text-xs px-4 mb-6 leading-relaxed">
+                Thank you for choosing KPH Stay. Below is your official reservation invoice.
             </p>
 
-            <!-- Receipt Summary Box -->
-            <div class="bg-slate-50 border border-slate-100 rounded-2xl p-4 text-left text-xs space-y-3 mb-6">
-                <div class="flex justify-between border-b border-slate-200/60 pb-2">
-                    <span class="text-slate-400">Booking ID:</span>
-                    <span id="receipt-id" class="font-bold text-[#C5A059]">BK-XXXX</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-slate-400">Guest Name:</span>
-                    <span id="receipt-name" class="font-semibold text-slate-800">John Doe</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-slate-400">Selected Suite:</span>
-                    <span id="receipt-room" class="font-semibold text-slate-800">Alpine Room</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-slate-400">Stay Duration:</span>
-                    <span id="receipt-dates" class="font-semibold text-slate-800 text-xs">Jul 1 - Jul 4</span>
-                </div>
-                <div class="flex justify-between border-t border-slate-200/60 pt-3 text-base">
-                    <span class="font-bold text-slate-800">Paid Amount:</span>
-                    <span id="receipt-total" class="font-black text-[#D4AF37]">PKR 120,000</span>
-                </div>
+            <!-- Scrollable Invoice Preview Container -->
+            <div id="invoice-modal-content" class="bg-slate-50 border border-slate-200 rounded-2xl p-2 max-h-[60vh] overflow-y-auto mb-6 text-left shadow-xs">
+                <!-- Populated dynamically by getInvoiceHTML(booking) -->
             </div>
 
-            <a id="whatsapp-share-btn" target="_blank" class="w-full bg-[#25D366] text-white font-bold py-3.5 rounded-xl hover:bg-[#128C7E] transition-all text-sm shadow-md mb-3 flex items-center justify-center gap-2">
-                <i class="fa-brands fa-whatsapp text-lg"></i> Share Itinerary on WhatsApp
-            </a>
-            <button onclick="downloadPDFReceipt()" class="w-full border border-slate-200 text-slate-800 font-bold py-3.5 rounded-xl hover:bg-slate-100 transition-all text-sm mb-6 flex items-center justify-center gap-2">
-                <i class="fa-solid fa-file-pdf"></i> Download PDF Receipt
-            </button>
-
             <div class="flex flex-col sm:flex-row gap-3">
-                <a href="index.html" class="w-full sm:w-1/2 border border-slate-200 text-slate-800 font-bold py-3 rounded-xl hover:bg-slate-100 transition-all text-xs text-center flex items-center justify-center">
-                    Go Home
+                <a id="whatsapp-share-btn" target="_blank" class="w-full sm:w-1/3 bg-[#25D366] text-white font-bold py-3.5 rounded-xl hover:bg-[#128C7E] transition-all text-xs shadow-md flex items-center justify-center gap-2">
+                    <i class="fa-brands fa-whatsapp text-lg"></i> Share WhatsApp
                 </a>
-                <button id="receipt-dashboard-btn" onclick="goToDashboard()" class="w-full sm:w-1/2 bg-[#0F172A] text-white font-bold py-3 rounded-xl hover:bg-[#D4AF37] transition-all text-xs shadow-md text-center flex items-center justify-center">
-                    Register Account
+                <button onclick="downloadPDFReceipt()" class="w-full sm:w-1/3 border-2 border-slate-200 text-slate-800 font-bold py-3.5 rounded-xl hover:bg-slate-100 transition-all text-xs flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-file-pdf text-[#C5A059]"></i> Download Invoice PDF
+                </button>
+                <button id="receipt-dashboard-btn" onclick="goToDashboard()" class="w-full sm:w-1/3 bg-[#0F172A] text-white font-bold py-3.5 rounded-xl hover:bg-[#C5A059] transition-all text-xs shadow-md text-center flex items-center justify-center">
+                    My Account / Stays
                 </button>
             </div>
         </div>
@@ -1798,40 +1775,42 @@
 
             async function completeBooking() {
                 try {
+                    // Populate Invoice HTML into Modal Container
+                    const invoiceContainer = document.getElementById('invoice-modal-content');
+                    if (invoiceContainer) {
+                        invoiceContainer.innerHTML = getInvoiceHTML(booking);
+                    }
+
                     // Generate PDF Base64
                     const pdfBase64 = await generatePDFBase64(booking);
 
                     // Save booking via secure Netlify Function
                     await KaghanDB.addBooking(booking, pdfBase64);
 
-                    // Trigger Confirmation Popup
-                    document.getElementById('receipt-id').innerText = booking.id;
-                    document.getElementById('receipt-name').innerText = booking.guestName;
-                    document.getElementById('receipt-room').innerText = selectedRoom.name;
-                    document.getElementById('receipt-dates').innerText = `${KaghanUI.formatDate(booking.checkIn)} - ${KaghanUI.formatDate(booking.checkOut)}`;
-                    document.getElementById('receipt-total').innerText = KaghanUI.formatPKR(booking.totalPrice);
-
-                    // Adjust the account/dashboard button dynamically for walk-in guest checkouts
+                    // Safely adjust the account/dashboard button
                     const receiptDashboardBtn = document.getElementById('receipt-dashboard-btn');
                     if (receiptDashboardBtn) {
                         if (user) {
-                            receiptDashboardBtn.innerText = 'My Account';
+                            receiptDashboardBtn.innerText = 'My Account / Stays';
                         } else {
                             receiptDashboardBtn.innerText = 'Register Account';
                         }
                     }
 
                     const modal = document.getElementById('confirmation-modal');
-                    modal.classList.remove('hidden');
-                    setTimeout(() => {
-                        modal.classList.remove('opacity-0');
-                        modal.firstElementChild.classList.remove('scale-95');
-                    }, 10);
+                    if (modal) {
+                        modal.classList.remove('hidden');
+                        setTimeout(() => {
+                            modal.classList.remove('opacity-0');
+                            if (modal.firstElementChild) modal.firstElementChild.classList.remove('scale-95');
+                        }, 10);
+                    }
                     
                     // Set WhatsApp share link
                     const waBtn = document.getElementById('whatsapp-share-btn');
                     if (waBtn) {
-                        const text = `*Booking Confirmed at Kaghan Stay!*\n\nID: ${booking.id}\nRoom: ${selectedRoom.name}\nDates: ${KaghanUI.formatDate(booking.checkIn)} to ${KaghanUI.formatDate(booking.checkOut)}\nTotal Paid: ${KaghanUI.formatPKR(booking.totalPrice)}\n\nThank you for choosing us!`;
+                        const roomTitle = selectedRoom ? selectedRoom.name : 'Luxury Suite';
+                        const text = `*Booking Confirmed at KPH Stay!*\n\nInvoice ID: ${booking.id}\nRoom: ${roomTitle}\nCheck-in: ${KaghanUI.formatDate(booking.checkIn)}\nCheck-out: ${KaghanUI.formatDate(booking.checkOut)}\nTotal Amount: ${KaghanUI.formatPKR(booking.totalPrice)}\n\nThank you for choosing KPH Stay! www.kphstay.com`;
                         waBtn.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
                     }
 
@@ -1853,133 +1832,309 @@
             window.location.href = user && user.role === 'admin' ? 'admin/index.html' : 'user/index.html';
         }
 
-        // --- PDF GENERATOR LOGIC ---
+        function formatPKRVal(val) {
+            const num = Number(val || 0);
+            return num.toLocaleString('en-PK', { maximumFractionDigits: 0 });
+        }
+
+        // --- PDF GENERATOR & INVOICE HTML LOGIC ---
         function getInvoiceHTML(bookingData) {
             const b = bookingData || {};
-            const bookingId = b.id || (document.getElementById('receipt-id') ? document.getElementById('receipt-id').innerText : 'BK-9842');
-            const guestName = b.guestName || (document.getElementById('guest-name') ? document.getElementById('guest-name').value : 'Valued Guest');
-            const guestEmail = b.guestEmail || (document.getElementById('guest-email') ? document.getElementById('guest-email').value : '');
-            const checkIn = b.checkIn || (document.getElementById('book-check-in') ? document.getElementById('book-check-in').value : 'N/A');
-            const checkOut = b.checkOut || (document.getElementById('book-check-out') ? document.getElementById('book-check-out').value : 'N/A');
-            const propName = selectedRoom ? selectedRoom.name : (b.propertyName || b.roomName || 'KPH Stay Luxury Suite');
+            const bookingId = b.id || (document.getElementById('receipt-id') ? document.getElementById('receipt-id').innerText : 'KPH-BOOK-9842');
+            const invoiceNo = b.invoiceNo || `KPH-INV-${(bookingId).replace(/^KPH-BOOK-|^BK-/, '')}`;
+            const invoiceDate = b.invoiceDate || new Date().toLocaleDateString('en-GB');
+            const bookingSource = b.bookingSource || 'KPHStay.com';
 
-            const formatNiceDate = (dateStr) => {
-                if (!dateStr || dateStr === 'N/A') return 'N/A';
-                try {
-                    const d = new Date(dateStr);
-                    if (isNaN(d.getTime())) return dateStr;
-                    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-                    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-                    return `${days[d.getDay()]}, ${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
-                } catch (_) {
-                    return dateStr;
-                }
+            const guestName = b.guestName || (document.getElementById('guest-name') ? document.getElementById('guest-name').value : 'Valued Guest');
+            const guestPhone = b.guestPhone || (document.getElementById('guest-phone') ? document.getElementById('guest-phone').value : 'N/A');
+            const guestEmail = b.guestEmail || (document.getElementById('guest-email') ? document.getElementById('guest-email').value : 'N/A');
+            const cnicPassport = b.cnicPassport || (document.getElementById('guest-cnic') ? document.getElementById('guest-cnic').value : 'Verified at Check-in');
+            const nationality = b.nationality || 'Pakistani';
+            const address = b.address || 'N/A';
+
+            const propertyName = selectedRoom ? selectedRoom.name : (b.propertyName || b.roomName || 'KPH Stay Luxury Suite');
+            const unitNo = b.unitNo || b.apartmentNo || b.roomId || 'Suite A';
+            const roomType = b.roomType || (selectedRoom ? selectedRoom.category || selectedRoom.type || '1 Bedroom' : '1 Bedroom');
+            const checkIn = b.checkIn || (document.getElementById('book-check-in') ? document.getElementById('book-check-in').value : 'N/A');
+            const checkInTime = b.checkInTime || '2:00 PM';
+            const checkOut = b.checkOut || (document.getElementById('book-check-out') ? document.getElementById('book-check-out').value : 'N/A');
+            const checkOutTime = b.checkOutTime || '12:00 PM';
+
+            const nights = stayNights || b.totalNights || 1;
+            const adults = b.adults || (document.getElementById('book-adults') ? document.getElementById('book-adults').value : 2);
+            const children = b.children || (document.getElementById('book-children') ? document.getElementById('book-children').value : 0);
+
+            const grandTotal = Number(b.totalPrice || b.grandTotal || calcTotalPrice || 0);
+            const accomCharges = Number(b.accomCharges || calcSubtotal || grandTotal);
+            const cleaningFee = Number(b.cleaningFee || 0);
+            const extraGuestCharges = Number(b.extraGuestCharges || 0);
+            const extraMattress = Number(b.extraMattress || 0);
+            const kitchenUsageCharges = Number(b.kitchenUsageCharges || 0);
+            const securityDeposit = Number(b.securityDeposit || 0);
+            const laundryService = Number(b.laundryService || 0);
+            const otherCharges = Number(b.otherCharges || calcUpgradesTotal || 0);
+
+            const subtotal = Number(b.subtotal || (accomCharges + cleaningFee + extraGuestCharges + extraMattress + kitchenUsageCharges + securityDeposit + laundryService + otherCharges));
+            const discount = Number(b.discount || calcCouponDiscount || 0);
+            const tax = Number(b.tax || calcTax || 0);
+            const advancePaid = Number(b.advancePaid !== undefined ? b.advancePaid : grandTotal);
+            const balanceDue = Math.max(0, grandTotal - advancePaid);
+
+            const paymentMethod = b.paymentMethod || 'Credit/Debit Card';
+            const transactionNo = b.transactionNo || bookingId;
+            const paymentStatus = (b.paymentStatus || 'PAID').toUpperCase();
+
+            const renderCheckbox = (label, isChecked, isBold = false) => {
+                const box = isChecked ? '&#9745;' : '&#9633;';
+                const color = isChecked ? '#0F172A' : '#64748B';
+                const text = isBold ? `<strong>${label}</strong>` : label;
+                return `<span style="display: inline-block; margin-right: 14px; font-size: 12px; color: ${color};">${box} ${text}</span>`;
             };
 
-            const subtotalText = document.getElementById('calc-subtotal') ? document.getElementById('calc-subtotal').innerText : 'PKR 0';
-            const taxText = document.getElementById('calc-tax') ? document.getElementById('calc-tax').innerText : 'PKR 0';
-            const totalText = document.getElementById('calc-total') ? document.getElementById('calc-total').innerText : 'PKR 0';
-            const discountText = document.getElementById('calc-coupon-discount') ? document.getElementById('calc-coupon-discount').innerText : '0';
+            const renderStatusBox = (statusName) => {
+                const isChecked = paymentStatus === statusName;
+                const box = isChecked ? '&#9745;' : '&#9633;';
+                const color = isChecked ? (statusName === 'PAID' ? '#10B981' : (statusName === 'PARTIALLY PAID' ? '#F59E0B' : '#EF4444')) : '#94A3B8';
+                return `<span style="display: inline-block; margin-right: 14px; font-size: 13px; font-weight: bold; color: ${color};">${box} ${statusName}</span>`;
+            };
 
             return `
-            <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: #ffffff; padding: 40px; color: #1F2937; width: 750px; box-sizing: border-box;">
-                <!-- Top Header -->
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 20px;">
-                    <div>
-                        <div style="font-size: 28px; font-weight: 900; color: #0B0F19; letter-spacing: -0.5px; line-height: 1;">KPH Stay<span style="color: #C5A059;">.</span>com</div>
-                        <div style="font-size: 10px; font-weight: 800; color: #C5A059; letter-spacing: 2px; text-transform: uppercase; margin-top: 5px;">Luxury Suites &amp; Mountain Resorts</div>
-                    </div>
-                    <div style="text-align: right;">
-                        <div style="font-size: 13px; color: #6B7280;">Booking number:</div>
-                        <div style="font-size: 17px; font-weight: 800; color: #0B0F19;">${bookingId}</div>
+            <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: #ffffff; padding: 35px; color: #0F172A; max-width: 780px; margin: 0 auto; box-sizing: border-box; border: 1px solid #E2E8F0; border-radius: 16px;">
+                <!-- Header Banner -->
+                <div style="background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); padding: 30px; text-align: center; border-bottom: 3px solid #C5A059; color: #ffffff; border-top-left-radius: 12px; border-top-right-radius: 12px;">
+                    <div style="font-size: 26px; font-weight: 900; letter-spacing: 3px; margin: 0; color: #ffffff; text-transform: uppercase;">KPH STAY</div>
+                    <div style="color: #C5A059; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; margin-top: 5px; font-weight: 600;">Luxury Apartments &amp; Vacation Rentals</div>
+                    <div style="margin-top: 8px; font-size: 12px; color: #94A3B8;">
+                        Website: <a href="https://www.kphstay.com" style="color: #C5A059; text-decoration: none;">www.kphstay.com</a> &nbsp;|&nbsp; Email: <a href="mailto:info@kphstay.com" style="color: #C5A059; text-decoration: none;">info@kphstay.com</a>
                     </div>
                 </div>
 
-                <div style="border-top: 1px solid #E5E7EB; margin: 20px 0;"></div>
+                <div style="padding: 25px 15px;">
+                    <div style="text-align: center; font-size: 20px; font-weight: 800; color: #0F172A; letter-spacing: 2px; margin-bottom: 20px; text-transform: uppercase;">BOOKING INVOICE</div>
 
-                <!-- 2 Column Guest & Checkin Info -->
-                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                    <div style="width: 48%;">
-                        <div style="margin-bottom: 14px;">
-                            <div style="font-size: 12px; color: #6B7280; margin-bottom: 2px;">Guest information:</div>
-                            <div style="font-size: 15px; font-weight: 700; color: #0B0F19;">${guestName}</div>
-                            <div style="font-size: 13px; color: #4B5563;">${guestEmail}</div>
-                        </div>
-                        <div style="margin-bottom: 14px;">
-                            <div style="font-size: 12px; color: #6B7280; margin-bottom: 2px;">Total guests:</div>
-                            <div style="font-size: 14px; font-weight: 500; color: #111827;">2 adults</div>
-                        </div>
-                        <div style="margin-bottom: 14px;">
-                            <div style="font-size: 12px; color: #6B7280; margin-bottom: 2px;">Total units/rooms:</div>
-                            <div style="font-size: 14px; font-weight: 500; color: #111827;">1</div>
-                        </div>
-                    </div>
-
-                    <div style="width: 48%; text-align: right;">
-                        <div style="margin-bottom: 14px;">
-                            <div style="font-size: 12px; color: #6B7280; margin-bottom: 2px;">Check-in:</div>
-                            <div style="font-size: 15px; font-weight: 700; color: #0B0F19;">${formatNiceDate(checkIn)}</div>
-                        </div>
-                        <div style="margin-bottom: 14px;">
-                            <div style="font-size: 12px; color: #6B7280; margin-bottom: 2px;">Check-out:</div>
-                            <div style="font-size: 15px; font-weight: 700; color: #0B0F19;">${formatNiceDate(checkOut)}</div>
-                        </div>
-                        <div style="margin-bottom: 14px;">
-                            <div style="font-size: 12px; color: #6B7280; margin-bottom: 2px;">Length of stay:</div>
-                            <div style="font-size: 15px; font-weight: 700; color: #0B0F19;">${stayNights} night${stayNights > 1 ? 's' : ''}</div>
-                        </div>
-                        <div style="margin-bottom: 14px;">
-                            <div style="font-size: 12px; color: #6B7280; margin-bottom: 2px;">Payment status:</div>
-                            <div style="margin-top: 4px;"><span style="display: inline-block; background-color: #ECFDF5; color: #059669; border: 1px solid #A7F3D0; padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: 800; text-transform: uppercase;">&#10004; PAID</span></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div style="border-top: 1px solid #E5E7EB; margin: 20px 0;"></div>
-
-                <!-- Total Price Summary Bar -->
-                <div style="display: flex; justify-content: space-between; align-items: flex-end; padding: 4px 0;">
-                    <div>
-                        <div style="font-size: 12px; color: #6B7280;">Total price:</div>
-                        <div style="font-size: 22px; font-weight: 900; color: #0B0F19; margin-top: 2px;">${totalText}</div>
-                    </div>
-                    <div style="text-align: right;">
-                        <div style="font-size: 12px; color: #6B7280;">Advance Paid:</div>
-                        <div style="font-size: 15px; font-weight: 700; color: #059669;">${totalText}</div>
-                    </div>
-                </div>
-
-                <div style="border-top: 1px solid #E5E7EB; margin: 20px 0;"></div>
-
-                <!-- Detailed Unit Breakdown -->
-                <div>
-                    <div style="font-size: 16px; font-weight: 800; color: #0B0F19; margin-bottom: 3px;">${propName}</div>
-                    <div style="font-size: 13px; color: #6B7280; margin-bottom: 16px;">Complimentary In-suite Breakfast</div>
-
-                    <table style="width: 100%; border-collapse: collapse; margin-top: 12px;">
+                    <!-- Company Information -->
+                    <div style="font-size: 13px; font-weight: 800; color: #0F172A; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #F1F5F9; padding-bottom: 5px; margin-top: 15px; margin-bottom: 10px;">Company Information</div>
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 12px; font-size: 13px;">
                         <tr>
-                            <td style="padding: 10px 0; font-size: 13px; color: #4B5563;">${checkIn} - ${checkOut} &nbsp;&bull;&nbsp; Standard Member Rate</td>
-                            <td style="padding: 10px 0; font-size: 13px; text-align: right; font-weight: 600; color: #1F2937;">1 x ${subtotalText}</td>
+                            <td width="50%" style="padding: 4px 0;"><span style="color: #64748B; font-weight: 600;">Invoice No:</span> <span style="color: #0F172A; font-weight: 700;">${invoiceNo}</span></td>
+                            <td width="50%" style="padding: 4px 0;"><span style="color: #64748B; font-weight: 600;">Booking ID:</span> <span style="color: #0F172A; font-weight: 700;">${bookingId}</span></td>
                         </tr>
                         <tr>
-                            <td style="padding: 10px 0; font-size: 13px; color: #4B5563;">TAX (GST 15%)</td>
-                            <td style="padding: 10px 0; font-size: 13px; text-align: right; font-weight: 600; color: #1F2937;">${taxText}</td>
+                            <td style="padding: 4px 0;"><span style="color: #64748B; font-weight: 600;">Invoice Date:</span> <span style="color: #0F172A; font-weight: 700;">${invoiceDate}</span></td>
+                            <td style="padding: 4px 0;"><span style="color: #64748B; font-weight: 600;">Booking Source:</span></td>
                         </tr>
-                        ${appliedCoupon ? `
                         <tr>
-                            <td style="padding: 10px 0; font-size: 13px; color: #059669; font-weight: 600;">Discount (${appliedCoupon.code})</td>
-                            <td style="padding: 10px 0; font-size: 13px; text-align: right; font-weight: 600; color: #059669;">-${discountText}</td>
+                            <td colspan="2" style="padding-top: 4px;">
+                                ${renderCheckbox('KPHStay.com', bookingSource.toLowerCase().includes('kphstay'), true)}
+                                ${renderCheckbox('Direct Booking', bookingSource.toLowerCase().includes('direct'), true)}
+                                ${renderCheckbox('WhatsApp', bookingSource.toLowerCase().includes('whatsapp'), true)}
+                                ${renderCheckbox('Airbnb', bookingSource.toLowerCase().includes('airbnb'), true)}
+                                ${renderCheckbox('Booking.com', bookingSource.toLowerCase().includes('booking.com'), true)}
+                            </td>
                         </tr>
-                        ` : ''}
+                    </table>
+
+                    <!-- Guest Information -->
+                    <div style="font-size: 13px; font-weight: 800; color: #0F172A; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #F1F5F9; padding-bottom: 5px; margin-top: 20px; margin-bottom: 10px;">Guest Information</div>
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 12px; font-size: 13px;">
                         <tr>
-                            <td style="padding-top: 14px; font-size: 16px; font-weight: 800; color: #0B0F19; border-top: 1px solid #E5E7EB;">Total unit/room price</td>
-                            <td style="padding-top: 14px; font-size: 16px; font-weight: 800; text-align: right; color: #0B0F19; border-top: 1px solid #E5E7EB;">${totalText}</td>
+                            <td width="50%" style="padding: 4px 0;"><span style="color: #64748B; font-weight: 600;">Guest Name:</span> <span style="color: #0F172A; font-weight: 700;">${guestName}</span></td>
+                            <td width="50%" style="padding: 4px 0;"><span style="color: #64748B; font-weight: 600;">Phone Number:</span> <span style="color: #0F172A; font-weight: 700;">${guestPhone}</span></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 4px 0;"><span style="color: #64748B; font-weight: 600;">Email Address:</span> <span style="color: #0F172A; font-weight: 700;">${guestEmail}</span></td>
+                            <td style="padding: 4px 0;"><span style="color: #64748B; font-weight: 600;">CNIC / Passport No.:</span> <span style="color: #0F172A; font-weight: 700;">${cnicPassport}</span></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 4px 0;"><span style="color: #64748B; font-weight: 600;">Nationality:</span> <span style="color: #0F172A; font-weight: 700;">${nationality}</span></td>
+                            <td style="padding: 4px 0;"><span style="color: #64748B; font-weight: 600;">Address:</span> <span style="color: #0F172A; font-weight: 700;">${address}</span></td>
+                        </tr>
+                    </table>
+
+                    <!-- Reservation Details -->
+                    <div style="font-size: 13px; font-weight: 800; color: #0F172A; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #F1F5F9; padding-bottom: 5px; margin-top: 20px; margin-bottom: 10px;">Reservation Details</div>
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 12px; font-size: 13px;">
+                        <tr>
+                            <td width="50%" style="padding: 4px 0;"><span style="color: #64748B; font-weight: 600;">Property Name:</span> <span style="color: #0F172A; font-weight: 700;">${propertyName}</span></td>
+                            <td width="50%" style="padding: 4px 0;"><span style="color: #64748B; font-weight: 600;">Apartment / Unit No.:</span> <span style="color: #0F172A; font-weight: 700;">${unitNo}</span></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="padding-top: 4px; padding-bottom: 6px;">
+                                <span style="color: #64748B; font-weight: 600; display: block; margin-bottom: 4px;">Room Type:</span>
+                                ${renderCheckbox('Studio', roomType.toLowerCase().includes('studio'))}
+                                ${renderCheckbox('1 Bedroom', roomType.toLowerCase().includes('1 bed') || roomType.toLowerCase().includes('1bedroom'))}
+                                ${renderCheckbox('2 Bedroom', roomType.toLowerCase().includes('2 bed') || roomType.toLowerCase().includes('2bedroom'))}
+                                ${renderCheckbox('3 Bedroom', roomType.toLowerCase().includes('3 bed') || roomType.toLowerCase().includes('3bedroom'))}
+                                ${renderCheckbox('Penthouse', roomType.toLowerCase().includes('penthouse'))}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 4px 0;"><span style="color: #64748B; font-weight: 600;">Check-in Date:</span> <span style="color: #0F172A; font-weight: 700;">${checkIn}</span> &nbsp;(<span style="color: #0F172A; font-weight: 700;">${checkInTime}</span>)</td>
+                            <td style="padding: 4px 0;"><span style="color: #64748B; font-weight: 600;">Check-out Date:</span> <span style="color: #0F172A; font-weight: 700;">${checkOut}</span> &nbsp;(<span style="color: #0F172A; font-weight: 700;">${checkOutTime}</span>)</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 4px 0;"><span style="color: #64748B; font-weight: 600;">Total Nights:</span> <span style="color: #0F172A; font-weight: 700;">${nights}</span></td>
+                            <td style="padding: 4px 0;"><span style="color: #64748B; font-weight: 600;">Total Guests:</span> Adults <span style="color: #0F172A; font-weight: 700;">${adults}</span>, Children <span style="color: #0F172A; font-weight: 700;">${children}</span></td>
+                        </tr>
+                    </table>
+
+                    <!-- Charges Table -->
+                    <div style="font-size: 13px; font-weight: 800; color: #0F172A; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #F1F5F9; padding-bottom: 5px; margin-top: 20px; margin-bottom: 10px;">Charges</div>
+                    <table style="width: 100%; border-collapse: collapse; margin-top: 10px; margin-bottom: 15px; font-size: 12px;">
+                        <thead>
+                            <tr style="background-color: #F8FAFC; color: #475569;">
+                                <th style="padding: 8px 10px; border-bottom: 2px solid #E2E8F0; text-align: left;">Description</th>
+                                <th style="padding: 8px 10px; border-bottom: 2px solid #E2E8F0; text-align: center;">Qty</th>
+                                <th style="padding: 8px 10px; border-bottom: 2px solid #E2E8F0; text-align: right;">Rate (PKR)</th>
+                                <th style="padding: 8px 10px; border-bottom: 2px solid #E2E8F0; text-align: right;">Amount (PKR)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom: 1px solid #F1F5F9;">
+                                <td style="padding: 8px 10px;"><strong>Accommodation Charges</strong> (${propertyName})</td>
+                                <td style="padding: 8px 10px; text-align: center;">${nights}</td>
+                                <td style="padding: 8px 10px; text-align: right;">${formatPKRVal(nights > 0 ? accomCharges / nights : accomCharges)}</td>
+                                <td style="padding: 8px 10px; text-align: right;"><strong>${formatPKRVal(accomCharges)}</strong></td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #F1F5F9;">
+                                <td style="padding: 8px 10px;">Cleaning Fee</td>
+                                <td style="padding: 8px 10px; text-align: center;">${cleaningFee > 0 ? 1 : 0}</td>
+                                <td style="padding: 8px 10px; text-align: right;">${formatPKRVal(cleaningFee)}</td>
+                                <td style="padding: 8px 10px; text-align: right;">${formatPKRVal(cleaningFee)}</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #F1F5F9;">
+                                <td style="padding: 8px 10px;">Extra Guest Charges</td>
+                                <td style="padding: 8px 10px; text-align: center;">${extraGuestCharges > 0 ? 1 : 0}</td>
+                                <td style="padding: 8px 10px; text-align: right;">${formatPKRVal(extraGuestCharges)}</td>
+                                <td style="padding: 8px 10px; text-align: right;">${formatPKRVal(extraGuestCharges)}</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #F1F5F9;">
+                                <td style="padding: 8px 10px;">Extra Mattress</td>
+                                <td style="padding: 8px 10px; text-align: center;">${extraMattress > 0 ? 1 : 0}</td>
+                                <td style="padding: 8px 10px; text-align: right;">${formatPKRVal(extraMattress)}</td>
+                                <td style="padding: 8px 10px; text-align: right;">${formatPKRVal(extraMattress)}</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #F1F5F9;">
+                                <td style="padding: 8px 10px;">Kitchen Usage Charges</td>
+                                <td style="padding: 8px 10px; text-align: center;">${kitchenUsageCharges > 0 ? 1 : 0}</td>
+                                <td style="padding: 8px 10px; text-align: right;">${formatPKRVal(kitchenUsageCharges)}</td>
+                                <td style="padding: 8px 10px; text-align: right;">${formatPKRVal(kitchenUsageCharges)}</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #F1F5F9;">
+                                <td style="padding: 8px 10px;">Security Deposit (Refundable)</td>
+                                <td style="padding: 8px 10px; text-align: center;">${securityDeposit > 0 ? 1 : 0}</td>
+                                <td style="padding: 8px 10px; text-align: right;">${formatPKRVal(securityDeposit)}</td>
+                                <td style="padding: 8px 10px; text-align: right;">${formatPKRVal(securityDeposit)}</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #F1F5F9;">
+                                <td style="padding: 8px 10px;">Laundry Service</td>
+                                <td style="padding: 8px 10px; text-align: center;">${laundryService > 0 ? 1 : 0}</td>
+                                <td style="padding: 8px 10px; text-align: right;">${formatPKRVal(laundryService)}</td>
+                                <td style="padding: 8px 10px; text-align: right;">${formatPKRVal(laundryService)}</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #F1F5F9;">
+                                <td style="padding: 8px 10px;">Other Charges / Upgrades</td>
+                                <td style="padding: 8px 10px; text-align: center;">${otherCharges > 0 ? 1 : 0}</td>
+                                <td style="padding: 8px 10px; text-align: right;">${formatPKRVal(otherCharges)}</td>
+                                <td style="padding: 8px 10px; text-align: right;">${formatPKRVal(otherCharges)}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Totals Box -->
+                    <div style="width: 320px; margin-left: auto; background-color: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 12px; margin-bottom: 20px; font-size: 13px;">
+                        <div style="display: flex; justify-content: space-between; padding: 3px 0; color: #475569;">
+                            <span>Subtotal:</span>
+                            <span>PKR ${formatPKRVal(subtotal)}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding: 3px 0; color: #475569;">
+                            <span>Discount:</span>
+                            <span>PKR ${formatPKRVal(discount)}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding: 3px 0; color: #475569;">
+                            <span>Tax (if applicable):</span>
+                            <span>PKR ${formatPKRVal(tax)}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; border-top: 2px solid #CBD5E1; margin-top: 6px; padding-top: 6px; font-weight: 800; font-size: 15px; color: #0F172A;">
+                            <span>Grand Total:</span>
+                            <span style="color: #C5A059;">PKR ${formatPKRVal(grandTotal)}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding: 3px 0; color: #475569;">
+                            <span>Advance Paid:</span>
+                            <span>PKR ${formatPKRVal(advancePaid)}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; border-top: 1px dashed #CBD5E1; margin-top: 4px; padding-top: 4px; font-weight: 800; color: #DC2626;">
+                            <span>Balance Due:</span>
+                            <span>PKR ${formatPKRVal(balanceDue)}</span>
+                        </div>
+                    </div>
+
+                    <!-- Payment Details -->
+                    <div style="font-size: 13px; font-weight: 800; color: #0F172A; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #F1F5F9; padding-bottom: 5px; margin-top: 20px; margin-bottom: 10px;">Payment Details</div>
+                    <div style="font-size: 12px; margin-bottom: 8px;">
+                        <span style="color: #64748B; font-weight: 600; display: block; margin-bottom: 4px;">Payment Method:</span>
+                        ${renderCheckbox('Cash', paymentMethod.toLowerCase().includes('cash'))}
+                        ${renderCheckbox('Bank Transfer', paymentMethod.toLowerCase().includes('bank'))}
+                        ${renderCheckbox('JazzCash', paymentMethod.toLowerCase().includes('jazzcash'))}
+                        ${renderCheckbox('Easypaisa', paymentMethod.toLowerCase().includes('easypaisa'))}
+                        ${renderCheckbox('Credit/Debit Card', paymentMethod.toLowerCase().includes('card') || paymentMethod.toLowerCase().includes('credit'))}
+                    </div>
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 12px; font-size: 13px;">
+                        <tr>
+                            <td width="60%" style="padding: 4px 0;"><span style="color: #64748B; font-weight: 600;">Transaction / Reference No.:</span> <span style="color: #0F172A; font-weight: 700;">${transactionNo}</span></td>
+                            <td width="40%" style="padding: 4px 0;"><span style="color: #64748B; font-weight: 600;">Payment Status:</span> ${renderStatusBox('PAID')} ${renderStatusBox('PARTIALLY PAID')} ${renderStatusBox('UNPAID')}</td>
+                        </tr>
+                    </table>
+
+                    <!-- Guest Requirements -->
+                    <div style="font-size: 13px; font-weight: 800; color: #0F172A; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #F1F5F9; padding-bottom: 5px; margin-top: 20px; margin-bottom: 10px;">Guest Requirements</div>
+                    <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 12px; font-size: 12px; line-height: 1.8; color: #334155;">
+                        <div>&#9745; Original CNIC / Passport Verified</div>
+                        <div>&#9745; Security Deposit Received</div>
+                        <div>&#9745; House Rules Explained</div>
+                        <div>&#9745; Apartment Keys / Smart Lock Access Shared</div>
+                        <div>&#9745; Wi-Fi Details Provided</div>
+                    </div>
+
+                    <!-- Terms & Conditions -->
+                    <div style="background-color: #FFFDF5; border: 1px solid #FEF08A; border-radius: 8px; padding: 12px; font-size: 11px; line-height: 1.6; color: #713F12; margin-top: 15px;">
+                        <strong>Terms &amp; Conditions</strong>
+                        <ul style="margin: 4px 0 0 0; padding-left: 16px;">
+                            <li>Check-in Time: 2:00 PM</li>
+                            <li>Check-out Time: 12:00 PM</li>
+                            <li>Original CNIC/Passport is mandatory for every guest.</li>
+                            <li>All guests must be registered before entering the property.</li>
+                            <li>Security deposit (if applicable) is refundable after checkout inspection.</li>
+                            <li>Any damage, missing items, or excessive cleaning charges will be deducted accordingly.</li>
+                            <li>Smoking is prohibited unless permitted in designated areas.</li>
+                            <li>Cancellation and refund policy applies according to the booking terms.</li>
+                            <li>By signing this invoice, the guest agrees to all KPH Stay policies.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Signatures -->
+                    <table style="margin-top: 35px; width: 100%; border-collapse: collapse;">
+                        <tr>
+                            <td style="width: 50%; text-align: center; vertical-align: bottom; padding: 10px;">
+                                <div style="border-top: 1px solid #94A3B8; margin: 30px auto 6px auto; width: 80%;"></div>
+                                <div style="font-size: 11px; font-weight: 700; color: #475569;">Guest Signature</div>
+                            </td>
+                            <td style="width: 50%; text-align: center; vertical-align: bottom; padding: 10px;">
+                                <div style="border-top: 1px solid #94A3B8; margin: 30px auto 6px auto; width: 80%;"></div>
+                                <div style="font-size: 11px; font-weight: 700; color: #475569;">Authorized Signature &amp; Stamp</div>
+                            </td>
                         </tr>
                     </table>
                 </div>
 
-                <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #E5E7EB; font-size: 11px; color: #9CA3AF; text-align: center;">
-                    KPH Stay Resort &amp; Spa &bull; Official Confirmation Receipt &bull; www.kphstay.com &bull; support@kphstay.com
+                <!-- Footer Banner -->
+                <div style="background-color: #0F172A; color: #94A3B8; text-align: center; padding: 20px; font-size: 11px; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;">
+                    <div style="color: #C5A059; font-weight: 800; font-size: 13px; letter-spacing: 1px;">KPH STAY</div>
+                    <div style="margin: 3px 0 6px 0; color: #E2E8F0;">Luxury Apartments &amp; Vacation Rentals</div>
+                    <div>&#127760; www.kphstay.com &nbsp;|&nbsp; &#128231; info@kphstay.com</div>
+                    <div style="margin-top: 8px; font-weight: 500; color: #C5A059;">
+                        Thank you for choosing KPH Stay. We look forward to hosting you again!
+                    </div>
                 </div>
             </div>
             `;
