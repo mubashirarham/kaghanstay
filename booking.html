@@ -1855,77 +1855,131 @@
 
         // --- PDF GENERATOR LOGIC ---
         function getInvoiceHTML(bookingData) {
+            const b = bookingData || {};
+            const bookingId = b.id || (document.getElementById('receipt-id') ? document.getElementById('receipt-id').innerText : 'BK-9842');
+            const guestName = b.guestName || (document.getElementById('guest-name') ? document.getElementById('guest-name').value : 'Valued Guest');
+            const guestEmail = b.guestEmail || (document.getElementById('guest-email') ? document.getElementById('guest-email').value : '');
+            const checkIn = b.checkIn || (document.getElementById('book-check-in') ? document.getElementById('book-check-in').value : 'N/A');
+            const checkOut = b.checkOut || (document.getElementById('book-check-out') ? document.getElementById('book-check-out').value : 'N/A');
+            const propName = selectedRoom ? selectedRoom.name : (b.propertyName || b.roomName || 'KPH Stay Luxury Suite');
+
+            const formatNiceDate = (dateStr) => {
+                if (!dateStr || dateStr === 'N/A') return 'N/A';
+                try {
+                    const d = new Date(dateStr);
+                    if (isNaN(d.getTime())) return dateStr;
+                    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                    return `${days[d.getDay()]}, ${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+                } catch (_) {
+                    return dateStr;
+                }
+            };
+
+            const subtotalText = document.getElementById('calc-subtotal') ? document.getElementById('calc-subtotal').innerText : 'PKR 0';
+            const taxText = document.getElementById('calc-tax') ? document.getElementById('calc-tax').innerText : 'PKR 0';
+            const totalText = document.getElementById('calc-total') ? document.getElementById('calc-total').innerText : 'PKR 0';
+            const discountText = document.getElementById('calc-coupon-discount') ? document.getElementById('calc-coupon-discount').innerText : '0';
+
             return `
-            <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; padding: 40px; color: #0F172A; width: 800px;">
-                <div style="border-bottom: 2px solid #D4AF37; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: flex-start;">
+            <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: #ffffff; padding: 40px; color: #1F2937; width: 750px; box-sizing: border-box;">
+                <!-- Top Header -->
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 20px;">
                     <div>
-                        <h1 style="margin: 0; font-size: 28px; font-weight: 900; color: #0F172A;">Kaghan Stay</h1>
-                        <p style="margin: 5px 0 0; font-size: 11px; color: #D4AF37; letter-spacing: 2px; text-transform: uppercase; font-weight: bold;">Premium Resort & Spa</p>
+                        <div style="font-size: 28px; font-weight: 900; color: #0B0F19; letter-spacing: -0.5px; line-height: 1;">KPH Stay<span style="color: #C5A059;">.</span>com</div>
+                        <div style="font-size: 10px; font-weight: 800; color: #C5A059; letter-spacing: 2px; text-transform: uppercase; margin-top: 5px;">Luxury Suites &amp; Mountain Resorts</div>
                     </div>
                     <div style="text-align: right;">
-                        <h2 style="margin: 0; font-size: 20px; font-weight: 700;">INVOICE</h2>
-                        <p style="margin: 5px 0 0; font-size: 12px; color: #64748B;">Date: ${new Date().toLocaleDateString()}</p>
-                        <p style="margin: 2px 0 0; font-size: 12px; color: #64748B;">Booking Ref: <strong>${bookingData.id || document.getElementById('receipt-id').innerText}</strong></p>
+                        <div style="font-size: 13px; color: #6B7280;">Booking number:</div>
+                        <div style="font-size: 17px; font-weight: 800; color: #0B0F19;">${bookingId}</div>
                     </div>
                 </div>
 
-                <div style="display: flex; justify-content: space-between; margin-bottom: 40px; font-size: 13px;">
+                <div style="border-top: 1px solid #E5E7EB; margin: 20px 0;"></div>
+
+                <!-- 2 Column Guest & Checkin Info -->
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <div style="width: 48%;">
+                        <div style="margin-bottom: 14px;">
+                            <div style="font-size: 12px; color: #6B7280; margin-bottom: 2px;">Guest information:</div>
+                            <div style="font-size: 15px; font-weight: 700; color: #0B0F19;">${guestName}</div>
+                            <div style="font-size: 13px; color: #4B5563;">${guestEmail}</div>
+                        </div>
+                        <div style="margin-bottom: 14px;">
+                            <div style="font-size: 12px; color: #6B7280; margin-bottom: 2px;">Total guests:</div>
+                            <div style="font-size: 14px; font-weight: 500; color: #111827;">2 adults</div>
+                        </div>
+                        <div style="margin-bottom: 14px;">
+                            <div style="font-size: 12px; color: #6B7280; margin-bottom: 2px;">Total units/rooms:</div>
+                            <div style="font-size: 14px; font-weight: 500; color: #111827;">1</div>
+                        </div>
+                    </div>
+
+                    <div style="width: 48%; text-align: right;">
+                        <div style="margin-bottom: 14px;">
+                            <div style="font-size: 12px; color: #6B7280; margin-bottom: 2px;">Check-in:</div>
+                            <div style="font-size: 15px; font-weight: 700; color: #0B0F19;">${formatNiceDate(checkIn)}</div>
+                        </div>
+                        <div style="margin-bottom: 14px;">
+                            <div style="font-size: 12px; color: #6B7280; margin-bottom: 2px;">Check-out:</div>
+                            <div style="font-size: 15px; font-weight: 700; color: #0B0F19;">${formatNiceDate(checkOut)}</div>
+                        </div>
+                        <div style="margin-bottom: 14px;">
+                            <div style="font-size: 12px; color: #6B7280; margin-bottom: 2px;">Length of stay:</div>
+                            <div style="font-size: 15px; font-weight: 700; color: #0B0F19;">${stayNights} night${stayNights > 1 ? 's' : ''}</div>
+                        </div>
+                        <div style="margin-bottom: 14px;">
+                            <div style="font-size: 12px; color: #6B7280; margin-bottom: 2px;">Payment status:</div>
+                            <div style="margin-top: 4px;"><span style="display: inline-block; background-color: #ECFDF5; color: #059669; border: 1px solid #A7F3D0; padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: 800; text-transform: uppercase;">&#10004; PAID</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="border-top: 1px solid #E5E7EB; margin: 20px 0;"></div>
+
+                <!-- Total Price Summary Bar -->
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; padding: 4px 0;">
                     <div>
-                        <p style="margin: 0; font-weight: bold; color: #64748B; text-transform: uppercase; font-size: 10px;">Billed To</p>
-                        <p style="margin: 5px 0 0; font-weight: bold; font-size: 15px;">${bookingData.guestName || document.getElementById('guest-name').value}</p>
-                        <p style="margin: 3px 0 0; color: #475569;">${bookingData.guestEmail || document.getElementById('guest-email').value}</p>
-                        <p style="margin: 3px 0 0; color: #475569;">${bookingData.guestPhone || document.getElementById('guest-phone').value}</p>
+                        <div style="font-size: 12px; color: #6B7280;">Total price:</div>
+                        <div style="font-size: 22px; font-weight: 900; color: #0B0F19; margin-top: 2px;">${totalText}</div>
                     </div>
                     <div style="text-align: right;">
-                        <p style="margin: 0; font-weight: bold; color: #64748B; text-transform: uppercase; font-size: 10px;">Stay Details</p>
-                        <p style="margin: 5px 0 0; font-weight: bold; font-size: 13px;">Check-in: ${bookingData.checkIn || document.getElementById('book-check-in').value}</p>
-                        <p style="margin: 3px 0 0; font-weight: bold; font-size: 13px;">Check-out: ${bookingData.checkOut || document.getElementById('book-check-out').value}</p>
+                        <div style="font-size: 12px; color: #6B7280;">Advance Paid:</div>
+                        <div style="font-size: 15px; font-weight: 700; color: #059669;">${totalText}</div>
                     </div>
                 </div>
 
-                <table style="width: 100%; border-collapse: collapse; margin-bottom: 30px;">
-                    <thead>
-                        <tr style="background-color: #F8FAFC; border-bottom: 2px solid #E2E8F0;">
-                            <th style="padding: 12px; text-align: left; font-size: 11px; text-transform: uppercase; color: #64748B;">Description</th>
-                            <th style="padding: 12px; text-align: center; font-size: 11px; text-transform: uppercase; color: #64748B;">Nights</th>
-                            <th style="padding: 12px; text-align: right; font-size: 11px; text-transform: uppercase; color: #64748B;">Total Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr style="border-bottom: 1px solid #E2E8F0;">
-                            <td style="padding: 16px 12px; font-weight: bold;">
-                                ${selectedRoom ? selectedRoom.name : 'Luxury Suite'}
-                                <span style="display: block; font-weight: normal; font-size: 11px; color: #64748B; margin-top: 4px;">Accommodation</span>
-                            </td>
-                            <td style="padding: 16px 12px; text-align: center;">${stayNights}</td>
-                            <td style="padding: 16px 12px; text-align: right; font-weight: bold;">${document.getElementById('calc-subtotal').innerText}</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div style="border-top: 1px solid #E5E7EB; margin: 20px 0;"></div>
 
-                <div style="width: 300px; margin-left: auto;">
-                    <div style="display: flex; justify-content: space-between; padding: 8px 0; font-size: 13px; color: #64748B;">
-                        <span>Subtotal:</span>
-                        <span>${document.getElementById('calc-subtotal').innerText}</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; padding: 8px 0; font-size: 13px; color: #64748B;">
-                        <span>Taxes (15%):</span>
-                        <span>${document.getElementById('calc-tax').innerText}</span>
-                    </div>
-                    ${appliedCoupon ? `
-                    <div style="display: flex; justify-content: space-between; padding: 8px 0; font-size: 13px; color: #10B981; font-weight: bold;">
-                        <span>Discount (${appliedCoupon.code}):</span>
-                        <span>${document.getElementById('calc-coupon-discount').innerText}</span>
-                    </div>
-                    ` : ''}
-                    <div style="display: flex; justify-content: space-between; padding: 12px 0; font-size: 18px; font-weight: 900; color: #D4AF37; border-top: 2px solid #E2E8F0; margin-top: 5px;">
-                        <span>TOTAL:</span>
-                        <span>${document.getElementById('calc-total').innerText}</span>
-                    </div>
+                <!-- Detailed Unit Breakdown -->
+                <div>
+                    <div style="font-size: 16px; font-weight: 800; color: #0B0F19; margin-bottom: 3px;">${propName}</div>
+                    <div style="font-size: 13px; color: #6B7280; margin-bottom: 16px;">Complimentary In-suite Breakfast</div>
+
+                    <table style="width: 100%; border-collapse: collapse; margin-top: 12px;">
+                        <tr>
+                            <td style="padding: 10px 0; font-size: 13px; color: #4B5563;">${checkIn} - ${checkOut} &nbsp;&bull;&nbsp; Standard Member Rate</td>
+                            <td style="padding: 10px 0; font-size: 13px; text-align: right; font-weight: 600; color: #1F2937;">1 x ${subtotalText}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px 0; font-size: 13px; color: #4B5563;">TAX (GST 15%)</td>
+                            <td style="padding: 10px 0; font-size: 13px; text-align: right; font-weight: 600; color: #1F2937;">${taxText}</td>
+                        </tr>
+                        ${appliedCoupon ? `
+                        <tr>
+                            <td style="padding: 10px 0; font-size: 13px; color: #059669; font-weight: 600;">Discount (${appliedCoupon.code})</td>
+                            <td style="padding: 10px 0; font-size: 13px; text-align: right; font-weight: 600; color: #059669;">-${discountText}</td>
+                        </tr>
+                        ` : ''}
+                        <tr>
+                            <td style="padding-top: 14px; font-size: 16px; font-weight: 800; color: #0B0F19; border-top: 1px solid #E5E7EB;">Total unit/room price</td>
+                            <td style="padding-top: 14px; font-size: 16px; font-weight: 800; text-align: right; color: #0B0F19; border-top: 1px solid #E5E7EB;">${totalText}</td>
+                        </tr>
+                    </table>
                 </div>
 
-                <div style="margin-top: 60px; border-top: 1px solid #E2E8F0; padding-top: 20px; font-size: 10px; color: #94A3B8; text-align: center;">
-                    <p>Thank you for choosing Kaghan Stay! If you have any questions concerning this invoice, please contact support@kaghanstay.com.</p>
+                <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #E5E7EB; font-size: 11px; color: #9CA3AF; text-align: center;">
+                    KPH Stay Resort &amp; Spa &bull; Official Confirmation Receipt &bull; www.kphstay.com &bull; support@kphstay.com
                 </div>
             </div>
             `;
