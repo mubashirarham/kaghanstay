@@ -62,7 +62,6 @@
         <div class="hidden md:flex gap-8 items-center font-medium">
             <a href="index.html" class="hover:text-[#C5A059] transition-colors">Home</a>
             <a href="rooms.html" class="hover:text-[#C5A059] transition-colors">Rooms</a>
-            <a href="booking.html" class="text-[#C5A059] hover:text-[#C5A059] transition-colors">Book Stay</a>
             <a href="track.html" class="hover:text-[#C5A059] transition-colors">Track Stay</a>
             <div id="auth-links" class="flex gap-4 items-center">
                 <a href="login.html" class="border border-[#C5A059] text-white px-5 py-2 rounded-full hover:bg-[#C5A059] hover:text-white transition-all text-sm font-semibold">Login</a>
@@ -82,7 +81,6 @@
         </button>
         <a href="index.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Home</a>
         <a href="rooms.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Rooms</a>
-        <a href="booking.html" class="text-[#C5A059]" onclick="toggleDrawer()">Book Stay</a>
         <a href="track.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Track Stay</a>
         <div id="auth-links-mobile" class="flex flex-col gap-4 w-64 text-center">
             <a href="login.html" class="border border-[#C5A059] text-white py-3 rounded-full hover:bg-[#C5A059] transition-all text-base" onclick="toggleDrawer()">Login</a>
@@ -90,7 +88,6 @@
         </div>
     </div>
 
-    <!-- Booking Content -->
     <!-- Booking Content -->
     <main class="py-8 px-6 md:px-12 max-w-7xl mx-auto">
         <!-- Stepper Indicator Card -->
@@ -105,7 +102,7 @@
                     <div class="w-10 h-10 rounded-full bg-[#C5A059] text-white flex items-center justify-center text-xs font-bold shadow-lg shadow-[#C5A059]/30 transition-all duration-300">
                         <i class="fa-solid fa-calendar-days"></i>
                     </div>
-                    <span class="text-[9px] uppercase tracking-widest text-[#0B0F19] font-black">1. Stay Details</span>
+                    <span class="text-[9px] uppercase tracking-widest text-[#0B0F19] font-black">1. Stay Dates</span>
                 </div>
                 
                 <!-- Step 2 -->
@@ -134,7 +131,22 @@
             </div>
         </div>
 
-        <div class="flex flex-col lg:flex-row gap-12">
+        <!-- Empty State Card (Visible when no listing selected) -->
+        <div id="no-room-selected-card" class="bg-white rounded-[2.25rem] border-2 border-slate-200/90 p-8 md:p-12 shadow-2xl text-center max-w-2xl mx-auto my-12 hidden" data-animate="fade-up">
+            <div class="w-16 h-16 bg-[#C5A059]/10 text-[#C5A059] rounded-3xl flex items-center justify-center mx-auto mb-6 text-2xl">
+                <i class="fa-solid fa-hotel"></i>
+            </div>
+            <h3 class="text-2xl font-bold outfit text-slate-900 mb-3">No Suite Selected</h3>
+            <p class="text-slate-500 text-sm leading-relaxed mb-8 max-w-md mx-auto">
+                Please select a room or suite from our available accommodations to begin your reservation.
+            </p>
+            <a href="rooms.html" class="inline-flex items-center gap-2 bg-[#C5A059] text-white font-bold px-8 py-3.5 rounded-2xl hover:bg-[#0B0F19] transition-all shadow-lg text-sm">
+                <i class="fa-solid fa-compass"></i>
+                <span>Explore Rooms & Suites</span>
+            </a>
+        </div>
+
+        <div id="booking-content-wrapper" class="flex flex-col lg:flex-row gap-12">
             
             <!-- Booking Form Column (Left) -->
             <div class="w-full lg:w-2/3 space-y-8">
@@ -144,7 +156,7 @@
                     <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#C5A059]/10 to-transparent rounded-bl-full pointer-events-none"></div>
                     <h2 class="text-xl font-bold outfit text-slate-900 mb-8 flex items-center gap-3">
                         <span class="w-10 h-10 bg-gradient-to-br from-[#C5A059] to-[#A88443] text-white rounded-full flex items-center justify-center text-sm font-black shadow-lg shadow-[#C5A059]/30">1</span>
-                        Stay & Suite Selection
+                        Stay Dates Selection
                     </h2>
                     
                     <!-- Interactive Calendar -->
@@ -184,42 +196,8 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                        <div>
-                            <label class="block text-[10px] uppercase tracking-widest text-[#C5A059] font-black mb-2 ml-1">Select Location</label>
-                            <div class="relative">
-                                <i class="fa-solid fa-map-location-dot absolute left-4 top-4 text-slate-400"></i>
-                                <select id="book-location" onchange="filterRoomsByLocation()" class="w-full border-2 border-slate-200 rounded-2xl pl-11 pr-11 py-3.5 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 text-sm bg-slate-50 text-slate-800 font-semibold cursor-pointer appearance-none shadow-xs transition-all">
-                                    <option value="all">All Locations</option>
-                                    <!-- Dynamically loaded -->
-                                </select>
-                                <i class="fa-solid fa-chevron-down absolute right-4 top-4.5 text-slate-400 pointer-events-none text-xs"></i>
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-[10px] uppercase tracking-widest text-[#C5A059] font-black mb-2 ml-1">Select Category</label>
-                            <div class="relative">
-                                <i class="fa-solid fa-hotel absolute left-4 top-4 text-slate-400"></i>
-                                <select id="book-category" onchange="filterRoomsByLocation()" class="w-full border-2 border-slate-200 rounded-2xl pl-11 pr-11 py-3.5 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 text-sm bg-slate-50 text-slate-800 font-semibold cursor-pointer appearance-none shadow-xs transition-all">
-                                    <option value="all">All Categories</option>
-                                    <!-- Dynamically loaded -->
-                                </select>
-                                <i class="fa-solid fa-chevron-down absolute right-4 top-4.5 text-slate-400 pointer-events-none text-xs"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mb-6">
-                        <label class="block text-[10px] uppercase tracking-widest text-[#C5A059] font-black mb-3 ml-1">Select Your Suite</label>
-                        <!-- Hidden select for form compatibility -->
-                        <select id="book-room-id" onchange="onRoomChange()" class="hidden">
-                            <!-- Loaded via JS -->
-                        </select>
-                        <!-- Dynamic Cards Grid -->
-                        <div id="book-rooms-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
-                            <!-- Loaded via JS dynamically -->
-                        </div>
-                    </div>
+                    <!-- Hidden field for compatibility with booking form submit -->
+                    <input type="hidden" id="book-room-id" value="">
 
                     <!-- Rent Billing Cycle (Visible/Enabled for Apartments) -->
                     <div id="billing-cycle-box" class="mt-8 hidden p-5 bg-gradient-to-r from-slate-50 to-white rounded-2xl border-2 border-slate-200/90 shadow-sm">
@@ -821,135 +799,44 @@
 
         let allAvailableRooms = [];
 
-        // Load Rooms and Locations in Select
+        // Load Only Selected Listing Specified via URL (?id=... or ?room=... or ?roomId=...)
         async function loadRoomSelector() {
-            const allRooms = await KaghanDB.getRooms();
-            allAvailableRooms = allRooms.filter(r => r.status === 'available');
-            
-            // Populate Dynamic Locations
-            const locations = await KaghanDB.getLocations();
-            const locationSelect = document.getElementById('book-location');
-            if (locationSelect) {
-                let currentVal = locationSelect.value;
-                locationSelect.innerHTML = `<option value="all">All Locations</option>` +
-                    locations.map(l => `<option value="${l.id}">${l.label}</option>`).join('');
-            }
-
-            // Populate Dynamic Categories
-            const categories = await KaghanDB.getCategories();
-            const categorySelect = document.getElementById('book-category');
-            if (categorySelect) {
-                let currentVal = categorySelect.value;
-                categorySelect.innerHTML = `<option value="all">All Categories</option>` +
-                    categories.map(c => `<option value="${c.id}">${c.label}</option>`).join('');
-            }
-
-            // Read URL query parameters
             const urlParams = new URLSearchParams(window.location.search);
-            const queryLocation = urlParams.get('location');
-            const queryCategory = urlParams.get('category');
-            const queryRoomId = urlParams.get('room');
+            const queryRoomId = urlParams.get('id') || urlParams.get('room') || urlParams.get('roomId');
 
-            if (queryLocation && locationSelect) {
-                const found = locations.find(l => l.id === queryLocation);
-                if (found) {
-                    locationSelect.value = queryLocation;
-                }
-            }
+            const contentWrapper = document.getElementById('booking-content-wrapper');
+            const noRoomCard = document.getElementById('no-room-selected-card');
 
-            if (queryCategory && categorySelect) {
-                const found = categories.find(c => c.id === queryCategory);
-                if (found) {
-                    categorySelect.value = queryCategory;
-                }
-            }
-
-            await filterRoomsByLocation(queryRoomId);
-        }
-
-        async function filterRoomsByLocation(preselectedRoomId = null) {
-            const location = document.getElementById('book-location').value;
-            const categorySelect = document.getElementById('book-category');
-            const category = categorySelect ? categorySelect.value : 'all';
-            const selector = document.getElementById('book-room-id');
-            const grid = document.getElementById('book-rooms-grid');
-            
-            const filteredRooms = allAvailableRooms.filter(r => {
-                const matchesLocation = location === 'all' || (r.location || 'Islamabad') === location;
-                const matchesCategory = category === 'all' || r.type === category;
-                return matchesLocation && matchesCategory;
-            });
-            
-            if (filteredRooms.length === 0) {
-                selector.innerHTML = '<option value="">No suites available in this location or category</option>';
-                if (grid) grid.innerHTML = '<div class="col-span-2 text-center py-8 text-slate-400 text-xs">No suites available in this location or category.</div>';
+            if (!queryRoomId) {
+                if (contentWrapper) contentWrapper.classList.add('hidden');
+                if (noRoomCard) noRoomCard.classList.remove('hidden');
                 selectedRoom = null;
-                renderSelectedPropertyDetails(null);
-                // Clear preview
-                document.getElementById('preview-room-img').src = 'assets/images/logo.png';
-                document.getElementById('preview-room-name').innerText = 'No Suite Selected';
-                document.getElementById('preview-room-location').innerHTML = '';
-                document.getElementById('preview-room-guests').innerText = 'Capacity: -';
-                document.getElementById('preview-room-price').innerText = '-';
-                document.getElementById('calc-rate').innerText = '-';
-                document.getElementById('calc-nights').innerText = '-';
-                document.getElementById('calc-subtotal').innerText = 'PKR 0';
-                document.getElementById('calc-tax').innerText = 'PKR 0';
-                document.getElementById('calc-total').innerText = 'PKR 0';
-                document.getElementById('reserved-dates-box').classList.add('hidden');
                 return;
             }
 
-            selector.innerHTML = filteredRooms.map(room => `
-                <option value="${room.id}">${room.name} (${room.location || 'Islamabad'}) - (${KaghanUI.formatPKR(room.price)} / Night)</option>
-            `).join('');
+            let room = await KaghanDB.getRoomById(queryRoomId);
 
-            // Pre-select room if requested and available in filtered list
-            if (preselectedRoomId && filteredRooms.some(r => r.id === preselectedRoomId)) {
-                selector.value = preselectedRoomId;
-            } else {
-                if (preselectedRoomId) {
-                    const matchRoom = allAvailableRooms.find(r => r.id === preselectedRoomId);
-                    if (matchRoom) {
-                        if (document.getElementById('book-location')) {
-                            document.getElementById('book-location').value = matchRoom.location || 'Islamabad';
-                        }
-                        if (document.getElementById('book-category')) {
-                            document.getElementById('book-category').value = matchRoom.type || 'all';
-                        }
-                        return filterRoomsByLocation(preselectedRoomId);
-                    }
+            if (!room || (room.status && room.status.toLowerCase() === 'maintenance')) {
+                if (contentWrapper) contentWrapper.classList.add('hidden');
+                if (noRoomCard) {
+                    noRoomCard.classList.remove('hidden');
+                    const msgEl = noRoomCard.querySelector('p');
+                    if (msgEl) msgEl.innerText = "The requested room or suite could not be found or is currently under maintenance. Please select another property from our collection.";
                 }
+                selectedRoom = null;
+                return;
             }
 
-            // Sync visual cards grid
-            if (grid) {
-                grid.innerHTML = filteredRooms.map(room => {
-                    const isSelected = room.id === selector.value;
-                    const borderClass = isSelected ? 'border-2 border-[#C5A059] bg-[#C5A059]/10 ring-2 ring-[#C5A059]/20 shadow-md' : 'border-2 border-slate-200 bg-white hover:border-[#C5A059]/60 hover:shadow-md';
-                    return `
-                        <div onclick="selectRoomCard('${room.id}')" id="room-card-${room.id}" class="rounded-2xl p-4 flex gap-4 cursor-pointer transition-all ${borderClass}">
-                            <img src="${room.image}" alt="${room.name}" class="w-16 h-16 object-cover rounded-xl shrink-0 border border-slate-200 shadow-xs">
-                            <div class="flex flex-col justify-center flex-grow min-w-0">
-                                <h4 class="font-bold text-slate-800 text-xs outfit leading-snug truncate">${room.name}</h4>
-                                <span class="text-[9px] text-[#C5A059] font-bold mt-0.5 flex items-center gap-0.5"><i class="fa-solid fa-location-dot"></i> ${room.location || 'Islamabad'}</span>
-                                <span class="text-xs font-semibold text-slate-600 mt-1">${KaghanUI.formatPKR(room.price)} / Night</span>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-            }
+            if (contentWrapper) contentWrapper.classList.remove('hidden');
+            if (noRoomCard) noRoomCard.classList.add('hidden');
+
+            selectedRoom = room;
+
+            const roomInput = document.getElementById('book-room-id');
+            if (roomInput) roomInput.value = room.id;
 
             await onRoomChange();
         }
-
-        window.selectRoomCard = (roomId) => {
-            const selector = document.getElementById('book-room-id');
-            if (selector) {
-                selector.value = roomId;
-                onRoomChange();
-            }
-        };
 
         let propGalleryImages = [];
         let propGalleryCurrentIdx = 0;
@@ -1428,8 +1315,8 @@
 
             // Pre-fill from query params if available
             const urlParams = new URLSearchParams(window.location.search);
-            const queryIn = urlParams.get('checkIn');
-            const queryOut = urlParams.get('checkOut');
+            const queryIn = urlParams.get('checkIn') || urlParams.get('checkin');
+            const queryOut = urlParams.get('checkOut') || urlParams.get('checkout');
 
             if (queryIn && queryIn >= today) {
                 checkInInput.value = queryIn;

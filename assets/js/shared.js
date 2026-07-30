@@ -527,12 +527,26 @@ const db = {
         return list;
     },
     getRoomById: async (id) => {
+        if (!id) return null;
         if (window.KaghanDB_Cache.rooms) {
-            const match = window.KaghanDB_Cache.rooms.find(r => r.id === id);
+            const match = window.KaghanDB_Cache.rooms.find(r => r.id === id || r.id === String(id));
             if (match) return match;
         }
-        const doc = await fdb.collection('rooms').doc(id).get();
-        return doc.exists ? doc.data() : null;
+        try {
+            const doc = await fdb.collection('rooms').doc(id).get();
+            if (doc.exists) {
+                const data = doc.data();
+                return { ...data, id: data.id || doc.id };
+            }
+        } catch (e) {
+            console.warn("getRoomById doc fetch warning:", e.message);
+        }
+        try {
+            const rooms = await window.KaghanDB.getRooms();
+            return rooms.find(r => r.id === id || r.id === String(id)) || null;
+        } catch (e) {
+            return null;
+        }
     },
     updateRoom: async (id, updatedData) => {
         await fdb.collection('rooms').doc(id).update(updatedData);
