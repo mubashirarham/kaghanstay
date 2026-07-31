@@ -120,7 +120,7 @@ select option { background-color:#ffffff; color:var(--brand-dark); }
 input:focus,select:focus,textarea:focus {
     border-color:var(--brand-gold) !important;
     box-shadow:0 0 0 4px rgba(161, 98, 7, 0.15), 0 4px 12px -2px rgba(161, 98, 7, 0.08) !important;
-    background-color:#ffffff !important; transform:translateY(-1px) scale(1.005);
+    background-color:#ffffff; transform:translateY(-1px) scale(1.005);
 }
 input[disabled],input[readonly],select[disabled],textarea[disabled] {
     background-color:#f1f5f9 !important; color:#64748b !important; cursor:not-allowed !important;
@@ -138,14 +138,53 @@ input:hover:not(:focus):not([readonly]):not([disabled]),
 select:hover:not(:focus):not([disabled]),
 textarea:hover:not(:focus):not([disabled]) { border-color:#cbd5e1; box-shadow:0 4px 12px 0 rgba(15,23,42,0.03); }
 
-body.bg-\[\#0F172A\] input[type="text"],body.bg-\[\#0F172A\] input[type="email"],body.bg-\[\#0F172A\] input[type="password"],body.bg-\[\#0F172A\] input[type="date"],body.bg-\[\#0F172A\] input[type="tel"],body.bg-\[\#0F172A\] select,body.bg-\[\#0F172A\] textarea,.glass-dark input,.glass-dark select,.glass-dark textarea {
-    background-color:rgba(15,23,42,0.6) !important; border-color:rgba(255,255,255,0.25) !important; color:#ffffff !important; box-shadow:0 4px 20px rgba(0,0,0,0.2);
+/* Dark Theme Inputs, Selects & Autofill Fixes */
+body.bg-\[\#0F172A\] input[type="text"],body.bg-\[\#0F172A\] input[type="email"],body.bg-\[\#0F172A\] input[type="password"],body.bg-\[\#0F172A\] input[type="date"],body.bg-\[\#0F172A\] input[type="tel"],body.bg-\[\#0F172A\] select,body.bg-\[\#0F172A\] textarea,
+body.bg-\[\#0B0F19\] input,body.bg-\[\#0B0F19\] select,body.bg-\[\#0B0F19\] textarea,
+body.guest-app-body input,body.guest-app-body select,body.guest-app-body textarea,
+.glass-dark input,.glass-dark select,.glass-dark textarea,
+.onboarding-step-card input,.onboarding-step-card select,.onboarding-step-card textarea,
+input.text-white,select.text-white,textarea.text-white,
+input[class*="bg-slate-900"],select[class*="bg-slate-900"],textarea[class*="bg-slate-900"] {
+    background-color:rgba(15,23,42,0.85) !important; border-color:rgba(255,255,255,0.2) !important; color:#ffffff !important; box-shadow:0 4px 20px rgba(0,0,0,0.2);
 }
-body.bg-\[\#0F172A\] input::placeholder,body.bg-\[\#0F172A\] textarea::placeholder,.glass-dark input::placeholder,.glass-dark textarea::placeholder { color:#94a3b8 !important; }
-body.bg-\[\#0F172A\] select option,.glass-dark select option { background-color:#0f172a; color:#ffffff; }
-body.bg-\[\#0F172A\] input:focus,body.bg-\[\#0F172A\] select:focus,body.bg-\[\#0F172A\] textarea:focus,.glass-dark input:focus,.glass-dark select:focus,.glass-dark textarea:focus {
-    background-color:rgba(15,23,42,0.85) !important; border-color:var(--brand-gold) !important;
-    box-shadow:0 0 0 3px rgba(212,175,55,0.18) !important;
+body.bg-\[\#0F172A\] input::placeholder,body.bg-\[\#0F172A\] textarea::placeholder,
+body.bg-\[\#0B0F19\] input::placeholder,body.bg-\[\#0B0F19\] textarea::placeholder,
+body.guest-app-body input::placeholder,body.guest-app-body textarea::placeholder,
+.glass-dark input::placeholder,.glass-dark textarea::placeholder,
+.onboarding-step-card input::placeholder,.onboarding-step-card textarea::placeholder,
+input.text-white::placeholder,textarea.text-white::placeholder { color:#94a3b8 !important; }
+
+body.bg-\[\#0F172A\] select option,
+body.bg-\[\#0B0F19\] select option,
+body.guest-app-body select option,
+.glass-dark select option,
+.onboarding-step-card select option,
+select.text-white option,
+select[class*="bg-slate-900"] option { background-color:#0f172a !important; color:#ffffff !important; }
+
+body.bg-\[\#0F172A\] input:focus,body.bg-\[\#0F172A\] select:focus,body.bg-\[\#0F172A\] textarea:focus,
+body.bg-\[\#0B0F19\] input:focus,body.bg-\[\#0B0F19\] select:focus,body.bg-\[\#0B0F19\] textarea:focus,
+body.guest-app-body input:focus,body.guest-app-body select:focus,body.guest-app-body textarea:focus,
+.glass-dark input:focus,.glass-dark select:focus,.glass-dark textarea:focus,
+.onboarding-step-card input:focus,.onboarding-step-card select:focus,.onboarding-step-card textarea:focus,
+input.text-white:focus,select.text-white:focus,textarea.text-white:focus,
+input[class*="bg-slate-900"]:focus,select[class*="bg-slate-900"]:focus,textarea[class*="bg-slate-900"]:focus {
+    background-color:#0f172a !important; border-color:var(--brand-gold) !important; color:#ffffff !important;
+    box-shadow:0 0 0 3px rgba(212,175,55,0.25) !important;
+}
+
+/* WebKit Autofill in Dark Theme */
+body.bg-\[\#0B0F19\] input:-webkit-autofill,
+body.bg-\[\#0F172A\] input:-webkit-autofill,
+body.guest-app-body input:-webkit-autofill,
+.glass-dark input:-webkit-autofill,
+.onboarding-step-card input:-webkit-autofill,
+input.text-white:-webkit-autofill,
+input[class*="bg-slate-900"]:-webkit-autofill {
+    -webkit-text-fill-color: #ffffff !important;
+    -webkit-box-shadow: 0 0 0px 1000px #0f172a inset !important;
+    transition: background-color 5000s ease-in-out 0s;
 }
 
 /* Range */
