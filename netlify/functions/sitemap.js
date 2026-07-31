@@ -48,13 +48,13 @@ async function fetchCollection(collectionName) {
 }
 
 exports.handler = async (event, context) => {
-    // Determine the host URL from headers or fallback
+    // Determine the host URL from headers or fallback to canonical site domain
     const host = event.headers.host || 'kphstay.com';
     const protocol = event.headers['x-forwarded-proto'] || 'https';
-    const baseUrl = `${protocol}://${host}`;
+    const baseUrl = `${protocol}://${host.replace(/^www\./, '')}`;
 
     try {
-        // Fetch rooms and blogs in parallel
+        // Fetch rooms and blogs in parallel from Firestore REST
         const [rooms, blogs] = await Promise.all([
             fetchCollection('rooms'),
             fetchCollection('blogs')
@@ -62,63 +62,64 @@ exports.handler = async (event, context) => {
 
         const todayStr = new Date().toISOString().split('T')[0];
 
-        // 1. Static site routes
-        let xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-    <url>
-        <loc>${baseUrl}/</loc>
-        <lastmod>${todayStr}</lastmod>
-        <changefreq>daily</changefreq>
-        <priority>1.0</priority>
-    </url>
-    <url>
-        <loc>${baseUrl}/rooms</loc>
-        <lastmod>${todayStr}</lastmod>
-        <changefreq>daily</changefreq>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>${baseUrl}/blog</loc>
-        <lastmod>${todayStr}</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.7</priority>
-    </url>
-    <url>
-        <loc>${baseUrl}/booking</loc>
-        <lastmod>${todayStr}</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.5</priority>
-    </url>
-    <url>
-        <loc>${baseUrl}/login</loc>
-        <lastmod>${todayStr}</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.3</priority>
-    </url>`;
+        // 1. Static site routes with proper priority hierarchy
+        const staticRoutes = [
+            { path: '/', priority: '1.0', changefreq: 'daily' },
+            { path: '/rooms', priority: '0.9', changefreq: 'daily' },
+            { path: '/contact', priority: '0.8', changefreq: 'weekly' },
+            { path: '/blog', priority: '0.8', changefreq: 'weekly' },
+            { path: '/booking', priority: '0.7', changefreq: 'weekly' },
+            { path: '/track', priority: '0.5', changefreq: 'monthly' },
+            { path: '/privacy', priority: '0.3', changefreq: 'monthly' },
+            { path: '/terms', priority: '0.3', changefreq: 'monthly' },
+            { path: '/refund', priority: '0.3', changefreq: 'monthly' },
+            { path: '/cookies', priority: '0.3', changefreq: 'monthly' }
+        ];
 
-        // 2. Dynamic Room routes (link directly to booking detail page or rooms list)
-        rooms.forEach(room => {
-            if (room.status === 'available') {
+        let xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;
+
+        staticRoutes.forEach(r => {
+            xml += `
+    <url>
+        <loc>${baseUrl}${r.path}</loc>
+        <lastmod>${todayStr}</lastmod>
+        <changefreq>${r.changefreq}</changefreq>
+        <priority>${r.priority}</priority>
+    </url>`;
+        });
+
+        // 2. Dynamic Room detail routes
+        (rooms || []).forEach(room => {
+            if (room.status === 'available' || !room.status) {
+                const roomModDate = room.updatedAt ? room.updatedAt.split('T')[0] : todayStr;
                 xml += `
     <url>
-        <loc>${baseUrl}/booking?room=${room.id}</loc>
-        <lastmod>${todayStr}</lastmod>
+        <loc>${baseUrl}/room-details?id=${room.id}</loc>
+        <lastmod>${roomModDate}</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>${baseUrl}/booking?room=${room.id}</loc>
+        <lastmod>${roomModDate}</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
     </url>`;
             }
         });
 
         // 3. Dynamic Journal/Blog routes
-        const stayBlogs = blogs.filter(b => b.portal === 'stay');
+        const stayBlogs = (blogs || []).filter(b => !b.portal || b.portal === 'stay');
         stayBlogs.forEach(blog => {
             const blogDate = blog.createdAt ? blog.createdAt.split('T')[0] : todayStr;
+            const blogUrl = blog.slug ? `${baseUrl}/blog#${blog.slug}` : `${baseUrl}/blog?id=${blog.id}`;
             xml += `
     <url>
-        <loc>${baseUrl}/blog#${blog.slug}</loc>
+        <loc>${blogUrl}</loc>
         <lastmod>${blogDate}</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.6</priority>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
     </url>`;
         });
 
@@ -128,8 +129,8 @@ exports.handler = async (event, context) => {
         return {
             statusCode: 200,
             headers: {
-                'Content-Type': 'application/xml',
-                'Cache-Control': 'public, max-age=86400' // cache for 1 day
+                'Content-Type': 'application/xml; charset=utf-8',
+                'Cache-Control': 'public, max-age=86400, s-maxage=86400'
             },
             body: xml
         };
@@ -138,6 +139,7 @@ exports.handler = async (event, context) => {
         console.error("Error generating XML Sitemap:", err);
         return {
             statusCode: 500,
+            headers: { 'Content-Type': 'text/plain' },
             body: "Internal Server Error"
         };
     }
