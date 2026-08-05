@@ -490,6 +490,182 @@
         }
     };
 
+    window.populateSearchDropdownsFromDB = async function() {
+        if (!window.KaghanDB || typeof KaghanDB.getCategories !== 'function') return;
+
+        try {
+            const locations = await KaghanDB.getLocations();
+            const firestoreCategories = await KaghanDB.getCategories();
+            const rooms = await KaghanDB.getRooms();
+
+            // Preset category mapping & icon metadata
+            const categoryMeta = {
+                '07': { label: 'Penthouse', icon: 'fa-building-user', sub: 'Luxury Penthouse Suites' },
+                'penthouse': { label: 'Penthouse', icon: 'fa-building-user', sub: 'Luxury Penthouse Suites' },
+                '08': { label: 'General Room', icon: 'fa-bed', sub: 'Standard & Economy Stays' },
+                'general room': { label: 'General Room', icon: 'fa-bed', sub: 'Standard & Economy Stays' },
+                'general': { label: 'General Room', icon: 'fa-bed', sub: 'Standard & Economy Stays' },
+                '09': { label: 'Valley View Room', icon: 'fa-mountain-sun', sub: 'Panoramic Mountain & Valley Stays' },
+                'valley view room': { label: 'Valley View Room', icon: 'fa-mountain-sun', sub: 'Panoramic Mountain & Valley Stays' },
+                'valley view': { label: 'Valley View Room', icon: 'fa-mountain-sun', sub: 'Panoramic Mountain & Valley Stays' },
+                'studio': { label: 'Studio Furnished', icon: 'fa-cube', sub: 'Compact Luxury Suite (1-2 Guests)' },
+                'studio furnished': { label: 'Studio Furnished', icon: 'fa-cube', sub: 'Compact Luxury Suite (1-2 Guests)' },
+                '1bed': { label: '1 Bed Furnished', icon: 'fa-bed', sub: 'Executive Couple Suite (2 Guests)' },
+                '1-bed': { label: '1 Bed Furnished', icon: 'fa-bed', sub: 'Executive Couple Suite (2 Guests)' },
+                '1bed furnished': { label: '1 Bed Furnished', icon: 'fa-bed', sub: 'Executive Couple Suite (2 Guests)' },
+                '1 bed furnished': { label: '1 Bed Furnished', icon: 'fa-bed', sub: 'Executive Couple Suite (2 Guests)' },
+                '1 bed': { label: '1 Bed Furnished', icon: 'fa-bed', sub: 'Executive Couple Suite (2 Guests)' },
+                '2bed': { label: '2 Bed Furnished', icon: 'fa-door-open', sub: 'Family Apartment Suite (4 Guests)' },
+                '2-bed': { label: '2 Bed Furnished', icon: 'fa-door-open', sub: 'Family Apartment Suite (4 Guests)' },
+                '2bed furnished': { label: '2 Bed Furnished', icon: 'fa-door-open', sub: 'Family Apartment Suite (4 Guests)' },
+                '2 bed furnished': { label: '2 Bed Furnished', icon: 'fa-door-open', sub: 'Family Apartment Suite (4 Guests)' },
+                '2 bed': { label: '2 Bed Furnished', icon: 'fa-door-open', sub: 'Family Apartment Suite (4 Guests)' },
+                '3bed': { label: '3 Bed Furnished', icon: 'fa-house-chimney', sub: 'Spacious Family Suite (6 Guests)' },
+                '3-bed': { label: '3 Bed Furnished', icon: 'fa-house-chimney', sub: 'Spacious Family Suite (6 Guests)' },
+                '3bed furnished': { label: '3 Bed Furnished', icon: 'fa-house-chimney', sub: 'Spacious Family Suite (6 Guests)' },
+                '3 bed furnished': { label: '3 Bed Furnished', icon: 'fa-house-chimney', sub: 'Spacious Family Suite (6 Guests)' },
+                '3 bed': { label: '3 Bed Furnished', icon: 'fa-house-chimney', sub: 'Spacious Family Suite (6 Guests)' },
+                '4bed': { label: '4 Bed Furnished', icon: 'fa-building', sub: 'Luxury Penthouse Suite (8 Guests)' },
+                '4-bed': { label: '4 Bed Furnished', icon: 'fa-building', sub: 'Luxury Penthouse Suite (8 Guests)' },
+                '4bed furnished': { label: '4 Bed Furnished', icon: 'fa-building', sub: 'Luxury Penthouse Suite (8 Guests)' },
+                '4 bed furnished': { label: '4 Bed Furnished', icon: 'fa-building', sub: 'Luxury Penthouse Suite (8 Guests)' },
+                '4 bed': { label: '4 Bed Furnished', icon: 'fa-building', sub: 'Luxury Penthouse Suite (8 Guests)' },
+                'farmhouse': { label: 'Furnished Farmhouse', icon: 'fa-tree', sub: 'Grand Alpine Estate (10+ Guests)' },
+                'furnished farmhouse': { label: 'Furnished Farmhouse', icon: 'fa-tree', sub: 'Grand Alpine Estate (10+ Guests)' }
+            };
+
+            // Map to hold merged category items: id -> { id, label, logo, icon, sub }
+            const categoryMap = new Map();
+
+            (firestoreCategories || []).forEach(cat => {
+                if (!cat) return;
+                const rawId = (cat.id || cat.name || cat.label || '').toString().trim();
+                if (!rawId) return;
+                const key = rawId.toLowerCase();
+                const meta = categoryMeta[key] || {};
+                categoryMap.set(key, {
+                    id: cat.id || rawId,
+                    label: cat.label || cat.name || meta.label || rawId,
+                    logo: cat.logo || cat.image || cat.iconUrl || meta.logo || null,
+                    icon: cat.icon || meta.icon || 'fa-hotel',
+                    sub: cat.subtitle || cat.description || meta.sub || 'Luxury suites & stays'
+                });
+            });
+
+            (rooms || []).forEach(r => {
+                const rCat = (r.category || r.categoryId || r.categoryName || r.type || '').toString().trim();
+                if (!rCat) return;
+
+                const key = rCat.toLowerCase();
+                const meta = categoryMeta[key] || {};
+
+                if (!categoryMap.has(key)) {
+                    categoryMap.set(key, {
+                        id: r.category || r.categoryId || rCat,
+                        label: r.categoryName || meta.label || rCat,
+                        logo: meta.logo || null,
+                        icon: meta.icon || 'fa-hotel',
+                        sub: meta.sub || 'Luxury suites & stays'
+                    });
+                }
+            });
+
+            const validCategories = Array.from(categoryMap.values());
+
+            // 1. Populate Hero Custom Location Dropdown (#dropdown-location)
+            const locMenu = document.querySelector('#dropdown-location .dropdown-menu');
+            if (locMenu) {
+                let html = `
+                    <div class="dropdown-item selected" data-value="all">
+                        <div class="icon-wrapper"><i class="fa-solid fa-globe"></i></div>
+                        <div class="flex flex-col min-w-0">
+                            <span class="font-bold text-white text-xs">All Locations</span>
+                            <span class="text-[10px] text-slate-300 font-normal leading-tight">Explore all destinations in Pakistan</span>
+                        </div>
+                    </div>
+                `;
+                locations.forEach(loc => {
+                    const id = loc.id || loc.name;
+                    const name = loc.label || loc.name || id;
+                    const nameLower = name.toLowerCase();
+                    const icon = loc.icon || (nameLower.includes('islamabad') ? 'fa-city' : nameLower.includes('nathia') ? 'fa-mountain-sun' : nameLower.includes('murree') ? 'fa-tree' : 'fa-location-dot');
+                    const sub = loc.subtitle || loc.description || `Luxury stays & resorts in ${name}`;
+
+                    html += `
+                        <div class="dropdown-item" data-value="${KaghanSafe.escapeHTML(id)}">
+                            <div class="icon-wrapper"><i class="fa-solid ${icon}"></i></div>
+                            <div class="flex flex-col min-w-0">
+                                <span class="font-bold text-white text-xs">${KaghanSafe.escapeHTML(name)}</span>
+                                <span class="text-[10px] text-slate-300 font-normal leading-tight">${KaghanSafe.escapeHTML(sub)}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                locMenu.innerHTML = html;
+            }
+
+            // 2. Populate Hero Custom Suite Style Dropdown (#dropdown-type)
+            const typeMenu = document.querySelector('#dropdown-type .dropdown-menu');
+            if (typeMenu) {
+                let html = `
+                    <div class="dropdown-item selected" data-value="all">
+                        <div class="icon-wrapper"><i class="fa-solid fa-border-all"></i></div>
+                        <div class="flex flex-col min-w-0">
+                            <span class="font-bold text-white text-xs">All Styles</span>
+                            <span class="text-[10px] text-slate-300 font-normal leading-tight">Browse Studio, Penthouses & Farmhouses</span>
+                        </div>
+                    </div>
+                `;
+                validCategories.forEach(cat => {
+                    const iconOrLogo = (cat.logo || cat.image)
+                        ? `<img src="${KaghanSafe.escapeHTML(cat.logo || cat.image)}" alt="${KaghanSafe.escapeHTML(cat.label)}" class="w-4 h-4 object-contain rounded-full">`
+                        : `<i class="fa-solid ${cat.icon || 'fa-hotel'}"></i>`;
+
+                    html += `
+                        <div class="dropdown-item" data-value="${KaghanSafe.escapeHTML(cat.id)}">
+                            <div class="icon-wrapper">${iconOrLogo}</div>
+                            <div class="flex flex-col min-w-0">
+                                <span class="font-bold text-white text-xs">${KaghanSafe.escapeHTML(cat.label)}</span>
+                                <span class="text-[10px] text-slate-300 font-normal leading-tight">${KaghanSafe.escapeHTML(cat.sub)}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                typeMenu.innerHTML = html;
+            }
+
+            // 3. Populate Standard Select Dropdowns across all pages
+            const locationSelects = document.querySelectorAll('#quick-filter-location, #filter-location, #search-location-select');
+            locationSelects.forEach(select => {
+                if (select) {
+                    const currentVal = select.value || 'all';
+                    let opts = `<option value="all" class="bg-[#0F172A] text-white">📍 All Destinations</option>`;
+                    locations.forEach(l => {
+                        opts += `<option value="${KaghanSafe.escapeHTML(l.id || l.name)}" class="bg-[#0F172A] text-white">${KaghanSafe.escapeHTML(l.label || l.name)}</option>`;
+                    });
+                    select.innerHTML = opts;
+                    select.value = currentVal;
+                }
+            });
+
+            const categorySelects = document.querySelectorAll('#quick-filter-category, #filter-category, #search-category-select');
+            categorySelects.forEach(select => {
+                if (select) {
+                    const currentVal = select.value || 'all';
+                    let opts = `<option value="all" class="bg-[#0F172A] text-white">🏢 All Suite Types</option>`;
+                    validCategories.forEach(c => {
+                        opts += `<option value="${KaghanSafe.escapeHTML(c.id)}" class="bg-[#0F172A] text-white">${KaghanSafe.escapeHTML(c.label)}</option>`;
+                    });
+                    select.innerHTML = opts;
+                    select.value = currentVal;
+                }
+            });
+
+        } catch (err) {
+            console.warn('[KaghanSearchWidget] Failed to populate dropdowns from DB:', err);
+        }
+    };
+
     // Dismiss guest stepper popover when clicking outside
     document.addEventListener('click', (e) => {
         const popover = document.getElementById('guest-stepper-popover');
@@ -499,10 +675,17 @@
         }
     });
 
-    // Auto-init if DOM ready
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => window.KaghanSearchWidget.init());
-    } else {
+    // Auto-init & auto-populate search dropdowns from Firestore DB
+    const autoInit = () => {
         window.KaghanSearchWidget.init();
+        if (window.populateSearchDropdownsFromDB) {
+            window.populateSearchDropdownsFromDB();
+        }
+    };
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', autoInit);
+    } else {
+        autoInit();
     }
 })();

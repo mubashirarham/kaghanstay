@@ -1243,11 +1243,11 @@
             // Real-time data listeners
             window.addEventListener('kaghan-db-rooms',      () => loadFeaturedRooms());
             window.addEventListener('kaghan-db-blogs',      () => loadResortBlogs());
-            window.addEventListener('kaghan-db-categories', () => loadDynamicFilters());
-            window.addEventListener('kaghan-db-locations',  () => loadDynamicFilters());
+            window.addEventListener('kaghan-db-categories', () => { if (window.populateSearchDropdownsFromDB) populateSearchDropdownsFromDB(); });
+            window.addEventListener('kaghan-db-locations',  () => { if (window.populateSearchDropdownsFromDB) populateSearchDropdownsFromDB(); });
 
             // Initial load
-            loadDynamicFilters();
+            if (window.populateSearchDropdownsFromDB) populateSearchDropdownsFromDB();
             loadFeaturedRooms();
             loadResortBlogs();
         });
