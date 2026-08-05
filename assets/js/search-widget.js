@@ -481,6 +481,7 @@
             } else {
                 summary.textContent = 'Select check-in date';
             }
+        }
     };
 
     window.setGuestPreset = function(adults, children, infants) {
