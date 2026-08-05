@@ -219,27 +219,38 @@
 
         // Preset category mapping & icon metadata
         const categoryMeta = {
+            '07': { label: 'Penthouse', icon: 'fa-building-user' },
+            'penthouse': { label: 'Penthouse', icon: 'fa-building-user' },
+            '08': { label: 'General Room', icon: 'fa-bed' },
+            'general room': { label: 'General Room', icon: 'fa-bed' },
+            'general': { label: 'General Room', icon: 'fa-bed' },
+            '09': { label: 'Valley View Room', icon: 'fa-mountain-sun' },
+            'valley view room': { label: 'Valley View Room', icon: 'fa-mountain-sun' },
+            'valley view': { label: 'Valley View Room', icon: 'fa-mountain-sun' },
             'studio': { label: 'Studio Furnished', icon: 'fa-cube' },
             'studio furnished': { label: 'Studio Furnished', icon: 'fa-cube' },
             '1bed': { label: '1 Bed Furnished', icon: 'fa-bed' },
             '1-bed': { label: '1 Bed Furnished', icon: 'fa-bed' },
             '1bed furnished': { label: '1 Bed Furnished', icon: 'fa-bed' },
             '1 bed furnished': { label: '1 Bed Furnished', icon: 'fa-bed' },
+            '1 bed': { label: '1 Bed Furnished', icon: 'fa-bed' },
             '2bed': { label: '2 Bed Furnished', icon: 'fa-door-open' },
             '2-bed': { label: '2 Bed Furnished', icon: 'fa-door-open' },
             '2bed furnished': { label: '2 Bed Furnished', icon: 'fa-door-open' },
             '2 bed furnished': { label: '2 Bed Furnished', icon: 'fa-door-open' },
+            '2 bed': { label: '2 Bed Furnished', icon: 'fa-door-open' },
             '3bed': { label: '3 Bed Furnished', icon: 'fa-house-chimney' },
             '3-bed': { label: '3 Bed Furnished', icon: 'fa-house-chimney' },
             '3bed furnished': { label: '3 Bed Furnished', icon: 'fa-house-chimney' },
             '3 bed furnished': { label: '3 Bed Furnished', icon: 'fa-house-chimney' },
+            '3 bed': { label: '3 Bed Furnished', icon: 'fa-house-chimney' },
             '4bed': { label: '4 Bed Furnished', icon: 'fa-building' },
             '4-bed': { label: '4 Bed Furnished', icon: 'fa-building' },
             '4bed furnished': { label: '4 Bed Furnished', icon: 'fa-building' },
             '4 bed furnished': { label: '4 Bed Furnished', icon: 'fa-building' },
+            '4 bed': { label: '4 Bed Furnished', icon: 'fa-building' },
             'farmhouse': { label: 'Furnished Farmhouse', icon: 'fa-tree' },
-            'furnished farmhouse': { label: 'Furnished Farmhouse', icon: 'fa-tree' },
-            'penthouse': { label: 'Luxury Penthouse', icon: 'fa-building-user' }
+            'furnished farmhouse': { label: 'Furnished Farmhouse', icon: 'fa-tree' }
         };
 
         // Map to hold merged category items: id -> { id, label, logo, icon, count }
@@ -523,19 +534,27 @@
                     let matchesCategory = (category === 'all');
                     if (!matchesCategory) {
                         const cat = category.toLowerCase().trim();
-                        if (rType === cat || rName.includes(cat) || rType.includes(cat) || cat.includes(rType)) {
+                        const rCat = (room.category || room.categoryId || room.categoryName || room.type || '').toString().toLowerCase().trim();
+
+                        if (rCat === cat || rType === cat || rName.includes(cat) || rType.includes(cat) || rCat.includes(cat) || cat.includes(rCat)) {
                             matchesCategory = true;
-                        } else if (cat === 'studio' && (rType.includes('studio') || rName.includes('studio'))) {
+                        } else if ((cat === '07' || cat.includes('penthouse')) && (rCat.includes('penthouse') || rType.includes('penthouse') || rName.includes('penthouse') || rCat === '07')) {
                             matchesCategory = true;
-                        } else if (cat === '1bed' && (rType.includes('1') || rName.includes('1') || rType.includes('one') || rType.includes('studio'))) {
+                        } else if ((cat === '08' || cat.includes('general')) && (rCat.includes('general') || rType.includes('general') || rName.includes('general') || rCat === '08')) {
                             matchesCategory = true;
-                        } else if (cat === '2bed' && (rType.includes('2') || rName.includes('2') || rType.includes('two'))) {
+                        } else if ((cat === '09' || cat.includes('valley')) && (rCat.includes('valley') || rType.includes('valley') || rName.includes('valley') || rCat === '09')) {
                             matchesCategory = true;
-                        } else if (cat === '3bed' && (rType.includes('3') || rName.includes('3') || rType.includes('three'))) {
+                        } else if ((cat.includes('1bed') || cat.includes('1 bed') || cat === '1') && (rType.includes('1') || rName.includes('1') || rCat.includes('1') || rType.includes('one'))) {
                             matchesCategory = true;
-                        } else if (cat === '4bed' && (rType.includes('4') || rName.includes('4') || rType.includes('four'))) {
+                        } else if ((cat.includes('2bed') || cat.includes('2 bed') || cat === '2') && (rType.includes('2') || rName.includes('2') || rCat.includes('2') || rType.includes('two'))) {
                             matchesCategory = true;
-                        } else if (cat === 'farmhouse' && (rType.includes('farm') || rName.includes('farm') || rType.includes('villa') || rName.includes('villa'))) {
+                        } else if ((cat.includes('3bed') || cat.includes('3 bed') || cat === '3') && (rType.includes('3') || rName.includes('3') || rCat.includes('3') || rType.includes('three'))) {
+                            matchesCategory = true;
+                        } else if ((cat.includes('4bed') || cat.includes('4 bed') || cat === '4') && (rType.includes('4') || rName.includes('4') || rCat.includes('4') || rType.includes('four'))) {
+                            matchesCategory = true;
+                        } else if (cat.includes('studio') && (rType.includes('studio') || rName.includes('studio') || rCat.includes('studio'))) {
+                            matchesCategory = true;
+                        } else if (cat.includes('farm') && (rType.includes('farm') || rName.includes('farm') || rCat.includes('farm') || rType.includes('villa'))) {
                             matchesCategory = true;
                         }
                     }
