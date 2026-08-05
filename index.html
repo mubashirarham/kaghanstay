@@ -364,10 +364,10 @@
                             <!-- Quick Guest Presets -->
                             <div class="text-[10px] uppercase font-bold tracking-widest text-[#C5A059] mb-1">Quick Presets</div>
                             <div class="grid grid-cols-4 gap-1.5 pb-3 border-b border-white/10">
-                                <button type="button" onclick="setGuestPreset(1,0)" class="py-1 px-2 rounded-lg bg-white/5 hover:bg-[#C5A059] hover:text-white border border-white/10 text-[10px] font-bold transition-all text-center">Solo (1)</button>
-                                <button type="button" onclick="setGuestPreset(2,0)" class="py-1 px-2 rounded-lg bg-white/5 hover:bg-[#C5A059] hover:text-white border border-white/10 text-[10px] font-bold transition-all text-center">Couple (2)</button>
-                                <button type="button" onclick="setGuestPreset(2,2)" class="py-1 px-2 rounded-lg bg-white/5 hover:bg-[#C5A059] hover:text-white border border-white/10 text-[10px] font-bold transition-all text-center">Family (4)</button>
-                                <button type="button" onclick="setGuestPreset(4,2)" class="py-1 px-2 rounded-lg bg-white/5 hover:bg-[#C5A059] hover:text-white border border-white/10 text-[10px] font-bold transition-all text-center">Group (6)</button>
+                                <button type="button" onclick="setGuestPreset(1,0)" data-adults="1" data-children="0" class="preset-btn py-1 px-2 rounded-lg bg-white/5 hover:bg-[#C5A059] hover:text-white border border-white/10 text-[10px] font-bold transition-all text-center">Solo (1)</button>
+                                <button type="button" onclick="setGuestPreset(2,0)" data-adults="2" data-children="0" class="preset-btn py-1 px-2 rounded-lg bg-[#C5A059] text-white border-[#C5A059] text-[10px] font-bold transition-all text-center">Couple (2)</button>
+                                <button type="button" onclick="setGuestPreset(2,2)" data-adults="2" data-children="2" class="preset-btn py-1 px-2 rounded-lg bg-white/5 hover:bg-[#C5A059] hover:text-white border border-white/10 text-[10px] font-bold transition-all text-center">Family (4)</button>
+                                <button type="button" onclick="setGuestPreset(4,2)" data-adults="4" data-children="2" class="preset-btn py-1 px-2 rounded-lg bg-white/5 hover:bg-[#C5A059] hover:text-white border border-white/10 text-[10px] font-bold transition-all text-center">Group (6)</button>
                             </div>
 
                             <!-- Adults -->

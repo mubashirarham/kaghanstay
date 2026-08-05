@@ -62,6 +62,7 @@
             });
 
             this.updateTriggerLabels();
+            this.highlightActivePreset();
         },
 
         toggleGuestStepperPopover: function() {
@@ -69,6 +70,41 @@
             if (popover) {
                 popover.classList.toggle('hidden');
             }
+        },
+
+        setGuests: function(adults = 2, children = 0) {
+            selectedAdults = Math.max(1, Math.min(10, parseInt(adults, 10) || 1));
+            selectedChildren = Math.max(0, Math.min(6, parseInt(children, 10) || 0));
+
+            const adultsEl = document.getElementById('stepper-adults-count');
+            if (adultsEl) adultsEl.textContent = selectedAdults;
+
+            const childrenEl = document.getElementById('stepper-children-count');
+            if (childrenEl) childrenEl.textContent = selectedChildren;
+
+            this.updateTriggerLabels();
+            this.highlightActivePreset();
+        },
+
+        setGuestPreset: function(adults, children) {
+            this.setGuests(adults, children);
+        },
+
+        highlightActivePreset: function() {
+            const popover = document.getElementById('guest-stepper-popover');
+            if (!popover) return;
+            const buttons = popover.querySelectorAll('.preset-btn');
+            buttons.forEach(btn => {
+                const a = parseInt(btn.getAttribute('data-adults'), 10);
+                const c = parseInt(btn.getAttribute('data-children'), 10);
+                if (a === selectedAdults && c === selectedChildren) {
+                    btn.classList.add('bg-[#C5A059]', 'text-white', 'border-[#C5A059]');
+                    btn.classList.remove('bg-white/5');
+                } else {
+                    btn.classList.remove('bg-[#C5A059]', 'text-white', 'border-[#C5A059]');
+                    btn.classList.add('bg-white/5');
+                }
+            });
         },
 
         changeGuests: function(type, delta) {
@@ -82,6 +118,7 @@
                 if (el) el.textContent = selectedChildren;
             }
             this.updateTriggerLabels();
+            this.highlightActivePreset();
         },
 
         updateTriggerLabels: function() {
@@ -430,6 +467,11 @@
             } else {
                 summary.textContent = 'Select check-in date';
             }
+    };
+
+    window.setGuestPreset = function(adults, children) {
+        if (window.KaghanSearchWidget && typeof window.KaghanSearchWidget.setGuests === 'function') {
+            window.KaghanSearchWidget.setGuests(adults, children);
         }
     };
 
