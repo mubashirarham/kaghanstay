@@ -122,7 +122,7 @@ function prerenderIndex(html, rooms, blogs) {
                         <span class="text-xl font-extrabold text-[#D4AF37] outfit">${pkrPrice}</span>
                     </div>
                     <a href="booking.html?room=${escapeHTML(room.id)}" class="bg-[#0F172A] text-white text-xs font-bold px-6 py-3.5 rounded-xl hover:bg-[#D4AF37] transition-all shadow-md">
-                        Reserve Suite
+                        Reserve
                     </a>
                 </div>
             </div>
