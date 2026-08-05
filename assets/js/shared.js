@@ -712,23 +712,23 @@ const db = {
 
         window.dispatchEvent(new CustomEvent('kaghan-db-bookings', { detail: window.KaghanDB_Cache.bookings }));
 
-        // 4. Non-blocking Async Serverless Function Notification Attempt
-        try {
-            let idToken = null;
-            if (typeof firebase !== 'undefined' && firebase.auth && firebase.auth().currentUser) {
-                idToken = await firebase.auth().currentUser.getIdToken().catch(() => null);
-            }
-            // SECURITY: internalSecret removed — server-side booking-email function
-            // must verify the Firebase ID token instead.
-            window.safeFetch('/.netlify/functions/booking-email', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ booking: createdBooking, idToken, pdfBase64 })
-            }).catch(err => console.log("Background email notification dispatch notice:", err.message));
-        } catch (_) {}
+        // 4. Non-blocking Async Serverless Function Notification Attempt (only if online and non-localhost)
+        if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+            try {
+                let idToken = null;
+                if (typeof firebase !== 'undefined' && firebase.auth && firebase.auth().currentUser) {
+                    idToken = await firebase.auth().currentUser.getIdToken().catch(() => null);
+                }
+                fetch('/.netlify/functions/booking-email', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ booking: createdBooking, idToken, pdfBase64 })
+                }).catch(() => {});
+            } catch (_) {}
+        }
 
         booking.id = bookingId;
-        return true;
+        return createdBooking;
     },
 
     updateBookingStatus: async (id, status) => {

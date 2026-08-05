@@ -1136,9 +1136,9 @@
             const btnWeekly = document.getElementById('stay-type-weekly');
             const btnMonthly = document.getElementById('stay-type-monthly');
 
-            if (btnDaily) btnDaily.innerText = `Daily (${KaghanUI.formatPKR(dailyRate)}/nt)`;
-            if (btnWeekly) btnWeekly.innerText = `Weekly (${KaghanUI.formatPKR(weeklyRatePerNight)}/nt)`;
-            if (btnMonthly) btnMonthly.innerText = `Monthly (${KaghanUI.formatPKR(monthlyRatePerNight)}/nt)`;
+            if (btnDaily) btnDaily.innerText = `Daily (${KaghanUI.formatPKR(dailyRate)}/night)`;
+            if (btnWeekly) btnWeekly.innerText = `Weekly (${KaghanUI.formatPKR(weeklyRatePerNight)}/night)`;
+            if (btnMonthly) btnMonthly.innerText = `Monthly (${KaghanUI.formatPKR(monthlyRatePerNight)}/night)`;
 
             const checkinVal = document.getElementById('card-checkin').value;
             const checkoutVal = document.getElementById('card-checkout').value;

@@ -1677,9 +1677,9 @@
             const saveWeeklyEl = document.getElementById('rate-save-weekly');
             const saveMonthlyEl = document.getElementById('rate-save-monthly');
 
-            if (priceDailyEl) priceDailyEl.innerText = `${KaghanUI.formatPKR(dailyRate)}/nt`;
-            if (priceWeeklyEl) priceWeeklyEl.innerText = `${KaghanUI.formatPKR(weeklyRatePerNight)}/nt`;
-            if (priceMonthlyEl) priceMonthlyEl.innerText = `${KaghanUI.formatPKR(monthlyRatePerNight)}/nt`;
+            if (priceDailyEl) priceDailyEl.innerText = `${KaghanUI.formatPKR(dailyRate)}/night`;
+            if (priceWeeklyEl) priceWeeklyEl.innerText = `${KaghanUI.formatPKR(weeklyRatePerNight)}/night`;
+            if (priceMonthlyEl) priceMonthlyEl.innerText = `${KaghanUI.formatPKR(monthlyRatePerNight)}/night`;
 
             if (saveWeeklyEl) {
                 const diffW = dailyRate - weeklyRatePerNight;
@@ -2095,92 +2095,69 @@
                 createdAt: new Date().toISOString()
             };
 
-            // A2: Submit through the secure Netlify serverless function (not direct Firestore)
+            // Direct instant frontend reservation write to Firestore & local cache
             const submitBtn = document.querySelector('button[onclick="submitBooking()"]');
-            const originalBtnHtml = submitBtn.innerHTML;
-            submitBtn.disabled = true;
+            const originalBtnHtml = submitBtn ? submitBtn.innerHTML : '';
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch animate-spin mr-1"></i> Reserving...';
+            }
 
-            submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch animate-spin mr-1"></i> Securing reservation...';
+            try {
+                // Save directly to Firestore via KaghanDB.addBooking
+                const confirmedBooking = await KaghanDB.addBooking(booking);
 
-            // C5/A2: Route booking through the secure Netlify serverless function.
-            // All pricing is verified server-side; we trust the server's returned totalPrice.
-            async function completeBooking() {
+                // Populate invoice modal HTML immediately
+                const invoiceContainer = document.getElementById('invoice-modal-content');
+                if (invoiceContainer) {
+                    invoiceContainer.innerHTML = getInvoiceHTML(confirmedBooking);
+                }
+
+                // Store confirmed booking on window for downloadPDFReceipt()
+                window._lastConfirmedBooking = confirmedBooking;
+
+                // Safely background-generate PDF if html2pdf is available
                 try {
-                    let idToken = null;
-                    if (typeof firebase !== 'undefined' && firebase.auth && firebase.auth().currentUser) {
-                        idToken = await firebase.auth().currentUser.getIdToken().catch(() => null);
+                    if (typeof generatePDFBase64 === 'function') {
+                        await generatePDFBase64(confirmedBooking);
                     }
+                } catch (pdfErr) {
+                    console.warn("Non-fatal PDF generation notice:", pdfErr);
+                }
 
-                    // A2: Call the server-side create-booking function
-                    const res = await window.safeFetch('/.netlify/functions/create-booking', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            idToken,
-                            roomId: booking.roomId,
-                            checkIn: booking.checkIn,
-                            checkOut: booking.checkOut,
-                            billingCycle: booking.billingCycle,
-                            guestName: booking.guestName,
-                            guestEmail: booking.guestEmail,
-                            guestPhone: booking.guestPhone,
-                            adults: booking.adults,
-                            children: booking.children,
-                            upgrades: booking.upgrades,
-                            couponCode: booking.couponUsed
-                        })
-                    });
+                // Adjust dashboard button
+                const receiptDashboardBtn = document.getElementById('receipt-dashboard-btn');
+                if (receiptDashboardBtn) {
+                    receiptDashboardBtn.innerText = user ? 'My Account / Stays' : 'Register Account';
+                }
 
-                    if (!res.ok) {
-                        const errData = await res.json().catch(() => ({}));
-                        throw new Error(errData.error || 'Reservation failed. Please try again.');
-                    }
+                const modal = document.getElementById('confirmation-modal');
+                if (modal) {
+                    modal.classList.remove('hidden');
+                    setTimeout(() => {
+                        modal.classList.remove('opacity-0');
+                        if (modal.firstElementChild) modal.firstElementChild.classList.remove('scale-95');
+                    }, 10);
+                }
 
-                    const result = await res.json();
-                    // Trust the server's confirmed booking data
-                    const confirmedBooking = result.booking || booking;
-                    confirmedBooking.id = confirmedBooking.id || booking.id;
+                // WhatsApp share link
+                const waBtn = document.getElementById('whatsapp-share-btn');
+                if (waBtn) {
+                    const roomTitle = selectedRoom ? selectedRoom.name : 'Luxury Suite';
+                    const text = `*Booking Confirmed at KPH Stay!*\n\nInvoice ID: ${confirmedBooking.id}\nRoom: ${roomTitle}\nCheck-in: ${KaghanUI.formatDate(confirmedBooking.checkIn)}\nCheck-out: ${KaghanUI.formatDate(confirmedBooking.checkOut)}\nTotal Amount: ${KaghanUI.formatPKR(confirmedBooking.totalPrice)}\n\nThank you for choosing KPH Stay! www.kphstay.com`;
+                    waBtn.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+                }
 
-                    // Generate PDF and populate invoice modal
-                    const pdfBase64 = await generatePDFBase64(confirmedBooking);
+                if (window.KaghanUI) KaghanUI.showToast('Your reservation has been confirmed!', 'success');
 
-                    const invoiceContainer = document.getElementById('invoice-modal-content');
-                    if (invoiceContainer) {
-                        invoiceContainer.innerHTML = getInvoiceHTML(confirmedBooking);
-                    }
-
-                    // C4: Store confirmed booking on window for downloadPDFReceipt()
-                    window._lastConfirmedBooking = confirmedBooking;
-
-                    // Adjust dashboard button
-                    const receiptDashboardBtn = document.getElementById('receipt-dashboard-btn');
-                    if (receiptDashboardBtn) {
-                        receiptDashboardBtn.innerText = user ? 'My Account / Stays' : 'Register Account';
-                    }
-
-                    const modal = document.getElementById('confirmation-modal');
-                    if (modal) {
-                        modal.classList.remove('hidden');
-                        setTimeout(() => {
-                            modal.classList.remove('opacity-0');
-                            if (modal.firstElementChild) modal.firstElementChild.classList.remove('scale-95');
-                        }, 10);
-                    }
-
-                    // WhatsApp share link
-                    const waBtn = document.getElementById('whatsapp-share-btn');
-                    if (waBtn) {
-                        const roomTitle = selectedRoom ? selectedRoom.name : 'Luxury Suite';
-                        const text = `*Booking Confirmed at KPH Stay!*\n\nInvoice ID: ${confirmedBooking.id}\nRoom: ${roomTitle}\nCheck-in: ${KaghanUI.formatDate(confirmedBooking.checkIn)}\nCheck-out: ${KaghanUI.formatDate(confirmedBooking.checkOut)}\nTotal Amount: ${KaghanUI.formatPKR(confirmedBooking.totalPrice)}\n\nThank you for choosing KPH Stay! www.kphstay.com`;
-                        waBtn.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
-                    }
-
-                    KaghanUI.showToast('Your reservation has been confirmed!', 'success');
+                if (submitBtn) {
                     submitBtn.disabled = false;
                     submitBtn.innerHTML = originalBtnHtml;
-                } catch (err) {
-                    console.error("Booking creation failed:", err);
-                    KaghanUI.showToast(err.message || 'Failed to complete reservation. Please try again.', 'error');
+                }
+            } catch (err) {
+                console.error("Booking creation failed:", err);
+                if (window.KaghanUI) KaghanUI.showToast(err.message || 'Failed to complete reservation. Please try again.', 'error');
+                if (submitBtn) {
                     submitBtn.disabled = false;
                     submitBtn.innerHTML = originalBtnHtml;
                 }
@@ -2228,19 +2205,20 @@
             const children = b.children || (document.getElementById('book-children') ? document.getElementById('book-children').value : 0);
             const infants = b.infants || (document.getElementById('book-infants') ? document.getElementById('book-infants').value : 0);
 
-            const grandTotal = Number(b.totalPrice || b.grandTotal || calcTotalPrice || 0);
-            const accomCharges = Number(b.accomCharges || calcSubtotal || grandTotal);
+            const fallbackTotal = (typeof finalPrice !== 'undefined') ? finalPrice : 0;
+            const grandTotal = Number(b.totalPrice || b.grandTotal || fallbackTotal);
+            const accomCharges = Number(b.accomCharges || b.subtotal || grandTotal);
             const cleaningFee = Number(b.cleaningFee || 0);
             const extraGuestCharges = Number(b.extraGuestCharges || 0);
             const extraMattress = Number(b.extraMattress || 0);
             const kitchenUsageCharges = Number(b.kitchenUsageCharges || 0);
             const securityDeposit = Number(b.securityDeposit || 0);
             const laundryService = Number(b.laundryService || 0);
-            const otherCharges = Number(b.otherCharges || calcUpgradesTotal || 0);
+            const otherCharges = Number(b.otherCharges || 0);
 
             const subtotal = Number(b.subtotal || (accomCharges + cleaningFee + extraGuestCharges + extraMattress + kitchenUsageCharges + securityDeposit + laundryService + otherCharges));
-            const discount = Number(b.discount || calcCouponDiscount || 0);
-            const tax = Number(b.tax || calcTax || 0);
+            const discount = Number(b.discount || b.discountAmount || 0);
+            const tax = Number(b.tax || Math.round(subtotal * 0.15));
             const advancePaid = Number(b.advancePaid !== undefined ? b.advancePaid : grandTotal);
             const balanceDue = Math.max(0, grandTotal - advancePaid);
 
