@@ -460,22 +460,39 @@
                                 <p id="err-guest-email" class="hidden text-rose-500 text-[10px] font-semibold mt-1 ml-1">Please enter a valid email address.</p>
                             </div>
                         </div>
-                        <!-- Guest Count (E3) -->
-                        <div class="grid grid-cols-2 gap-6">
+                        <!-- Guest Count (Adults, Children, Infants) -->
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                             <div>
-                                <label for="book-adults" class="block text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 ml-1">Adults</label>
-                                <div class="flex items-center border-2 border-slate-200 rounded-2xl overflow-hidden bg-slate-50/50">
-                                    <button type="button" onclick="adjustGuests('adults',-1)" class="px-4 py-3.5 text-slate-500 hover:text-[#C5A059] font-bold text-lg transition-colors" aria-label="Decrease adults">−</button>
-                                    <input type="number" id="book-adults" value="2" min="1" max="10" readonly class="flex-1 text-center text-sm font-bold text-slate-800 bg-transparent outline-none">
-                                    <button type="button" onclick="adjustGuests('adults',1)" class="px-4 py-3.5 text-slate-500 hover:text-[#C5A059] font-bold text-lg transition-colors" aria-label="Increase adults">+</button>
+                                <label for="book-adults" class="block text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 ml-1 flex items-center justify-between">
+                                    <span>Adults</span>
+                                    <span class="text-[9px] text-slate-400 font-medium">Ages 13+</span>
+                                </label>
+                                <div class="flex items-center border-2 border-slate-200 rounded-2xl overflow-hidden bg-slate-50/50 focus-within:border-[#C5A059] transition-all">
+                                    <button type="button" onclick="adjustGuests('adults',-1)" class="px-3.5 py-3 text-slate-600 hover:text-[#C5A059] hover:bg-slate-200/50 font-black text-base transition-colors shrink-0" aria-label="Decrease adults">−</button>
+                                    <input type="number" id="book-adults" value="2" min="1" max="10" readonly class="w-full text-center text-sm font-bold text-slate-800 bg-transparent outline-none pointer-events-none">
+                                    <button type="button" onclick="adjustGuests('adults',1)" class="px-3.5 py-3 text-slate-600 hover:text-[#C5A059] hover:bg-slate-200/50 font-black text-base transition-colors shrink-0" aria-label="Increase adults">+</button>
                                 </div>
                             </div>
                             <div>
-                                <label for="book-children" class="block text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 ml-1">Children</label>
-                                <div class="flex items-center border-2 border-slate-200 rounded-2xl overflow-hidden bg-slate-50/50">
-                                    <button type="button" onclick="adjustGuests('children',-1)" class="px-4 py-3.5 text-slate-500 hover:text-[#C5A059] font-bold text-lg transition-colors" aria-label="Decrease children">−</button>
-                                    <input type="number" id="book-children" value="0" min="0" max="10" readonly class="flex-1 text-center text-sm font-bold text-slate-800 bg-transparent outline-none">
-                                    <button type="button" onclick="adjustGuests('children',1)" class="px-4 py-3.5 text-slate-500 hover:text-[#C5A059] font-bold text-lg transition-colors" aria-label="Increase children">+</button>
+                                <label for="book-children" class="block text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 ml-1 flex items-center justify-between">
+                                    <span>Children</span>
+                                    <span class="text-[9px] text-slate-400 font-medium">Ages 2–12</span>
+                                </label>
+                                <div class="flex items-center border-2 border-slate-200 rounded-2xl overflow-hidden bg-slate-50/50 focus-within:border-[#C5A059] transition-all">
+                                    <button type="button" onclick="adjustGuests('children',-1)" class="px-3.5 py-3 text-slate-600 hover:text-[#C5A059] hover:bg-slate-200/50 font-black text-base transition-colors shrink-0" aria-label="Decrease children">−</button>
+                                    <input type="number" id="book-children" value="0" min="0" max="6" readonly class="w-full text-center text-sm font-bold text-slate-800 bg-transparent outline-none pointer-events-none">
+                                    <button type="button" onclick="adjustGuests('children',1)" class="px-3.5 py-3 text-slate-600 hover:text-[#C5A059] hover:bg-slate-200/50 font-black text-base transition-colors shrink-0" aria-label="Increase children">+</button>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="book-infants" class="block text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 ml-1 flex items-center justify-between">
+                                    <span>Infants</span>
+                                    <span class="text-[9px] text-slate-400 font-medium">Under 2</span>
+                                </label>
+                                <div class="flex items-center border-2 border-slate-200 rounded-2xl overflow-hidden bg-slate-50/50 focus-within:border-[#C5A059] transition-all">
+                                    <button type="button" onclick="adjustGuests('infants',-1)" class="px-3.5 py-3 text-slate-600 hover:text-[#C5A059] hover:bg-slate-200/50 font-black text-base transition-colors shrink-0" aria-label="Decrease infants">−</button>
+                                    <input type="number" id="book-infants" value="0" min="0" max="5" readonly class="w-full text-center text-sm font-bold text-slate-800 bg-transparent outline-none pointer-events-none">
+                                    <button type="button" onclick="adjustGuests('infants',1)" class="px-3.5 py-3 text-slate-600 hover:text-[#C5A059] hover:bg-slate-200/50 font-black text-base transition-colors shrink-0" aria-label="Increase infants">+</button>
                                 </div>
                             </div>
                         </div>
@@ -843,7 +860,7 @@
 
         let allAvailableRooms = [];
 
-        // Load Only Selected Listing Specified via URL (?id=... or ?room=... or ?roomId=...)
+        // Load Selected Listing Specified via URL (?id=... or ?room=... or ?roomId=...) or fallback to first available room
         async function loadRoomSelector() {
             const urlParams = new URLSearchParams(window.location.search);
             const queryRoomId = urlParams.get('id') || urlParams.get('room') || urlParams.get('roomId');
@@ -851,22 +868,19 @@
             const contentWrapper = document.getElementById('booking-content-wrapper');
             const noRoomCard = document.getElementById('no-room-selected-card');
 
-            if (!queryRoomId) {
-                if (contentWrapper) contentWrapper.classList.add('hidden');
-                if (noRoomCard) noRoomCard.classList.remove('hidden');
-                selectedRoom = null;
-                return;
+            let room = null;
+            if (queryRoomId) {
+                room = await KaghanDB.getRoomById(queryRoomId);
             }
 
-            let room = await KaghanDB.getRoomById(queryRoomId);
+            if (!room) {
+                const allRooms = await KaghanDB.getRooms();
+                room = (allRooms || []).find(r => r && (!r.status || r.status.toLowerCase() !== 'maintenance'));
+            }
 
-            if (!room || (room.status && room.status.toLowerCase() === 'maintenance')) {
+            if (!room) {
                 if (contentWrapper) contentWrapper.classList.add('hidden');
-                if (noRoomCard) {
-                    noRoomCard.classList.remove('hidden');
-                    const msgEl = noRoomCard.querySelector('p');
-                    if (msgEl) msgEl.innerText = "The requested room or suite could not be found or is currently under maintenance. Please select another property from our collection.";
-                }
+                if (noRoomCard) noRoomCard.classList.remove('hidden');
                 selectedRoom = null;
                 return;
             }
@@ -1495,16 +1509,6 @@
                 }
             });
         }
-                        selectedEndDate = nextDay.toISOString().split('T')[0];
-                        e.target.value = selectedEndDate;
-                    } else {
-                        selectedEndDate = val;
-                    }
-                    renderCalendar();
-                    calculatePrice();
-                }
-            });
-        }
 
         window.onBillingCycleChange = () => {
             const cycle = document.getElementById('book-billing-cycle').value;
@@ -1922,15 +1926,18 @@
             }
         }
 
-        // E3: Guest Counter Helper Function
+        // Guest Counter Helper Function (Adults, Children, Infants)
         window.adjustGuests = function(type, delta) {
-            const el = document.getElementById(type === 'adults' ? 'book-adults' : 'book-children');
+            const idMap = { adults: 'book-adults', children: 'book-children', infants: 'book-infants' };
+            const targetId = idMap[type] || 'book-adults';
+            const el = document.getElementById(targetId);
             if (!el) return;
             let current = parseInt(el.value || '0', 10);
             let min = type === 'adults' ? 1 : 0;
-            let max = selectedRoom ? (selectedRoom.maxGuests || 10) : 10;
+            let max = type === 'infants' ? 5 : (type === 'children' ? 6 : (selectedRoom ? (selectedRoom.maxGuests || 10) : 10));
             let updated = Math.min(max, Math.max(min, current + delta));
             el.value = updated;
+            if (typeof updateStepper === 'function') updateStepper();
         };
 
         // Global variables
@@ -2076,6 +2083,7 @@
                 guestPhone: phone,
                 adults: parseInt(document.getElementById('book-adults')?.value || 2, 10),
                 children: parseInt(document.getElementById('book-children')?.value || 0, 10),
+                infants: parseInt(document.getElementById('book-infants')?.value || 0, 10),
                 checkIn: checkIn,
                 checkOut: checkOut,
                 totalNights: stayNights,
@@ -2218,6 +2226,7 @@
             const nights = stayNights || b.totalNights || 1;
             const adults = b.adults || (document.getElementById('book-adults') ? document.getElementById('book-adults').value : 2);
             const children = b.children || (document.getElementById('book-children') ? document.getElementById('book-children').value : 0);
+            const infants = b.infants || (document.getElementById('book-infants') ? document.getElementById('book-infants').value : 0);
 
             const grandTotal = Number(b.totalPrice || b.grandTotal || calcTotalPrice || 0);
             const accomCharges = Number(b.accomCharges || calcSubtotal || grandTotal);
@@ -2329,7 +2338,7 @@
                         </tr>
                         <tr>
                             <td style="padding: 4px 0;"><span style="color: #64748B; font-weight: 600;">Total Nights:</span> <span style="color: #0F172A; font-weight: 700;">${nights}</span></td>
-                            <td style="padding: 4px 0;"><span style="color: #64748B; font-weight: 600;">Total Guests:</span> Adults <span style="color: #0F172A; font-weight: 700;">${adults}</span>, Children <span style="color: #0F172A; font-weight: 700;">${children}</span></td>
+                            <td style="padding: 4px 0;"><span style="color: #64748B; font-weight: 600;">Total Guests:</span> Adults <span style="color: #0F172A; font-weight: 700;">${adults}</span>, Children <span style="color: #0F172A; font-weight: 700;">${children}</span>${infants > 0 ? `, Infants <span style="color: #0F172A; font-weight: 700;">${infants}</span>` : ''}</td>
                         </tr>
                     </table>
 
