@@ -153,91 +153,155 @@
         });
     }
 
+    window.scrollCategoryBar = (direction) => {
+        const container = document.getElementById('firestore-category-pills') || document.getElementById('custom-category-filters');
+        if (!container) return;
+        const scrollAmount = 260;
+        container.scrollBy({
+            left: direction === 'left' ? -scrollAmount : scrollAmount,
+            behavior: 'smooth'
+        });
+    };
+
+    window.clearSearchInput = () => {
+        const heroInput = document.getElementById('filter-search-hero');
+        const mainInput = document.getElementById('filter-search');
+        if (heroInput) heroInput.value = '';
+        if (mainInput) mainInput.value = '';
+        const clearBtn = document.getElementById('clear-search-btn');
+        if (clearBtn) clearBtn.classList.add('hidden');
+        applyFilters();
+    };
+
     window.syncAndApplyFilter = (targetId, value) => {
         const targetEl = document.getElementById(targetId);
         if (targetEl) {
             targetEl.value = value;
         }
+        if (targetId === 'filter-search') {
+            const heroInput = document.getElementById('filter-search-hero');
+            const clearBtn = document.getElementById('clear-search-btn');
+            if (heroInput && heroInput.value !== value) heroInput.value = value;
+            if (clearBtn) {
+                if (value) clearBtn.classList.remove('hidden');
+                else clearBtn.classList.add('hidden');
+            }
+        }
         if (targetId === 'filter-location') {
             const q = document.getElementById('quick-filter-location');
             if (q && q.value !== value) q.value = value;
+            const l = document.getElementById('filter-location');
+            if (l && l.value !== value) l.value = value;
         }
         if (targetId === 'filter-category') {
-            const q = document.getElementById('quick-filter-category');
-            if (q && q.value !== value) q.value = value;
+            const cSelect = document.getElementById('filter-category');
+            if (cSelect && cSelect.value !== value) cSelect.value = value;
+
+            // Highlight active category pill
+            const pills = document.querySelectorAll('.category-pill-btn');
+            pills.forEach(p => {
+                const val = p.getAttribute('data-value');
+                if (val === value) {
+                    p.className = 'category-pill-btn group flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer bg-[#C5A059] text-white shadow-md ring-2 ring-[#C5A059]/40';
+                } else {
+                    p.className = 'category-pill-btn group flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold transition-all shrink-0 cursor-pointer bg-white/5 border border-white/15 text-white/80 hover:bg-white/10 hover:text-white';
+                }
+            });
         }
         applyFilters();
     };
 
     async function populateFilters() {
-        const categories = await KaghanDB.getCategories();
+        // Fetch categories and rooms directly from Firestore
+        const firestoreCategories = await KaghanDB.getCategories();
         const locations = await KaghanDB.getLocations();
+        const rooms = await KaghanDB.getRooms();
 
-        // Populate Location Select
-        const locationSelect = document.getElementById('filter-location');
-        if (locationSelect) {
-            let currentVal = locationSelect.value;
-            locationSelect.innerHTML = `<option value="all">All Locations</option>` +
-                locations.map(l => `<option value="${l.id}">${l.label || l.name}</option>`).join('');
-            const matchingOpt = Array.from(locationSelect.options).find(opt => opt.value.toLowerCase() === (currentVal || '').toLowerCase());
-            if (matchingOpt) locationSelect.value = matchingOpt.value;
+        // Calculate count of rooms per category
+        const categoryCounts = {};
+        const totalRoomsCount = rooms.length;
+
+        rooms.forEach(r => {
+            const catId = (r.category || r.categoryId || r.type || '').toLowerCase().trim();
+            if (catId) {
+                categoryCounts[catId] = (categoryCounts[catId] || 0) + 1;
+            }
+        });
+
+        // Filter categories so ONLY categories stored in Firestore are used
+        const validCategories = (firestoreCategories || []).filter(c => c && (c.id || c.name || c.label));
+
+        // Update category count badge
+        const countBadge = document.getElementById('firestore-category-count-badge');
+        if (countBadge) {
+            countBadge.textContent = `${totalRoomsCount} Available Stays`;
         }
 
-        const quickLoc = document.getElementById('quick-filter-location');
-        if (quickLoc) {
-            let currentVal = quickLoc.value || 'all';
-            quickLoc.innerHTML = `<option value="all">📍 All Locations</option>` +
-                locations.map(l => `<option value="${l.id}">${l.label || l.name}</option>`).join('');
-            const matchingOpt = Array.from(quickLoc.options).find(opt => opt.value.toLowerCase() === (currentVal || '').toLowerCase());
-            if (matchingOpt) quickLoc.value = matchingOpt.value;
-        }
-
-        // Populate Category Select
+        // Render Firestore Category Pills Container
+        const container = document.getElementById('firestore-category-pills') || document.getElementById('custom-category-filters');
         const categorySelect = document.getElementById('filter-category');
-        if (categorySelect) {
-            let currentVal = categorySelect.value;
-            categorySelect.innerHTML = `<option value="all">All Categories</option>` +
-                categories.map(c => `<option value="${c.id}">${c.label || c.name}</option>`).join('');
-            const matchingOpt = Array.from(categorySelect.options).find(opt => opt.value.toLowerCase() === (currentVal || '').toLowerCase());
-            if (matchingOpt) categorySelect.value = matchingOpt.value;
-        }
+        const currentCatVal = categorySelect ? (categorySelect.value || 'all') : 'all';
 
-        const quickCat = document.getElementById('quick-filter-category');
-        if (quickCat) {
-            let currentVal = quickCat.value || 'all';
-            quickCat.innerHTML = `<option value="all">🏢 All Suite Types</option>` +
-                categories.map(c => `<option value="${c.id}">${c.label || c.name}</option>`).join('');
-            const matchingOpt = Array.from(quickCat.options).find(opt => opt.value.toLowerCase() === (currentVal || '').toLowerCase());
-            if (matchingOpt) quickCat.value = matchingOpt.value;
-        }
-
-        // Populate Custom Category Filter Bar
-        const customCategoryContainer = document.getElementById('custom-category-filters');
-        if (customCategoryContainer) {
+        if (container) {
             let html = `
-                <button data-value="all" type="button" class="category-filter-btn flex flex-col items-center gap-2 group active-category opacity-100 hover:opacity-100 transition-opacity min-w-[64px]">
-                    <div class="w-8 h-8 flex items-center justify-center text-slate-800 text-2xl group-[.active-category]:text-[#D4AF37]"><i class="fa-solid fa-border-all"></i></div>
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 group-[.active-category]:text-slate-900 group-[.active-category]:border-b-2 group-[.active-category]:border-[#D4AF37] pb-1">All</span>
+                <button data-value="all" type="button" onclick="syncAndApplyFilter('filter-category', 'all')" class="category-pill-btn group flex items-center gap-2 px-4 py-2 rounded-full text-xs transition-all shrink-0 cursor-pointer ${currentCatVal === 'all' ? 'bg-[#C5A059] text-white font-bold shadow-md ring-2 ring-[#C5A059]/40' : 'bg-white/5 border border-white/15 text-white/80 hover:bg-white/10 hover:text-white'}">
+                    <i class="fa-solid fa-border-all text-[#FFDF9E]"></i>
+                    <span>All Suites</span>
+                    <span class="ml-1 text-[10px] px-2 py-0.5 rounded-full ${currentCatVal === 'all' ? 'bg-black/25 text-white font-bold' : 'bg-white/10 text-slate-300'}">${totalRoomsCount}</span>
                 </button>
             `;
 
-            categories.forEach(cat => {
-                const iconOrImg = cat.image 
-                    ? `<img src="${KaghanSafe.escapeHTML(cat.image)}" alt="${KaghanSafe.escapeHTML(cat.label || 'Category')}" class="w-full h-full object-cover rounded-lg group-[.active-category]:ring-2 ring-[#D4AF37] ring-offset-2">` 
-                    : `<i class="fa-solid ${cat.icon}"></i>`;
-                    
+            validCategories.forEach(cat => {
+                const catId = (cat.id || cat.name || '').toLowerCase().trim();
+                const isSelected = currentCatVal.toLowerCase() === catId;
+                
+                // Determine room count for this category
+                let count = categoryCounts[catId] || 0;
+                if (!count) {
+                    count = rooms.filter(r => {
+                        const rCat = (r.category || r.categoryId || r.type || '').toLowerCase();
+                        const rName = (r.name || '').toLowerCase();
+                        return rCat.includes(catId) || rName.includes(catId) || catId.includes(rCat);
+                    }).length;
+                }
+
+                const iconClass = cat.icon || (catId.includes('studio') ? 'fa-cube' : catId.includes('1') ? 'fa-bed' : catId.includes('2') ? 'fa-door-open' : catId.includes('3') ? 'fa-house-chimney' : catId.includes('4') ? 'fa-building' : catId.includes('farm') ? 'fa-tree' : 'fa-hotel');
+
                 html += `
-                    <button data-value="${cat.id}" type="button" class="category-filter-btn flex flex-col items-center gap-2 group opacity-60 hover:opacity-100 transition-opacity min-w-[64px]">
-                        <div class="w-8 h-8 flex items-center justify-center text-slate-800 text-2xl group-[.active-category]:text-[#D4AF37]">${iconOrImg}</div>
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 group-[.active-category]:text-slate-900 group-[.active-category]:border-b-2 group-[.active-category]:border-[#D4AF37] pb-1">${cat.label}</span>
+                    <button data-value="${cat.id}" type="button" onclick="syncAndApplyFilter('filter-category', '${cat.id}')" class="category-pill-btn group flex items-center gap-2 px-4 py-2 rounded-full text-xs transition-all shrink-0 cursor-pointer ${isSelected ? 'bg-[#C5A059] text-white font-bold shadow-md ring-2 ring-[#C5A059]/40' : 'bg-white/5 border border-white/15 text-white/80 hover:bg-white/10 hover:text-white'}">
+                        <i class="fa-solid ${iconClass} text-[#FFDF9E]"></i>
+                        <span>${KaghanSafe.escapeHTML(cat.label || cat.name || cat.id)}</span>
+                        <span class="ml-1 text-[10px] px-2 py-0.5 rounded-full ${isSelected ? 'bg-black/25 text-white font-bold' : 'bg-white/10 text-slate-300'}">${count}</span>
                     </button>
                 `;
             });
-            customCategoryContainer.innerHTML = html;
+
+            container.innerHTML = html;
         }
 
-        // Rebind custom category buttons since they were recreated
-        rebindCustomCategoryButtons();
+        // Update Hidden Category Select
+        if (categorySelect) {
+            categorySelect.innerHTML = `<option value="all">All Categories</option>` +
+                validCategories.map(c => `<option value="${c.id}">${c.label || c.name || c.id}</option>`).join('');
+            categorySelect.value = currentCatVal;
+        }
+
+        // Update Location Dropdowns from Firestore
+        const quickLoc = document.getElementById('quick-filter-location');
+        if (quickLoc) {
+            let currentLocVal = quickLoc.value || 'all';
+            quickLoc.innerHTML = `<option value="all" class="bg-[#0F172A] text-white">📍 All Destinations</option>` +
+                locations.map(l => `<option value="${l.id}" class="bg-[#0F172A] text-white">${l.label || l.name}</option>`).join('');
+            quickLoc.value = currentLocVal;
+        }
+
+        const locationSelect = document.getElementById('filter-location');
+        if (locationSelect) {
+            let currentLocVal = locationSelect.value || 'all';
+            locationSelect.innerHTML = `<option value="all">All Locations</option>` +
+                locations.map(l => `<option value="${l.id}">${l.label || l.name}</option>`).join('');
+            locationSelect.value = currentLocVal;
+        }
     }
 
     function rebindCustomCategoryButtons() {

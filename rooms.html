@@ -148,52 +148,100 @@
     <!-- Explorer Grid & Filters -->
     <section class="py-10 px-4 md:px-8 lg:px-12 max-w-7xl mx-auto">
 
-        <!-- Quick Select Filters Toolbar -->
-        <div class="bg-white/80 backdrop-blur-md rounded-2xl border border-slate-200 p-3 mb-6 shadow-sm flex flex-wrap items-center gap-2.5" id="mobile-filter-bar">
-            <!-- Location Select Dropdown -->
-            <div class="relative flex-1 min-w-[125px]">
-                <select id="quick-filter-location" onchange="syncAndApplyFilter('filter-location', this.value)" class="w-full border border-slate-200 rounded-xl pl-3 pr-7 py-2 text-xs bg-slate-50 text-slate-800 font-semibold outline-none focus:border-[#C5A059] appearance-none cursor-pointer">
-                    <option value="all">📍 All Locations</option>
-                </select>
-                <i class="fa-solid fa-chevron-down absolute right-3 top-3 text-slate-400 pointer-events-none text-[10px]"></i>
+        <!-- High-End Spatial Glassmorphism Search & Category Hub Bar -->
+        <div class="bg-[#0F172A]/95 backdrop-blur-2xl rounded-[2.5rem] border border-[#C5A059]/40 p-5 md:p-7 mb-10 shadow-[0_30px_70px_-15px_rgba(0,0,0,0.6)] text-white relative overflow-visible" id="rooms-top-search-hub">
+            <!-- Subtle Gold Accent Glow -->
+            <div class="absolute top-0 right-1/4 w-96 h-96 bg-[#C5A059]/10 rounded-full blur-[100px] pointer-events-none"></div>
+
+            <!-- Top Row: Spatial Search Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3.5 items-end mb-6">
+                <!-- Search Input -->
+                <div class="sm:col-span-2 lg:col-span-4 relative">
+                    <label class="block text-[10px] uppercase tracking-widest text-[#C5A059] font-bold mb-1.5 ml-1">Search Stay</label>
+                    <div class="relative group">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-[#C5A059] text-sm group-focus-within:scale-110 transition-transform"></i>
+                        <input type="text" id="filter-search-hero" oninput="syncAndApplyFilter('filter-search', this.value)" placeholder="Search suite name, location, features..." class="w-full bg-white/5 border border-white/15 focus:border-[#C5A059] hover:border-white/30 rounded-2xl pl-11 pr-10 py-3 text-xs md:text-sm text-white placeholder-slate-400 outline-none transition-all">
+                        <button type="button" id="clear-search-btn" onclick="clearSearchInput()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 text-xs flex items-center justify-center transition-all">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Destination Selector (Firestore-Driven) -->
+                <div class="sm:col-span-1 lg:col-span-3 relative">
+                    <label class="block text-[10px] uppercase tracking-widest text-[#C5A059] font-bold mb-1.5 ml-1">Destination</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-location-dot absolute left-4 top-1/2 -translate-y-1/2 text-[#C5A059] pointer-events-none text-sm"></i>
+                        <select id="quick-filter-location" onchange="syncAndApplyFilter('filter-location', this.value)" class="w-full bg-white/5 border border-white/15 focus:border-[#C5A059] hover:border-white/30 rounded-2xl pl-11 pr-10 py-3 text-xs md:text-sm text-white font-medium outline-none appearance-none cursor-pointer transition-all">
+                            <option value="all" class="bg-[#0F172A] text-white">📍 All Destinations</option>
+                        </select>
+                        <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-white/50 pointer-events-none text-xs"></i>
+                    </div>
+                </div>
+
+                <!-- Dates Picker Trigger -->
+                <div class="sm:col-span-1 lg:col-span-3 relative">
+                    <label class="block text-[10px] uppercase tracking-widest text-[#C5A059] font-bold mb-1.5 ml-1">Stay Dates</label>
+                    <button type="button" onclick="KaghanSearchWidget.openCalendarModal()" class="w-full bg-white/5 border border-white/15 hover:bg-white/10 focus:border-[#C5A059] hover:border-[#C5A059] rounded-2xl pl-11 pr-4 py-3 outline-none transition-all text-white text-xs md:text-sm text-left flex items-center justify-between cursor-pointer group">
+                        <i class="fa-solid fa-calendar-days absolute left-4 text-[#C5A059] pointer-events-none text-sm group-hover:scale-110 transition-transform"></i>
+                        <span id="search-date-trigger-text" class="font-semibold whitespace-nowrap overflow-hidden text-ellipsis">Add dates</span>
+                        <i class="fa-solid fa-chevron-down text-white/50 text-xs shrink-0"></i>
+                    </button>
+                    <input type="hidden" id="search-check-in">
+                    <input type="hidden" id="search-check-out">
+                </div>
+
+                <!-- Quick Action Buttons -->
+                <div class="sm:col-span-2 lg:col-span-2 flex items-center gap-2">
+                    <div class="relative flex-1">
+                        <select id="sort-by-hero" onchange="document.getElementById('sort-by').value=this.value; applyFilters()" class="w-full bg-white/5 border border-white/15 focus:border-[#C5A059] hover:border-white/30 rounded-2xl px-3 py-3 text-xs text-white font-medium outline-none appearance-none cursor-pointer transition-all">
+                            <option value="default" class="bg-[#0F172A] text-white">↕ Default</option>
+                            <option value="price-low" class="bg-[#0F172A] text-white">Price: Low → High</option>
+                            <option value="price-high" class="bg-[#0F172A] text-white">Price: High → Low</option>
+                            <option value="rating" class="bg-[#0F172A] text-white">Top Rated ★</option>
+                        </select>
+                        <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-white/50 pointer-events-none text-xs"></i>
+                    </div>
+
+                    <button type="button" id="toggle-map-btn" onclick="toggleMapMode()" class="bg-[#C5A059] hover:bg-[#A88443] text-white px-3.5 py-3 rounded-2xl font-bold text-xs shadow-md transition-all flex items-center gap-1.5 shrink-0 cursor-pointer">
+                        <i class="fa-solid fa-map-location-dot"></i>
+                        <span id="toggle-map-text" class="hidden sm:inline">Map</span>
+                    </button>
+
+                    <button id="filter-toggle-btn" onclick="openFilterSidebar()" class="lg:hidden bg-white/10 text-white p-3 rounded-2xl hover:bg-white/20 transition-all shrink-0" aria-label="Filters">
+                        <i class="fa-solid fa-sliders text-xs"></i>
+                    </button>
+                </div>
             </div>
 
-            <!-- Suite Category Select Dropdown -->
-            <div class="relative flex-1 min-w-[125px]">
-                <select id="quick-filter-category" onchange="syncAndApplyFilter('filter-category', this.value)" class="w-full border border-slate-200 rounded-xl pl-3 pr-7 py-2 text-xs bg-slate-50 text-slate-800 font-semibold outline-none focus:border-[#C5A059] appearance-none cursor-pointer">
-                    <option value="all">🏢 All Suite Types</option>
-                </select>
-                <i class="fa-solid fa-chevron-down absolute right-3 top-3 text-slate-400 pointer-events-none text-[10px]"></i>
-            </div>
+            <!-- Bottom Row: Dynamic Firestore Categories Strip -->
+            <div class="border-t border-white/10 pt-4 mt-2">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs uppercase tracking-widest text-[#C5A059] font-bold">Categories (Firestore)</span>
+                        <span id="firestore-category-count-badge" class="bg-white/10 text-white/80 text-[10px] font-bold px-2 py-0.5 rounded-full border border-white/10">Loading...</span>
+                    </div>
 
-            <!-- Guests Count Select Dropdown -->
-            <div class="relative min-w-[105px]">
-                <select id="quick-filter-guests" onchange="syncAndApplyFilter('filter-guests', this.value)" class="w-full border border-slate-200 rounded-xl pl-3 pr-7 py-2 text-xs bg-slate-50 text-slate-800 font-semibold outline-none focus:border-[#C5A059] appearance-none cursor-pointer">
-                    <option value="all">👥 Guests</option>
-                    <option value="1">1 Guest</option>
-                    <option value="2">2 Guests</option>
-                    <option value="3">3 Guests</option>
-                    <option value="4">4+ Guests</option>
-                </select>
-                <i class="fa-solid fa-chevron-down absolute right-3 top-3 text-slate-400 pointer-events-none text-[10px]"></i>
-            </div>
+                    <div class="flex gap-1.5">
+                        <button type="button" onclick="scrollCategoryBar('left')" class="w-7 h-7 rounded-full bg-white/5 hover:bg-[#C5A059] border border-white/10 text-white flex items-center justify-center text-xs transition-colors cursor-pointer" aria-label="Scroll left">
+                            <i class="fa-solid fa-chevron-left text-[10px]"></i>
+                        </button>
+                        <button type="button" onclick="scrollCategoryBar('right')" class="w-7 h-7 rounded-full bg-white/5 hover:bg-[#C5A059] border border-white/10 text-white flex items-center justify-center text-xs transition-colors cursor-pointer" aria-label="Scroll right">
+                            <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                        </button>
+                    </div>
+                </div>
 
-            <!-- Sort Select Dropdown -->
-            <div class="relative min-w-[125px]">
-                <select id="sort-by-mobile" onchange="document.getElementById('sort-by').value=this.value; applyFilters()" class="w-full border border-slate-200 rounded-xl pl-3 pr-7 py-2 text-xs bg-slate-50 text-slate-800 font-semibold outline-none focus:border-[#C5A059] appearance-none cursor-pointer">
-                    <option value="default">↕ Sort: Default</option>
-                    <option value="price-low">Price: Low &rarr; High</option>
-                    <option value="price-high">Price: High &rarr; Low</option>
-                    <option value="rating">Top Rated</option>
-                </select>
-                <i class="fa-solid fa-chevron-down absolute right-3 top-3 text-slate-400 pointer-events-none text-[10px]"></i>
+                <!-- Firestore Category Pills Container -->
+                <div id="firestore-category-pills" class="flex items-center gap-2.5 overflow-x-auto hide-scrollbar scroll-smooth py-1 px-1">
+                    <!-- Dynamically populated ONLY from Firestore categories -->
+                    <div class="flex gap-2.5 animate-pulse">
+                        <div class="h-9 w-24 bg-white/10 rounded-full"></div>
+                        <div class="h-9 w-28 bg-white/10 rounded-full"></div>
+                        <div class="h-9 w-24 bg-white/10 rounded-full"></div>
+                    </div>
+                </div>
             </div>
-
-            <!-- Optional More Filters Sidebar Toggle -->
-            <button id="filter-toggle-btn" onclick="openFilterSidebar()" class="lg:hidden flex items-center gap-1.5 bg-[#0B0F19] text-white text-xs font-bold px-3 py-2 rounded-xl shadow-sm hover:bg-[#C5A059] transition-all shrink-0">
-                <i class="fa-solid fa-sliders text-xs"></i>
-                <span class="hidden sm:inline">More Filters</span>
-            </button>
         </div>
 
         <div class="flex gap-8">
@@ -477,6 +525,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.9/dist/purify.min.js"></script>
     <script src="assets/js/shared.js?v=5"></script>
+    <script src="assets/js/search-widget.js?v=2"></script>
     <script src="assets/js/users.js"></script>
     <script src="assets/js/rooms.js"></script>
     <script src="assets/js/newsletter.js"></script>
