@@ -242,10 +242,10 @@
             'penthouse': { label: 'Luxury Penthouse', icon: 'fa-building-user' }
         };
 
-        // Map to hold merged category items: id -> { id, label, icon, count }
+        // Map to hold merged category items: id -> { id, label, logo, icon, count }
         const categoryMap = new Map();
 
-        // 1. Add Firestore 'categories' collection documents
+        // 1. Add Firestore 'categories' collection documents (saved via admin panel)
         (firestoreCategories || []).forEach(cat => {
             if (!cat) return;
             const rawId = (cat.id || cat.name || cat.label || '').toString().trim();
@@ -255,6 +255,7 @@
             categoryMap.set(key, {
                 id: cat.id || rawId,
                 label: cat.label || cat.name || meta.label || rawId,
+                logo: cat.logo || cat.image || cat.iconUrl || meta.logo || null,
                 icon: cat.icon || meta.icon || 'fa-hotel',
                 count: 0
             });
@@ -272,6 +273,7 @@
                 categoryMap.set(key, {
                     id: r.category || r.categoryId || rCat,
                     label: r.categoryName || meta.label || rCat,
+                    logo: meta.logo || null,
                     icon: meta.icon || 'fa-hotel',
                     count: 0
                 });
@@ -330,9 +332,13 @@
                 const catKey = catId.toLowerCase().trim();
                 const isSelected = currentCatVal.toLowerCase() === catKey;
 
+                const iconOrLogo = (cat.logo || cat.image)
+                    ? `<img src="${KaghanSafe.escapeHTML(cat.logo || cat.image)}" alt="${KaghanSafe.escapeHTML(cat.label || cat.name || cat.id)}" class="w-4 h-4 object-contain rounded-full">`
+                    : `<i class="fa-solid ${cat.icon || 'fa-hotel'} text-[#FFDF9E]"></i>`;
+
                 html += `
                     <button data-value="${cat.id}" type="button" onclick="syncAndApplyFilter('filter-category', '${cat.id}')" class="category-pill-btn group flex items-center gap-2 px-4 py-2 rounded-full text-xs transition-all shrink-0 cursor-pointer ${isSelected ? 'bg-[#C5A059] text-white font-bold shadow-md ring-2 ring-[#C5A059]/40' : 'bg-white/5 border border-white/15 text-white/80 hover:bg-white/10 hover:text-white'}">
-                        <i class="fa-solid ${cat.icon || 'fa-hotel'} text-[#FFDF9E]"></i>
+                        ${iconOrLogo}
                         <span>${KaghanSafe.escapeHTML(cat.label || cat.name || cat.id)}</span>
                         <span class="ml-1 text-[10px] px-2 py-0.5 rounded-full ${isSelected ? 'bg-black/25 text-white font-bold' : 'bg-white/10 text-slate-300'}">${cat.count}</span>
                     </button>
