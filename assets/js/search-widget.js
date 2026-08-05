@@ -9,6 +9,7 @@
     let activeMonthIndex = 0; // Offset from current month
     let selectedAdults = 2;
     let selectedChildren = 0;
+    let selectedInfants = 0;
 
     // Helper: format YYYY-MM-DD
     function formatDateIso(dateObj) {
@@ -72,9 +73,10 @@
             }
         },
 
-        setGuests: function(adults = 2, children = 0) {
+        setGuests: function(adults = 2, children = 0, infants = 0) {
             selectedAdults = Math.max(1, Math.min(10, parseInt(adults, 10) || 1));
             selectedChildren = Math.max(0, Math.min(6, parseInt(children, 10) || 0));
+            selectedInfants = Math.max(0, Math.min(5, parseInt(infants, 10) || 0));
 
             const adultsEl = document.getElementById('stepper-adults-count');
             if (adultsEl) adultsEl.textContent = selectedAdults;
@@ -82,12 +84,15 @@
             const childrenEl = document.getElementById('stepper-children-count');
             if (childrenEl) childrenEl.textContent = selectedChildren;
 
+            const infantsEl = document.getElementById('stepper-infants-count');
+            if (infantsEl) infantsEl.textContent = selectedInfants;
+
             this.updateTriggerLabels();
             this.highlightActivePreset();
         },
 
-        setGuestPreset: function(adults, children) {
-            this.setGuests(adults, children);
+        setGuestPreset: function(adults = 2, children = 0, infants = 0) {
+            this.setGuests(adults, children, infants);
         },
 
         highlightActivePreset: function() {
@@ -97,7 +102,8 @@
             buttons.forEach(btn => {
                 const a = parseInt(btn.getAttribute('data-adults'), 10);
                 const c = parseInt(btn.getAttribute('data-children'), 10);
-                if (a === selectedAdults && c === selectedChildren) {
+                const i = parseInt(btn.getAttribute('data-infants') || '0', 10);
+                if (a === selectedAdults && c === selectedChildren && i === selectedInfants) {
                     btn.classList.add('bg-[#C5A059]', 'text-white', 'border-[#C5A059]');
                     btn.classList.remove('bg-white/5');
                 } else {
@@ -116,6 +122,10 @@
                 selectedChildren = Math.max(0, Math.min(6, selectedChildren + delta));
                 const el = document.getElementById('stepper-children-count');
                 if (el) el.textContent = selectedChildren;
+            } else if (type === 'infants') {
+                selectedInfants = Math.max(0, Math.min(5, selectedInfants + delta));
+                const el = document.getElementById('stepper-infants-count');
+                if (el) el.textContent = selectedInfants;
             }
             this.updateTriggerLabels();
             this.highlightActivePreset();
@@ -149,7 +159,11 @@
             const guestText = document.getElementById('search-guest-trigger-text');
             if (guestText) {
                 const total = selectedAdults + selectedChildren;
-                guestText.textContent = `${total} guest${total > 1 ? 's' : ''}`;
+                let text = `${total} guest${total > 1 ? 's' : ''}`;
+                if (selectedInfants > 0) {
+                    text += `, ${selectedInfants} infant${selectedInfants > 1 ? 's' : ''}`;
+                }
+                guestText.textContent = text;
             }
 
             if (guestsInput) guestsInput.value = String(selectedAdults + selectedChildren);
@@ -469,9 +483,9 @@
             }
     };
 
-    window.setGuestPreset = function(adults, children) {
+    window.setGuestPreset = function(adults, children, infants) {
         if (window.KaghanSearchWidget && typeof window.KaghanSearchWidget.setGuests === 'function') {
-            window.KaghanSearchWidget.setGuests(adults, children);
+            window.KaghanSearchWidget.setGuests(adults, children, infants);
         }
     };
 

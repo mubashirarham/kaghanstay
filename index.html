@@ -364,10 +364,10 @@
                             <!-- Quick Guest Presets -->
                             <div class="text-[10px] uppercase font-bold tracking-widest text-[#C5A059] mb-1">Quick Presets</div>
                             <div class="grid grid-cols-4 gap-1.5 pb-3 border-b border-white/10">
-                                <button type="button" onclick="setGuestPreset(1,0)" data-adults="1" data-children="0" class="preset-btn py-1 px-2 rounded-lg bg-white/5 hover:bg-[#C5A059] hover:text-white border border-white/10 text-[10px] font-bold transition-all text-center">Solo (1)</button>
-                                <button type="button" onclick="setGuestPreset(2,0)" data-adults="2" data-children="0" class="preset-btn py-1 px-2 rounded-lg bg-[#C5A059] text-white border-[#C5A059] text-[10px] font-bold transition-all text-center">Couple (2)</button>
-                                <button type="button" onclick="setGuestPreset(2,2)" data-adults="2" data-children="2" class="preset-btn py-1 px-2 rounded-lg bg-white/5 hover:bg-[#C5A059] hover:text-white border border-white/10 text-[10px] font-bold transition-all text-center">Family (4)</button>
-                                <button type="button" onclick="setGuestPreset(4,2)" data-adults="4" data-children="2" class="preset-btn py-1 px-2 rounded-lg bg-white/5 hover:bg-[#C5A059] hover:text-white border border-white/10 text-[10px] font-bold transition-all text-center">Group (6)</button>
+                                <button type="button" onclick="setGuestPreset(1,0,0)" data-adults="1" data-children="0" data-infants="0" class="preset-btn py-1 px-2 rounded-lg bg-white/5 hover:bg-[#C5A059] hover:text-white border border-white/10 text-[10px] font-bold transition-all text-center">Solo (1)</button>
+                                <button type="button" onclick="setGuestPreset(2,0,0)" data-adults="2" data-children="0" data-infants="0" class="preset-btn py-1 px-2 rounded-lg bg-[#C5A059] text-white border-[#C5A059] text-[10px] font-bold transition-all text-center">Couple (2)</button>
+                                <button type="button" onclick="setGuestPreset(2,2,0)" data-adults="2" data-children="2" data-infants="0" class="preset-btn py-1 px-2 rounded-lg bg-white/5 hover:bg-[#C5A059] hover:text-white border border-white/10 text-[10px] font-bold transition-all text-center">Family (4)</button>
+                                <button type="button" onclick="setGuestPreset(4,2,0)" data-adults="4" data-children="2" data-infants="0" class="preset-btn py-1 px-2 rounded-lg bg-white/5 hover:bg-[#C5A059] hover:text-white border border-white/10 text-[10px] font-bold transition-all text-center">Group (6)</button>
                             </div>
 
                             <!-- Adults -->
@@ -391,13 +391,28 @@
                                     <div class="w-8 h-8 rounded-lg bg-[#C5A059]/15 border border-[#C5A059]/30 flex items-center justify-center text-[#C5A059] text-xs"><i class="fa-solid fa-child"></i></div>
                                     <div>
                                         <div class="text-xs font-bold text-white">Children</div>
-                                        <div class="text-[10px] text-slate-300">Ages 0–12</div>
+                                        <div class="text-[10px] text-slate-300">Ages 2–12</div>
                                     </div>
                                 </div>
                                 <div class="flex items-center gap-2.5">
                                     <button type="button" onclick="KaghanSearchWidget.changeGuests('children', -1)" class="w-7 h-7 rounded-full border border-white/20 flex items-center justify-center text-xs hover:bg-[#C5A059] hover:border-[#C5A059] active:scale-95 transition-all font-bold text-white">-</button>
                                     <span id="stepper-children-count" class="w-5 text-center text-xs font-bold text-[#FFDF9E]">0</span>
                                     <button type="button" onclick="KaghanSearchWidget.changeGuests('children', 1)" class="w-7 h-7 rounded-full border border-white/20 flex items-center justify-center text-xs hover:bg-[#C5A059] hover:border-[#C5A059] active:scale-95 transition-all font-bold text-white">+</button>
+                                </div>
+                            </div>
+                            <!-- Infants -->
+                            <div class="flex items-center justify-between border-t border-white/10 pt-3">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-8 h-8 rounded-lg bg-[#C5A059]/15 border border-[#C5A059]/30 flex items-center justify-center text-[#C5A059] text-xs"><i class="fa-solid fa-baby"></i></div>
+                                    <div>
+                                        <div class="text-xs font-bold text-white">Infants</div>
+                                        <div class="text-[10px] text-slate-300">Under 2</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2.5">
+                                    <button type="button" onclick="KaghanSearchWidget.changeGuests('infants', -1)" class="w-7 h-7 rounded-full border border-white/20 flex items-center justify-center text-xs hover:bg-[#C5A059] hover:border-[#C5A059] active:scale-95 transition-all font-bold text-white">-</button>
+                                    <span id="stepper-infants-count" class="w-5 text-center text-xs font-bold text-[#FFDF9E]">0</span>
+                                    <button type="button" onclick="KaghanSearchWidget.changeGuests('infants', 1)" class="w-7 h-7 rounded-full border border-white/20 flex items-center justify-center text-xs hover:bg-[#C5A059] hover:border-[#C5A059] active:scale-95 transition-all font-bold text-white">+</button>
                                 </div>
                             </div>
                         </div>
@@ -1059,9 +1074,9 @@
         });
 
         // Quick Guest Preset helper
-        window.setGuestPreset = function(adults, children) {
+        window.setGuestPreset = function(adults, children, infants) {
             if (window.KaghanSearchWidget && typeof KaghanSearchWidget.setGuests === 'function') {
-                KaghanSearchWidget.setGuests(adults, children);
+                KaghanSearchWidget.setGuests(adults, children, infants);
             }
         };
 
