@@ -217,19 +217,93 @@
         const locations = await KaghanDB.getLocations();
         const rooms = await KaghanDB.getRooms();
 
-        // Calculate count of rooms per category
-        const categoryCounts = {};
-        const totalRoomsCount = rooms.length;
+        // Preset category mapping & icon metadata
+        const categoryMeta = {
+            'studio': { label: 'Studio Furnished', icon: 'fa-cube' },
+            'studio furnished': { label: 'Studio Furnished', icon: 'fa-cube' },
+            '1bed': { label: '1 Bed Furnished', icon: 'fa-bed' },
+            '1-bed': { label: '1 Bed Furnished', icon: 'fa-bed' },
+            '1bed furnished': { label: '1 Bed Furnished', icon: 'fa-bed' },
+            '1 bed furnished': { label: '1 Bed Furnished', icon: 'fa-bed' },
+            '2bed': { label: '2 Bed Furnished', icon: 'fa-door-open' },
+            '2-bed': { label: '2 Bed Furnished', icon: 'fa-door-open' },
+            '2bed furnished': { label: '2 Bed Furnished', icon: 'fa-door-open' },
+            '2 bed furnished': { label: '2 Bed Furnished', icon: 'fa-door-open' },
+            '3bed': { label: '3 Bed Furnished', icon: 'fa-house-chimney' },
+            '3-bed': { label: '3 Bed Furnished', icon: 'fa-house-chimney' },
+            '3bed furnished': { label: '3 Bed Furnished', icon: 'fa-house-chimney' },
+            '3 bed furnished': { label: '3 Bed Furnished', icon: 'fa-house-chimney' },
+            '4bed': { label: '4 Bed Furnished', icon: 'fa-building' },
+            '4-bed': { label: '4 Bed Furnished', icon: 'fa-building' },
+            '4bed furnished': { label: '4 Bed Furnished', icon: 'fa-building' },
+            '4 bed furnished': { label: '4 Bed Furnished', icon: 'fa-building' },
+            'farmhouse': { label: 'Furnished Farmhouse', icon: 'fa-tree' },
+            'furnished farmhouse': { label: 'Furnished Farmhouse', icon: 'fa-tree' },
+            'penthouse': { label: 'Luxury Penthouse', icon: 'fa-building-user' }
+        };
 
-        rooms.forEach(r => {
-            const catId = (r.category || r.categoryId || r.type || '').toLowerCase().trim();
-            if (catId) {
-                categoryCounts[catId] = (categoryCounts[catId] || 0) + 1;
+        // Map to hold merged category items: id -> { id, label, icon, count }
+        const categoryMap = new Map();
+
+        // 1. Add Firestore 'categories' collection documents
+        (firestoreCategories || []).forEach(cat => {
+            if (!cat) return;
+            const rawId = (cat.id || cat.name || cat.label || '').toString().trim();
+            if (!rawId) return;
+            const key = rawId.toLowerCase();
+            const meta = categoryMeta[key] || {};
+            categoryMap.set(key, {
+                id: cat.id || rawId,
+                label: cat.label || cat.name || meta.label || rawId,
+                icon: cat.icon || meta.icon || 'fa-hotel',
+                count: 0
+            });
+        });
+
+        // 2. Scan Firestore rooms to dynamically extract any room categories present in Firestore
+        (rooms || []).forEach(r => {
+            const rCat = (r.category || r.categoryId || r.categoryName || r.type || '').toString().trim();
+            if (!rCat) return;
+
+            const key = rCat.toLowerCase();
+            const meta = categoryMeta[key] || {};
+
+            if (!categoryMap.has(key)) {
+                categoryMap.set(key, {
+                    id: r.category || r.categoryId || rCat,
+                    label: r.categoryName || meta.label || rCat,
+                    icon: meta.icon || 'fa-hotel',
+                    count: 0
+                });
             }
         });
 
-        // Filter categories so ONLY categories stored in Firestore are used
-        const validCategories = (firestoreCategories || []).filter(c => c && (c.id || c.name || c.label));
+        // 3. Count matching rooms for each category
+        rooms.forEach(r => {
+            const rCat = (r.category || r.categoryId || r.categoryName || r.type || '').toString().toLowerCase().trim();
+            const rName = (r.name || '').toString().toLowerCase();
+
+            categoryMap.forEach((catObj, key) => {
+                if (rCat === key || rCat.includes(key) || key.includes(rCat) || rName.includes(key)) {
+                    catObj.count++;
+                } else if (key.includes('1bed') && (rCat.includes('1') || rName.includes('1'))) {
+                    catObj.count++;
+                } else if (key.includes('2bed') && (rCat.includes('2') || rName.includes('2'))) {
+                    catObj.count++;
+                } else if (key.includes('3bed') && (rCat.includes('3') || rName.includes('3'))) {
+                    catObj.count++;
+                } else if (key.includes('4bed') && (rCat.includes('4') || rName.includes('4'))) {
+                    catObj.count++;
+                } else if (key.includes('studio') && (rCat.includes('studio') || rName.includes('studio'))) {
+                    catObj.count++;
+                } else if (key.includes('farm') && (rCat.includes('farm') || rName.includes('farm'))) {
+                    catObj.count++;
+                }
+            });
+        });
+
+        const validCategories = Array.from(categoryMap.values());
+        const totalRoomsCount = rooms.length;
 
         // Update category count badge
         const countBadge = document.getElementById('firestore-category-count-badge');
@@ -252,26 +326,15 @@
             `;
 
             validCategories.forEach(cat => {
-                const catId = (cat.id || cat.name || '').toLowerCase().trim();
-                const isSelected = currentCatVal.toLowerCase() === catId;
-                
-                // Determine room count for this category
-                let count = categoryCounts[catId] || 0;
-                if (!count) {
-                    count = rooms.filter(r => {
-                        const rCat = (r.category || r.categoryId || r.type || '').toLowerCase();
-                        const rName = (r.name || '').toLowerCase();
-                        return rCat.includes(catId) || rName.includes(catId) || catId.includes(rCat);
-                    }).length;
-                }
-
-                const iconClass = cat.icon || (catId.includes('studio') ? 'fa-cube' : catId.includes('1') ? 'fa-bed' : catId.includes('2') ? 'fa-door-open' : catId.includes('3') ? 'fa-house-chimney' : catId.includes('4') ? 'fa-building' : catId.includes('farm') ? 'fa-tree' : 'fa-hotel');
+                const catId = (cat.id || cat.name || '').toString();
+                const catKey = catId.toLowerCase().trim();
+                const isSelected = currentCatVal.toLowerCase() === catKey;
 
                 html += `
                     <button data-value="${cat.id}" type="button" onclick="syncAndApplyFilter('filter-category', '${cat.id}')" class="category-pill-btn group flex items-center gap-2 px-4 py-2 rounded-full text-xs transition-all shrink-0 cursor-pointer ${isSelected ? 'bg-[#C5A059] text-white font-bold shadow-md ring-2 ring-[#C5A059]/40' : 'bg-white/5 border border-white/15 text-white/80 hover:bg-white/10 hover:text-white'}">
-                        <i class="fa-solid ${iconClass} text-[#FFDF9E]"></i>
+                        <i class="fa-solid ${cat.icon || 'fa-hotel'} text-[#FFDF9E]"></i>
                         <span>${KaghanSafe.escapeHTML(cat.label || cat.name || cat.id)}</span>
-                        <span class="ml-1 text-[10px] px-2 py-0.5 rounded-full ${isSelected ? 'bg-black/25 text-white font-bold' : 'bg-white/10 text-slate-300'}">${count}</span>
+                        <span class="ml-1 text-[10px] px-2 py-0.5 rounded-full ${isSelected ? 'bg-black/25 text-white font-bold' : 'bg-white/10 text-slate-300'}">${cat.count}</span>
                     </button>
                 `;
             });
