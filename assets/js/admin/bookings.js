@@ -279,8 +279,32 @@
             }
         }
 
+        let newBookingId = '';
+        if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+            const arr = new Uint8Array(5);
+            crypto.getRandomValues(arr);
+            const hex = Array.from(arr).map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+            newBookingId = 'BK-' + hex;
+        } else {
+            newBookingId = 'BK-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).substring(2, 6).toUpperCase();
+        }
+
+        // Uniqueness check with short retry loop
+        const existingBookings = await KaghanDB.getBookings();
+        let retryCount = 0;
+        while (existingBookings.some(b => b.id === newBookingId) && retryCount < 5) {
+            if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+                const arr = new Uint8Array(5);
+                crypto.getRandomValues(arr);
+                newBookingId = 'BK-' + Array.from(arr).map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+            } else {
+                newBookingId = 'BK-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).substring(2, 6).toUpperCase();
+            }
+            retryCount++;
+        }
+
         const newBooking = {
-            id: 'BK-' + Math.floor(1000 + Math.random() * 9000),
+            id: newBookingId,
             userId: 'usr-guest-walkin', // Walk-in indicator
             roomId,
             guestName,
@@ -290,7 +314,7 @@
             checkOut,
             totalPrice,
             status,
-            createdAt: new Date().toISOString().split('T')[0]
+            createdAt: KaghanDB.formatLocalDate(new Date())
         };
 
         const success = await KaghanDB.addBooking(newBooking);

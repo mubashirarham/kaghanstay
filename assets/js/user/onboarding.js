@@ -81,7 +81,7 @@
         const title = document.getElementById('onboard-title').value;
 
         if (!name) {
-            alert('Please enter your full display name.');
+            if (window.KaghanUI) KaghanUI.showToast('Please enter your full display name.', 'error');
             return;
         }
 

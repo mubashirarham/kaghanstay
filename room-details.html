@@ -903,9 +903,11 @@
             if (!container) return;
 
             try {
+                window.currentRoomBookedDatesLoaded = false;
                 const avail = await KaghanDB.getRoomAvailability(roomId);
                 const unavailableDates = avail.unavailableDates || [];
                 window.currentRoomBookedDates = unavailableDates;
+                window.currentRoomBookedDatesLoaded = true;
 
                 const today = new Date();
                 today.setHours(0,0,0,0);
@@ -1045,7 +1047,7 @@
             if (currentRoom) loadPDPAvailabilityCalendar(currentRoom.id);
         };
 
-        // Helper to open PDP Date Calendar Modal
+        // Helper to open PDP Date Calendar Modal (Task 8: Guard against opening before availability loads)
         window.openPDPDateCalendarModal = function() {
             const calContainer = document.getElementById('pdp-calendar-container');
             if (calContainer) {
@@ -1053,6 +1055,10 @@
             }
 
             if (window.KaghanSearchWidget && typeof KaghanSearchWidget.openCalendarModal === 'function') {
+                if (!window.currentRoomBookedDatesLoaded) {
+                    if (window.KaghanUI) KaghanUI.showToast("Loading suite availability... Please try again in a moment.", "info");
+                    return;
+                }
                 KaghanSearchWidget.openCalendarModal(window.currentRoomBookedDates || []);
             }
         };

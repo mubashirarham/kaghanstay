@@ -163,8 +163,10 @@ function startActiveListeners() {
 
         if (!authUser) return;
 
-        const sessionUser = JSON.parse(localStorage.getItem(DB_KEYS.SESSION)) || {};
-        const isAdminUser = sessionUser.role === 'admin' || authUser.email === 'admin@kaghanstay.com';
+        // SECURITY: Do NOT use localStorage role — it can be spoofed via DevTools.
+        // Admin status is determined solely by the Firebase-verified email property.
+        // TODO: migrate to Firebase Auth custom claims (authUser.getIdTokenResult().claims.admin).
+        const isAdminUser = authUser.email === 'admin@kaghanstay.com';
 
         // Sync active user profile details
         window.KaghanDB_Listeners.currentUser = fdb.collection('users').doc(authUser.uid).onSnapshot(doc => {
@@ -716,10 +718,12 @@ const db = {
             if (typeof firebase !== 'undefined' && firebase.auth && firebase.auth().currentUser) {
                 idToken = await firebase.auth().currentUser.getIdToken().catch(() => null);
             }
+            // SECURITY: internalSecret removed — server-side booking-email function
+            // must verify the Firebase ID token instead.
             window.safeFetch('/.netlify/functions/booking-email', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ booking: createdBooking, idToken, pdfBase64, internalSecret: 'kphstay_internal_secret_2026' })
+                body: JSON.stringify({ booking: createdBooking, idToken, pdfBase64 })
             }).catch(err => console.log("Background email notification dispatch notice:", err.message));
         } catch (_) {}
 
@@ -1003,6 +1007,33 @@ const db = {
         }
     },
 
+    // Timezone-safe Local Date Utilities
+    parseLocalDate: (str) => {
+        if (!str) return new Date();
+        if (str instanceof Date) return str;
+        const cleanStr = String(str).trim().split('T')[0].split(' ')[0];
+        const parts = cleanStr.split('-');
+        if (parts.length === 3) {
+            const y = parseInt(parts[0], 10);
+            const m = parseInt(parts[1], 10) - 1;
+            const d = parseInt(parts[2], 10);
+            if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
+                return new Date(y, m, d);
+            }
+        }
+        return new Date(str);
+    },
+
+    formatLocalDate: (dateObj) => {
+        if (!dateObj) return '';
+        const d = (dateObj instanceof Date) ? dateObj : new Date(dateObj);
+        if (isNaN(d.getTime())) return '';
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        return `${yyyy}-${mm}-${dd}`;
+    },
+
     // Date Overlap & Availability checking
     getRoomAvailability: async (roomId) => {
         const room = await db.getRoomById(roomId);
@@ -1014,10 +1045,10 @@ const db = {
         if (bookings && bookings.length > 0) {
             bookings.forEach(b => {
                 if (b.roomId === roomId && b.status !== 'cancelled') {
-                    const start = new Date(b.checkIn);
-                    const end = new Date(b.checkOut);
+                    const start = db.parseLocalDate(b.checkIn);
+                    const end = db.parseLocalDate(b.checkOut);
                     for (let dt = new Date(start); dt < end; dt.setDate(dt.getDate() + 1)) {
-                        const dateStr = dt.toISOString().split('T')[0];
+                        const dateStr = db.formatLocalDate(dt);
                         bookedDatesSet.add(dateStr);
                     }
                 }
@@ -1036,13 +1067,13 @@ const db = {
     isRoomAvailable: async (roomId, checkInStr, checkOutStr) => {
         const room = await db.getRoomById(roomId);
         const bookings = await db.getBookings();
-        const searchIn = new Date(checkInStr);
-        const searchOut = new Date(checkOutStr);
+        const searchIn = db.parseLocalDate(checkInStr);
+        const searchOut = db.parseLocalDate(checkOutStr);
 
         for (const b of bookings) {
             if (b.roomId === roomId && b.status !== 'cancelled') {
-                const bIn = new Date(b.checkIn);
-                const bOut = new Date(b.checkOut);
+                const bIn = db.parseLocalDate(b.checkIn);
+                const bOut = db.parseLocalDate(b.checkOut);
 
                 // Overlap: (searchIn < bOut) && (searchOut > bIn)
                 if (searchIn < bOut && searchOut > bIn) {
@@ -1054,7 +1085,7 @@ const db = {
         if (room && room.blockedDates && room.blockedDates.length > 0) {
             const blockedSet = new Set(room.blockedDates);
             for (let dt = new Date(searchIn); dt < searchOut; dt.setDate(dt.getDate() + 1)) {
-                const dateStr = dt.toISOString().split('T')[0];
+                const dateStr = db.formatLocalDate(dt);
                 if (blockedSet.has(dateStr)) {
                     return false; // Admin blocked!
                 }
@@ -1318,6 +1349,7 @@ function injectChatbot() {
     // Create elements
     const trigger = document.createElement('button');
     trigger.id = 'kph-chat-trigger';
+    // Positioned above WhatsApp button; on booking page FABs are raised to avoid CTA overlap
     trigger.className = 'fixed bottom-5 right-5 z-[9999] bg-[#D4AF37] text-slate-900 w-14 h-14 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300 border border-white/20';
     trigger.innerHTML = '<i class="fa-solid fa-comments text-xl"></i>';
 
@@ -1814,7 +1846,7 @@ window.downloadPDFInvoice = async function(bookingId) {
 
         if (!booking) {
             if (window.KaghanUI) KaghanUI.showToast('Booking ledger record not found', 'error');
-            else alert('Booking ledger record not found');
+            else if (window.KaghanUI) KaghanUI.showToast('Booking ledger record not found', 'error');
             return;
         }
 
@@ -2175,7 +2207,7 @@ window.downloadPDFInvoice = async function(bookingId) {
     } catch (e) {
         console.error("PDF generation failed:", e);
         if (window.KaghanUI) KaghanUI.showToast('Failed to generate PDF invoice', 'error');
-        else alert('Failed to generate PDF invoice: ' + e.message);
+        else if (window.KaghanUI) KaghanUI.showToast('Failed to generate PDF invoice.', 'error');
     }
 };
 
@@ -2199,7 +2231,8 @@ function injectWhatsApp() {
     // Create elements
     const trigger = document.createElement('button');
     trigger.id = 'wa-chat-trigger';
-    trigger.className = 'fixed bottom-24 right-5 z-[9999] bg-[#25D366] text-white w-14 h-14 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300 border border-white/20';
+    // Raised to bottom-36 to avoid overlapping the AI chatbot trigger below it
+    trigger.className = 'fixed bottom-36 right-5 z-[9999] bg-[#25D366] text-white w-14 h-14 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300 border border-white/20';
     trigger.innerHTML = '<i class="fa-brands fa-whatsapp text-2xl"></i>';
 
     const chatBox = document.createElement('div');
@@ -2288,4 +2321,18 @@ function injectWhatsApp() {
             }, 300);
         });
     }
+}
+
+// === Service Worker Registration (PWA) ===
+// Uses service-worker.js as the single canonical SW (sw.js is redundant and will be removed).
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+            .then(reg => {
+                console.log('[KPH Stay] Service worker registered, scope:', reg.scope);
+            })
+            .catch(err => {
+                console.warn('[KPH Stay] Service worker registration failed:', err);
+            });
+    });
 }

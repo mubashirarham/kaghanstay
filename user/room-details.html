@@ -342,7 +342,7 @@
                 currentRoom = rooms.find(r => r.id === roomId);
 
                 if (!currentRoom) {
-                    alert('Suite listing not found.');
+                    if (window.KaghanUI) KaghanUI.showToast('Suite listing not found.', 'error');
                     window.location.href = 'search.html';
                     return;
                 }

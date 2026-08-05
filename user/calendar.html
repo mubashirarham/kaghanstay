@@ -291,32 +291,11 @@
 
         async function fetchRoomBookedDates(roomId) {
             try {
-                // Fetch confirmed bookings from KaghanDB
-                const allBookings = await KaghanDB.getBookings();
-                const booked = [];
-
-                allBookings.forEach(b => {
-                    if (b.roomId === roomId && b.checkIn && b.checkOut && b.status !== 'cancelled') {
-                        let curr = new Date(b.checkIn);
-                        const end = new Date(b.checkOut);
-                        while (curr < end) {
-                            booked.push(curr.toISOString().split('T')[0]);
-                            curr.setDate(curr.getDate() + 1);
-                        }
-                    }
-                });
-
-                // Also check if room has custom bookedDates array
-                if (selectedRoom.bookedDates && Array.isArray(selectedRoom.bookedDates)) {
-                    selectedRoom.bookedDates.forEach(d => {
-                        if (!booked.includes(d)) booked.push(d);
-                    });
-                }
-
-                return booked;
+                const avail = await KaghanDB.getRoomAvailability(roomId);
+                return (avail && avail.unavailableDates) || [];
             } catch(e) {
-                console.warn('Unable to load bookings for calendar:', e);
-                return (selectedRoom.bookedDates || []);
+                console.warn('Unable to load room availability for calendar:', e);
+                return [];
             }
         }
 
@@ -426,7 +405,7 @@
                     }
 
                     if (hasBookedInRange) {
-                        alert('Selected stay window contains reserved dates. Please select an open range.');
+                        if (window.KaghanUI) KaghanUI.showToast('Selected stay window contains reserved dates. Please select an open range.', 'error');
                         startDateStr = dateStr;
                         endDateStr = null;
                     } else {

@@ -64,12 +64,28 @@ exports.handler = async (event, context) => {
 
         const { roomId, checkIn, checkOut, guestName, guestEmail, guestPhone, couponCode, billingCycle, pdfBase64, idToken, upgrades, force } = validation.data;
 
+        function parseLocalDate(str) {
+            if (!str) return new Date();
+            if (str instanceof Date) return str;
+            const cleanStr = String(str).trim().split('T')[0].split(' ')[0];
+            const parts = cleanStr.split('-');
+            if (parts.length === 3) {
+                const y = parseInt(parts[0], 10);
+                const m = parseInt(parts[1], 10) - 1;
+                const d = parseInt(parts[2], 10);
+                if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
+                    return new Date(y, m, d);
+                }
+            }
+            return new Date(str);
+        }
+
         // Clean date strings (extract YYYY-MM-DD if ISO format passed)
         const checkInStr = checkIn.includes('T') ? checkIn.split('T')[0] : checkIn;
         const checkOutStr = checkOut.includes('T') ? checkOut.split('T')[0] : checkOut;
 
-        const searchIn = new Date(checkInStr);
-        const searchOut = new Date(checkOutStr);
+        const searchIn = parseLocalDate(checkInStr);
+        const searchOut = parseLocalDate(checkOutStr);
         const today = new Date();
         today.setHours(0,0,0,0);
 
@@ -113,8 +129,8 @@ exports.handler = async (event, context) => {
             for (const doc of bookingsSnap.docs) {
                 const b = doc.data();
                 if (b.status !== 'cancelled') {
-                    const bIn = new Date(b.checkIn);
-                    const bOut = new Date(b.checkOut);
+                    const bIn = parseLocalDate(b.checkIn);
+                    const bOut = parseLocalDate(b.checkOut);
                     if (searchIn < bOut && searchOut > bIn) {
                         return {
                             statusCode: 400,

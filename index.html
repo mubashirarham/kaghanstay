@@ -188,7 +188,7 @@
     </div>
 
     <!-- Hero Section -->
-    <header class="relative min-h-screen flex flex-col justify-between items-center pt-28 pb-0 overflow-visible">
+    <header class="relative min-h-screen flex flex-col justify-between items-center pt-28 pb-48 md:pb-64 overflow-visible">
         <!-- Background Image & Gradient overlay -->
         <div class="absolute inset-0">
             <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1920&q=80" alt="Kaghan Luxury Hotel Islamabad" class="w-full h-full object-cover object-center">
@@ -215,7 +215,7 @@
         </div>
 
         <!-- Search Widget (Spatial Glassmorphism) -->
-        <div class="relative z-10 w-full max-w-5xl px-4 mt-8 mb-10" data-animate="fade-up">
+        <div class="relative z-10 w-full max-w-5xl px-4 mt-6 mb-8" data-animate="fade-up">
             <div class="backdrop-blur-xl bg-white/5 rounded-[2.5rem] p-6 md:p-8 border border-white/10 shadow-[0_32px_64px_-15px_rgba(11,15,25,0.6)] text-white">
                 
                 <!-- Stay Duration Tag Selector -->
@@ -229,52 +229,120 @@
                     <input type="hidden" id="hero-stay-type" value="daily">
                 </div>
 
-                <form id="hero-search-form" onsubmit="handleHeroSearchSubmit(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 items-end">
+                <form id="hero-search-form" onsubmit="handleHeroSearchSubmit(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 items-end">
                     <!-- Location Custom Dropdown -->
-                    <div class="sm:col-span-1 lg:col-span-1">
+                    <div class="sm:col-span-1 lg:col-span-3">
                         <label class="block text-xs uppercase tracking-widest text-[#C5A059] font-bold mb-2 ml-1">Location</label>
                         <div class="relative custom-dropdown" id="dropdown-location">
-                            <button type="button" onclick="toggleCustomDropdown('dropdown-location')" class="w-full bg-white/5 border border-white/15 hover:bg-white/10 hover:border-[#C5A059] rounded-2xl pl-11 pr-8 py-3.5 outline-none transition-all text-white text-sm text-left flex items-center justify-between cursor-pointer relative">
-                                <i class="fa-solid fa-location-dot absolute left-4 text-white/50 pointer-events-none"></i>
-                                <span class="dropdown-selected truncate">All Locations</span>
-                                <i class="fa-solid fa-chevron-down text-white/50 text-xs ml-1 shrink-0"></i>
+                            <button type="button" onclick="toggleCustomDropdown('dropdown-location')" class="w-full bg-white/5 border border-white/15 hover:bg-white/10 hover:border-[#C5A059] rounded-2xl pl-11 pr-8 py-3.5 outline-none transition-all text-white text-xs md:text-sm text-left flex items-center justify-between cursor-pointer relative">
+                                <i class="fa-solid fa-location-dot absolute left-4 text-[#C5A059] pointer-events-none text-base"></i>
+                                <span class="dropdown-selected font-semibold whitespace-nowrap overflow-hidden text-ellipsis">All Locations</span>
+                                <i class="fa-solid fa-chevron-down text-white/50 text-xs ml-1 shrink-0 transition-transform duration-300"></i>
                             </button>
                             <div class="dropdown-menu">
-                                <div class="dropdown-item" data-value="all">All Locations</div>
-                                <!-- Loaded dynamically -->
+                                <div class="dropdown-item selected" data-value="all">
+                                    <div class="icon-wrapper"><i class="fa-solid fa-globe"></i></div>
+                                    <div class="flex flex-col min-w-0">
+                                        <span class="font-bold text-white text-xs">All Locations</span>
+                                        <span class="text-[10px] text-slate-300 font-normal leading-tight">Explore all destinations in Pakistan</span>
+                                    </div>
+                                </div>
+                                <div class="dropdown-item" data-value="islamabad">
+                                    <div class="icon-wrapper"><i class="fa-solid fa-city"></i></div>
+                                    <div class="flex flex-col min-w-0">
+                                        <span class="font-bold text-white text-xs">Islamabad</span>
+                                        <span class="text-[10px] text-slate-300 font-normal leading-tight">Margalla Hills & Bahria Enclave</span>
+                                    </div>
+                                </div>
+                                <div class="dropdown-item" data-value="nathiagali">
+                                    <div class="icon-wrapper"><i class="fa-solid fa-mountain-sun"></i></div>
+                                    <div class="flex flex-col min-w-0">
+                                        <span class="font-bold text-white text-xs">Nathia Gali</span>
+                                        <span class="text-[10px] text-slate-300 font-normal leading-tight">Pine Trails & Alpine Resorts</span>
+                                    </div>
+                                </div>
+                                <div class="dropdown-item" data-value="murree">
+                                    <div class="icon-wrapper"><i class="fa-solid fa-tree"></i></div>
+                                    <div class="flex flex-col min-w-0">
+                                        <span class="font-bold text-white text-xs">Murree & Bhurban</span>
+                                        <span class="text-[10px] text-slate-300 font-normal leading-tight">Mall Road & Golf Resorts</span>
+                                    </div>
+                                </div>
                             </div>
                             <input type="hidden" id="search-location" value="all">
                         </div>
                     </div>
 
                     <!-- Suite Style Custom Dropdown -->
-                    <div class="sm:col-span-1 lg:col-span-1">
+                    <div class="sm:col-span-1 lg:col-span-3">
                         <label class="block text-xs uppercase tracking-widest text-[#C5A059] font-bold mb-2 ml-1">Suite Style</label>
                         <div class="relative custom-dropdown" id="dropdown-type">
-                            <button type="button" onclick="toggleCustomDropdown('dropdown-type')" class="w-full bg-white/5 border border-white/15 hover:bg-white/10 hover:border-[#C5A059] rounded-2xl pl-11 pr-8 py-3.5 outline-none transition-all text-white text-sm text-left flex items-center justify-between cursor-pointer relative">
-                                <i class="fa-solid fa-bed absolute left-4 text-white/50 pointer-events-none"></i>
-                                <span class="dropdown-selected truncate">All Styles</span>
-                                <i class="fa-solid fa-chevron-down text-white/50 text-xs ml-1 shrink-0"></i>
+                            <button type="button" onclick="toggleCustomDropdown('dropdown-type')" class="w-full bg-white/5 border border-white/15 hover:bg-white/10 hover:border-[#C5A059] rounded-2xl pl-11 pr-8 py-3.5 outline-none transition-all text-white text-xs md:text-sm text-left flex items-center justify-between cursor-pointer relative">
+                                <i class="fa-solid fa-bed absolute left-4 text-[#C5A059] pointer-events-none text-base"></i>
+                                <span class="dropdown-selected font-semibold whitespace-nowrap overflow-hidden text-ellipsis">All Styles</span>
+                                <i class="fa-solid fa-chevron-down text-white/50 text-xs ml-1 shrink-0 transition-transform duration-300"></i>
                             </button>
                             <div class="dropdown-menu">
-                                <div class="dropdown-item" data-value="all">All Styles</div>
-                                <div class="dropdown-item" data-value="studio">Studio Furnished</div>
-                                <div class="dropdown-item" data-value="1bed">1 Bed Furnished</div>
-                                <div class="dropdown-item" data-value="2bed">2 Bed Furnished</div>
-                                <div class="dropdown-item" data-value="3bed">3 Bed Furnished</div>
-                                <div class="dropdown-item" data-value="4bed">4 Bed Furnished</div>
-                                <div class="dropdown-item" data-value="farmhouse">Furnished Farmhouse</div>
+                                <div class="dropdown-item selected" data-value="all">
+                                    <div class="icon-wrapper"><i class="fa-solid fa-border-all"></i></div>
+                                    <div class="flex flex-col min-w-0">
+                                        <span class="font-bold text-white text-xs">All Styles</span>
+                                        <span class="text-[10px] text-slate-300 font-normal leading-tight">Browse Studio to 4BHK & Farmhouses</span>
+                                    </div>
+                                </div>
+                                <div class="dropdown-item" data-value="studio">
+                                    <div class="icon-wrapper"><i class="fa-solid fa-cube"></i></div>
+                                    <div class="flex flex-col min-w-0">
+                                        <span class="font-bold text-white text-xs">Studio Furnished</span>
+                                        <span class="text-[10px] text-slate-300 font-normal leading-tight">Compact Luxury Suite (1-2 Guests)</span>
+                                    </div>
+                                </div>
+                                <div class="dropdown-item" data-value="1bed">
+                                    <div class="icon-wrapper"><i class="fa-solid fa-bed"></i></div>
+                                    <div class="flex flex-col min-w-0">
+                                        <span class="font-bold text-white text-xs">1 Bed Furnished</span>
+                                        <span class="text-[10px] text-slate-300 font-normal leading-tight">Executive Couple Suite (2 Guests)</span>
+                                    </div>
+                                </div>
+                                <div class="dropdown-item" data-value="2bed">
+                                    <div class="icon-wrapper"><i class="fa-solid fa-door-open"></i></div>
+                                    <div class="flex flex-col min-w-0">
+                                        <span class="font-bold text-white text-xs">2 Bed Furnished</span>
+                                        <span class="text-[10px] text-slate-300 font-normal leading-tight">Family Apartment Suite (4 Guests)</span>
+                                    </div>
+                                </div>
+                                <div class="dropdown-item" data-value="3bed">
+                                    <div class="icon-wrapper"><i class="fa-solid fa-house-chimney"></i></div>
+                                    <div class="flex flex-col min-w-0">
+                                        <span class="font-bold text-white text-xs">3 Bed Furnished</span>
+                                        <span class="text-[10px] text-slate-300 font-normal leading-tight">Spacious Family Suite (6 Guests)</span>
+                                    </div>
+                                </div>
+                                <div class="dropdown-item" data-value="4bed">
+                                    <div class="icon-wrapper"><i class="fa-solid fa-building"></i></div>
+                                    <div class="flex flex-col min-w-0">
+                                        <span class="font-bold text-white text-xs">4 Bed Furnished</span>
+                                        <span class="text-[10px] text-slate-300 font-normal leading-tight">Luxury Penthouse Suite (8 Guests)</span>
+                                    </div>
+                                </div>
+                                <div class="dropdown-item" data-value="farmhouse">
+                                    <div class="icon-wrapper"><i class="fa-solid fa-tree"></i></div>
+                                    <div class="flex flex-col min-w-0">
+                                        <span class="font-bold text-white text-xs">Furnished Farmhouse</span>
+                                        <span class="text-[10px] text-slate-300 font-normal leading-tight">Grand Alpine Estate (10+ Guests)</span>
+                                    </div>
+                                </div>
                             </div>
                             <input type="hidden" id="search-type" value="all">
                         </div>
                     </div>
 
                     <!-- Dates Picker Trigger -->
-                    <div class="sm:col-span-2 lg:col-span-2">
+                    <div class="sm:col-span-1 lg:col-span-2">
                         <label class="block text-xs uppercase tracking-widest text-[#C5A059] font-bold mb-2 ml-1">Dates</label>
-                        <button type="button" onclick="KaghanSearchWidget.openCalendarModal()" class="w-full bg-white/5 border border-white/15 hover:bg-white/10 focus:border-[#C5A059] rounded-2xl pl-11 pr-4 py-3.5 outline-none transition-all text-white text-sm text-left flex items-center justify-between cursor-pointer relative">
-                            <i class="fa-solid fa-calendar-alt absolute left-4 text-white/50 pointer-events-none"></i>
-                            <span id="search-date-trigger-text" class="truncate font-medium">Add dates</span>
+                        <button type="button" onclick="KaghanSearchWidget.openCalendarModal()" class="w-full bg-white/5 border border-white/15 hover:bg-white/10 focus:border-[#C5A059] hover:border-[#C5A059] rounded-2xl pl-11 pr-4 py-3.5 outline-none transition-all text-white text-xs md:text-sm text-left flex items-center justify-between cursor-pointer relative group">
+                            <i class="fa-solid fa-calendar-days absolute left-4 text-[#C5A059] pointer-events-none text-base group-hover:scale-110 transition-transform"></i>
+                            <span id="search-date-trigger-text" class="font-semibold whitespace-nowrap overflow-hidden text-ellipsis">Add dates</span>
                             <i class="fa-solid fa-chevron-down text-white/50 text-xs shrink-0"></i>
                         </button>
                         <input type="hidden" id="search-check-in">
@@ -282,48 +350,63 @@
                     </div>
 
                     <!-- Guests Count Stepper Trigger -->
-                    <div class="sm:col-span-1 lg:col-span-1 relative">
+                    <div class="sm:col-span-1 lg:col-span-2 relative">
                         <label class="block text-xs uppercase tracking-widest text-[#C5A059] font-bold mb-2 ml-1">Guests</label>
-                        <button type="button" onclick="KaghanSearchWidget.toggleGuestStepperPopover()" class="w-full bg-white/5 border border-white/15 hover:bg-white/10 hover:border-[#C5A059] rounded-2xl pl-11 pr-4 py-3.5 outline-none transition-all text-white text-sm text-left flex items-center justify-between cursor-pointer relative">
-                            <i class="fa-solid fa-users absolute left-4 text-white/50 pointer-events-none"></i>
-                            <span id="search-guest-trigger-text" class="truncate font-medium">2 Guests</span>
+                        <button type="button" onclick="KaghanSearchWidget.toggleGuestStepperPopover()" class="w-full bg-white/5 border border-white/15 hover:bg-white/10 hover:border-[#C5A059] rounded-2xl pl-11 pr-4 py-3.5 outline-none transition-all text-white text-xs md:text-sm text-left flex items-center justify-between cursor-pointer relative group">
+                            <i class="fa-solid fa-users absolute left-4 text-[#C5A059] pointer-events-none text-base group-hover:scale-110 transition-transform"></i>
+                            <span id="search-guest-trigger-text" class="font-semibold whitespace-nowrap overflow-hidden text-ellipsis">2 Guests</span>
                             <i class="fa-solid fa-chevron-down text-white/50 text-xs shrink-0"></i>
                         </button>
                         <input type="hidden" id="search-guests" value="2">
 
-                        <!-- Guest Stepper Dropdown Popover -->
-                        <div id="guest-stepper-popover" class="hidden absolute top-full left-0 right-0 mt-2 bg-[#0B0F19]/95 backdrop-blur-xl border border-white/15 rounded-2xl p-4 shadow-2xl z-50 text-white space-y-3 min-w-[220px]">
+                        <!-- Enhanced Guest Stepper Dropdown Popover -->
+                        <div id="guest-stepper-popover" class="hidden absolute top-full left-0 sm:left-auto right-0 mt-3 bg-[#0F172A]/98 backdrop-blur-2xl border border-[#C5A059]/40 rounded-2xl p-5 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.8)] z-50 text-white space-y-4 min-w-[270px]">
+                            <!-- Quick Guest Presets -->
+                            <div class="text-[10px] uppercase font-bold tracking-widest text-[#C5A059] mb-1">Quick Presets</div>
+                            <div class="grid grid-cols-4 gap-1.5 pb-3 border-b border-white/10">
+                                <button type="button" onclick="setGuestPreset(1,0)" class="py-1 px-2 rounded-lg bg-white/5 hover:bg-[#C5A059] hover:text-white border border-white/10 text-[10px] font-bold transition-all text-center">Solo (1)</button>
+                                <button type="button" onclick="setGuestPreset(2,0)" class="py-1 px-2 rounded-lg bg-white/5 hover:bg-[#C5A059] hover:text-white border border-white/10 text-[10px] font-bold transition-all text-center">Couple (2)</button>
+                                <button type="button" onclick="setGuestPreset(2,2)" class="py-1 px-2 rounded-lg bg-white/5 hover:bg-[#C5A059] hover:text-white border border-white/10 text-[10px] font-bold transition-all text-center">Family (4)</button>
+                                <button type="button" onclick="setGuestPreset(4,2)" class="py-1 px-2 rounded-lg bg-white/5 hover:bg-[#C5A059] hover:text-white border border-white/10 text-[10px] font-bold transition-all text-center">Group (6)</button>
+                            </div>
+
                             <!-- Adults -->
                             <div class="flex items-center justify-between">
-                                <div>
-                                    <div class="text-xs font-bold">Adults</div>
-                                    <div class="text-[10px] text-slate-400">Ages 13+</div>
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-8 h-8 rounded-lg bg-[#C5A059]/15 border border-[#C5A059]/30 flex items-center justify-center text-[#C5A059] text-xs"><i class="fa-solid fa-user-tie"></i></div>
+                                    <div>
+                                        <div class="text-xs font-bold text-white">Adults</div>
+                                        <div class="text-[10px] text-slate-300">Ages 13+</div>
+                                    </div>
                                 </div>
-                                <div class="flex items-center gap-2">
-                                    <button type="button" onclick="KaghanSearchWidget.changeGuests('adults', -1)" class="w-7 h-7 rounded-full border border-white/20 flex items-center justify-center text-xs hover:bg-white/10 active:scale-95 transition-all">-</button>
-                                    <span id="stepper-adults-count" class="w-5 text-center text-xs font-bold">2</span>
-                                    <button type="button" onclick="KaghanSearchWidget.changeGuests('adults', 1)" class="w-7 h-7 rounded-full border border-white/20 flex items-center justify-center text-xs hover:bg-white/10 active:scale-95 transition-all">+</button>
+                                <div class="flex items-center gap-2.5">
+                                    <button type="button" onclick="KaghanSearchWidget.changeGuests('adults', -1)" class="w-7 h-7 rounded-full border border-white/20 flex items-center justify-center text-xs hover:bg-[#C5A059] hover:border-[#C5A059] active:scale-95 transition-all font-bold text-white">-</button>
+                                    <span id="stepper-adults-count" class="w-5 text-center text-xs font-bold text-[#FFDF9E]">2</span>
+                                    <button type="button" onclick="KaghanSearchWidget.changeGuests('adults', 1)" class="w-7 h-7 rounded-full border border-white/20 flex items-center justify-center text-xs hover:bg-[#C5A059] hover:border-[#C5A059] active:scale-95 transition-all font-bold text-white">+</button>
                                 </div>
                             </div>
                             <!-- Children -->
                             <div class="flex items-center justify-between border-t border-white/10 pt-3">
-                                <div>
-                                    <div class="text-xs font-bold">Children</div>
-                                    <div class="text-[10px] text-slate-400">Ages 0–12</div>
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-8 h-8 rounded-lg bg-[#C5A059]/15 border border-[#C5A059]/30 flex items-center justify-center text-[#C5A059] text-xs"><i class="fa-solid fa-child"></i></div>
+                                    <div>
+                                        <div class="text-xs font-bold text-white">Children</div>
+                                        <div class="text-[10px] text-slate-300">Ages 0–12</div>
+                                    </div>
                                 </div>
-                                <div class="flex items-center gap-2">
-                                    <button type="button" onclick="KaghanSearchWidget.changeGuests('children', -1)" class="w-7 h-7 rounded-full border border-white/20 flex items-center justify-center text-xs hover:bg-white/10 active:scale-95 transition-all">-</button>
-                                    <span id="stepper-children-count" class="w-5 text-center text-xs font-bold">0</span>
-                                    <button type="button" onclick="KaghanSearchWidget.changeGuests('children', 1)" class="w-7 h-7 rounded-full border border-white/20 flex items-center justify-center text-xs hover:bg-white/10 active:scale-95 transition-all">+</button>
+                                <div class="flex items-center gap-2.5">
+                                    <button type="button" onclick="KaghanSearchWidget.changeGuests('children', -1)" class="w-7 h-7 rounded-full border border-white/20 flex items-center justify-center text-xs hover:bg-[#C5A059] hover:border-[#C5A059] active:scale-95 transition-all font-bold text-white">-</button>
+                                    <span id="stepper-children-count" class="w-5 text-center text-xs font-bold text-[#FFDF9E]">0</span>
+                                    <button type="button" onclick="KaghanSearchWidget.changeGuests('children', 1)" class="w-7 h-7 rounded-full border border-white/20 flex items-center justify-center text-xs hover:bg-[#C5A059] hover:border-[#C5A059] active:scale-95 transition-all font-bold text-white">+</button>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Submit Search Button -->
-                    <div class="sm:col-span-1 lg:col-span-1">
-                        <button type="submit" id="hero-search-submit" class="w-full bg-[#C5A059] text-white py-3.5 rounded-2xl font-bold hover:bg-white hover:text-[#0B0F19] transition-all shadow-lg flex items-center justify-center gap-2 btn-shimmer text-sm cursor-pointer min-h-[52px]">
-                            <i class="fa-solid fa-search"></i>
+                    <div class="sm:col-span-2 lg:col-span-2">
+                        <button type="submit" id="hero-search-submit" class="w-full bg-[#C5A059] text-white py-3.5 rounded-2xl font-bold hover:bg-white hover:text-[#0B0F19] transition-all shadow-lg flex items-center justify-center gap-2 btn-shimmer text-xs md:text-sm cursor-pointer min-h-[52px]">
+                            <i class="fa-solid fa-magnifying-glass text-base"></i>
                             <span>Search Stays</span>
                         </button>
                     </div>
@@ -959,7 +1042,9 @@
                     const hidden = dd.querySelector('input[type="hidden"]');
                     const label = dd.querySelector('.dropdown-selected');
                     if (hidden) hidden.value = item.dataset.value || '';
-                    if (label) label.textContent = item.textContent.trim();
+                    const titleEl = item.querySelector('.font-bold');
+                    const textToDisplay = titleEl ? titleEl.textContent.trim() : item.textContent.trim();
+                    if (label) label.textContent = textToDisplay;
                     dd.querySelectorAll('.dropdown-item').forEach(i => i.classList.remove('selected'));
                     item.classList.add('selected');
                     dd.classList.remove('open');
@@ -967,11 +1052,18 @@
                 return; // don't fall through to close-all
             }
 
-            // Click was outside any dropdown ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â close all
+            // Click was outside any dropdown — close all
             if (!e.target.closest('.custom-dropdown')) {
                 document.querySelectorAll('.custom-dropdown.open').forEach(d => d.classList.remove('open'));
             }
         });
+
+        // Quick Guest Preset helper
+        window.setGuestPreset = function(adults, children) {
+            if (window.KaghanSearchWidget && typeof KaghanSearchWidget.setGuests === 'function') {
+                KaghanSearchWidget.setGuests(adults, children);
+            }
+        };
 
         // ── HERO SEARCH SUBMIT ──
         window.handleHeroSearchSubmit = function(e) {
@@ -1006,8 +1098,50 @@
                 // Populate Location dropdown menu
                 const locMenu = document.querySelector('#dropdown-location .dropdown-menu');
                 if (locMenu) {
-                    locMenu.innerHTML = `<div class="dropdown-item" data-value="all">All Locations</div>` +
-                        locations.map(l => `<div class="dropdown-item" data-value="${KaghanSafe.escapeHTML(l.id)}">${KaghanSafe.escapeHTML(l.label || l.name || l.id)}</div>`).join('');
+                    const locIcons = {
+                        all: 'fa-globe',
+                        islamabad: 'fa-city',
+                        nathiagali: 'fa-mountain-sun',
+                        murree: 'fa-tree',
+                        bhurban: 'fa-hotel',
+                        kaghan: 'fa-mountain',
+                        naran: 'fa-water'
+                    };
+                    const locSubtexts = {
+                        all: 'Explore all destinations in Pakistan',
+                        islamabad: 'Margalla Hills & Bahria Enclave',
+                        nathiagali: 'Pine Trails & Alpine Resorts',
+                        murree: 'Mall Road & Golf Resorts',
+                        bhurban: 'Luxury Hilltop Estates',
+                        kaghan: 'Alpine River Valleys',
+                        naran: 'Saif-ul-Malook Lake'
+                    };
+
+                    let locHtml = `
+                        <div class="dropdown-item selected" data-value="all">
+                            <div class="icon-wrapper"><i class="fa-solid fa-globe"></i></div>
+                            <div class="flex flex-col">
+                                <span class="font-bold text-white">All Locations</span>
+                                <span class="text-[9px] text-slate-400 font-normal">Explore all destinations in Pakistan</span>
+                            </div>
+                        </div>`;
+
+                    locHtml += locations.map(l => {
+                        const val = KaghanSafe.escapeHTML(l.id || '');
+                        const name = KaghanSafe.escapeHTML(l.label || l.name || l.id);
+                        const icon = locIcons[val.toLowerCase()] || 'fa-location-dot';
+                        const subtext = locSubtexts[val.toLowerCase()] || 'Luxury Hospitality';
+                        return `
+                            <div class="dropdown-item" data-value="${val}">
+                                <div class="icon-wrapper"><i class="fa-solid ${icon}"></i></div>
+                                <div class="flex flex-col">
+                                    <span class="font-bold text-white">${name}</span>
+                                    <span class="text-[9px] text-slate-400 font-normal">${subtext}</span>
+                                </div>
+                            </div>`;
+                    }).join('');
+
+                    locMenu.innerHTML = locHtml;
                 }
 
                 // Index Category Filter Bar
@@ -1087,6 +1221,9 @@
         // ── INIT ──
         window.addEventListener('DOMContentLoaded', () => {
             if (typeof renderNavbar === 'function') renderNavbar();
+            if (window.KaghanSearchWidget && typeof KaghanSearchWidget.init === 'function') {
+                KaghanSearchWidget.init();
+            }
 
             // Real-time data listeners
             window.addEventListener('kaghan-db-rooms',      () => loadFeaturedRooms());

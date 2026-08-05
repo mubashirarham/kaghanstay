@@ -87,12 +87,13 @@ async function renderCategorySquircles() {
         return str;
     }
 
+    const isAllActive = currentListingFilter === 'all';
     let html = `
-        <button onclick="filterUserListings('all', this)" class="squircle-filter-btn group flex flex-col items-center gap-2 text-center p-2 rounded-2xl hover:bg-white transition-all shrink-0">
-            <div class="w-16 h-16 md:w-20 md:h-20 squircle-thumb bg-[#0B0F19] text-[#C5A059] flex items-center justify-center text-2xl shadow-sm border-2 border-transparent group-hover:border-[#C5A059] transition-all">
+        <button onclick="filterUserListings('all', this)" data-cat="all" class="squircle-filter-btn group flex flex-col items-center gap-2 text-center p-2 rounded-2xl hover:bg-white transition-all shrink-0">
+            <div class="squircle-thumb w-16 h-16 md:w-20 md:h-20 bg-[#0B0F19] text-[#C5A059] flex items-center justify-center text-2xl shadow-sm border-2 ${isAllActive ? 'border-[#C5A059]' : 'border-transparent'} group-hover:border-[#C5A059] transition-all">
                 <i class="fa-solid fa-border-all"></i>
             </div>
-            <span class="text-xs font-bold text-slate-800 group-hover:text-[#C5A059] truncate w-20">All Suites</span>
+            <span class="squircle-label text-xs font-bold ${isAllActive ? 'text-[#C5A059]' : 'text-slate-800'} group-hover:text-[#C5A059] truncate w-20">All Suites</span>
         </button>
     `;
 
@@ -100,6 +101,7 @@ async function renderCategorySquircles() {
         const catId = cat.id || cat.slug || (cat.label || cat.name || '').toLowerCase();
         const catLabel = cat.label || cat.name || 'Suite';
         const iconClass = formatFAClass(cat.icon || 'fa-hotel');
+        const isActive = currentListingFilter === catId;
         
         let thumbContent;
         if (cat.image && cat.image.trim() && !cat.image.includes('apartment_')) {
@@ -113,11 +115,11 @@ async function renderCategorySquircles() {
         }
 
         html += `
-            <button onclick="filterUserListings('${KaghanSafe.escapeHTML(catId)}', this)" class="squircle-filter-btn group flex flex-col items-center gap-2 text-center p-2 rounded-2xl hover:bg-white transition-all shrink-0">
-                <div class="w-16 h-16 md:w-20 md:h-20 squircle-thumb bg-slate-200 relative shadow-sm border-2 border-transparent group-hover:border-[#C5A059] transition-all">
+            <button onclick="filterUserListings('${KaghanSafe.escapeHTML(catId)}', this)" data-cat="${KaghanSafe.escapeHTML(catId)}" class="squircle-filter-btn group flex flex-col items-center gap-2 text-center p-2 rounded-2xl hover:bg-white transition-all shrink-0">
+                <div class="squircle-thumb w-16 h-16 md:w-20 md:h-20 bg-slate-200 relative shadow-sm border-2 ${isActive ? 'border-[#C5A059]' : 'border-transparent'} group-hover:border-[#C5A059] transition-all">
                     ${thumbContent}
                 </div>
-                <span class="text-xs font-bold text-slate-800 group-hover:text-[#C5A059] truncate w-20">${KaghanSafe.escapeHTML(catLabel)}</span>
+                <span class="squircle-label text-xs font-bold ${isActive ? 'text-[#C5A059]' : 'text-slate-800'} group-hover:text-[#C5A059] truncate w-20">${KaghanSafe.escapeHTML(catLabel)}</span>
             </button>
         `;
     });
@@ -278,18 +280,43 @@ window.switchGuestTab = function(tabName) {
 
 // Filter listings on the main app page
 window.filterUserListings = function(cat, btnEl) {
-    currentListingFilter = cat;
-    const filterBtns = document.querySelectorAll('.user-listing-filter-btn');
+    currentListingFilter = cat || 'all';
+    const filterBtns = document.querySelectorAll('.squircle-filter-btn');
     filterBtns.forEach(btn => {
-        if (btn === btnEl) {
-            btn.classList.add('bg-[#0B0F19]', 'text-white', 'shadow-md');
-            btn.classList.remove('bg-white', 'text-slate-600', 'hover:bg-slate-100');
+        const btnCat = btn.getAttribute('data-cat') || 'all';
+        const thumb = btn.querySelector('.squircle-thumb');
+        const label = btn.querySelector('.squircle-label');
+
+        if (btnCat === currentListingFilter) {
+            if (thumb) {
+                thumb.classList.add('border-[#C5A059]');
+                thumb.classList.remove('border-transparent');
+            }
+            if (label) {
+                label.classList.add('text-[#C5A059]');
+                label.classList.remove('text-slate-800');
+            }
         } else {
-            btn.classList.remove('bg-[#0B0F19]', 'text-white', 'shadow-md');
-            btn.classList.add('bg-white', 'text-slate-600', 'hover:bg-slate-100');
+            if (thumb) {
+                thumb.classList.remove('border-[#C5A059]');
+                thumb.classList.add('border-transparent');
+            }
+            if (label) {
+                label.classList.remove('text-[#C5A059]');
+                label.classList.add('text-slate-800');
+            }
         }
     });
+
     renderAllUserListings();
+
+    // If triggered from View All or category click, scroll smoothly to the listing grid
+    if (btnEl) {
+        const gridEl = document.getElementById('user-all-listings-grid');
+        if (gridEl) {
+            gridEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }
 };
 
 async function renderAllUserListings() {

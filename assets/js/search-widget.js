@@ -13,6 +13,9 @@
     // Helper: format YYYY-MM-DD
     function formatDateIso(dateObj) {
         if (!dateObj) return '';
+        if (window.KaghanDB && typeof KaghanDB.formatLocalDate === 'function') {
+            return KaghanDB.formatLocalDate(dateObj);
+        }
         const y = dateObj.getFullYear();
         const m = String(dateObj.getMonth() + 1).padStart(2, '0');
         const d = String(dateObj.getDate()).padStart(2, '0');
@@ -42,17 +45,19 @@
 
             if (!checkInInput || !checkOutInput) return;
 
+            const parseDate = (val) => window.KaghanDB && typeof KaghanDB.parseLocalDate === 'function' ? KaghanDB.parseLocalDate(val) : new Date(val);
+
             // Set initial values if present
-            if (checkInInput.value) currentCheckIn = new Date(checkInInput.value);
-            if (checkOutInput.value) currentCheckOut = new Date(checkOutInput.value);
+            if (checkInInput.value) currentCheckIn = parseDate(checkInInput.value);
+            if (checkOutInput.value) currentCheckOut = parseDate(checkOutInput.value);
 
             // Listen for changes
             checkInInput.addEventListener('change', () => {
-                if (checkInInput.value) currentCheckIn = new Date(checkInInput.value);
+                if (checkInInput.value) currentCheckIn = parseDate(checkInInput.value);
                 this.updateTriggerLabels();
             });
             checkOutInput.addEventListener('change', () => {
-                if (checkOutInput.value) currentCheckOut = new Date(checkOutInput.value);
+                if (checkOutInput.value) currentCheckOut = parseDate(checkOutInput.value);
                 this.updateTriggerLabels();
             });
 
@@ -82,6 +87,7 @@
         updateTriggerLabels: function() {
             const checkInInput = document.getElementById(this.targetCheckInId);
             const checkOutInput = document.getElementById(this.targetCheckOutId);
+            const guestsInput = document.getElementById(this.targetGuestsId);
 
             if (checkInInput && currentCheckIn) {
                 checkInInput.value = formatDateIso(currentCheckIn);
@@ -109,13 +115,6 @@
                 guestText.textContent = `${total} guest${total > 1 ? 's' : ''}`;
             }
 
-            // Sync hidden inputs
-            const checkInInput = document.getElementById(this.targetCheckInId);
-            const checkOutInput = document.getElementById(this.targetCheckOutId);
-            const guestsInput = document.getElementById(this.targetGuestsId);
-
-            if (checkInInput && currentCheckIn) checkInInput.value = formatDateIso(currentCheckIn);
-            if (checkOutInput && currentCheckOut) checkOutInput.value = formatDateIso(currentCheckOut);
             if (guestsInput) guestsInput.value = String(selectedAdults + selectedChildren);
         },
 
@@ -213,14 +212,12 @@
                     btn.classList.remove('text-slate-600');
                 });
             });
+            return overlay;
         },
 
         openCalendarModal: function(roomBookedDates = []) {
             this.bookedDates = roomBookedDates;
-            let overlay = document.getElementById('kph-calendar-overlay');
-            if (!overlay) {
-                overlay = this.setupCalendarModalDOM();
-            }
+            let overlay = document.getElementById('kph-calendar-overlay') || this.setupCalendarModalDOM();
             if (overlay) {
                 overlay.style.setProperty('display', 'flex', 'important');
                 overlay.style.setProperty('z-index', '99999999', 'important');
@@ -334,11 +331,13 @@
             monthDiv.innerHTML = html;
 
             // Add click listeners to day cells
+            // Add click listeners to day cells
             monthDiv.querySelectorAll('button[data-date]:not([disabled])').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const dateStr = btn.getAttribute('data-date');
-                    const clickedDate = new Date(dateStr + 'T00:00:00');
-                    const stayType = window.activeStayType || 'daily';
+                    const parseDate = (val) => window.KaghanDB && typeof KaghanDB.parseLocalDate === 'function' ? KaghanDB.parseLocalDate(val) : new Date(val + 'T00:00:00');
+                    const clickedDate = parseDate(dateStr);
+                    const stayType = document.getElementById('hero-stay-type')?.value || window.activeStayType || 'daily';
 
                     if (!currentCheckIn || (currentCheckIn && currentCheckOut)) {
                         currentCheckIn = clickedDate;
@@ -346,11 +345,11 @@
                         if (stayType === 'weekly') {
                             defaultEnd.setDate(clickedDate.getDate() + 7);
                             currentCheckOut = defaultEnd;
-                            if (window.KaghanUI) KaghanUI.showToast("Weekly Rate active: 7 nights minimum auto-locked. Click any later date to add more days!", "success");
+                            if (window.KaghanUI) KaghanUI.showToast("Weekly Rate active: 7 nights minimum auto-locked.", "success");
                         } else if (stayType === 'monthly') {
                             defaultEnd.setDate(clickedDate.getDate() + 30);
                             currentCheckOut = defaultEnd;
-                            if (window.KaghanUI) KaghanUI.showToast("Monthly Rate active: 30 nights minimum auto-locked. Click any later date to add more days!", "success");
+                            if (window.KaghanUI) KaghanUI.showToast("Monthly Rate active: 30 nights minimum auto-locked.", "success");
                         } else {
                             currentCheckOut = null;
                         }
@@ -373,12 +372,12 @@
                                 const minEnd = new Date(currentCheckIn);
                                 minEnd.setDate(currentCheckIn.getDate() + 7);
                                 currentCheckOut = minEnd;
-                                if (window.KaghanUI) KaghanUI.showToast("Weekly Rate requires minimum 7 nights. 7 days auto-locked (click 8+ days to extend!).", "warning");
+                                if (window.KaghanUI) KaghanUI.showToast("Weekly Rate requires minimum 7 nights. 7 days auto-locked.", "warning");
                             } else if (stayType === 'monthly' && nightsCount < 30) {
                                 const minEnd = new Date(currentCheckIn);
                                 minEnd.setDate(currentCheckIn.getDate() + 30);
                                 currentCheckOut = minEnd;
-                                if (window.KaghanUI) KaghanUI.showToast("Monthly Rate requires minimum 30 nights. 30 days auto-locked (click 31+ days to extend!).", "warning");
+                                if (window.KaghanUI) KaghanUI.showToast("Monthly Rate requires minimum 30 nights. 30 days auto-locked.", "warning");
                             } else {
                                 // Check if any date in [currentCheckIn, clickedDate] is booked
                                 let hasBookedInRange = false;
@@ -402,6 +401,17 @@
                         }
                     }
                     this.renderCalendarMonths();
+                    this.updateTriggerLabels();
+
+                    // Auto-close modal after check-out is selected for seamless UX
+                    if (currentCheckIn && currentCheckOut) {
+                        setTimeout(() => {
+                            this.closeCalendarModal();
+                            window.dispatchEvent(new CustomEvent('kaghan-dates-changed', {
+                                detail: { checkIn: formatDateIso(currentCheckIn), checkOut: formatDateIso(currentCheckOut) }
+                            }));
+                        }, 400);
+                    }
                 });
             });
 

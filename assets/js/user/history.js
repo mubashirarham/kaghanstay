@@ -176,18 +176,18 @@
 
         try {
             await KaghanDB.addReview(reviewData);
-            alert('Thank you! Your verified guest review has been submitted.');
+            if (window.KaghanUI) KaghanUI.showToast('Thank you! Your verified guest review has been submitted.', 'success');
             closeReviewModal();
         } catch(e) {
             console.error('Failed to submit review:', e);
-            alert('Review submitted successfully.');
+            if (window.KaghanUI) KaghanUI.showToast('Review submitted successfully.', 'info');
             closeReviewModal();
         }
     };
 
     window.exportHistoryCSV = function() {
         if (allHistoryBookings.length === 0) {
-            alert('No history records to export.');
+            if (window.KaghanUI) KaghanUI.showToast('No history records to export.', 'info');
             return;
         }
 
