@@ -377,3 +377,4 @@ window.deleteUpgrade = async (id) => {
     }
 };
 
+

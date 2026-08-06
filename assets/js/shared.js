@@ -871,8 +871,12 @@ const db = {
         return true;
     },
     deleteUser: async (id) => {
-        await fdb.collection('users').doc(id).delete();
-        if (window.KaghanDB_Cache.users) {
+        try {
+            await fdb.collection('users').doc(id).delete();
+        } catch (e) {
+            console.warn('Direct Firestore deleteUser error:', e);
+        }
+        if (window.KaghanDB_Cache && window.KaghanDB_Cache.users) {
             window.KaghanDB_Cache.users = window.KaghanDB_Cache.users.filter(u => u.id !== id && u.uid !== id);
         }
         return true;
@@ -880,12 +884,62 @@ const db = {
     createUser: async (user) => {
         const userId = user.id || user.uid || ('usr-' + Date.now());
         user.id = userId;
+        user.uid = userId;
         user.createdAt = user.createdAt || new Date().toISOString();
-        await fdb.collection('users').doc(userId).set(user);
-        if (window.KaghanDB_Cache.users) {
-            window.KaghanDB_Cache.users.unshift(user);
+
+        // Save directly to Firestore (100% frontend operations)
+        await fdb.collection('users').doc(userId).set(user, { merge: true });
+
+        if (window.KaghanDB_Cache) {
+            if (!window.KaghanDB_Cache.users) window.KaghanDB_Cache.users = [];
+            const existingIdx = window.KaghanDB_Cache.users.findIndex(u => u.id === userId || u.uid === userId);
+            if (existingIdx !== -1) {
+                window.KaghanDB_Cache.users[existingIdx] = user;
+            } else {
+                window.KaghanDB_Cache.users.unshift(user);
+            }
+        }
+        return user;
+    },
+    adminUpdateUser: async (id, updateData) => {
+        updateData.updatedAt = new Date().toISOString();
+        await fdb.collection('users').doc(id).set(updateData, { merge: true });
+        if (window.KaghanDB_Cache && window.KaghanDB_Cache.users) {
+            const idx = window.KaghanDB_Cache.users.findIndex(u => u.id === id || u.uid === id);
+            if (idx !== -1) {
+                window.KaghanDB_Cache.users[idx] = { ...window.KaghanDB_Cache.users[idx], ...updateData };
+            }
         }
         return true;
+    },
+    changeUserPassword: async (targetUserId, newPassword) => {
+        await fdb.collection('users').doc(targetUserId).set({
+            password: newPassword,
+            passwordUpdatedAt: new Date().toISOString()
+        }, { merge: true });
+
+        if (window.KaghanDB_Cache && window.KaghanDB_Cache.users) {
+            const userObj = window.KaghanDB_Cache.users.find(u => u.id === targetUserId || u.uid === targetUserId);
+            if (userObj) userObj.password = newPassword;
+        }
+        return true;
+    },
+    changeMyPassword: async (newPassword) => {
+        if (typeof firebase !== 'undefined' && firebase.auth && firebase.auth().currentUser) {
+            try {
+                await firebase.auth().currentUser.updatePassword(newPassword);
+            } catch (authErr) {
+                console.warn("Auth SDK updatePassword warning:", authErr.message);
+            }
+            const uid = firebase.auth().currentUser.uid;
+            await fdb.collection('users').doc(uid).set({
+                password: newPassword,
+                passwordUpdatedAt: new Date().toISOString()
+            }, { merge: true });
+            return true;
+        } else {
+            throw new Error("No active logged-in user session found.");
+        }
     },
     subscribeNewsletter: async (email) => {
         const docId = email.trim().toLowerCase().replace(/[^a-z0-9]/g, '_');

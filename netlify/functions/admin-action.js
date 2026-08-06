@@ -267,13 +267,58 @@ exports.handler = async (event, context) => {
                 result = true;
                 break;
             }
+            case 'adminUpdateUser': {
+                const { id, updateData } = data;
+                if (!id || !updateData) throw new Error("User ID and updateData are required.");
+                
+                if (updateData.role) {
+                    try {
+                        await auth.setCustomUserClaims(id, { role: updateData.role });
+                    } catch (e) {
+                        console.warn(`Failed to set custom claims for ${id}:`, e);
+                    }
+                }
+                
+                if (updateData.password && updateData.password.length >= 6) {
+                    try {
+                        await auth.updateUser(id, { password: updateData.password });
+                        delete updateData.password;
+                    } catch (e) {
+                        console.warn(`Failed to update password for ${id}:`, e);
+                    }
+                }
+                
+                await fdb.collection('users').doc(id).set(updateData, { merge: true });
+                result = true;
+                break;
+            }
+            case 'updateUserPassword': {
+                const { targetUserId, newPassword } = data;
+                if (!targetUserId || !newPassword) {
+                    throw new Error("Target user ID and new password are required.");
+                }
+                if (newPassword.length < 6) {
+                    throw new Error("Password must be at least 6 characters long.");
+                }
+
+                await auth.updateUser(targetUserId, { password: newPassword });
+
+                const userRef = fdb.collection('users').doc(targetUserId);
+                const userDoc = await userRef.get();
+                if (userDoc.exists) {
+                    await userRef.update({ passwordUpdatedAt: new Date().toISOString() });
+                }
+
+                result = true;
+                break;
+            }
             case 'createUser': {
-                const { name, email, password, role, phone } = data;
+                const { name, email, password, role, phone, permissions } = data;
                 if (!email || !password || !role) {
                     throw new Error("Email, password, and role are required.");
                 }
-                if (!['admin', 'user'].includes(role)) {
-                    throw new Error("Invalid role. Must be 'admin' or 'user'.");
+                if (!['admin', 'user', 'moderator', 'editor'].includes(role)) {
+                    throw new Error("Invalid role selection.");
                 }
                 
                 const createData = {
@@ -281,20 +326,37 @@ exports.handler = async (event, context) => {
                     password: password,
                     displayName: name || email.split('@')[0]
                 };
-                if (phone) {
-                    createData.phoneNumber = phone;
-                }
                 
-                const userRecord = await auth.createUser(createData);
+                let userRecord;
+                try {
+                    userRecord = await auth.createUser(createData);
+                } catch (cErr) {
+                    if (cErr.code === 'auth/email-already-exists') {
+                        userRecord = await auth.getUserByEmail(email.toLowerCase().trim());
+                        if (password) {
+                            await auth.updateUser(userRecord.uid, { password });
+                        }
+                    } else {
+                        throw cErr;
+                    }
+                }
+
                 const uid = userRecord.uid;
                 
-                await auth.setCustomUserClaims(uid, { role });
+                try {
+                    await auth.setCustomUserClaims(uid, { role });
+                } catch (claimErr) {
+                    console.warn(`Could not set custom claims for ${uid}:`, claimErr);
+                }
                 
                 const userDoc = {
                     id: uid,
+                    uid: uid,
                     name: name || email.split('@')[0],
                     email: email.toLowerCase().trim(),
                     role,
+                    permissions: permissions || [],
+                    createdAt: new Date().toISOString()
                 };
                 if (phone) {
                     userDoc.phone = phone;

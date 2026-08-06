@@ -1,5 +1,7 @@
 // Kaghan Hotel - Admin Room Inventory Module
 (function() {
+    let allInventoryRooms = [];
+    let inventoryFiltersBound = false;
     let activeEditRoomId = null;
     let editRoomMap = null;
     let editRoomMarker = null;
@@ -303,7 +305,7 @@
                 let html = '';
                 const normalized = normalizeQueryForLocation(rawQuery);
 
-                // Fuzzy Match on POPULAR_LOCATIONS
+                // 1. Fuzzy Match on POPULAR_LOCATIONS
                 const scoredLocations = POPULAR_LOCATIONS.map(loc => {
                     const fullStr = `${loc.title} ${loc.city} ${loc.address} ${loc.category}`;
                     const score = Math.max(
@@ -311,14 +313,14 @@
                         calculateFuzzyMatchScore(normalized, fullStr)
                     );
                     return { ...loc, score };
-                }).filter(l => l.score >= 0.35)
+                }).filter(l => l.score >= 0.30)
                   .sort((a, b) => b.score - a.score);
 
                 scoredLocations.forEach(item => {
                     const iconHtml = getLocationCategoryIcon(item.category);
-                    const catBadge = item.category ? item.category.toUpperCase() : 'PLACE';
+                    const catBadge = item.category ? item.category.toUpperCase() : 'LOCAL';
                     html += `
-                        <div onclick="selectLocationPrediction(${item.lat}, ${item.lng}, '${item.address.replace(/'/g, "\\'")}', '${mode}')" class="p-3 hover:bg-slate-50 cursor-pointer transition-colors flex items-start justify-between gap-3 text-xs border-b border-slate-50">
+                        <div onclick="selectLocationPrediction(${item.lat}, ${item.lng}, '${item.address.replace(/'/g, "\\'")}', '${mode}')" class="p-3 hover:bg-emerald-50/50 cursor-pointer transition-colors flex items-start justify-between gap-3 text-xs border-b border-slate-50">
                             <div class="flex items-start gap-2.5">
                                 ${iconHtml}
                                 <div>
@@ -328,12 +330,41 @@
                                     <div class="text-[10px] text-slate-500">${KaghanSafe.escapeHTML(item.address)}</div>
                                 </div>
                             </div>
-                            <span class="text-[9px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded font-semibold shrink-0">${catBadge}</span>
+                            <span class="text-[9px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded font-bold shrink-0">${catBadge}</span>
                         </div>
                     `;
                 });
 
-                // Fetch live API predictions from Nominatim (using normalized query for high accuracy)
+                // 2. Photon Free POI & Spot Geocoder Server (No Card / No Key Needed)
+                try {
+                    const photonUrl = `https://photon.komoot.io/api/?q=${encodeURIComponent(rawQuery)}&lat=33.6844&lon=73.2045&limit=6`;
+                    const res = await fetch(photonUrl);
+                    const photonData = await res.json();
+                    if (photonData && photonData.features && photonData.features.length > 0) {
+                        photonData.features.forEach(f => {
+                            const props = f.properties || {};
+                            const coords = f.geometry ? f.geometry.coordinates : [73.0931, 33.7294];
+                            const name = props.name || props.street || rawQuery;
+                            const addr = [props.street, props.city, props.state, props.country].filter(Boolean).join(', ');
+                            html += `
+                                <div onclick="selectLocationPrediction(${coords[1]}, ${coords[0]}, '${(addr || name).replace(/'/g, "\\'")}', '${mode}')" class="p-3 hover:bg-amber-50/50 cursor-pointer transition-colors flex items-start justify-between gap-3 text-xs border-b border-slate-50">
+                                    <div class="flex items-start gap-2.5">
+                                        <i class="fa-solid fa-location-dot text-amber-600 mt-0.5 text-xs shrink-0"></i>
+                                        <div>
+                                            <div class="font-bold text-slate-900">${KaghanSafe.escapeHTML(name)}</div>
+                                            <div class="text-[10px] text-slate-500">${KaghanSafe.escapeHTML(addr || name)}</div>
+                                        </div>
+                                    </div>
+                                    <span class="text-[9px] bg-amber-50 text-amber-700 px-2 py-0.5 rounded font-bold shrink-0">SPOT</span>
+                                </div>
+                            `;
+                        });
+                    }
+                } catch (pErr) {
+                    console.warn("Photon API fetch error:", pErr);
+                }
+
+                // 3. OpenStreetMap Nominatim Free Search Server
                 try {
                     const searchTerms = Array.from(new Set([rawQuery, normalized]));
                     for (const term of searchTerms) {
@@ -358,11 +389,11 @@
                                     </div>
                                 `;
                             });
-                            break; // Stop after first successful result list
+                            break;
                         }
                     }
                 } catch (err) {
-                    console.warn("Autocomplete API fetch error:", err);
+                    console.warn("Nominatim API fetch error:", err);
                 }
 
                 if (html) {
@@ -396,23 +427,38 @@
         if (btn) btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
 
         try {
-            // Try 1: Raw Query
+            // Try 1: Raw Query via Photon POI
+            let pRes = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(rawQuery)}&lat=33.6844&lon=73.2045&limit=1`);
+            let pData = await pRes.json();
+            if (pData && pData.features && pData.features.length > 0) {
+                const f = pData.features[0];
+                const coords = f.geometry ? f.geometry.coordinates : null;
+                if (coords) {
+                    const name = f.properties.name || rawQuery;
+                    const addr = [f.properties.name, f.properties.street, f.properties.city, f.properties.state, 'Pakistan'].filter(Boolean).join(', ');
+                    selectLocationPrediction(coords[1], coords[0], addr, mode);
+                    if (window.KaghanUI) KaghanUI.showToast(`Pinned location: ${name}`, 'success');
+                    return;
+                }
+            }
+
+            // Try 2: Raw Query via OSM Nominatim
             let res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(rawQuery)}&limit=1`);
             let results = await res.json();
 
-            // Try 2: Normalized / Corrected Spelling Query
+            // Try 3: Normalized / Corrected Spelling Query
             if ((!results || results.length === 0) && normalized !== rawQuery) {
                 res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(normalized)}&limit=1`);
                 results = await res.json();
             }
 
-            // Try 3: Normalized Query + " Pakistan"
+            // Try 4: Normalized Query + " Pakistan"
             if (!results || results.length === 0) {
                 res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(normalized + ', Pakistan')}&limit=1`);
                 results = await res.json();
             }
 
-            // Try 4: Top Fuzzy Local Match Fallback (Resorts, Malls, Shops, Attractions)
+            // Try 5: Top Fuzzy Local Match Fallback
             if (!results || results.length === 0) {
                 const bestLocal = POPULAR_LOCATIONS.map(loc => ({
                     ...loc,
@@ -459,24 +505,218 @@
         locationSelects.forEach(select => {
             if (select) select.innerHTML = locOptions;
         });
+
+        populateFilterDropdowns(locations, categories, allInventoryRooms);
     }
 
-    async function renderRooms() {
-        const rawRooms = await KaghanDB.getRooms();
-        const grid = document.getElementById('admin-rooms-grid');
+    function populateFilterDropdowns(locations = [], categories = [], rooms = []) {
+        const locSelect = document.getElementById('inventory-location-filter');
+        const catSelect = document.getElementById('inventory-category-filter');
 
+        if (locSelect) {
+            const currentVal = locSelect.value;
+            const locMap = new Map();
+            locations.forEach(l => {
+                if (l && l.id) locMap.set(l.id.toLowerCase(), l.label || l.name || l.id);
+            });
+            rooms.forEach(r => {
+                if (r && r.location && !locMap.has(r.location.toLowerCase())) {
+                    const formatted = r.location.charAt(0).toUpperCase() + r.location.slice(1).replace(/-/g, ' ');
+                    locMap.set(r.location.toLowerCase(), formatted);
+                }
+            });
+
+            let locHtml = '<option value="">All Locations</option>';
+            locMap.forEach((label, val) => {
+                locHtml += `<option value="${KaghanSafe.escapeHTML(val)}">${KaghanSafe.escapeHTML(label)}</option>`;
+            });
+            locSelect.innerHTML = locHtml;
+            if (currentVal && locMap.has(currentVal.toLowerCase())) {
+                locSelect.value = currentVal;
+            }
+        }
+
+        if (catSelect) {
+            const currentVal = catSelect.value;
+            const catMap = new Map();
+            categories.forEach(c => {
+                if (c && c.id) catMap.set(c.id.toLowerCase(), c.label || c.name || c.id);
+            });
+            rooms.forEach(r => {
+                if (r && r.type && !catMap.has(r.type.toLowerCase())) {
+                    const formatted = r.type.charAt(0).toUpperCase() + r.type.slice(1).replace(/-/g, ' ');
+                    catMap.set(r.type.toLowerCase(), formatted);
+                }
+            });
+
+            let catHtml = '<option value="">All Categories</option>';
+            catMap.forEach((label, val) => {
+                catHtml += `<option value="${KaghanSafe.escapeHTML(val)}">${KaghanSafe.escapeHTML(label)}</option>`;
+            });
+            catSelect.innerHTML = catHtml;
+            if (currentVal && catMap.has(currentVal.toLowerCase())) {
+                catSelect.value = currentVal;
+            }
+        }
+    }
+
+    window.resetInventoryFilters = function() {
+        const searchInput = document.getElementById('inventory-search-input');
+        const locFilter = document.getElementById('inventory-location-filter');
+        const catFilter = document.getElementById('inventory-category-filter');
+        const statusFilter = document.getElementById('inventory-status-filter');
+        const sortFilter = document.getElementById('inventory-sort-filter');
+
+        if (searchInput) searchInput.value = '';
+        if (locFilter) locFilter.value = '';
+        if (catFilter) catFilter.value = '';
+        if (statusFilter) statusFilter.value = '';
+        if (sortFilter) sortFilter.value = 'default';
+
+        applyInventoryFilters();
+    };
+
+    function initInventoryFilterEvents() {
+        if (inventoryFiltersBound) return;
+
+        const searchInput = document.getElementById('inventory-search-input');
+        const searchClear = document.getElementById('inventory-search-clear');
+        const locFilter = document.getElementById('inventory-location-filter');
+        const catFilter = document.getElementById('inventory-category-filter');
+        const statusFilter = document.getElementById('inventory-status-filter');
+        const sortFilter = document.getElementById('inventory-sort-filter');
+        const resetBtn = document.getElementById('inventory-reset-filters-btn');
+
+        if (searchInput) {
+            searchInput.addEventListener('input', () => applyInventoryFilters());
+        }
+
+        if (searchClear) {
+            searchClear.addEventListener('click', () => {
+                if (searchInput) searchInput.value = '';
+                applyInventoryFilters();
+            });
+        }
+
+        if (locFilter) locFilter.addEventListener('change', () => applyInventoryFilters());
+        if (catFilter) catFilter.addEventListener('change', () => applyInventoryFilters());
+        if (statusFilter) statusFilter.addEventListener('change', () => applyInventoryFilters());
+        if (sortFilter) sortFilter.addEventListener('change', () => applyInventoryFilters());
+
+        if (resetBtn) {
+            resetBtn.addEventListener('click', () => window.resetInventoryFilters());
+        }
+
+        inventoryFiltersBound = true;
+    }
+
+    function applyInventoryFilters() {
+        const grid = document.getElementById('admin-rooms-grid');
         if (!grid) return;
 
-        const seen = new Set();
-        const rooms = [];
-        rawRooms.forEach(r => {
-            if (r && r.id && !seen.has(r.id)) {
-                seen.add(r.id);
-                rooms.push(r);
+        const searchInput = document.getElementById('inventory-search-input');
+        const searchClear = document.getElementById('inventory-search-clear');
+        const locFilter = document.getElementById('inventory-location-filter');
+        const catFilter = document.getElementById('inventory-category-filter');
+        const statusFilter = document.getElementById('inventory-status-filter');
+        const sortFilter = document.getElementById('inventory-sort-filter');
+        const resetBtn = document.getElementById('inventory-reset-filters-btn');
+        const statusBar = document.getElementById('inventory-filter-status');
+        const countBadge = document.getElementById('inventory-count-badge');
+
+        const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+        const locVal = locFilter ? locFilter.value.toLowerCase().trim() : '';
+        const catVal = catFilter ? catFilter.value.toLowerCase().trim() : '';
+        const statusVal = statusFilter ? statusFilter.value.toLowerCase().trim() : '';
+        const sortVal = sortFilter ? sortFilter.value : 'default';
+
+        // Toggle clear search button
+        if (searchClear) {
+            if (query) searchClear.classList.remove('hidden');
+            else searchClear.classList.add('hidden');
+        }
+
+        const isFiltered = Boolean(query || locVal || catVal || statusVal || (sortVal && sortVal !== 'default'));
+
+        // Toggle Reset Button
+        if (resetBtn) {
+            if (isFiltered) resetBtn.classList.remove('hidden');
+            else resetBtn.classList.add('hidden');
+        }
+
+        // Filter Rooms
+        let filtered = allInventoryRooms.filter(room => {
+            if (!room) return false;
+
+            if (query) {
+                const nameMatch = (room.name || '').toLowerCase().includes(query);
+                const descMatch = (room.description || '').toLowerCase().includes(query);
+                const locMatch = (room.location || '').toLowerCase().includes(query);
+                const addrMatch = (room.address || '').toLowerCase().includes(query);
+                const typeMatch = (room.type || '').toLowerCase().includes(query);
+                const amenityMatch = (room.amenities || []).some(a => a.toLowerCase().includes(query));
+                if (!nameMatch && !descMatch && !locMatch && !addrMatch && !typeMatch && !amenityMatch) {
+                    return false;
+                }
             }
+
+            if (locVal) {
+                const rLoc = (room.location || '').toLowerCase().trim();
+                if (rLoc !== locVal) return false;
+            }
+
+            if (catVal) {
+                const rType = (room.type || '').toLowerCase().trim();
+                if (rType !== catVal) return false;
+            }
+
+            if (statusVal) {
+                const rStatus = (room.status || 'available').toLowerCase().trim();
+                if (rStatus !== statusVal) return false;
+            }
+
+            return true;
         });
 
-        grid.innerHTML = rooms.map(room => `
+        // Immediate Sorting
+        if (sortVal === 'price-asc') {
+            filtered.sort((a, b) => (Number(a.price) || 0) - (Number(b.price) || 0));
+        } else if (sortVal === 'price-desc') {
+            filtered.sort((a, b) => (Number(b.price) || 0) - (Number(a.price) || 0));
+        } else if (sortVal === 'name-asc') {
+            filtered.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+        } else if (sortVal === 'name-desc') {
+            filtered.sort((a, b) => (b.name || '').localeCompare(a.name || ''));
+        }
+
+        // Update status bar & counter badge
+        if (statusBar && countBadge) {
+            statusBar.classList.remove('hidden');
+            if (isFiltered) {
+                countBadge.textContent = `Showing ${filtered.length} of ${allInventoryRooms.length} room styles`;
+            } else {
+                countBadge.textContent = `Showing all ${allInventoryRooms.length} room styles`;
+            }
+        }
+
+        // Empty State
+        if (filtered.length === 0) {
+            grid.innerHTML = `
+                <div class="col-span-full bg-white border border-slate-100 rounded-3xl p-10 text-center shadow-sm">
+                    <div class="w-12 h-12 rounded-2xl bg-amber-50 text-[#D4AF37] flex items-center justify-center mx-auto mb-3 text-lg font-bold">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                    <h3 class="font-extrabold text-slate-900 text-base mb-1">No Matching Room Styles</h3>
+                    <p class="text-xs text-slate-400 max-w-sm mx-auto mb-4 font-light">No rooms in your inventory match your current search terms or selected filters.</p>
+                    <button onclick="window.resetInventoryFilters()" class="bg-slate-900 text-white text-xs font-bold px-4 py-2.5 rounded-xl hover:bg-slate-800 transition-all inline-flex items-center gap-1.5 shadow-sm">
+                        <i class="fa-solid fa-rotate-left"></i> Reset Filters
+                    </button>
+                </div>
+            `;
+            return;
+        }
+
+        grid.innerHTML = filtered.map(room => `
             <div class="bg-white border border-slate-100 rounded-3xl p-5 flex flex-col justify-between hover:border-[#D4AF37] transition-all shadow-md group">
                 <div>
                     <div class="relative h-44 overflow-hidden rounded-2xl mb-4 bg-slate-100">
@@ -502,10 +742,10 @@
                         ${KaghanSafe.escapeHTML(KaghanSafe.stripTags(room.description || ''))}
                     </div>
                     <div class="flex flex-wrap gap-1 mb-4">
-                        ${room.amenities.slice(0, 3).map(a => `
+                        ${(room.amenities || []).slice(0, 3).map(a => `
                             <span class="bg-slate-50 text-slate-500 text-[8px] uppercase font-bold px-2 py-0.5 rounded border border-slate-100">${KaghanSafe.escapeHTML(a)}</span>
                         `).join('')}
-                        ${room.amenities.length > 3 ? `<span class="bg-slate-50 text-[#D4AF37] text-[8px] font-bold px-2 py-0.5 rounded border border-slate-100">+${room.amenities.length - 3}</span>` : ''}
+                        ${(room.amenities || []).length > 3 ? `<span class="bg-slate-50 text-[#D4AF37] text-[8px] font-bold px-2 py-0.5 rounded border border-slate-100">+${(room.amenities || []).length - 3}</span>` : ''}
                     </div>
                 </div>
 
@@ -528,6 +768,26 @@
                 </div>
             </div>
         `).join('');
+    }
+
+    async function renderRooms() {
+        const rawRooms = await KaghanDB.getRooms();
+        const grid = document.getElementById('admin-rooms-grid');
+
+        if (!grid) return;
+
+        const seen = new Set();
+        allInventoryRooms = [];
+        rawRooms.forEach(r => {
+            if (r && r.id && !seen.has(r.id)) {
+                seen.add(r.id);
+                allInventoryRooms.push(r);
+            }
+        });
+
+        await populateSelects();
+        initInventoryFilterEvents();
+        applyInventoryFilters();
     }
 
     window.changeRoomStatus = async (id, newStatus) => {
@@ -606,8 +866,27 @@
         });
     }
 
+    function ensureGoogleMapsApiLoaded() {
+        const savedKey = localStorage.getItem('GOOGLE_MAPS_API_KEY') || 'AIzaSyDHjKfA8O6LZL2FczPX7JbOzSVBPTa47zo';
+        if (window.google && window.google.maps) return;
+
+        const existingScript = document.getElementById('google-maps-js-sdk');
+        if (existingScript) return;
+
+        const script = document.createElement('script');
+        script.id = 'google-maps-js-sdk';
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(savedKey)}&libraries=places`;
+        script.async = true;
+        script.defer = true;
+        script.onload = () => {
+            console.log("Google Maps Places API loaded for inventory creation & edit.");
+        };
+        document.head.appendChild(script);
+    }
+
     // Edit Room Modal operations
     window.openEditRoomModal = async (id) => {
+        ensureGoogleMapsApiLoaded();
         activeEditRoomId = id;
         const room = await KaghanDB.getRoomById(id);
         if (!room) return;
@@ -842,6 +1121,7 @@
         };
 
         window.openAddRoomModal = async () => {
+            ensureGoogleMapsApiLoaded();
             await populateSelects();
             renderGalleryPreview('add-room-gallery-preview', 'add-room-images-data', []);
             window.setAddRoomStep(1);

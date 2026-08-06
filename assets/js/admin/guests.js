@@ -86,17 +86,121 @@
                         <div class="flex flex-wrap gap-1 max-w-xs">${permTags}</div>
                     </td>
                     <td class="px-6 py-4 text-right space-x-1">
-                        <button onclick="openEditUserModal('${guest.id || guest.uid}')" class="text-slate-600 hover:text-[#C5A059] p-1.5 rounded hover:bg-slate-100 transition-colors" title="Edit User & Permissions">
-                            <i class="fa-solid fa-[#C5A059] text-sm"></i> Edit
+                        <button onclick="openChangeUserPasswordModal('${guest.id || guest.uid}', '${KaghanSafe.escapeHTML(guest.email || '')}', '${KaghanSafe.escapeHTML(guest.name || 'User')}')" class="text-amber-600 hover:text-amber-700 p-1.5 rounded hover:bg-amber-50 transition-colors font-semibold text-xs" title="Change User Password">
+                            <i class="fa-solid fa-key text-xs"></i> Password
                         </button>
-                        <button onclick="deleteGuestAccount('${guest.id || guest.uid}', '${KaghanSafe.escapeHTML(guest.name || '')}')" class="text-rose-500 hover:text-rose-700 p-1.5 rounded hover:bg-rose-50 transition-colors" title="Delete Account">
-                            <i class="fa-solid fa-trash-can text-sm"></i>
+                        <button onclick="openEditUserModal('${guest.id || guest.uid}')" class="text-slate-600 hover:text-[#C5A059] p-1.5 rounded hover:bg-slate-100 transition-colors font-semibold text-xs" title="Edit User & Permissions">
+                            <i class="fa-solid fa-pen-to-square text-xs"></i> Edit
+                        </button>
+                        <button onclick="deleteGuestAccount('${guest.id || guest.uid}', '${KaghanSafe.escapeHTML(guest.name || '')}')" class="text-rose-500 hover:text-rose-700 p-1.5 rounded hover:bg-rose-50 transition-colors font-semibold text-xs" title="Delete Account">
+                            <i class="fa-solid fa-trash-can text-xs"></i>
                         </button>
                     </td>
                 </tr>
             `;
         }).join('');
     }
+
+    // Modal controls for changing user password
+    window.openChangeUserPasswordModal = (userId, userEmail, userName) => {
+        document.getElementById('change-user-password-id').value = userId;
+        document.getElementById('change-user-password-target').textContent = `${userName} (${userEmail})`;
+        document.getElementById('change-user-password-input').value = '';
+
+        const modal = document.getElementById('change-user-password-modal');
+        if (modal) {
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        }
+    };
+
+    window.closeChangeUserPasswordModal = () => {
+        const modal = document.getElementById('change-user-password-modal');
+        if (modal) {
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+    };
+
+    window.submitChangeUserPassword = async (e) => {
+        e.preventDefault();
+        const submitBtn = document.getElementById('change-user-password-btn');
+        const origText = submitBtn ? submitBtn.innerHTML : 'Update Password';
+        if (submitBtn) {
+            submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Updating...';
+            submitBtn.disabled = true;
+        }
+
+        try {
+            const userId = document.getElementById('change-user-password-id').value;
+            const newPassword = document.getElementById('change-user-password-input').value.trim();
+
+            if (!newPassword || newPassword.length < 6) {
+                throw new Error("Password must be at least 6 characters long.");
+            }
+
+            await window.KaghanDB.changeUserPassword(userId, newPassword);
+            KaghanUI.showToast("User password updated successfully!", "success");
+            closeChangeUserPasswordModal();
+        } catch (error) {
+            console.error("Change password error:", error);
+            KaghanUI.showToast(error.message || "Failed to update password.", "error");
+        } finally {
+            if (submitBtn) {
+                submitBtn.innerHTML = origText;
+                submitBtn.disabled = false;
+            }
+        }
+    };
+
+    // Modal control for Admin / User changing own logged-in password
+    window.openChangeMyPasswordModal = () => {
+        const modal = document.getElementById('change-my-password-modal');
+        if (document.getElementById('change-my-password-input')) {
+            document.getElementById('change-my-password-input').value = '';
+        }
+        if (modal) {
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        }
+    };
+
+    window.closeChangeMyPasswordModal = () => {
+        const modal = document.getElementById('change-my-password-modal');
+        if (modal) {
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+    };
+
+    window.submitChangeMyPassword = async (e) => {
+        e.preventDefault();
+        const submitBtn = document.getElementById('change-my-password-btn');
+        const origText = submitBtn ? submitBtn.innerHTML : 'Update My Password';
+        if (submitBtn) {
+            submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Updating...';
+            submitBtn.disabled = true;
+        }
+
+        try {
+            const newPassword = document.getElementById('change-my-password-input').value.trim();
+            if (!newPassword || newPassword.length < 6) {
+                throw new Error("Password must be at least 6 characters long.");
+            }
+
+            await window.KaghanDB.changeMyPassword(newPassword);
+            KaghanUI.showToast("Your account password has been updated successfully!", "success");
+            closeChangeMyPasswordModal();
+        } catch (error) {
+            console.error("Change my password error:", error);
+            KaghanUI.showToast(error.message || "Failed to update your password.", "error");
+        } finally {
+            if (submitBtn) {
+                submitBtn.innerHTML = origText;
+                submitBtn.disabled = false;
+            }
+        }
+    };
 
     // Role filter change listener
     document.getElementById('guest-role-filter')?.addEventListener('change', () => {

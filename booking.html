@@ -12,6 +12,8 @@
     <meta name="theme-color" content="#0F172A">
     <!-- DOMPurify for HTML Sanitization -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+    <!-- html2pdf.js for PDF receipt generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <meta name="robots" content="noindex, follow">
 
     <!-- Open Graph / Facebook -->
@@ -2483,50 +2485,91 @@
         }
 
         async function generatePDFBase64(bookingData) {
+            if (typeof html2pdf === 'undefined') return null;
             const tempDiv = document.createElement('div');
+            tempDiv.style.position = 'absolute';
+            tempDiv.style.left = '-9999px';
+            tempDiv.style.top = '0';
+            tempDiv.style.width = '780px';
+            tempDiv.style.background = '#ffffff';
             tempDiv.innerHTML = getInvoiceHTML(bookingData);
             document.body.appendChild(tempDiv);
             
             const opt = {
-                margin:       0,
-                filename:     `KPH-Stay-Invoice-${bookingData.id}.pdf`,
+                margin:       [0.15, 0.15, 0.15, 0.15],
+                filename:     `KPH-Stay-Invoice-${bookingData.id || 'receipt'}.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2 },
-                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+                html2canvas:  { scale: 2, useCORS: true, logging: false },
+                jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' },
+                pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
             };
 
-            const pdfBase64 = await html2pdf().set(opt).from(tempDiv).outputPdf('datauristring');
-            document.body.removeChild(tempDiv);
-            return pdfBase64;
+            try {
+                const pdfBase64 = await html2pdf().set(opt).from(tempDiv).outputPdf('datauristring');
+                if (tempDiv.parentNode) tempDiv.parentNode.removeChild(tempDiv);
+                return pdfBase64;
+            } catch (e) {
+                if (tempDiv.parentNode) tempDiv.parentNode.removeChild(tempDiv);
+                return null;
+            }
         }
 
         async function downloadPDFReceipt() {
-            // C4: Use the stored confirmed booking object instead of a non-existent DOM element
             const bookingData = window._lastConfirmedBooking || {};
             const btn = document.querySelector('button[onclick="downloadPDFReceipt()"]');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generating PDF...';
-            btn.disabled = true;
+            const originalText = btn ? btn.innerHTML : '';
+            if (btn) {
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generating PDF...';
+                btn.disabled = true;
+            }
 
+            let tempDiv = null;
             try {
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = getInvoiceHTML(bookingData);
+                // Check if invoice container already exists inside modal
+                const modalInvoice = document.getElementById('invoice-modal-content');
+                let targetEl = null;
+
+                if (modalInvoice && modalInvoice.firstElementChild) {
+                    targetEl = modalInvoice.firstElementChild;
+                } else {
+                    tempDiv = document.createElement('div');
+                    tempDiv.style.position = 'absolute';
+                    tempDiv.style.left = '-9999px';
+                    tempDiv.style.top = '0';
+                    tempDiv.style.width = '780px';
+                    tempDiv.style.background = '#ffffff';
+                    tempDiv.innerHTML = getInvoiceHTML(bookingData);
+                    document.body.appendChild(tempDiv);
+                    targetEl = tempDiv;
+                }
 
                 const opt = {
-                    margin:       0,
+                    margin:       [0.15, 0.15, 0.15, 0.15],
                     filename:     `KPH-Stay-Invoice-${bookingData.id || 'receipt'}.pdf`,
                     image:        { type: 'jpeg', quality: 0.98 },
-                    html2canvas:  { scale: 2 },
-                    jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+                    html2canvas:  { scale: 2, useCORS: true, logging: false, scrollX: 0, scrollY: 0 },
+                    jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' },
+                    pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
                 };
 
-                await html2pdf().set(opt).from(tempDiv).save();
+                if (typeof html2pdf !== 'undefined') {
+                    await html2pdf().set(opt).from(targetEl).save();
+                    if (window.KaghanUI) KaghanUI.showToast('PDF Receipt downloaded successfully!', 'success');
+                } else {
+                    window.print();
+                }
             } catch (err) {
                 console.error('PDF download error:', err);
-                KaghanUI.showToast('Could not generate PDF. Please try again.', 'error');
+                if (window.KaghanUI) KaghanUI.showToast('Could not generate PDF download. Opening print view instead.', 'info');
+                window.print();
             } finally {
-                btn.innerHTML = originalText;
-                btn.disabled = false;
+                if (tempDiv && tempDiv.parentNode) {
+                    tempDiv.parentNode.removeChild(tempDiv);
+                }
+                if (btn) {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }
             }
         }
 
