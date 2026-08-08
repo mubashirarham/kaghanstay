@@ -586,7 +586,8 @@
             const user = KaghanDB.getCurrentUser();
 
             if (user) {
-                const dashboardPath = user.role === 'admin' ? 'admin/index.html' : 'user/index.html';
+                const isAdminStaff = ['admin', 'moderator', 'editor'].includes(user.role);
+                const dashboardPath = isAdminStaff ? 'admin/index.html' : 'user/index.html';
                 
                 if (authLinks) {
                     authLinks.innerHTML = `

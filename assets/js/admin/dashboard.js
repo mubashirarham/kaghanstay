@@ -47,7 +47,8 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.href = '../login.html';
         return;
     }
-    if (sessionUser.role !== 'admin') {
+    const ADMIN_STAFF_ROLES = ['admin', 'moderator', 'editor'];
+    if (!ADMIN_STAFF_ROLES.includes(sessionUser.role)) {
         window.location.href = '../user/index.html';
         return;
     }

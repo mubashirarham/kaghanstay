@@ -1339,12 +1339,14 @@ const db = {
             }
             return false;
         }
-        if (requiredRole && user.role !== requiredRole) {
-            if (user.role === 'admin') {
-                window.location.href = '../admin/index.html';
-            } else {
-                window.location.href = '../user/index.html';
-            }
+        const isAdminStaff = ['admin', 'moderator', 'editor'].includes(user.role);
+
+        if (requiredRole === 'admin' && !isAdminStaff) {
+            window.location.href = '../user/index.html';
+            return false;
+        }
+        if (requiredRole === 'user' && isAdminStaff) {
+            window.location.href = '../admin/index.html';
             return false;
         }
         return true;
@@ -1764,7 +1766,8 @@ window.renderNavbar = () => {
     const loginPrefix = isDashboard ? '../' : '';
     
     if (user) {
-        const dashboardUrl = user.role === 'admin' ? `${prefix}admin/index.html` : `${prefix}user/index.html`;
+        const isAdminStaff = ['admin', 'moderator', 'editor'].includes(user.role);
+        const dashboardUrl = isAdminStaff ? `${prefix}admin/index.html` : `${prefix}user/index.html`;
         if (authContainer) {
             authContainer.innerHTML = `
                 <span class="text-slate-300 text-sm hidden lg:inline">Welcome, <strong>${user.name}</strong></span>

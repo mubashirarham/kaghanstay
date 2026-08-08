@@ -49,12 +49,13 @@ function generateBookingId() {
 
 async function resolveIsAdmin(decodedToken, fdbInstance) {
     if (!decodedToken) return false;
-    if (decodedToken.role === 'admin') return true;
+    const ADMIN_ROLES = ['admin', 'moderator', 'editor'];
+    if (ADMIN_ROLES.includes(decodedToken.role)) return true;
     if (!decodedToken.uid || !fdbInstance) return false;
     try {
         const dbToUse = fdbInstance || fdb;
         const userDoc = await dbToUse.collection('users').doc(decodedToken.uid).get();
-        return userDoc.exists && userDoc.data().role === 'admin';
+        return userDoc.exists && ADMIN_ROLES.includes(userDoc.data().role);
     } catch (_) {
         return false;
     }

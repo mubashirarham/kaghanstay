@@ -172,12 +172,14 @@
             }
             return false;
         }
-        if (requiredRole && user.role !== requiredRole) {
-            if (user.role === 'admin') {
-                window.location.href = '../admin/index.html';
-            } else {
-                window.location.href = '../user/index.html';
-            }
+        const isAdminStaff = ['admin', 'moderator', 'editor'].includes(user.role);
+
+        if (requiredRole === 'admin' && !isAdminStaff) {
+            window.location.href = '../user/index.html';
+            return false;
+        }
+        if (requiredRole === 'user' && isAdminStaff) {
+            window.location.href = '../admin/index.html';
             return false;
         }
         return true;
