@@ -6,7 +6,7 @@
     let sdkLoadedCallbacks = [];
 
     /**
-     * Ensures Google Maps JavaScript SDK (with Places, Advanced Markers & Geocoding) is loaded cleanly.
+     * Ensures Google Maps JavaScript SDK is loaded cleanly.
      */
     function loadSdk(callback) {
         if (window.google && window.google.maps && window.google.maps.places) {
@@ -48,50 +48,103 @@
     }
 
     /**
-     * Attaches Google Places Autocomplete to any input field.
+     * Attaches modern Google Places AutocompleteService & Geocoder to any input field.
+     * Completely bypasses legacy google.maps.places.Autocomplete constructor to eliminate deprecation warnings.
      */
     function initAutocomplete(inputId, onSelectCallback, options = {}) {
         loadSdk(() => {
             const input = document.getElementById(inputId);
             if (!input || input.dataset.googleAutocompleteBound) return;
+            input.dataset.googleAutocompleteBound = 'true';
 
-            try {
-                const autocompleteOptions = {
-                    fields: ['address_components', 'geometry', 'name', 'formatted_address', 'place_id'],
-                    types: options.types || ['geocode', 'establishment']
-                };
+            // Ensure parent container has relative positioning for dropdown
+            const parent = input.parentNode;
+            if (parent && window.getComputedStyle(parent).position === 'static') {
+                parent.style.position = 'relative';
+            }
 
-                if (options.country) {
-                    autocompleteOptions.componentRestrictions = { country: options.country };
+            let dropdown = document.getElementById(`${inputId}-google-predictions`);
+            if (!dropdown) {
+                dropdown = document.createElement('div');
+                dropdown.id = `${inputId}-google-predictions`;
+                dropdown.className = 'absolute left-0 right-0 top-full mt-1.5 bg-[#0F172A]/95 backdrop-blur-xl border border-[#C5A059]/40 rounded-2xl shadow-2xl z-[100] max-h-64 overflow-y-auto hidden divide-y divide-white/5';
+                if (parent) parent.appendChild(dropdown);
+            }
+
+            let debounceTimer = null;
+            const service = new google.maps.places.AutocompleteService();
+            const geocoder = new google.maps.Geocoder();
+
+            input.addEventListener('input', (e) => {
+                const query = e.target.value.trim();
+                clearTimeout(debounceTimer);
+
+                if (query.length < 2) {
+                    dropdown.classList.add('hidden');
+                    dropdown.innerHTML = '';
+                    return;
                 }
 
-                const autocomplete = new google.maps.places.Autocomplete(input, autocompleteOptions);
+                debounceTimer = setTimeout(() => {
+                    const req = { input: query, componentRestrictions: { country: options.country || 'pk' } };
+                    service.getPlacePredictions(req, (predictions, status) => {
+                        if (status !== google.maps.places.PlacesServiceStatus.OK || !predictions || predictions.length === 0) {
+                            dropdown.classList.add('hidden');
+                            return;
+                        }
 
-                autocomplete.addListener('place_changed', () => {
-                    const place = autocomplete.getPlace();
-                    if (!place.geometry || !place.geometry.location) {
-                        console.warn("No geometry returned for selected place:", place.name);
-                        return;
-                    }
+                        let html = '';
+                        predictions.slice(0, 5).forEach(pred => {
+                            const mainText = pred.structured_formatting ? pred.structured_formatting.main_text : pred.description;
+                            const secText = pred.structured_formatting ? pred.structured_formatting.secondary_text : '';
+                            
+                            html += `
+                                <div data-place-id="${pred.place_id}" data-desc="${(pred.description || '').replace(/"/g, '&quot;')}" class="kaghan-place-pred-item p-3 hover:bg-[#C5A059]/20 cursor-pointer text-xs text-white flex items-start gap-3 transition-colors">
+                                    <i class="fa-solid fa-location-dot text-[#C5A059] mt-0.5 shrink-0"></i>
+                                    <div class="overflow-hidden">
+                                        <div class="font-bold text-white truncate">${mainText}</div>
+                                        <div class="text-[10px] text-slate-300 truncate">${secText}</div>
+                                    </div>
+                                </div>
+                            `;
+                        });
 
-                    const locationData = {
-                        placeId: place.place_id,
-                        name: place.name || input.value,
-                        formattedAddress: place.formatted_address || input.value,
-                        lat: place.geometry.location.lat(),
-                        lng: place.geometry.location.lng(),
-                        addressComponents: place.address_components || []
-                    };
+                        dropdown.innerHTML = html;
+                        dropdown.classList.remove('hidden');
 
-                    if (typeof onSelectCallback === 'function') {
-                        onSelectCallback(locationData);
-                    }
-                });
+                        dropdown.querySelectorAll('.kaghan-place-pred-item').forEach(item => {
+                            item.addEventListener('click', () => {
+                                const placeId = item.dataset.placeId;
+                                const desc = item.dataset.desc || item.innerText;
+                                input.value = desc.split(',')[0];
+                                dropdown.classList.add('hidden');
 
-                input.dataset.googleAutocompleteBound = 'true';
-            } catch (err) {
-                console.warn("Google Places Autocomplete attach warning:", err);
-            }
+                                geocoder.geocode({ placeId: placeId }, (results, geoStatus) => {
+                                    if (geoStatus === 'OK' && results && results[0]) {
+                                        const place = results[0];
+                                        if (typeof onSelectCallback === 'function') {
+                                            onSelectCallback({
+                                                placeId: placeId,
+                                                name: desc.split(',')[0],
+                                                formattedAddress: place.formatted_address,
+                                                lat: place.geometry.location.lat(),
+                                                lng: place.geometry.location.lng()
+                                            });
+                                        }
+                                    }
+                                });
+                            });
+                        });
+                    });
+                }, 200);
+            });
+
+            // Hide predictions when clicking outside
+            document.addEventListener('click', (evt) => {
+                if (!input.contains(evt.target) && !dropdown.contains(evt.target)) {
+                    dropdown.classList.add('hidden');
+                }
+            });
         });
     }
 

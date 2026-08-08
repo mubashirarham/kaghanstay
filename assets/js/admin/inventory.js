@@ -780,32 +780,14 @@
     }
 
     function initOfficialGooglePlacesAutocomplete(mode) {
-        const input = document.getElementById(`${mode}-room-map-search`);
-        if (!input || !window.google || !window.google.maps || !window.google.maps.places) return;
-        if (input.dataset.googleAutocompleteInit) return;
-
-        try {
-            const autocomplete = new google.maps.places.Autocomplete(input, {
-                fields: ['formatted_address', 'geometry', 'name', 'place_id']
-            });
-
-            autocomplete.addListener('place_changed', () => {
-                const place = autocomplete.getPlace();
-                if (!place.geometry || !place.geometry.location) return;
-
-                const lat = place.geometry.location.lat();
-                const lng = place.geometry.location.lng();
-                const address = place.formatted_address || place.name || input.value;
-
-                selectLocationPrediction(lat, lng, address, mode);
+        const inputId = `${mode}-room-map-search`;
+        if (window.KaghanMaps) {
+            KaghanMaps.initAutocomplete(inputId, (locData) => {
+                selectLocationPrediction(locData.lat, locData.lng, locData.formattedAddress, mode);
                 if (window.KaghanUI) {
-                    KaghanUI.showToast(`Exact location pinned: ${place.name || address}`, 'success');
+                    KaghanUI.showToast(`Exact location pinned: ${locData.name || locData.formattedAddress}`, 'success');
                 }
             });
-
-            input.dataset.googleAutocompleteInit = 'true';
-        } catch (e) {
-            console.warn("Google Places Autocomplete init warning:", e);
         }
     }
 
