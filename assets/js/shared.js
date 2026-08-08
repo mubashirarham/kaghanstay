@@ -20,9 +20,10 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const fdb = firebase.firestore();
 
-// Firestore offline persistence is enabled by default in Firebase compat SDK v10.x.
-// The deprecated fdb.enablePersistence() call has been removed to suppress the
-// console warning: "enableIndexedDbPersistence() will be deprecated in the future".
+// ⚡ Force long-polling to eliminate QUIC protocol connection stalls (ERR_QUIC_PROTOCOL_ERROR)
+try {
+    fdb.settings({ experimentalForceLongPolling: true });
+} catch(e) {}
 
 // Global memory cache and active listeners setup
 window.KaghanDB_Cache = {
@@ -37,6 +38,26 @@ window.KaghanDB_Cache = {
     coupons: null,
     upgrades: null
 };
+
+// ⚡ SWR (Stale-While-Revalidate) Instant 0ms LocalStorage Warmup
+try {
+    const swrRooms = localStorage.getItem('kaghan_swr_rooms');
+    if (swrRooms) window.KaghanDB_Cache.rooms = JSON.parse(swrRooms);
+    
+    const swrCats = localStorage.getItem('kaghan_swr_categories');
+    if (swrCats) window.KaghanDB_Cache.categories = JSON.parse(swrCats);
+    
+    const swrLocs = localStorage.getItem('kaghan_swr_locations');
+    if (swrLocs) window.KaghanDB_Cache.locations = JSON.parse(swrLocs);
+    
+    const swrBlogs = localStorage.getItem('kaghan_swr_blogs');
+    if (swrBlogs) window.KaghanDB_Cache.blogs = JSON.parse(swrBlogs);
+    
+    const swrReviews = localStorage.getItem('kaghan_swr_reviews');
+    if (swrReviews) window.KaghanDB_Cache.reviews = JSON.parse(swrReviews);
+} catch (e) {
+    console.warn("SWR cache load warning:", e);
+}
 
 window.KaghanDB_Listeners = {
     rooms: null,
@@ -68,6 +89,7 @@ function startActiveListeners() {
             }
         });
         window.KaghanDB_Cache.rooms = list;
+        try { localStorage.setItem('kaghan_swr_rooms', JSON.stringify(list)); } catch (e) {}
         window.dispatchEvent(new CustomEvent('kaghan-db-rooms', { detail: list }));
     }, err => console.warn("Rooms listener error:", err));
 
@@ -85,6 +107,7 @@ function startActiveListeners() {
         });
         const sorted = list.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         window.KaghanDB_Cache.blogs = sorted;
+        try { localStorage.setItem('kaghan_swr_blogs', JSON.stringify(sorted)); } catch (e) {}
         window.dispatchEvent(new CustomEvent('kaghan-db-blogs', { detail: sorted }));
     }, err => console.warn("Blogs listener error:", err));
 
@@ -102,6 +125,7 @@ function startActiveListeners() {
         });
         const sorted = list.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         window.KaghanDB_Cache.reviews = sorted;
+        try { localStorage.setItem('kaghan_swr_reviews', JSON.stringify(sorted)); } catch (e) {}
         window.dispatchEvent(new CustomEvent('kaghan-db-reviews', { detail: sorted }));
     }, err => console.warn("Reviews listener error:", err));
 
@@ -118,6 +142,7 @@ function startActiveListeners() {
             }
         });
         window.KaghanDB_Cache.categories = list;
+        try { localStorage.setItem('kaghan_swr_categories', JSON.stringify(list)); } catch (e) {}
         window.dispatchEvent(new CustomEvent('kaghan-db-categories', { detail: list }));
     }, err => console.warn("Categories listener error:", err));
 
@@ -133,6 +158,7 @@ function startActiveListeners() {
             }
         });
         window.KaghanDB_Cache.locations = list;
+        try { localStorage.setItem('kaghan_swr_locations', JSON.stringify(list)); } catch (e) {}
         window.dispatchEvent(new CustomEvent('kaghan-db-locations', { detail: list }));
     }, err => console.warn("Locations listener error:", err));
 
@@ -429,11 +455,22 @@ window.ensureAuthReady = function() {
 const db = {
     // Categories CRUD
     getCategories: async () => {
-        if (window.KaghanDB_Cache.categories) return window.KaghanDB_Cache.categories;
+        if (window.KaghanDB_Cache.categories && window.KaghanDB_Cache.categories.length) return window.KaghanDB_Cache.categories;
+        try {
+            const swr = localStorage.getItem('kaghan_swr_categories');
+            if (swr) {
+                const list = JSON.parse(swr);
+                if (list && list.length) {
+                    window.KaghanDB_Cache.categories = list;
+                    return list;
+                }
+            }
+        } catch(e) {}
         const snap = await fdb.collection('categories').get();
         const list = [];
         snap.forEach(doc => list.push(doc.data()));
         window.KaghanDB_Cache.categories = list;
+        try { localStorage.setItem('kaghan_swr_categories', JSON.stringify(list)); } catch(e) {}
         return list;
     },
     saveCategory: async (category) => {
@@ -447,11 +484,22 @@ const db = {
 
     // Locations CRUD
     getLocations: async () => {
-        if (window.KaghanDB_Cache.locations) return window.KaghanDB_Cache.locations;
+        if (window.KaghanDB_Cache.locations && window.KaghanDB_Cache.locations.length) return window.KaghanDB_Cache.locations;
+        try {
+            const swr = localStorage.getItem('kaghan_swr_locations');
+            if (swr) {
+                const list = JSON.parse(swr);
+                if (list && list.length) {
+                    window.KaghanDB_Cache.locations = list;
+                    return list;
+                }
+            }
+        } catch(e) {}
         const snap = await fdb.collection('locations').get();
         const list = [];
         snap.forEach(doc => list.push(doc.data()));
         window.KaghanDB_Cache.locations = list;
+        try { localStorage.setItem('kaghan_swr_locations', JSON.stringify(list)); } catch(e) {}
         return list;
     },
     saveLocation: async (location) => {
@@ -501,7 +549,18 @@ const db = {
 
     // Rooms CRUD
     getRooms: async () => {
-        if (window.KaghanDB_Cache.rooms) {
+        if (!window.KaghanDB_Cache.rooms || !window.KaghanDB_Cache.rooms.length) {
+            try {
+                const swr = localStorage.getItem('kaghan_swr_rooms');
+                if (swr) {
+                    const list = JSON.parse(swr);
+                    if (list && list.length) {
+                        window.KaghanDB_Cache.rooms = list;
+                    }
+                }
+            } catch(e) {}
+        }
+        if (window.KaghanDB_Cache.rooms && window.KaghanDB_Cache.rooms.length) {
             const seen = new Set();
             const deduped = [];
             window.KaghanDB_Cache.rooms.forEach(r => {
@@ -526,11 +585,12 @@ const db = {
             }
         });
         window.KaghanDB_Cache.rooms = list;
+        try { localStorage.setItem('kaghan_swr_rooms', JSON.stringify(list)); } catch(e) {}
         return list;
     },
-    getRoomById: async (id) => {
+    getRoomById: async (id, forceRefresh = false) => {
         if (!id) return null;
-        if (window.KaghanDB_Cache.rooms) {
+        if (!forceRefresh && window.KaghanDB_Cache.rooms) {
             const match = window.KaghanDB_Cache.rooms.find(r => r.id === id || r.id === String(id));
             if (match) return match;
         }
@@ -538,7 +598,14 @@ const db = {
             const doc = await fdb.collection('rooms').doc(id).get();
             if (doc.exists) {
                 const data = doc.data();
-                return { ...data, id: data.id || doc.id };
+                const freshRoom = { ...data, id: data.id || doc.id };
+                if (window.KaghanDB_Cache.rooms) {
+                    const idx = window.KaghanDB_Cache.rooms.findIndex(r => r.id === id);
+                    if (idx !== -1) window.KaghanDB_Cache.rooms[idx] = freshRoom;
+                    else window.KaghanDB_Cache.rooms.push(freshRoom);
+                    try { localStorage.setItem('kaghan_swr_rooms', JSON.stringify(window.KaghanDB_Cache.rooms)); } catch(e) {}
+                }
+                return freshRoom;
             }
         } catch (e) {
             console.warn("getRoomById doc fetch warning:", e.message);
@@ -550,6 +617,13 @@ const db = {
             return null;
         }
     },
+    prefetchRoom: async (id) => {
+        if (!id) return;
+        if (window.KaghanDB_Cache.rooms && window.KaghanDB_Cache.rooms.some(r => r.id === id)) return;
+        try {
+            await db.getRoomById(id);
+        } catch(e) {}
+    },
     updateRoom: async (id, updatedData) => {
         await fdb.collection('rooms').doc(id).update(updatedData);
         if (window.KaghanDB_Cache.rooms) {
@@ -557,6 +631,7 @@ const db = {
             if (idx !== -1) {
                 window.KaghanDB_Cache.rooms[idx] = { ...window.KaghanDB_Cache.rooms[idx], ...updatedData };
             }
+            try { localStorage.setItem('kaghan_swr_rooms', JSON.stringify(window.KaghanDB_Cache.rooms)); } catch(e) {}
         }
         window.dispatchEvent(new CustomEvent('kaghan-db-rooms', { detail: window.KaghanDB_Cache.rooms }));
         return true;
@@ -566,6 +641,7 @@ const db = {
         if (window.KaghanDB_Cache.rooms) {
             const filtered = window.KaghanDB_Cache.rooms.filter(r => r.id !== room.id);
             window.KaghanDB_Cache.rooms = [room, ...filtered];
+            try { localStorage.setItem('kaghan_swr_rooms', JSON.stringify(window.KaghanDB_Cache.rooms)); } catch(e) {}
         }
         window.dispatchEvent(new CustomEvent('kaghan-db-rooms', { detail: window.KaghanDB_Cache.rooms }));
         return true;
@@ -2085,38 +2161,27 @@ window.downloadPDFInvoice = async function(bookingId) {
             <div style="background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); padding: 25px 20px; text-align: center; border-bottom: 3px solid #D4AF37; color: #ffffff; border-radius: 8px 8px 0 0;">
                 <h1 style="font-size: 26px; font-weight: 900; letter-spacing: 3px; margin: 0; color: #ffffff; text-transform: uppercase;">KPH STAY</h1>
                 <div style="color: #D4AF37; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; margin-top: 4px; font-weight: 600;">Luxury Apartments &amp; Vacation Rentals</div>
-                <div style="margin-top: 8px; font-size: 11px; color: #94A3B8;">
-                    Website: www.kphstay.com &nbsp;|&nbsp; Email: info@kphstay.com
-                </div>
             </div>
 
             <!-- Content Body -->
             <div style="padding: 20px 10px;">
                 <h2 style="text-align: center; font-size: 18px; font-weight: 800; color: #0F172A; letter-spacing: 2px; margin: 0 0 15px 0; text-transform: uppercase;">BOOKING INVOICE</h2>
 
-                <!-- Company Information -->
-                <div style="font-size: 12px; font-weight: 800; color: #0F172A; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #F1F5F9; padding-bottom: 4px; margin-top: 15px; margin-bottom: 8px;">Company Information</div>
-                <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 12px;">
-                    <tr>
-                        <td width="50%" style="padding: 3px 0;"><span style="color: #64748B; font-weight: 600;">Invoice No:</span> <span style="font-weight: 700;">${invoiceNo}</span></td>
-                        <td width="50%" style="padding: 3px 0;"><span style="color: #64748B; font-weight: 600;">Booking ID:</span> <span style="font-weight: 700;">${bookingId}</span></td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 3px 0;"><span style="color: #64748B; font-weight: 600;">Invoice Date:</span> <span style="font-weight: 700;">${invoiceDate}</span></td>
-                        <td style="padding: 3px 0;"><span style="color: #64748B; font-weight: 600;">Booking Source:</span></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" style="padding: 4px 0;">
-                            ${renderSourceBox('KPHStay.com')}
-                            ${renderSourceBox('Direct Booking')}
-                            ${renderSourceBox('WhatsApp')}
-                            ${renderSourceBox('Airbnb')}
-                            ${renderSourceBox('Booking.com')}
-                        </td>
-                    </tr>
-                </table>
+                <!-- Top Invoice & Booking Metadata -->
+                <div style="margin: 15px 0 20px 0; padding: 12px 18px; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 10px;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                        <tr>
+                            <td width="50%"><span style="color: #64748B; font-weight: 600;">Invoice No:</span> <strong style="color: #0F172A; font-size: 13px;">${invoiceNo}</strong></td>
+                            <td width="50%"><span style="color: #64748B; font-weight: 600;">Booking ID:</span> <strong style="color: #D4AF37; font-size: 13px;">${bookingId}</strong></td>
+                        </tr>
+                        <tr>
+                            <td style="padding-top: 6px;"><span style="color: #64748B; font-weight: 600;">Invoice Date:</span> <strong style="color: #0F172A;">${invoiceDate}</strong></td>
+                            <td style="padding-top: 6px;"><span style="color: #64748B; font-weight: 600;">Booking Source:</span> <strong style="color: #0F172A;">${bookingSource}</strong></td>
+                        </tr>
+                    </table>
+                </div>
 
-                <!-- Guest Information -->
+                <!-- Guest & Reservation Details -->
                 <div style="font-size: 12px; font-weight: 800; color: #0F172A; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #F1F5F9; padding-bottom: 4px; margin-top: 15px; margin-bottom: 8px;">Guest Information</div>
                 <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 12px;">
                     <tr>
@@ -2131,14 +2196,9 @@ window.downloadPDFInvoice = async function(bookingId) {
                         <td style="padding: 3px 0;"><span style="color: #64748B; font-weight: 600;">Nationality:</span> <span style="font-weight: 700;">${nationality}</span></td>
                         <td style="padding: 3px 0;"><span style="color: #64748B; font-weight: 600;">Address:</span> <span style="font-weight: 700;">${address}</span></td>
                     </tr>
-                </table>
-
-                <!-- Reservation Details -->
-                <div style="font-size: 12px; font-weight: 800; color: #0F172A; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #F1F5F9; padding-bottom: 4px; margin-top: 15px; margin-bottom: 8px;">Reservation Details</div>
-                <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 12px;">
                     <tr>
-                        <td width="50%" style="padding: 3px 0;"><span style="color: #64748B; font-weight: 600;">Property Name:</span> <span style="font-weight: 700;">${propertyName}</span></td>
-                        <td width="50%" style="padding: 3px 0;"><span style="color: #64748B; font-weight: 600;">Apartment / Unit No.:</span> <span style="font-weight: 700;">${unitNo}</span></td>
+                        <td width="50%" style="padding: 3px 0; padding-top: 8px;"><span style="color: #64748B; font-weight: 600;">Property Name:</span> <span style="font-weight: 700;">${propertyName}</span></td>
+                        <td width="50%" style="padding: 3px 0; padding-top: 8px;"><span style="color: #64748B; font-weight: 600;">Apartment / Unit No.:</span> <span style="font-weight: 700;">${unitNo}</span></td>
                     </tr>
                     <tr>
                         <td colspan="2" style="padding: 4px 0;">
@@ -2151,8 +2211,8 @@ window.downloadPDFInvoice = async function(bookingId) {
                         </td>
                     </tr>
                     <tr>
-                        <td style="padding: 3px 0;"><span style="color: #64748B; font-weight: 600;">Check-in Date:</span> <span style="font-weight: 700;">${checkIn}</span> (${checkInTime})</td>
-                        <td style="padding: 3px 0;"><span style="color: #64748B; font-weight: 600;">Check-out Date:</span> <span style="font-weight: 700;">${checkOut}</span> (${checkOutTime})</td>
+                        <td style="padding: 3px 0;"><span style="color: #64748B; font-weight: 600;">Check-in Date:</span> <span style="font-weight: 700;">${checkIn} (${checkInTime})</span></td>
+                        <td style="padding: 3px 0;"><span style="color: #64748B; font-weight: 600;">Check-out Date:</span> <span style="font-weight: 700;">${checkOut} (${checkOutTime})</span></td>
                     </tr>
                     <tr>
                         <td style="padding: 3px 0;"><span style="color: #64748B; font-weight: 600;">Total Nights:</span> <span style="font-weight: 700;">${nights}</span></td>
@@ -2173,53 +2233,60 @@ window.downloadPDFInvoice = async function(bookingId) {
                     </thead>
                     <tbody>
                         <tr style="border-bottom: 1px solid #F1F5F9;">
-                            <td style="padding: 7px 8px;"><strong>Accommodation Charges</strong> (${propertyName})</td>
+                            <td style="padding: 7px 8px;"><strong>Accommodation Charges (${propertyName})</strong></td>
                             <td style="padding: 7px 8px; text-align: center;">${nights}</td>
                             <td style="padding: 7px 8px; text-align: right;">${formatPKR(nights > 0 ? accomCharges / nights : accomCharges)}</td>
                             <td style="padding: 7px 8px; text-align: right; font-weight: 700;">${formatPKR(accomCharges)}</td>
                         </tr>
+                        ${cleaningFee > 0 ? `
                         <tr style="border-bottom: 1px solid #F1F5F9;">
                             <td style="padding: 7px 8px;">Cleaning Fee</td>
-                            <td style="padding: 7px 8px; text-align: center;">${cleaningFee > 0 ? 1 : 0}</td>
+                            <td style="padding: 7px 8px; text-align: center;">1</td>
                             <td style="padding: 7px 8px; text-align: right;">${formatPKR(cleaningFee)}</td>
                             <td style="padding: 7px 8px; text-align: right;">${formatPKR(cleaningFee)}</td>
-                        </tr>
+                        </tr>` : ''}
+                        ${extraGuestCharges > 0 ? `
                         <tr style="border-bottom: 1px solid #F1F5F9;">
                             <td style="padding: 7px 8px;">Extra Guest Charges</td>
-                            <td style="padding: 7px 8px; text-align: center;">${extraGuestCharges > 0 ? 1 : 0}</td>
+                            <td style="padding: 7px 8px; text-align: center;">1</td>
                             <td style="padding: 7px 8px; text-align: right;">${formatPKR(extraGuestCharges)}</td>
                             <td style="padding: 7px 8px; text-align: right;">${formatPKR(extraGuestCharges)}</td>
-                        </tr>
+                        </tr>` : ''}
+                        ${extraMattress > 0 ? `
                         <tr style="border-bottom: 1px solid #F1F5F9;">
                             <td style="padding: 7px 8px;">Extra Mattress</td>
-                            <td style="padding: 7px 8px; text-align: center;">${extraMattress > 0 ? 1 : 0}</td>
+                            <td style="padding: 7px 8px; text-align: center;">1</td>
                             <td style="padding: 7px 8px; text-align: right;">${formatPKR(extraMattress)}</td>
                             <td style="padding: 7px 8px; text-align: right;">${formatPKR(extraMattress)}</td>
-                        </tr>
+                        </tr>` : ''}
+                        ${kitchenUsageCharges > 0 ? `
                         <tr style="border-bottom: 1px solid #F1F5F9;">
                             <td style="padding: 7px 8px;">Kitchen Usage Charges</td>
-                            <td style="padding: 7px 8px; text-align: center;">${kitchenUsageCharges > 0 ? 1 : 0}</td>
+                            <td style="padding: 7px 8px; text-align: center;">1</td>
                             <td style="padding: 7px 8px; text-align: right;">${formatPKR(kitchenUsageCharges)}</td>
                             <td style="padding: 7px 8px; text-align: right;">${formatPKR(kitchenUsageCharges)}</td>
-                        </tr>
+                        </tr>` : ''}
+                        ${securityDeposit > 0 ? `
                         <tr style="border-bottom: 1px solid #F1F5F9;">
                             <td style="padding: 7px 8px;">Security Deposit (Refundable)</td>
-                            <td style="padding: 7px 8px; text-align: center;">${securityDeposit > 0 ? 1 : 0}</td>
+                            <td style="padding: 7px 8px; text-align: center;">1</td>
                             <td style="padding: 7px 8px; text-align: right;">${formatPKR(securityDeposit)}</td>
                             <td style="padding: 7px 8px; text-align: right;">${formatPKR(securityDeposit)}</td>
-                        </tr>
+                        </tr>` : ''}
+                        ${laundryService > 0 ? `
                         <tr style="border-bottom: 1px solid #F1F5F9;">
                             <td style="padding: 7px 8px;">Laundry Service</td>
-                            <td style="padding: 7px 8px; text-align: center;">${laundryService > 0 ? 1 : 0}</td>
+                            <td style="padding: 7px 8px; text-align: center;">1</td>
                             <td style="padding: 7px 8px; text-align: right;">${formatPKR(laundryService)}</td>
                             <td style="padding: 7px 8px; text-align: right;">${formatPKR(laundryService)}</td>
-                        </tr>
+                        </tr>` : ''}
+                        ${otherCharges > 0 ? `
                         <tr style="border-bottom: 1px solid #F1F5F9;">
-                            <td style="padding: 7px 8px;">Other Charges / Addons</td>
-                            <td style="padding: 7px 8px; text-align: center;">${otherCharges > 0 ? 1 : 0}</td>
+                            <td style="padding: 7px 8px;">Other Charges / Upgrades</td>
+                            <td style="padding: 7px 8px; text-align: center;">1</td>
                             <td style="padding: 7px 8px; text-align: right;">${formatPKR(otherCharges)}</td>
                             <td style="padding: 7px 8px; text-align: right;">${formatPKR(otherCharges)}</td>
-                        </tr>
+                        </tr>` : ''}
                     </tbody>
                 </table>
 
@@ -2281,9 +2348,8 @@ window.downloadPDFInvoice = async function(bookingId) {
                 <!-- Terms & Conditions -->
                 <div style="background: #FFFDF5; border: 1px solid #FEF08A; border-radius: 8px; padding: 12px; font-size: 10px; line-height: 1.5; color: #713F12; margin-top: 15px;">
                     <strong>Terms &amp; Conditions</strong>
+                    <div style="font-weight: bold; margin-top: 4px; margin-bottom: 4px;">Check-in Time: 2:00 PM &nbsp;|&nbsp; Check-out Time: 12:00 PM</div>
                     <ul style="margin: 4px 0 0 0; padding-left: 16px;">
-                        <li>Check-in Time: 2:00 PM</li>
-                        <li>Check-out Time: 12:00 PM</li>
                         <li>Original CNIC/Passport is mandatory for every guest.</li>
                         <li>All guests must be registered before entering the property.</li>
                         <li>Security deposit (if applicable) is refundable after checkout inspection.</li>
@@ -2293,28 +2359,12 @@ window.downloadPDFInvoice = async function(bookingId) {
                         <li>By signing this invoice, the guest agrees to all KPH Stay policies.</li>
                     </ul>
                 </div>
-
-                <!-- Signatures -->
-                <table style="width: 100%; border-collapse: collapse; margin-top: 35px;">
-                    <tr>
-                        <td style="width: 50%; text-align: center; vertical-align: bottom; padding: 10px;">
-                            <div style="border-top: 1px solid #94A3B8; margin: 30px auto 6px auto; width: 75%;"></div>
-                            <div style="font-size: 11px; font-weight: 700; color: #475569;">Guest Signature</div>
-                        </td>
-                        <td style="width: 50%; text-align: center; vertical-align: bottom; padding: 10px;">
-                            <div style="border-top: 1px solid #94A3B8; margin: 30px auto 6px auto; width: 75%;"></div>
-                            <div style="font-size: 11px; font-weight: 700; color: #475569;">Authorized Signature &amp; Stamp</div>
-                        </td>
-                    </tr>
-                </table>
             </div>
 
             <!-- Footer -->
             <div style="background: #0F172A; color: #94A3B8; text-align: center; padding: 18px 15px; font-size: 11px; border-top: 1px solid #1E293B; border-radius: 0 0 8px 8px;">
                 <div style="color: #D4AF37; font-weight: 800; font-size: 13px; letter-spacing: 1px;">KPH STAY</div>
-                <div style="margin: 3px 0 6px 0; color: #E2E8F0;">Luxury Apartments &amp; Vacation Rentals</div>
-                <div>&#127760; www.kphstay.com &nbsp;|&nbsp; &#128231; info@kphstay.com</div>
-                <div style="margin-top: 8px; font-weight: 500; color: #D4AF37;">
+                <div style="margin-top: 4px; font-weight: 500; color: #E2E8F0;">
                     Thank you for choosing KPH Stay. We look forward to hosting you again!
                 </div>
             </div>

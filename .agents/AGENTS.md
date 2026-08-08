@@ -42,3 +42,6 @@ All development and remediation must strictly adhere to the following security r
 ### B. Edge Functions
 * Use Netlify Edge Functions for routing, filtering, and light processing only.
 * Ensure Edge Functions are secure and do not bypass serverless function security policies.
+
+### C. Git & Version Control
+* **Explicit Consent Required:** NEVER execute `git commit` or `git push` without explicit user request or written consent. All local modifications must remain staged/unstaged for user review.

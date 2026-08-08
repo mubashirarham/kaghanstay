@@ -301,37 +301,26 @@ function buildInvoiceHTML(booking) {
         <div class="header-banner">
             <div class="brand-title">KPH STAY</div>
             <div class="brand-sub">Luxury Apartments &amp; Vacation Rentals</div>
-            <div class="brand-contacts">
-                Website: <a href="https://www.kphstay.com">www.kphstay.com</a> &nbsp;|&nbsp; Email: <a href="mailto:info@kphstay.com">info@kphstay.com</a>
-            </div>
         </div>
 
         <div class="invoice-body">
             <div class="doc-title">BOOKING INVOICE</div>
 
-            <!-- Company Information -->
-            <div class="section-header">Company Information</div>
-            <table class="grid-2">
-                <tr>
-                    <td width="50%"><span class="label">Invoice No:</span> <span class="val">${invoiceNo}</span></td>
-                    <td width="50%"><span class="label">Booking ID:</span> <span class="val">${bookingId}</span></td>
-                </tr>
-                <tr>
-                    <td><span class="label">Invoice Date:</span> <span class="val">${invoiceDate}</span></td>
-                    <td><span class="label">Booking Source:</span></td>
-                </tr>
-                <tr>
-                    <td colspan="2" style="padding-top: 4px;">
-                        ${renderCheckbox('KPHStay.com', bookingSource.toLowerCase().includes('kphstay'), true)}
-                        ${renderCheckbox('Direct Booking', bookingSource.toLowerCase().includes('direct'), true)}
-                        ${renderCheckbox('WhatsApp', bookingSource.toLowerCase().includes('whatsapp'), true)}
-                        ${renderCheckbox('Airbnb', bookingSource.toLowerCase().includes('airbnb'), true)}
-                        ${renderCheckbox('Booking.com', bookingSource.toLowerCase().includes('booking.com'), true)}
-                    </td>
-                </tr>
-            </table>
+            <!-- Top Invoice & Booking Metadata -->
+            <div style="margin: 15px 0 20px 0; padding: 12px 18px; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 10px;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                    <tr>
+                        <td width="50%"><span class="label">Invoice No:</span> <strong style="color: #0F172A; font-size: 13px;">${invoiceNo}</strong></td>
+                        <td width="50%"><span class="label">Booking ID:</span> <strong style="color: #C5A059; font-size: 13px;">${bookingId}</strong></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-top: 6px;"><span class="label">Invoice Date:</span> <strong style="color: #0F172A;">${invoiceDate}</strong></td>
+                        <td style="padding-top: 6px;"><span class="label">Booking Source:</span> <strong style="color: #0F172A;">${bookingSource}</strong></td>
+                    </tr>
+                </table>
+            </div>
 
-            <!-- Guest Information -->
+            <!-- Guest & Reservation Details -->
             <div class="section-header">Guest Information</div>
             <table class="grid-2">
                 <tr>
@@ -346,28 +335,23 @@ function buildInvoiceHTML(booking) {
                     <td><span class="label">Nationality:</span> <span class="val">${nationality}</span></td>
                     <td><span class="label">Address:</span> <span class="val">${address}</span></td>
                 </tr>
-            </table>
-
-            <!-- Reservation Details -->
-            <div class="section-header">Reservation Details</div>
-            <table class="grid-2">
                 <tr>
-                    <td width="50%"><span class="label">Property Name:</span> <span class="val">${propertyName}</span></td>
-                    <td width="50%"><span class="label">Apartment / Unit No.:</span> <span class="val">${unitNo}</span></td>
+                    <td width="50%" style="padding-top: 8px;"><span class="label">Property Name:</span> <span class="val">${propertyName}</span></td>
+                    <td width="50%" style="padding-top: 8px;"><span class="label">Apartment / Unit No.:</span> <span class="val">${unitNo}</span></td>
                 </tr>
                 <tr>
-                    <td colspan="2" style="padding-top: 4px; padding-bottom: 6px;">
-                        <span class="label" style="display: block; margin-bottom: 4px;">Room Type:</span>
+                    <td colspan="2" style="padding-top: 4px; padding-bottom: 4px;">
+                        <span class="label" style="display: inline-block; margin-right: 8px;">Room Type:</span>
                         ${renderCheckbox('Studio', roomType.toLowerCase().includes('studio'))}
-                        ${renderCheckbox('1 Bedroom', roomType.toLowerCase().includes('1 bed') || roomType.toLowerCase().includes('1bedroom'))}
-                        ${renderCheckbox('2 Bedroom', roomType.toLowerCase().includes('2 bed') || roomType.toLowerCase().includes('2bedroom'))}
-                        ${renderCheckbox('3 Bedroom', roomType.toLowerCase().includes('3 bed') || roomType.toLowerCase().includes('3bedroom'))}
+                        ${renderCheckbox('1 Bedroom', roomType.toLowerCase().includes('1 bed') || roomType.toLowerCase().includes('1bedroom') || roomType.toLowerCase().includes('1-bed'))}
+                        ${renderCheckbox('2 Bedroom', roomType.toLowerCase().includes('2 bed') || roomType.toLowerCase().includes('2bedroom') || roomType.toLowerCase().includes('2-bed'))}
+                        ${renderCheckbox('3 Bedroom', roomType.toLowerCase().includes('3 bed') || roomType.toLowerCase().includes('3bedroom') || roomType.toLowerCase().includes('3-bed'))}
                         ${renderCheckbox('Penthouse', roomType.toLowerCase().includes('penthouse'))}
                     </td>
                 </tr>
                 <tr>
-                    <td><span class="label">Check-in Date:</span> <span class="val">${checkIn}</span> &nbsp;(<span class="val">${checkInTime}</span>)</td>
-                    <td><span class="label">Check-out Date:</span> <span class="val">${checkOut}</span> &nbsp;(<span class="val">${checkOutTime}</span>)</td>
+                    <td><span class="label">Check-in Date:</span> <span class="val">${checkIn} (${checkInTime})</span></td>
+                    <td><span class="label">Check-out Date:</span> <span class="val">${checkOut} (${checkOutTime})</span></td>
                 </tr>
                 <tr>
                     <td><span class="label">Total Nights:</span> <span class="val">${nights}</span></td>
@@ -388,53 +372,60 @@ function buildInvoiceHTML(booking) {
                 </thead>
                 <tbody>
                     <tr>
-                        <td><strong>Accommodation Charges</strong> (${propertyName})</td>
+                        <td><strong>Accommodation Charges (${propertyName})</strong></td>
                         <td style="text-align: center;">${nights}</td>
                         <td style="text-align: right;">${formatPKR(nights > 0 ? accomCharges / nights : accomCharges)}</td>
                         <td style="text-align: right;"><strong>${formatPKR(accomCharges)}</strong></td>
                     </tr>
+                    ${cleaningFee > 0 ? `
                     <tr>
                         <td>Cleaning Fee</td>
-                        <td style="text-align: center;">${cleaningFee > 0 ? 1 : 0}</td>
+                        <td style="text-align: center;">1</td>
                         <td style="text-align: right;">${formatPKR(cleaningFee)}</td>
                         <td style="text-align: right;">${formatPKR(cleaningFee)}</td>
-                    </tr>
+                    </tr>` : ''}
+                    ${extraGuestCharges > 0 ? `
                     <tr>
                         <td>Extra Guest Charges</td>
-                        <td style="text-align: center;">${extraGuestCharges > 0 ? 1 : 0}</td>
+                        <td style="text-align: center;">1</td>
                         <td style="text-align: right;">${formatPKR(extraGuestCharges)}</td>
                         <td style="text-align: right;">${formatPKR(extraGuestCharges)}</td>
-                    </tr>
+                    </tr>` : ''}
+                    ${extraMattress > 0 ? `
                     <tr>
                         <td>Extra Mattress</td>
-                        <td style="text-align: center;">${extraMattress > 0 ? 1 : 0}</td>
+                        <td style="text-align: center;">1</td>
                         <td style="text-align: right;">${formatPKR(extraMattress)}</td>
                         <td style="text-align: right;">${formatPKR(extraMattress)}</td>
-                    </tr>
+                    </tr>` : ''}
+                    ${kitchenUsageCharges > 0 ? `
                     <tr>
                         <td>Kitchen Usage Charges</td>
-                        <td style="text-align: center;">${kitchenUsageCharges > 0 ? 1 : 0}</td>
+                        <td style="text-align: center;">1</td>
                         <td style="text-align: right;">${formatPKR(kitchenUsageCharges)}</td>
                         <td style="text-align: right;">${formatPKR(kitchenUsageCharges)}</td>
-                    </tr>
+                    </tr>` : ''}
+                    ${securityDeposit > 0 ? `
                     <tr>
                         <td>Security Deposit (Refundable)</td>
-                        <td style="text-align: center;">${securityDeposit > 0 ? 1 : 0}</td>
+                        <td style="text-align: center;">1</td>
                         <td style="text-align: right;">${formatPKR(securityDeposit)}</td>
                         <td style="text-align: right;">${formatPKR(securityDeposit)}</td>
-                    </tr>
+                    </tr>` : ''}
+                    ${laundryService > 0 ? `
                     <tr>
                         <td>Laundry Service</td>
-                        <td style="text-align: center;">${laundryService > 0 ? 1 : 0}</td>
+                        <td style="text-align: center;">1</td>
                         <td style="text-align: right;">${formatPKR(laundryService)}</td>
                         <td style="text-align: right;">${formatPKR(laundryService)}</td>
-                    </tr>
+                    </tr>` : ''}
+                    ${otherCharges > 0 ? `
                     <tr>
                         <td>Other Charges / Upgrades</td>
-                        <td style="text-align: center;">${otherCharges > 0 ? 1 : 0}</td>
+                        <td style="text-align: center;">1</td>
                         <td style="text-align: right;">${formatPKR(otherCharges)}</td>
                         <td style="text-align: right;">${formatPKR(otherCharges)}</td>
-                    </tr>
+                    </tr>` : ''}
                 </tbody>
             </table>
 
@@ -496,9 +487,8 @@ function buildInvoiceHTML(booking) {
             <!-- Terms & Conditions -->
             <div class="terms-box">
                 <strong>Terms &amp; Conditions</strong>
+                <div style="font-weight: bold; margin-top: 4px; margin-bottom: 4px;">Check-in Time: 2:00 PM &nbsp;|&nbsp; Check-out Time: 12:00 PM</div>
                 <ul>
-                    <li>Check-in Time: 2:00 PM</li>
-                    <li>Check-out Time: 12:00 PM</li>
                     <li>Original CNIC/Passport is mandatory for every guest.</li>
                     <li>All guests must be registered before entering the property.</li>
                     <li>Security deposit (if applicable) is refundable after checkout inspection.</li>
@@ -508,28 +498,12 @@ function buildInvoiceHTML(booking) {
                     <li>By signing this invoice, the guest agrees to all KPH Stay policies.</li>
                 </ul>
             </div>
-
-            <!-- Signatures -->
-            <table class="signatures">
-                <tr>
-                    <td>
-                        <div class="sig-line"></div>
-                        <div class="sig-label">Guest Signature</div>
-                    </td>
-                    <td>
-                        <div class="sig-line"></div>
-                        <div class="sig-label">Authorized Signature &amp; Stamp</div>
-                    </td>
-                </tr>
-            </table>
         </div>
 
         <!-- Footer Banner -->
         <div class="footer-banner">
             <div class="footer-brand">KPH STAY</div>
-            <div style="margin: 4px 0 8px 0; color: #E2E8F0;">Luxury Apartments &amp; Vacation Rentals</div>
-            <div>&#127760; www.kphstay.com &nbsp;|&nbsp; &#128231; info@kphstay.com</div>
-            <div style="margin-top: 10px; font-weight: 500; color: #C5A059;">
+            <div style="margin-top: 4px; font-weight: 500; color: #E2E8F0;">
                 Thank you for choosing KPH Stay. We look forward to hosting you again!
             </div>
         </div>

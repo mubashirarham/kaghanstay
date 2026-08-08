@@ -471,10 +471,11 @@
         }
     };
 
-    // Filter calculations (Debounced & Smooth Rendering)
+    // Filter calculations (Instant initial load + Smooth Typing Debounce)
     function applyFilters(resetPage = true) {
         if (filterDebounceTimer) clearTimeout(filterDebounceTimer);
         
+        const delay = resetPage ? 0 : 150;
         filterDebounceTimer = setTimeout(async () => {
             try {
                 const rooms = await KaghanDB.getRooms();
@@ -580,16 +581,17 @@
                     );
 
                     return matchesKeyword && matchesCategory && matchesLocation && matchesPrice && matchesAmenities && matchesGuests;
-                });
+                })                // Sorting (Pinned items always float to the top)
+                filtered.sort((a, b) => {
+                    const aPinned = a.isPinned ? 1 : 0;
+                    const bPinned = b.isPinned ? 1 : 0;
+                    if (aPinned !== bPinned) return bPinned - aPinned;
 
-                // Sorting
-                if (sortBy === 'price-low') {
-                    filtered.sort((a, b) => (Number(a.priceDaily || a.price || 0)) - (Number(b.priceDaily || b.price || 0)));
-                } else if (sortBy === 'price-high') {
-                    filtered.sort((a, b) => (Number(b.priceDaily || b.price || 0)) - (Number(a.priceDaily || a.price || 0)));
-                } else if (sortBy === 'rating') {
-                    filtered.sort((a, b) => (Number(b.rating || 0)) - (Number(a.rating || 0)));
-                }
+                    if (sortBy === 'price-low') return (Number(a.priceDaily || a.price || 0)) - (Number(b.priceDaily || b.price || 0));
+                    if (sortBy === 'price-high') return (Number(b.priceDaily || b.price || 0)) - (Number(a.priceDaily || a.price || 0));
+                    if (sortBy === 'rating') return (Number(b.rating || 0)) - (Number(a.rating || 0));
+                    return 0;
+                });
 
                 currentFilteredRooms = filtered;
                 if (resetPage) {
@@ -647,6 +649,11 @@
                 <div data-room-id="${room.id}" data-animate="fade-up" style="transition-delay: ${idx * 80}ms;" onclick="KaghanUI.openRoomDetailModal('${room.id}')" class="bg-white/80 backdrop-blur-md rounded-[2.5rem] overflow-hidden border border-[#C5A059]/10 shadow-[0_12px_40px_-15px_rgba(11,15,25,0.05)] hover:border-[#C5A059]/30 transition-all duration-500 group cursor-pointer flex flex-col h-full hover-lift relative">
                     <div class="relative h-56 overflow-hidden bg-slate-100 shrink-0">
                         <img src="${KaghanSafe.escapeHTML(mainImg)}" alt="${KaghanSafe.escapeHTML(room.name || 'Luxury Suite')}" class="w-full h-full object-cover group-hover:scale-105 group-hover:brightness-95 transition-all duration-700">
+                        ${room.isPinned ? `
+                        <div class="absolute bottom-3 left-4 bg-gradient-to-r from-[#D4AF37] to-[#B8860B] text-white text-[9px] font-extrabold uppercase tracking-widest px-3 py-1 rounded-full shadow-md flex items-center gap-1.5 z-10">
+                            <i class="fa-solid fa-thumbtack text-[8px]"></i> Pinned
+                        </div>
+                        ` : ''}
                         <button type="button" class="wishlist-btn ${isSaved ? 'active' : ''}" onclick="event.stopPropagation(); KaghanDB.toggleWishlistItem('${room.id}');" aria-label="Save to Wishlist">
                             <i class="${isSaved ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
                         </button>
@@ -688,6 +695,9 @@
                                 <i class="fa-solid fa-user-group text-[#C5A059] text-xs"></i> Max ${room.maxGuests} Guests • ${room.bedrooms || 1} Bed
                             </div>
                             <div class="flex items-center gap-1.5 shrink-0">
+                                <button onclick="event.stopPropagation(); window.shareRoomCard('${room.id}', '${KaghanSafe.escapeHTML(room.name)}');" class="bg-slate-100 hover:bg-[#C5A059] hover:text-white text-slate-700 w-8 h-8 rounded-full flex items-center justify-center text-xs transition-all shadow-sm" title="Share Listing">
+                                    <i class="fa-solid fa-share-nodes"></i>
+                                </button>
                                 <button onclick="event.stopPropagation(); window.location.href='room-details.html?id=${room.id}'" class="bg-[#0B0F19] text-white text-[10px] uppercase tracking-wider font-bold px-3 py-2 rounded-xl hover:bg-[#C5A059] transition-all shadow-sm">
                                     View Details
                                 </button>
@@ -921,4 +931,20 @@
 
         await applyFilters();
     }
+
+    window.shareRoomCard = function(roomId, roomName) {
+        const title = roomName ? `${roomName} | KPH Stay` : 'KPH Stay Luxury Suite';
+        const text = `Explore ${roomName || 'luxury service suite'} in Islamabad & Nathia Gali on KPH Stay!`;
+        const url = `https://kphstay.com/room-details?id=${roomId}`;
+
+        if (navigator.share) {
+            navigator.share({ title, text, url }).catch(e => console.log('Share dismissed:', e));
+        } else {
+            navigator.clipboard.writeText(url).then(() => {
+                if (window.KaghanUI) KaghanUI.showToast("Suite link copied to clipboard!", "success");
+            }).catch(() => {
+                prompt("Copy suite link:", url);
+            });
+        }
+    };
 })();

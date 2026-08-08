@@ -629,11 +629,19 @@
             return;
         }
 
+        // Sort Pinned Rooms to the top
+        filtered.sort((a, b) => (b.isPinned ? 1 : 0) - (a.isPinned ? 1 : 0));
+
         grid.innerHTML = filtered.map(room => `
             <div class="bg-white border border-slate-100 rounded-3xl p-5 flex flex-col justify-between hover:border-[#D4AF37] transition-all shadow-md group">
                 <div>
                     <div class="relative h-44 overflow-hidden rounded-2xl mb-4 bg-slate-100">
                         <img src="${KaghanSafe.escapeHTML(room.image || (room.images && room.images.length ? room.images[0] : ''))}" alt="${KaghanSafe.escapeHTML(room.name)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        ${room.isPinned ? `
+                        <div class="absolute top-3 left-3 bg-[#D4AF37] text-white text-[9px] font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-full shadow-md flex items-center gap-1 z-10">
+                            <i class="fa-solid fa-thumbtack text-[8px]"></i> Pinned
+                        </div>
+                        ` : ''}
                         <div class="absolute top-3 right-3">
                             <select onchange="changeRoomStatus('${room.id}', this.value)" class="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full border outline-none cursor-pointer shadow-sm ${
                                 room.status === 'available' ? 'bg-emerald-500 text-white border-transparent' : 'bg-amber-500 text-white border-transparent'
@@ -654,11 +662,20 @@
                     <div class="text-slate-400 text-xs line-clamp-2 mb-4 font-light leading-relaxed">
                         ${KaghanSafe.escapeHTML(KaghanSafe.stripTags(room.description || ''))}
                     </div>
-                    <div class="flex flex-wrap gap-1 mb-4">
+                    <div class="flex flex-wrap gap-1 mb-3">
                         ${(room.amenities || []).slice(0, 3).map(a => `
                             <span class="bg-slate-50 text-slate-500 text-[8px] uppercase font-bold px-2 py-0.5 rounded border border-slate-100">${KaghanSafe.escapeHTML(a)}</span>
                         `).join('')}
                         ${(room.amenities || []).length > 3 ? `<span class="bg-slate-50 text-[#D4AF37] text-[8px] font-bold px-2 py-0.5 rounded border border-slate-100">+${(room.amenities || []).length - 3}</span>` : ''}
+                    </div>
+
+                    <!-- SEO Index Badge -->
+                    <div class="flex items-center justify-between text-[9px] bg-slate-50 border border-slate-100 rounded-xl px-2.5 py-1.5 mb-1">
+                        <div class="flex items-center gap-1 font-bold ${room.seoIndex === 'noindex, nofollow' ? 'text-rose-600' : 'text-emerald-600'}">
+                            <i class="fa-solid ${room.seoIndex === 'noindex, nofollow' ? 'fa-eye-slash' : 'fa-globe'} text-[9px]"></i>
+                            <span>${room.seoIndex === 'noindex, nofollow' ? 'No-Index' : 'Indexed • Search Ready'}</span>
+                        </div>
+                        <span class="text-slate-400 font-semibold">${room.seoTitle ? 'Custom SEO' : 'Auto SEO'}</span>
                     </div>
                 </div>
 
@@ -667,15 +684,18 @@
                         <span class="text-slate-400 text-[8px] uppercase tracking-wider block font-bold">Price per night</span>
                         <span class="text-sm font-black text-[#D4AF37]">${KaghanUI.formatPKR(room.price)}</span>
                     </div>
-                    <div class="flex gap-2">
+                    <div class="flex gap-1.5">
+                        <button onclick="togglePinRoom('${room.id}')" class="${room.isPinned ? 'bg-amber-500 text-white border-amber-600' : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'} border text-[10px] font-bold px-2.5 py-2 rounded-lg transition-all flex items-center gap-1" title="${room.isPinned ? 'Unpin Suite from Top' : 'Pin Suite to Top of Catalog Feeds'}">
+                            <i class="fa-solid fa-thumbtack ${room.isPinned ? 'rotate-45' : ''}"></i> ${room.isPinned ? 'Pinned' : 'Pin'}
+                        </button>
                         <button onclick="openAdminRoomCalendar('${room.id}')" class="bg-amber-50 border border-amber-200 text-amber-700 text-[10px] font-bold px-2.5 py-2 rounded-lg hover:bg-amber-100 transition-all flex items-center gap-1" title="Manage Availability Calendar & Block Dates">
                             <i class="fa-regular fa-calendar-days"></i> Calendar
                         </button>
-                        <button onclick="deleteRoomRecord('${room.id}')" class="bg-rose-50 border border-rose-200 text-rose-600 text-[10px] font-bold px-2.5 py-2 rounded-lg hover:bg-rose-100 hover:text-rose-700 transition-all" title="Delete Room Style">
+                        <button onclick="deleteRoomRecord('${room.id}')" class="bg-rose-50 border border-rose-200 text-rose-600 text-[10px] font-bold px-2 py-2 rounded-lg hover:bg-rose-100 hover:text-rose-700 transition-all" title="Delete Room Style">
                             <i class="fa-solid fa-trash-can"></i>
                         </button>
-                        <button onclick="openEditRoomModal('${room.id}')" class="bg-slate-50 border border-slate-200 text-slate-800 text-[10px] font-bold px-3 py-2 rounded-lg hover:bg-slate-100 transition-all">
-                            Edit Details
+                        <button onclick="openEditRoomModal('${room.id}')" class="bg-slate-50 border border-slate-200 text-slate-800 text-[10px] font-bold px-2.5 py-2 rounded-lg hover:bg-slate-100 transition-all">
+                            Edit
                         </button>
                     </div>
                 </div>
@@ -702,6 +722,24 @@
         initInventoryFilterEvents();
         applyInventoryFilters();
     }
+
+    window.togglePinRoom = async (id) => {
+        const room = allInventoryRooms.find(r => r.id === id);
+        if (!room) return;
+
+        const newPinned = !room.isPinned;
+        const success = await KaghanDB.updateRoom(id, { isPinned: newPinned });
+        if (success) {
+            room.isPinned = newPinned;
+            KaghanUI.showToast(newPinned ? `Suite "${room.name}" pinned to top of feeds!` : `Suite "${room.name}" unpinned from top.`, 'success');
+            applyInventoryFilters();
+            if (window.AdminDashboardModule) {
+                await window.AdminDashboardModule.refreshAll();
+            }
+        } else {
+            KaghanUI.showToast('Failed to update pin status.', 'error');
+        }
+    };
 
     window.changeRoomStatus = async (id, newStatus) => {
         const success = await KaghanDB.updateRoom(id, { status: newStatus });
@@ -889,6 +927,13 @@
         }
         document.getElementById('edit-room-amenities').value = (room.amenities || []).join(', ');
 
+        if (document.getElementById('edit-room-seo-title')) document.getElementById('edit-room-seo-title').value = room.seoTitle || '';
+        if (document.getElementById('edit-room-seo-desc')) document.getElementById('edit-room-seo-desc').value = room.seoDescription || '';
+        if (document.getElementById('edit-room-seo-keywords')) document.getElementById('edit-room-seo-keywords').value = room.seoKeywords || '';
+        if (document.getElementById('edit-room-seo-slug')) document.getElementById('edit-room-seo-slug').value = room.slug || '';
+        if (document.getElementById('edit-room-seo-index')) document.getElementById('edit-room-seo-index').value = room.seoIndex || 'index, follow';
+        if (document.getElementById('edit-room-pinned')) document.getElementById('edit-room-pinned').checked = !!room.isPinned;
+
         const imagesArray = room.images || (room.image ? [room.image] : []);
         const initialCoverUrl = room.image || (imagesArray.length > 0 ? imagesArray[0] : '');
         renderGalleryPreview('edit-room-gallery-preview', 'edit-room-images-data', imagesArray, initialCoverUrl, 'edit-room-cover-image');
@@ -990,6 +1035,12 @@
                     : [];
 
                 const address = document.getElementById('edit-room-address')?.value.trim() || '';
+                const seoTitle = document.getElementById('edit-room-seo-title')?.value.trim() || '';
+                const seoDescription = document.getElementById('edit-room-seo-desc')?.value.trim() || '';
+                const seoKeywords = document.getElementById('edit-room-seo-keywords')?.value.trim() || '';
+                const slug = document.getElementById('edit-room-seo-slug')?.value.trim() || '';
+                const seoIndex = document.getElementById('edit-room-seo-index')?.value || 'index, follow';
+                const isPinned = document.getElementById('edit-room-pinned')?.checked || false;
 
                 const updatedData = {
                     name,
@@ -1013,7 +1064,13 @@
                     lat: isNaN(lat) ? null : lat,
                     lng: isNaN(lng) ? null : lng,
                     images: imagesArray,
-                    image: selectedCoverImage
+                    image: selectedCoverImage,
+                    seoTitle,
+                    seoDescription,
+                    seoKeywords,
+                    slug,
+                    seoIndex,
+                    isPinned
                 };
 
                 const success = await KaghanDB.updateRoom(activeEditRoomId, updatedData);
@@ -1180,6 +1237,12 @@
                     : ['King Bed', 'High-Speed Wi-Fi', 'Smart TV'];
 
                 const address = document.getElementById('add-room-address')?.value.trim() || '';
+                const seoTitle = document.getElementById('add-room-seo-title')?.value.trim() || '';
+                const seoDescription = document.getElementById('add-room-seo-desc')?.value.trim() || '';
+                const seoKeywords = document.getElementById('add-room-seo-keywords')?.value.trim() || '';
+                const slug = document.getElementById('add-room-seo-slug')?.value.trim() || '';
+                const seoIndex = document.getElementById('add-room-seo-index')?.value || 'index, follow';
+                const isPinned = document.getElementById('add-room-pinned')?.checked || false;
 
                 const newRoom = {
                     id: 'room-' + type + '-' + Date.now(),
@@ -1207,7 +1270,13 @@
                     lng: isNaN(lng) ? null : lng,
                     status: 'available',
                     rating: 5.0,
-                    reviewsCount: 0
+                    reviewsCount: 0,
+                    seoTitle,
+                    seoDescription,
+                    seoKeywords,
+                    slug,
+                    seoIndex,
+                    isPinned
                 };
 
                 await KaghanDB.addRoom(newRoom);

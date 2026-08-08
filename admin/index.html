@@ -1027,6 +1027,16 @@
                                 <input type="number" id="edit-room-price-monthly" class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]" placeholder="e.g. 10000">
                             </div>
                         </div>
+
+                        <div class="pt-3 border-t border-slate-100 flex items-center justify-between bg-amber-50/50 p-3 rounded-xl border border-amber-200/50">
+                            <div>
+                                <label for="edit-room-pinned" class="text-xs font-bold text-slate-800 cursor-pointer flex items-center gap-1.5">
+                                    <i class="fa-solid fa-thumbtack text-amber-600"></i> Pin to Top of Catalog Feeds
+                                </label>
+                                <p class="text-[10px] text-slate-500">Pinned suites will float to the top of all search results & homepage feeds.</p>
+                            </div>
+                            <input type="checkbox" id="edit-room-pinned" class="w-4 h-4 accent-[#D4AF37] rounded cursor-pointer">
+                        </div>
                     </div>
 
                     <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm space-y-4">
@@ -1116,6 +1126,37 @@
                     <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
                         <h4 class="text-sm font-bold uppercase tracking-wider text-[#D4AF37] mb-4">Amenities (Comma-separated)</h4>
                         <input type="text" id="edit-room-amenities" placeholder="e.g. Wi-Fi, Kitchen, Smart TV, Jacuzzi, Rain Shower, 24/7 Security" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                    </div>
+
+                    <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm space-y-4">
+                        <h4 class="text-sm font-bold uppercase tracking-wider text-[#D4AF37] flex items-center gap-2">
+                            <i class="fa-solid fa-magnifying-glass text-[#D4AF37]"></i> SEO Metadata & Search Indexing
+                        </h4>
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">SEO Title Override (50 - 60 Chars)</label>
+                            <input type="text" id="edit-room-seo-title" placeholder="e.g. Executive 2BHK Suite in Bahria Enclave | KPH Stay" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">SEO Meta Description (150 - 160 Chars)</label>
+                            <textarea id="edit-room-seo-desc" rows="2" placeholder="e.g. Reserve luxury 2BHK service apartment in Islamabad near Margalla Hills. 24/7 security, fully equipped kitchen, high-speed Wi-Fi, best rate guarantee." class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37] resize-none"></textarea>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Focus Keywords (comma-separated)</label>
+                                <input type="text" id="edit-room-seo-keywords" placeholder="e.g. luxury apartment, bahria enclave, islamabad stay" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Custom URL Slug</label>
+                                <input type="text" id="edit-room-seo-slug" placeholder="e.g. luxury-2bhk-bahria-enclave-islamabad" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Search Engine Index Directive</label>
+                            <select id="edit-room-seo-index" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                                <option value="index, follow">index, follow (Allow search engines to rank this page)</option>
+                                <option value="noindex, nofollow">noindex, nofollow (Exclude from search engines)</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
@@ -1238,6 +1279,16 @@
                                 <input type="number" id="add-room-price-monthly" placeholder="e.g. 10000" class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
                             </div>
                         </div>
+
+                        <div class="pt-3 border-t border-slate-100 flex items-center justify-between bg-amber-50/50 p-3 rounded-xl border border-amber-200/50">
+                            <div>
+                                <label for="add-room-pinned" class="text-xs font-bold text-slate-800 cursor-pointer flex items-center gap-1.5">
+                                    <i class="fa-solid fa-thumbtack text-amber-600"></i> Pin to Top of Catalog Feeds
+                                </label>
+                                <p class="text-[10px] text-slate-500">Pinned suites will float to the top of all search results & homepage feeds.</p>
+                            </div>
+                            <input type="checkbox" id="add-room-pinned" class="w-4 h-4 accent-[#D4AF37] rounded cursor-pointer">
+                        </div>
                     </div>
 
                     <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm space-y-4">
@@ -1327,6 +1378,37 @@
                     <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
                         <h4 class="text-sm font-bold uppercase tracking-wider text-[#D4AF37] mb-4">Amenities (Comma-separated)</h4>
                         <input type="text" id="add-room-amenities" placeholder="e.g. Wi-Fi, Kitchen, Smart TV, Jacuzzi, Rain Shower, 24/7 Security" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                    </div>
+
+                    <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm space-y-4">
+                        <h4 class="text-sm font-bold uppercase tracking-wider text-[#D4AF37] flex items-center gap-2">
+                            <i class="fa-solid fa-magnifying-glass text-[#D4AF37]"></i> SEO Metadata & Search Indexing
+                        </h4>
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">SEO Title Override (50 - 60 Chars)</label>
+                            <input type="text" id="add-room-seo-title" placeholder="e.g. Executive 2BHK Suite in Bahria Enclave | KPH Stay" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">SEO Meta Description (150 - 160 Chars)</label>
+                            <textarea id="add-room-seo-desc" rows="2" placeholder="e.g. Reserve luxury 2BHK service apartment in Islamabad near Margalla Hills. 24/7 security, fully equipped kitchen, high-speed Wi-Fi, best rate guarantee." class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37] resize-none"></textarea>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Focus Keywords (comma-separated)</label>
+                                <input type="text" id="add-room-seo-keywords" placeholder="e.g. luxury apartment, bahria enclave, islamabad stay" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Custom URL Slug</label>
+                                <input type="text" id="add-room-seo-slug" placeholder="e.g. luxury-2bhk-bahria-enclave-islamabad" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Search Engine Index Directive</label>
+                            <select id="add-room-seo-index" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                                <option value="index, follow">index, follow (Allow search engines to rank this page)</option>
+                                <option value="noindex, nofollow">noindex, nofollow (Exclude from search engines)</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">

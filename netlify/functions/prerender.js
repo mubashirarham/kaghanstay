@@ -177,6 +177,9 @@ function prerenderRooms(html, rooms) {
     let modified = html;
     const gridId = 'id="rooms-grid"';
     
+    // Sort pinned listings first
+    rooms.sort((a, b) => (b.isPinned ? 1 : 0) - (a.isPinned ? 1 : 0));
+
     const cardsHtml = rooms.map(room => {
         const pkrPrice = formatPKR(room.price);
         const amenitiesHtml = room.amenities.slice(0, 3).map(a => `
@@ -246,12 +249,18 @@ function prerenderRooms(html, rooms) {
 // Pre-render Individual Room Details Page
 function prerenderRoomDetails(html, room) {
     let modified = html;
-    const roomTitle = `${escapeHTML(room.name)} — ${escapeHTML(room.type)} in ${escapeHTML(room.location || 'Islamabad')} | KPH Stay`;
-    const rawDesc = room.description ? room.description.replace(/<[^>]*>?/gm, '').trim() : `${room.name} luxury stay in ${room.location || 'Islamabad'}. Rates from ${formatPKR(room.price)}.`;
+    const customTitle = room.seoTitle ? room.seoTitle.trim() : '';
+    const roomTitle = escapeHTML(customTitle || `${room.name} — ${room.type} in ${room.location || 'Islamabad'} | KPH Stay`);
+    
+    const customDesc = room.seoDescription ? room.seoDescription.trim() : '';
+    const rawDesc = customDesc || (room.description ? room.description.replace(/<[^>]*>?/gm, '').trim() : `${room.name} luxury stay in ${room.location || 'Islamabad'}. Rates from ${formatPKR(room.price)}.`);
     const roomDesc = escapeHTML(rawDesc.slice(0, 160));
-    const roomUrl = `https://kphstay.com/room-details?id=${escapeHTML(room.id)}`;
+    
+    const slugQuery = room.slug ? `&slug=${escapeHTML(room.slug)}` : '';
+    const roomUrl = `https://kphstay.com/room-details?id=${escapeHTML(room.id)}${slugQuery}`;
     const roomImg = escapeHTML(room.image || (room.images && room.images.length ? room.images[0] : 'https://kphstay.com/assets/images/logo.png'));
     const pkrPrice = Number(room.price) || 0;
+    const robotsTag = room.seoIndex || 'index, follow';
 
     // 1. Replace Title
     if (/<title>.*?<\/title>/i.test(modified)) {
@@ -274,7 +283,19 @@ function prerenderRoomDetails(html, room) {
         modified = modified.replace(/<\/head>/i, `  <link rel="canonical" href="${roomUrl}">\n</head>`);
     }
 
-    // 4. OpenGraph Tags
+    // 4. Inject Robots Directive Tag
+    if (/<meta\s+name=["']robots["']/i.test(modified)) {
+        modified = modified.replace(/<meta\s+name=["']robots["'][^>]*>/i, `<meta name="robots" content="${escapeHTML(robotsTag)}">`);
+    } else {
+        modified = modified.replace(/<\/head>/i, `  <meta name="robots" content="${escapeHTML(robotsTag)}">\n</head>`);
+    }
+
+    // 5. Inject Focus Keywords if present
+    if (room.seoKeywords) {
+        modified = modified.replace(/<\/head>/i, `  <meta name="keywords" content="${escapeHTML(room.seoKeywords)}">\n</head>`);
+    }
+
+    // 6. OpenGraph Tags
     const ogTags = `
   <meta property="og:title" content="${roomTitle}">
   <meta property="og:description" content="${roomDesc}">

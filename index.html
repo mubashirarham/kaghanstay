@@ -948,15 +948,19 @@
             if (!container) return;
 
             try {
-                const [rooms, savedWishlist] = await Promise.all([
-                    KaghanDB.getRooms(),
-                    KaghanDB.getWishlist()
-                ]);
+                const rooms = await KaghanDB.getRooms();
+                let savedWishlist = [];
+                try {
+                    savedWishlist = KaghanDB.getWishlistSync ? KaghanDB.getWishlistSync() : [];
+                } catch(e) {}
 
                 let list = rooms.filter(r => r.status === 'available');
                 if (category !== 'all') {
                     list = list.filter(r => r.type === category);
                 }
+
+                // Sort Pinned Rooms to the top
+                list.sort((a, b) => (b.isPinned ? 1 : 0) - (a.isPinned ? 1 : 0));
 
                 if (!list.length) {
                     container.innerHTML = `<div class="col-span-3 text-center text-slate-400 py-16 font-light">No suites available for this category.</div>`;
@@ -985,6 +989,11 @@
                             <img src="${KaghanSafe.escapeHTML(room.image || '')}" alt="${KaghanSafe.escapeHTML(room.name)}" loading="lazy"
                                  onerror="this.src='assets/images/logo.png'"
                                  class="w-full h-full object-cover group-hover:scale-105 group-hover:brightness-95 transition-all duration-700">
+                            ${room.isPinned ? `
+                            <div class="absolute bottom-4 left-4 bg-gradient-to-r from-[#D4AF37] to-[#B8860B] text-white text-[9px] font-extrabold uppercase tracking-widest px-3 py-1 rounded-full shadow-md flex items-center gap-1.5 z-10">
+                                <i class="fa-solid fa-thumbtack text-[8px]"></i> Pinned
+                            </div>
+                            ` : ''}
                             <button type="button" class="wishlist-btn ${isSaved ? 'active' : ''}"
                                     onclick="event.stopPropagation(); KaghanDB.toggleWishlistItem('${room.id}');"
                                     aria-label="Save to Wishlist">
@@ -1192,6 +1201,15 @@
                 const container = document.getElementById('index-categories-container');
                 if (!container) return;
 
+                const defaultCategories = [
+                    { id: '1bed', label: '1 Bed Suite', icon: 'fa-bed' },
+                    { id: '2bed', label: '2 Bed Suite', icon: 'fa-door-open' },
+                    { id: '3bed', label: '3 Bed Suite', icon: 'fa-house-chimney' },
+                    { id: 'studio', label: 'Studio', icon: 'fa-cube' },
+                    { id: 'penthouse', label: 'Penthouse', icon: 'fa-building' }
+                ];
+                const categoriesToRender = (categories && categories.length > 0) ? categories : defaultCategories;
+
                 let html = `
                     <button data-category="all" type="button"
                         class="category-filter-btn flex flex-col items-center gap-2 group transition-opacity min-w-[64px] active-category opacity-100"
@@ -1200,7 +1218,7 @@
                         <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 group-[.active-category]:text-slate-900 group-[.active-category]:border-b-2 group-[.active-category]:border-[#D4AF37] pb-1">All</span>
                     </button>`;
 
-                categories.forEach(cat => {
+                categoriesToRender.forEach(cat => {
                     const iconOrImg = cat.image
                         ? `<img src="${KaghanSafe.escapeHTML(cat.image)}" alt="${KaghanSafe.escapeHTML(cat.label || 'Category')}" class="w-full h-full object-cover rounded-lg group-[.active-category]:ring-2 ring-[#D4AF37] ring-offset-2" loading="lazy">`
                         : `<i class="fa-solid ${KaghanSafe.escapeHTML(cat.icon || 'fa-home')}"></i>`;
@@ -1272,10 +1290,17 @@
             // Real-time data listeners
             window.addEventListener('kaghan-db-rooms',      () => loadFeaturedRooms());
             window.addEventListener('kaghan-db-blogs',      () => loadResortBlogs());
-            window.addEventListener('kaghan-db-categories', () => { if (window.populateSearchDropdownsFromDB) populateSearchDropdownsFromDB(); });
-            window.addEventListener('kaghan-db-locations',  () => { if (window.populateSearchDropdownsFromDB) populateSearchDropdownsFromDB(); });
+            window.addEventListener('kaghan-db-categories', () => {
+                loadDynamicFilters();
+                if (window.populateSearchDropdownsFromDB) populateSearchDropdownsFromDB();
+            });
+            window.addEventListener('kaghan-db-locations',  () => {
+                loadDynamicFilters();
+                if (window.populateSearchDropdownsFromDB) populateSearchDropdownsFromDB();
+            });
 
             // Initial load
+            loadDynamicFilters();
             if (window.populateSearchDropdownsFromDB) populateSearchDropdownsFromDB();
             loadFeaturedRooms();
             loadResortBlogs();

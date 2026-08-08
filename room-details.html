@@ -177,11 +177,16 @@
                                     <i class="fa-solid fa-location-dot text-[#C5A059] mr-1"></i> Islamabad
                                 </span>
                             </div>
-                            <div class="flex items-center gap-4">
+                            <div class="flex items-center gap-3">
                                 <h1 id="detail-title" class="text-2xl md:text-4xl font-bold outfit text-[#0B0F19]">Luxury Service Suite</h1>
-                                <button type="button" id="pdp-wishlist-btn" class="wishlist-btn !relative !top-0 !right-0 shrink-0" aria-label="Save to Wishlist">
-                                    <i class="fa-regular fa-heart"></i>
-                                </button>
+                                <div class="flex items-center gap-2 shrink-0">
+                                    <button type="button" id="pdp-wishlist-btn" class="wishlist-btn !relative !top-0 !right-0 shrink-0" aria-label="Save to Wishlist">
+                                        <i class="fa-regular fa-heart"></i>
+                                    </button>
+                                    <button type="button" onclick="shareCurrentRoom()" class="w-10 h-10 rounded-full bg-slate-100 hover:bg-[#C5A059] hover:text-white text-slate-700 flex items-center justify-center transition-all shadow-sm shrink-0" title="Share Suite Listing">
+                                        <i class="fa-solid fa-share-nodes text-sm"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
@@ -650,6 +655,22 @@
         let activeStayType = 'daily'; // daily, weekly, monthly
         let pdpChatUnsub = null;
 
+        window.shareCurrentRoom = function() {
+            const title = currentRoom ? (currentRoom.seoTitle || currentRoom.name) : document.title;
+            const text = currentRoom ? (currentRoom.seoDescription || `Check out ${currentRoom.name} on KPH Stay!`) : 'Check out this luxury suite on KPH Stay!';
+            const url = window.location.href;
+
+            if (navigator.share) {
+                navigator.share({ title, text, url }).catch(e => console.log('Share dismissed:', e));
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    if (window.KaghanUI) KaghanUI.showToast("Listing link copied to clipboard!", "success");
+                }).catch(() => {
+                    prompt("Copy suite link:", url);
+                });
+            }
+        };
+
         function openPDPGuestChat() {
             const user = KaghanDB.getCurrentUser();
             if (!user || (!user.uid && !user.id)) {
@@ -807,6 +828,98 @@
                 // Breadcrumb & Title
                 document.getElementById('breadcrumb-room-name').innerText = currentRoom.name || 'Room Details';
                 document.getElementById('detail-title').innerText = currentRoom.name || 'Luxury Suite';
+
+                // Dynamic SEO Title & Meta Description & Social Share Cards Update
+                const roomTitleText = currentRoom.seoTitle || `${currentRoom.name} | KPH Stay Luxury Apartments & Resorts`;
+                const roomDescText = currentRoom.seoDescription || (currentRoom.description ? currentRoom.description.replace(/<[^>]*>?/gm, '').trim().slice(0, 160) : `Book ${currentRoom.name} at KPH Stay.`);
+                const primaryImage = currentRoom.image || (currentRoom.images && currentRoom.images.length ? currentRoom.images[0] : 'https://kphstay.com/assets/images/logo.png');
+
+                document.title = roomTitleText;
+
+                let metaDesc = document.querySelector('meta[name="description"]');
+                if (metaDesc) metaDesc.setAttribute('content', roomDescText);
+
+                // Update OpenGraph & Twitter Meta Tags dynamically
+                const setMetaTag = (property, value, isName = false) => {
+                    const selector = isName ? `meta[name="${property}"]` : `meta[property="${property}"]`;
+                    let el = document.querySelector(selector);
+                    if (!el) {
+                        el = document.createElement('meta');
+                        if (isName) el.setAttribute('name', property); else el.setAttribute('property', property);
+                        document.head.appendChild(el);
+                    }
+                    el.setAttribute('content', value);
+                };
+
+                setMetaTag('og:title', roomTitleText);
+                setMetaTag('og:description', roomDescText);
+                setMetaTag('og:image', primaryImage);
+                setMetaTag('og:image:width', '1200');
+                setMetaTag('og:image:height', '630');
+                setMetaTag('og:type', 'website');
+                setMetaTag('og:url', window.location.href);
+
+                setMetaTag('twitter:card', 'summary_large_image', true);
+                setMetaTag('twitter:title', roomTitleText, true);
+                setMetaTag('twitter:description', roomDescText, true);
+                setMetaTag('twitter:image', primaryImage, true);
+
+                // Inject Specialized VacationRental & HotelRoom JSON-LD Schema
+                let dynamicPdpSchema = document.getElementById('dynamic-vacation-rental-schema');
+                if (dynamicPdpSchema) dynamicPdpSchema.remove();
+
+                dynamicPdpSchema = document.createElement('script');
+                dynamicPdpSchema.id = 'dynamic-vacation-rental-schema';
+                dynamicPdpSchema.type = 'application/ld+json';
+                dynamicPdpSchema.text = JSON.stringify({
+                    "@context": "https://schema.org",
+                    "@type": ["VacationRental", "HotelRoom"],
+                    "@id": `https://kphstay.com/room-details?id=${currentRoom.id}`,
+                    "name": roomTitleText,
+                    "description": roomDescText,
+                    "image": currentRoom.images && currentRoom.images.length ? currentRoom.images : [primaryImage],
+                    "url": window.location.href,
+                    "occupancy": {
+                        "@type": "QuantitativeValue",
+                        "value": currentRoom.maxGuests || 2,
+                        "unitText": "guests"
+                    },
+                    "numberOfRooms": currentRoom.bedrooms || 1,
+                    "numberOfBathroomsTotal": currentRoom.bathrooms || 1,
+                    "floorSize": {
+                        "@type": "QuantitativeValue",
+                        "value": currentRoom.area || "1200 sq ft"
+                    },
+                    "bed": {
+                        "@type": "BedDetails",
+                        "numberOfBeds": currentRoom.bedrooms || 1,
+                        "typeOfBed": currentRoom.bedsConfig || "King Bed"
+                    },
+                    "address": {
+                        "@type": "PostalAddress",
+                        "streetAddress": currentRoom.address || "Sector C, Bahria Enclave",
+                        "addressLocality": currentRoom.location || "Islamabad",
+                        "addressCountry": "PK"
+                    },
+                    "geo": {
+                        "@type": "GeoCoordinates",
+                        "latitude": currentRoom.lat || 33.6844,
+                        "longitude": currentRoom.lng || 73.2045
+                    },
+                    "amenityFeature": (currentRoom.amenities || []).map(a => ({
+                        "@type": "LocationFeatureSpecification",
+                        "name": a,
+                        "value": true
+                    })),
+                    "offers": {
+                        "@type": "Offer",
+                        "price": Number(currentRoom.price) || 0,
+                        "priceCurrency": "PKR",
+                        "availability": currentRoom.status === "maintenance" ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
+                        "url": window.location.href
+                    }
+                });
+                document.head.appendChild(dynamicPdpSchema);
 
                 // Category & Location (Fetched dynamically from Firestore collections)
                 const categories = await KaghanDB.getCategories();

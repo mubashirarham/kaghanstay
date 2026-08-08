@@ -142,26 +142,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     applyRolePermissionsUI();
 
-    // Wait for Firebase Auth token before fetching any Firestore data
-    let initialized = false;
+    // ⚡ 0ms SWR Instant Admin Dashboard Load
+    initAdminDashboard();
+    setupEventListeners();
+    setupActiveDatabaseListeners();
+
+    // Background Auth Token Verification & Real-time Sync
+    let authChecked = false;
     firebase.auth().onAuthStateChanged(async (firebaseUser) => {
-        if (initialized) return;
-        
+        if (authChecked) return;
         if (!firebaseUser) {
             localStorage.removeItem('kaghan_hotel_session');
             window.location.href = '../login.html';
             return;
         }
-
-        initialized = true;
-
+        authChecked = true;
         try {
             await firebaseUser.getIdToken(true);
         } catch(e) {}
-
-        await initAdminDashboard();
-        setupEventListeners();
-        setupActiveDatabaseListeners();
     });
 });
 
