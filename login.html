@@ -466,23 +466,48 @@
             }
         }
 
-        // Google Sign-In handler
+        // Google Sign-In handler (Syncs Google Auth with Email Accounts for the same email)
         async function processGoogleUserSession(user) {
-            let dbUser = await KaghanDB.getUserById(user.uid);
-            if (!dbUser) {
+            const email = (user.email || '').toLowerCase().trim();
+            const googleUid = user.uid;
+
+            let dbUser = await KaghanDB.getUserById(googleUid);
+
+            // Search by email if not found by googleUid
+            if (!dbUser && email) {
+                const snap = await firebase.firestore().collection('users').where('email', '==', email).limit(1).get();
+                if (!snap.empty) {
+                    dbUser = snap.docs[0].data();
+                }
+            }
+
+            if (dbUser) {
+                // Link Google account to existing user document
+                dbUser.googleUid = googleUid;
+                if (!dbUser.uid) dbUser.uid = googleUid;
+                if (user.photoURL && !dbUser.photoURL) dbUser.photoURL = user.photoURL;
+                if (!dbUser.name || dbUser.name === 'User' || dbUser.name === 'Google Guest') {
+                    dbUser.name = user.displayName || dbUser.name;
+                }
+                await firebase.firestore().collection('users').doc(dbUser.id || dbUser.uid || googleUid).set(dbUser, { merge: true });
+            } else {
                 dbUser = {
-                    id: user.uid,
-                    uid: user.uid,
+                    id: googleUid,
+                    uid: googleUid,
+                    googleUid: googleUid,
                     name: user.displayName || 'Google Guest',
-                    email: (user.email || '').toLowerCase().trim(),
+                    email: email,
                     role: 'user',
                     loyaltyPoints: 100,
-                    phone: user.phoneNumber || ''
+                    photoURL: user.photoURL || '',
+                    phone: user.phoneNumber || '',
+                    createdAt: new Date().toISOString()
                 };
-                await firebase.firestore().collection('users').doc(user.uid).set(dbUser, { merge: true });
+                await firebase.firestore().collection('users').doc(googleUid).set(dbUser);
             }
+
             localStorage.setItem('kaghan_hotel_session', JSON.stringify(dbUser));
-            KaghanUI.showToast(`Welcome, ${dbUser.name}!`, 'success');
+            KaghanUI.showToast(`Welcome back, ${dbUser.name}!`, 'success');
             setTimeout(() => redirectUser(dbUser), 600);
         }
 

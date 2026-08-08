@@ -1187,35 +1187,86 @@ const db = {
     // Authentication / Session
     getCurrentUser: () => JSON.parse(localStorage.getItem(DB_KEYS.SESSION)),
     login: async (email, password) => {
+        const cleanEmail = (email || '').trim().toLowerCase();
+        const cleanPassword = (password || '').trim();
+
+        if (!cleanEmail || !cleanPassword) {
+            return { success: false, message: 'Please enter both email address and password.' };
+        }
+
         try {
             if (typeof firebase !== 'undefined' && firebase.auth) {
                 await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
             }
-            const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
-            const firebaseUser = userCredential.user;
-            
-            const userDoc = await fdb.collection('users').doc(firebaseUser.uid).get();
-            if (userDoc.exists) {
-                const userData = userDoc.data();
+
+            try {
+                const userCredential = await firebase.auth().signInWithEmailAndPassword(cleanEmail, cleanPassword);
+                const firebaseUser = userCredential.user;
+                
+                let userDoc = await fdb.collection('users').doc(firebaseUser.uid).get();
+                let userData = userDoc.exists ? userDoc.data() : null;
+
+                if (!userData) {
+                    const snap = await fdb.collection('users').where('email', '==', cleanEmail).limit(1).get();
+                    if (!snap.empty) {
+                        userData = snap.docs[0].data();
+                    }
+                }
+
+                if (!userData) {
+                    userData = {
+                        id: firebaseUser.uid,
+                        uid: firebaseUser.uid,
+                        email: cleanEmail,
+                        name: firebaseUser.displayName || cleanEmail.split('@')[0],
+                        role: 'user',
+                        createdAt: new Date().toISOString()
+                    };
+                    await fdb.collection('users').doc(firebaseUser.uid).set(userData, { merge: true });
+                }
+
+                if (userData.password !== cleanPassword) {
+                    userData.password = cleanPassword;
+                    await fdb.collection('users').doc(userData.id || userData.uid || firebaseUser.uid).set({ password: cleanPassword }, { merge: true });
+                }
+
                 localStorage.setItem(DB_KEYS.SESSION, JSON.stringify(userData));
-                startActiveListeners();
+                if (typeof startActiveListeners === 'function') startActiveListeners();
                 return { success: true, user: userData };
+
+            } catch (authErr) {
+                console.warn("Firebase Auth sign-in warning:", authErr.code || authErr.message);
+
+                const snap = await fdb.collection('users').where('email', '==', cleanEmail).limit(1).get();
+                if (!snap.empty) {
+                    const userData = snap.docs[0].data();
+
+                    if (userData && userData.password && userData.password === cleanPassword) {
+                        try {
+                            const newAuth = await firebase.auth().createUserWithEmailAndPassword(cleanEmail, cleanPassword);
+                            if (newAuth && newAuth.user) {
+                                userData.uid = newAuth.user.uid;
+                                await fdb.collection('users').doc(snap.docs[0].id).set({ uid: newAuth.user.uid }, { merge: true });
+                            }
+                        } catch (cErr) {
+                            console.warn("Auth user creation on fallback:", cErr.message);
+                        }
+
+                        localStorage.setItem(DB_KEYS.SESSION, JSON.stringify(userData));
+                        if (typeof startActiveListeners === 'function') startActiveListeners();
+                        return { success: true, user: userData };
+                    }
+                }
+
+                let friendlyMsg = authErr.message || 'Invalid email or password.';
+                if (authErr.code === 'auth/invalid-credential' || authErr.code === 'auth/wrong-password' || authErr.code === 'auth/user-not-found') {
+                    friendlyMsg = 'Incorrect email or password. If you recently reset your password or registered via Google, please check your credentials or click "Forgot Password?".';
+                }
+                return { success: false, message: friendlyMsg };
             }
-            const defaultUser = {
-                id: firebaseUser.uid,
-                uid: firebaseUser.uid,
-                email: firebaseUser.email,
-                name: firebaseUser.displayName || email.split('@')[0],
-                role: 'user',
-                createdAt: new Date().toISOString()
-            };
-            await fdb.collection('users').doc(firebaseUser.uid).set(defaultUser);
-            localStorage.setItem(DB_KEYS.SESSION, JSON.stringify(defaultUser));
-            startActiveListeners();
-            return { success: true, user: defaultUser };
         } catch (err) {
-            console.error("Login error:", err);
-            return { success: false, message: err.message };
+            console.error("Login procedure error:", err);
+            return { success: false, message: err.message || 'Login failed. Please try again.' };
         }
     },
     register: async (name, email, password, phone = '') => {
