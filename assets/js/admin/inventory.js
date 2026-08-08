@@ -785,27 +785,19 @@
     }
 
     function ensureGoogleMapsApiLoaded() {
-        const savedKey = localStorage.getItem('GOOGLE_MAPS_API_KEY') || 'AIzaSyBZDGmZLoC7CiNY1nV6y2UtsfexCD-C9Lk';
+        if (window.KaghanMaps) {
+            window.KaghanMaps.loadSdk(() => {
+                initOfficialGooglePlacesAutocomplete('add');
+                initOfficialGooglePlacesAutocomplete('edit');
+            });
+            return;
+        }
+
         if (window.google && window.google.maps) {
             initOfficialGooglePlacesAutocomplete('add');
             initOfficialGooglePlacesAutocomplete('edit');
             return;
         }
-
-        const existingScript = document.getElementById('google-maps-js-sdk');
-        if (existingScript) return;
-
-        const script = document.createElement('script');
-        script.id = 'google-maps-js-sdk';
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(savedKey)}&libraries=places`;
-        script.async = true;
-        script.defer = true;
-        script.onload = () => {
-            console.log("Official Google Maps Places API loaded for inventory creation & edit.");
-            initOfficialGooglePlacesAutocomplete('add');
-            initOfficialGooglePlacesAutocomplete('edit');
-        };
-        document.head.appendChild(script);
     }
 
     // Edit Room Modal operations
