@@ -226,4 +226,22 @@
         }
         return true;
     };
+
+    // Permanently delete user profile from database
+    db.deleteUser = async (userId) => {
+        try {
+            await fdb.collection('users').doc(userId).delete();
+            if (window.KaghanDB_Cache && window.KaghanDB_Cache.users) {
+                window.KaghanDB_Cache.users = window.KaghanDB_Cache.users.filter(u => u.id !== userId && u.uid !== userId);
+            }
+            const currentUser = db.getCurrentUser();
+            if (currentUser && (currentUser.id === userId || currentUser.uid === userId)) {
+                localStorage.removeItem('kaghan_hotel_session');
+            }
+            return true;
+        } catch (err) {
+            console.error("deleteUser error:", err);
+            return false;
+        }
+    };
 })();

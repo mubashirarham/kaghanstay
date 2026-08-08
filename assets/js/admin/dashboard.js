@@ -40,6 +40,92 @@ if (window.KaghanDB) {
     };
 }
 
+// Role & Section Permission Mapping for Admin Console
+const DEFAULT_ROLE_PERMS = {
+    admin: ['manage_bookings', 'manage_rooms', 'manage_reviews', 'manage_guests', 'manage_discounts', 'manage_settings'],
+    moderator: ['manage_bookings', 'manage_reviews', 'manage_guests'],
+    editor: ['manage_rooms', 'manage_discounts', 'manage_reviews'],
+    user: []
+};
+
+const TAB_PERMISSIONS = {
+    overview: ['manage_settings'],
+    bookings: ['manage_bookings'],
+    messages: ['manage_bookings'],
+    calendar: ['manage_bookings'],
+    rooms: ['manage_rooms'],
+    guests: ['manage_guests'],
+    newsletter: ['manage_guests'],
+    reviews: ['manage_reviews'],
+    blogs: ['manage_rooms'],
+    coupons: ['manage_discounts'],
+    settings: ['manage_settings']
+};
+
+const ALL_TABS = ['overview', 'bookings', 'messages', 'calendar', 'rooms', 'guests', 'newsletter', 'reviews', 'blogs', 'coupons', 'settings'];
+
+function getUserPermissions(user) {
+    if (!user) return [];
+    if (user.role === 'admin') return DEFAULT_ROLE_PERMS.admin;
+    if (Array.isArray(user.permissions) && user.permissions.length > 0) return user.permissions;
+    return DEFAULT_ROLE_PERMS[user.role] || [];
+}
+
+window.hasPermissionForTab = (user, tabName) => {
+    if (!user) return false;
+    if (user.role === 'admin') return true;
+    const requiredPerms = TAB_PERMISSIONS[tabName] || [];
+    if (requiredPerms.length === 0) return true;
+    const userPerms = getUserPermissions(user);
+    return requiredPerms.some(p => userPerms.includes(p));
+};
+
+function getFirstAllowedTab(user) {
+    return ALL_TABS.find(t => window.hasPermissionForTab(user, t)) || 'rooms';
+}
+
+function applyRolePermissionsUI() {
+    const sessionUser = KaghanDB.getCurrentUser();
+    if (!sessionUser) return;
+
+    // Set sidebar name & role badge
+    const nameEl = document.getElementById('sidebar-admin-name');
+    if (nameEl) nameEl.innerText = sessionUser.name || 'Staff Member';
+
+    const roleBadgeEl = document.querySelector('#admin-sidebar .text-\\[9px\\].text-\\[\\#D4AF37\\].uppercase');
+    if (roleBadgeEl) {
+        const roleTitles = { admin: 'Resort Manager', moderator: 'Moderator Staff', editor: 'Content Editor' };
+        roleBadgeEl.innerText = roleTitles[sessionUser.role] || 'Staff Member';
+    }
+
+    // Filter sidebar navigation buttons
+    ALL_TABS.forEach(tabName => {
+        const btn = document.getElementById(`tab-btn-${tabName}`);
+        if (btn) {
+            if (window.hasPermissionForTab(sessionUser, tabName)) {
+                btn.style.display = 'flex';
+            } else {
+                btn.style.display = 'none';
+            }
+        }
+    });
+
+    // Filter bottom/mobile nav buttons
+    const mobileNavButtons = document.querySelectorAll('footer button[onclick*="switchTab"]');
+    mobileNavButtons.forEach(btn => {
+        const onclickAttr = btn.getAttribute('onclick') || '';
+        const match = onclickAttr.match(/switchTab\('([^']+)'\)/);
+        if (match && match[1]) {
+            const tName = match[1];
+            if (!window.hasPermissionForTab(sessionUser, tName)) {
+                btn.style.display = 'none';
+            } else {
+                btn.style.display = 'flex';
+            }
+        }
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     // Quick synchronous localStorage check — redirects immediately if not logged in at all
     const sessionUser = KaghanDB.getCurrentUser();
@@ -53,18 +139,14 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    // Set admin name in sidebar immediately from localStorage
-    const nameEl = document.getElementById('sidebar-admin-name');
-    if (nameEl) nameEl.innerText = sessionUser.name || 'Admin';
+    applyRolePermissionsUI();
 
     // Wait for Firebase Auth token before fetching any Firestore data
-    // This prevents the "Missing or insufficient permissions" race condition
     let initialized = false;
     firebase.auth().onAuthStateChanged(async (firebaseUser) => {
-        if (initialized) return; // Only init once
+        if (initialized) return;
         
         if (!firebaseUser) {
-            // Firebase says not logged in — force login
             localStorage.removeItem('kaghan_hotel_session');
             window.location.href = '../login.html';
             return;
@@ -72,12 +154,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         initialized = true;
 
-        // Force token refresh to ensure custom claims / auth state is current
         try {
             await firebaseUser.getIdToken(true);
-        } catch(e) {
-            // Token refresh failed — proceed anyway, will get fresh token on next request
-        }
+        } catch(e) {}
 
         await initAdminDashboard();
         setupEventListeners();
@@ -86,6 +165,18 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function initAdminDashboard() {
+    applyRolePermissionsUI();
+
+    const sessionUser = KaghanDB.getCurrentUser();
+    const urlParams = new URLSearchParams(window.location.search);
+    let initialTab = urlParams.get('tab');
+
+    if (!initialTab || !window.hasPermissionForTab(sessionUser, initialTab)) {
+        initialTab = getFirstAllowedTab(sessionUser);
+    }
+
+    window.switchTab(initialTab);
+
     // Register forms in inventory module
     if (window.AdminInventoryModule) {
         window.AdminInventoryModule.initForms();
@@ -101,17 +192,31 @@ async function initAdminDashboard() {
 }
 
 async function refreshAll() {
+    const sessionUser = KaghanDB.getCurrentUser();
     try {
-        await renderMetrics();
-        await renderOverviewBookings();
+        if (window.hasPermissionForTab(sessionUser, 'overview')) {
+            await renderMetrics();
+            await renderOverviewBookings();
+        }
         
-        // Core modules
-        if (window.AdminBookingsModule) await window.AdminBookingsModule.render();
-        if (window.AdminInventoryModule) await window.AdminInventoryModule.render();
-        if (window.AdminGuestsModule) await window.AdminGuestsModule.render();
-        if (window.AdminReviewsModule) await window.AdminReviewsModule.render();
-        if (window.AdminBlogsModule) await window.AdminBlogsModule.render();
-        await renderNewsletter();
+        if (window.hasPermissionForTab(sessionUser, 'bookings') && window.AdminBookingsModule) {
+            await window.AdminBookingsModule.render();
+        }
+        if (window.hasPermissionForTab(sessionUser, 'rooms') && window.AdminInventoryModule) {
+            await window.AdminInventoryModule.render();
+        }
+        if (window.hasPermissionForTab(sessionUser, 'guests') && window.AdminGuestsModule) {
+            await window.AdminGuestsModule.render();
+        }
+        if (window.hasPermissionForTab(sessionUser, 'reviews') && window.AdminReviewsModule) {
+            await window.AdminReviewsModule.render();
+        }
+        if (window.hasPermissionForTab(sessionUser, 'blogs') && window.AdminBlogsModule) {
+            await window.AdminBlogsModule.render();
+        }
+        if (window.hasPermissionForTab(sessionUser, 'newsletter')) {
+            await renderNewsletter();
+        }
     } catch(e) {
         if (e && e.code !== 'permission-denied' && !String(e).includes('permission')) {
             console.warn("Refresh all admin views notice:", e.message || e);
@@ -120,7 +225,6 @@ async function refreshAll() {
 }
 
 function setupEventListeners() {
-    // Bookings Manager tab search & filters
     const bookingSearch = document.getElementById('booking-search-input');
     const bookingStatus = document.getElementById('booking-filter-status');
     if (bookingSearch) bookingSearch.addEventListener('input', () => {
@@ -130,25 +234,32 @@ function setupEventListeners() {
         if (window.AdminBookingsModule) window.AdminBookingsModule.render();
     });
 
-    // Guest Registry search
     const guestSearch = document.getElementById('guest-search-input');
     if (guestSearch) guestSearch.addEventListener('input', () => {
         if (window.AdminGuestsModule) window.AdminGuestsModule.render(guestSearch.value);
     });
 
-    // Reviews search
     const reviewSearch = document.getElementById('review-search-input');
     if (reviewSearch) reviewSearch.addEventListener('input', () => {
         if (window.AdminReviewsModule) window.AdminReviewsModule.render();
     });
 
-    // Newsletter search
     const newsletterSearch = document.getElementById('newsletter-search-input');
     if (newsletterSearch) newsletterSearch.addEventListener('input', () => renderNewsletter(newsletterSearch.value));
 }
 
 // Switch tabs and load details
 window.switchTab = (tabName) => {
+    const sessionUser = KaghanDB.getCurrentUser();
+    if (sessionUser && !window.hasPermissionForTab(sessionUser, tabName)) {
+        const allowedTab = getFirstAllowedTab(sessionUser);
+        KaghanUI.showToast(`Access Denied: You do not have permission to view '${tabName}'.`, "warning");
+        if (allowedTab && allowedTab !== tabName) {
+            return window.switchTab(allowedTab);
+        }
+        return;
+    }
+
     const views = document.querySelectorAll('.tab-view');
     views.forEach(v => v.classList.add('hidden'));
 
@@ -165,14 +276,12 @@ window.switchTab = (tabName) => {
     if (activeBtn) {
         activeBtn.classList.add('sidebar-active');
         activeBtn.classList.remove('text-slate-400', 'hover:text-white', 'hover:bg-slate-800/20');
-        // Update mobile header breadcrumb label
         const tabLabel = document.getElementById('admin-current-tab-label');
         if (tabLabel) {
             tabLabel.textContent = activeBtn.textContent.trim();
         }
     }
 
-    // Automatically close sidebar on mobile after choosing a tab
     const sidebar = document.getElementById('admin-sidebar');
     if (sidebar && window.innerWidth < 768) {
         const isOpen = sidebar.style.transform === 'translateX(0px)' || sidebar.style.transform === 'translateX(0)';

@@ -250,18 +250,27 @@
     });
 
     window.deleteGuestAccount = async (userId, name) => {
-        if (!confirm(`Are you sure you want to permanently delete account "${name}" (${userId})? This will delete their credentials and profile.`)) return;
+        const currentUser = KaghanDB.getCurrentUser();
+        if (currentUser && currentUser.role !== 'admin') {
+            const userPerms = currentUser.permissions || (window.DEFAULT_ROLE_PERMS ? window.DEFAULT_ROLE_PERMS[currentUser.role] : []);
+            if (!userPerms || !userPerms.includes('manage_guests')) {
+                KaghanUI.showToast("Access Denied: You do not have permission to delete user accounts.", "error");
+                return;
+            }
+        }
+
+        if (!confirm(`Are you sure you want to permanently delete account "${name}" (${userId})? This will remove their credentials and profile.`)) return;
 
         const success = await KaghanDB.deleteUser(userId);
         if (success) {
-            KaghanUI.showToast(`Account for ${name} has been deleted.`, 'success');
+            KaghanUI.showToast(`Account for ${name} has been permanently deleted.`, 'success');
             if (window.AdminDashboardModule) {
                 await window.AdminDashboardModule.refreshAll();
             } else {
                 await renderGuests();
             }
         } else {
-            KaghanUI.showToast('Failed to delete account.', 'error');
+            KaghanUI.showToast('Failed to delete account from database.', 'error');
         }
     };
 
