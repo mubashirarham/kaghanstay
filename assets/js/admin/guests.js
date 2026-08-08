@@ -89,6 +89,9 @@
                         <button onclick="openChangeUserPasswordModal('${guest.id || guest.uid}', '${KaghanSafe.escapeHTML(guest.email || '')}', '${KaghanSafe.escapeHTML(guest.name || 'User')}')" class="text-amber-600 hover:text-amber-700 p-1.5 rounded hover:bg-amber-50 transition-colors font-semibold text-xs" title="Change User Password">
                             <i class="fa-solid fa-key text-xs"></i> Password
                         </button>
+                        <button onclick="sendUserPasswordResetLink('${KaghanSafe.escapeHTML(guest.email || '')}', '${KaghanSafe.escapeHTML(guest.name || 'User')}')" class="text-blue-600 hover:text-blue-700 p-1.5 rounded hover:bg-blue-50 transition-colors font-semibold text-xs" title="Send Password Reset Email">
+                            <i class="fa-solid fa-paper-plane text-xs"></i> Reset Link
+                        </button>
                         <button onclick="openEditUserModal('${guest.id || guest.uid}')" class="text-slate-600 hover:text-[#C5A059] p-1.5 rounded hover:bg-slate-100 transition-colors font-semibold text-xs" title="Edit User & Permissions">
                             <i class="fa-solid fa-pen-to-square text-xs"></i> Edit
                         </button>
@@ -101,11 +104,39 @@
         }).join('');
     }
 
+    // Global Helper: Toggle password input visibility (Show / Hide plaintext as typed)
+    window.togglePasswordVisibility = (inputId, btn) => {
+        const input = document.getElementById(inputId);
+        if (!input) return;
+        const icon = btn ? btn.querySelector('i') : null;
+        if (input.type === 'password') {
+            input.type = 'text';
+            if (icon) {
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            }
+        } else {
+            input.type = 'password';
+            if (icon) {
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+    };
+
     // Modal controls for changing user password
     window.openChangeUserPasswordModal = (userId, userEmail, userName) => {
         document.getElementById('change-user-password-id').value = userId;
         document.getElementById('change-user-password-target').textContent = `${userName} (${userEmail})`;
-        document.getElementById('change-user-password-input').value = '';
+        const passInput = document.getElementById('change-user-password-input');
+        if (passInput) {
+            passInput.value = '';
+            passInput.type = 'password';
+        }
+        const toggleIcon = document.querySelector('#change-user-password-modal .toggle-pass-btn i');
+        if (toggleIcon) {
+            toggleIcon.className = 'fa-solid fa-eye text-xs';
+        }
 
         const modal = document.getElementById('change-user-password-modal');
         if (modal) {
@@ -156,8 +187,14 @@
     // Modal control for Admin / User changing own logged-in password
     window.openChangeMyPasswordModal = () => {
         const modal = document.getElementById('change-my-password-modal');
-        if (document.getElementById('change-my-password-input')) {
-            document.getElementById('change-my-password-input').value = '';
+        const passInput = document.getElementById('change-my-password-input');
+        if (passInput) {
+            passInput.value = '';
+            passInput.type = 'password';
+        }
+        const toggleIcon = document.querySelector('#change-my-password-modal .toggle-pass-btn i');
+        if (toggleIcon) {
+            toggleIcon.className = 'fa-solid fa-eye text-xs';
         }
         if (modal) {
             modal.classList.remove('hidden');
@@ -225,6 +262,25 @@
             }
         } else {
             KaghanUI.showToast('Failed to delete account.', 'error');
+        }
+    };
+
+    window.sendUserPasswordResetLink = async (email, name) => {
+        if (!email || !email.includes('@')) {
+            KaghanUI.showToast("User does not have a valid email address.", "error");
+            return;
+        }
+        if (!confirm(`Send password reset email to ${name} (${email})?`)) return;
+        try {
+            const res = await KaghanDB.sendPasswordResetEmail(email);
+            if (res.success) {
+                KaghanUI.showToast(`Password reset link sent to ${email}`, "success");
+            } else {
+                KaghanUI.showToast(res.message || "Failed to send reset email.", "error");
+            }
+        } catch (e) {
+            console.error("Send reset email error:", e);
+            KaghanUI.showToast(e.message || "Failed to send reset email.", "error");
         }
     };
 

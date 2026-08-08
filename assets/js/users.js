@@ -64,6 +64,23 @@
         }
     };
 
+    // Password reset email request directly via Firebase Auth
+    db.sendPasswordResetEmail = async (email) => {
+        try {
+            if (!email || !email.includes('@')) {
+                return { success: false, message: "Please provide a valid email address." };
+            }
+            if (typeof firebase !== 'undefined' && firebase.auth) {
+                await firebase.auth().sendPasswordResetEmail(email.trim());
+                return { success: true, message: "Password reset email sent! Please check your inbox." };
+            }
+            return { success: false, message: "Authentication service unavailable." };
+        } catch (err) {
+            console.error("Password reset email error:", err);
+            return { success: false, message: err.message || "Failed to send password reset email." };
+        }
+    };
+
     // Logout and redirect
     db.logout = () => {
         localStorage.removeItem('kaghan_hotel_session');

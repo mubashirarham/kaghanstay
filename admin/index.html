@@ -1603,7 +1603,12 @@
                     </div>
                     <div>
                         <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Password</label>
-                        <input type="password" id="add-user-password" required placeholder="Min 6 characters" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                        <div class="relative">
+                            <input type="password" id="add-user-password" required placeholder="Min 6 characters" class="w-full border border-slate-200 rounded-xl pl-3 pr-10 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                            <button type="button" onclick="togglePasswordVisibility('add-user-password', this)" class="toggle-pass-btn absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1" title="Toggle password visibility">
+                                <i class="fa-solid fa-eye text-xs"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <div>
@@ -1743,7 +1748,12 @@
                 <input type="hidden" id="change-user-password-id">
                 <div>
                     <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">New Password</label>
-                    <input type="password" id="change-user-password-input" required minlength="6" placeholder="Min 6 characters" class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37] font-mono">
+                    <div class="relative">
+                        <input type="password" id="change-user-password-input" required minlength="6" placeholder="Min 6 characters" class="w-full border border-slate-200 rounded-xl pl-3 pr-10 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37] font-mono">
+                        <button type="button" onclick="togglePasswordVisibility('change-user-password-input', this)" class="toggle-pass-btn absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1" title="Toggle password visibility">
+                            <i class="fa-solid fa-eye text-xs"></i>
+                        </button>
+                    </div>
                 </div>
                 <div class="flex gap-3 pt-2">
                     <button type="button" onclick="closeChangeUserPasswordModal()" class="w-1/2 border border-slate-200 text-slate-800 font-bold py-2.5 rounded-xl hover:bg-slate-100 transition-all text-xs">Cancel</button>
@@ -1772,7 +1782,12 @@
             <form id="change-my-password-form" onsubmit="submitChangeMyPassword(event)" class="space-y-4">
                 <div>
                     <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">New Account Password</label>
-                    <input type="password" id="change-my-password-input" required minlength="6" placeholder="Enter new password (min 6 chars)" class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37] font-mono">
+                    <div class="relative">
+                        <input type="password" id="change-my-password-input" required minlength="6" placeholder="Enter new password (min 6 chars)" class="w-full border border-slate-200 rounded-xl pl-3 pr-10 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37] font-mono">
+                        <button type="button" onclick="togglePasswordVisibility('change-my-password-input', this)" class="toggle-pass-btn absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1" title="Toggle password visibility">
+                            <i class="fa-solid fa-eye text-xs"></i>
+                        </button>
+                    </div>
                 </div>
                 <div class="flex gap-3 pt-2">
                     <button type="button" onclick="closeChangeMyPasswordModal()" class="w-1/2 border border-slate-200 text-slate-800 font-bold py-2.5 rounded-xl hover:bg-slate-100 transition-all text-xs">Cancel</button>

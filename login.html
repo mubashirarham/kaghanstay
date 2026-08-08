@@ -101,10 +101,16 @@
                     </div>
 
                     <div>
-                        <label for="login-password" class="block text-[10px] uppercase tracking-wider text-slate-400 font-semibold mb-2">Password</label>
+                        <div class="flex items-center justify-between mb-2">
+                            <label for="login-password" class="block text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Password</label>
+                            <button type="button" onclick="openForgotPasswordModal()" class="text-[10px] text-[#D4AF37] hover:underline font-semibold">Forgot Password?</button>
+                        </div>
                         <div class="relative">
                             <i class="fa-solid fa-lock absolute left-4 top-3.5 text-slate-400 text-sm"></i>
-                            <input type="password" id="login-password" required class="w-full bg-slate-900/60 border border-slate-800 rounded-xl pl-11 pr-4 py-3 outline-none focus:border-[#D4AF37] text-sm text-white">
+                            <input type="password" id="login-password" required class="w-full bg-slate-900/60 border border-slate-800 rounded-xl pl-11 pr-10 py-3 outline-none focus:border-[#D4AF37] text-sm text-white">
+                            <button type="button" onclick="togglePasswordVisibility('login-password', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white p-1" title="Toggle password visibility">
+                                <i class="fa-solid fa-eye text-xs"></i>
+                            </button>
                         </div>
                     </div>
 
@@ -584,11 +590,108 @@
             });
         }
 
+        function togglePasswordVisibility(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (!input) return;
+            const icon = btn ? btn.querySelector('i') : null;
+            if (input.type === 'password') {
+                input.type = 'text';
+                if (icon) {
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                }
+            } else {
+                input.type = 'password';
+                if (icon) {
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            }
+        }
+
+        function openForgotPasswordModal() {
+            const emailInput = document.getElementById('forgot-email');
+            const loginEmail = document.getElementById('login-email')?.value || '';
+            if (emailInput) emailInput.value = loginEmail;
+            const modal = document.getElementById('forgot-password-modal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                setTimeout(() => modal.classList.remove('opacity-0'), 10);
+            }
+        }
+
+        function closeForgotPasswordModal() {
+            const modal = document.getElementById('forgot-password-modal');
+            if (modal) {
+                modal.classList.add('opacity-0');
+                setTimeout(() => modal.classList.add('hidden'), 300);
+            }
+        }
+
+        async function handleForgotPasswordSubmit(e) {
+            e.preventDefault();
+            const btn = document.getElementById('forgot-submit-btn');
+            const email = document.getElementById('forgot-email').value;
+            const origText = btn ? btn.innerHTML : 'Send Link';
+
+            if (btn) {
+                btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Sending...';
+                btn.disabled = true;
+            }
+
+            try {
+                const res = await KaghanDB.sendPasswordResetEmail(email);
+                if (res.success) {
+                    KaghanUI.showToast(res.message, 'success');
+                    closeForgotPasswordModal();
+                } else {
+                    KaghanUI.showToast(res.message, 'error');
+                }
+            } catch (err) {
+                console.error("Forgot password submit error:", err);
+                KaghanUI.showToast(err.message || 'Failed to send reset link.', 'error');
+            } finally {
+                if (btn) {
+                    btn.innerHTML = origText;
+                    btn.disabled = false;
+                }
+            }
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
             checkActiveSession();
             parseUrlState();
             setupPhoneInputFormatter();
         });
     </script>
+
+    <!-- Modal: Forgot Password -->
+    <div id="forgot-password-modal" class="fixed inset-0 bg-[#0F172A]/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-sm w-full overflow-hidden shadow-2xl relative p-6 text-white">
+            <button type="button" onclick="closeForgotPasswordModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+                <i class="fa-solid fa-times text-lg"></i>
+            </button>
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-2xl bg-[#D4AF37]/10 text-[#D4AF37] flex items-center justify-center font-bold text-base shrink-0">
+                    <i class="fa-solid fa-key"></i>
+                </div>
+                <div>
+                    <h3 class="text-base font-bold outfit text-white">Reset Password</h3>
+                    <p class="text-xs text-slate-400">Receive a password reset link via email</p>
+                </div>
+            </div>
+            
+            <form id="forgot-password-form" onsubmit="handleForgotPasswordSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-[10px] uppercase tracking-wider text-slate-400 font-semibold mb-2">Registered Email Address</label>
+                    <input type="email" id="forgot-email" required placeholder="name@example.com" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-4 py-3 outline-none focus:border-[#D4AF37] text-sm text-white">
+                </div>
+                <div class="flex gap-3 pt-2">
+                    <button type="button" onclick="closeForgotPasswordModal()" class="w-1/2 border border-slate-700 text-slate-300 font-bold py-2.5 rounded-xl hover:bg-slate-800 transition-all text-xs">Cancel</button>
+                    <button type="submit" id="forgot-submit-btn" class="w-1/2 bg-[#D4AF37] text-slate-950 font-bold py-2.5 rounded-xl hover:bg-white transition-all text-xs shadow-md">Send Link</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </body>
 </html>
