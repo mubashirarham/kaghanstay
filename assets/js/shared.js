@@ -871,13 +871,26 @@ const db = {
         return true;
     },
     deleteUser: async (id) => {
+        if (!id || typeof id !== 'string' || !id.trim()) {
+            console.warn('deleteUser safety abort: invalid or missing id.');
+            return false;
+        }
+
+        const cleanId = id.trim();
+        const currentUser = KaghanDB.getCurrentUser ? KaghanDB.getCurrentUser() : null;
+
+        if (!currentUser || !['admin', 'moderator'].includes(currentUser.role)) {
+            console.warn('deleteUser safety abort: caller does not have administrative permission.');
+            return false;
+        }
+
         try {
-            await fdb.collection('users').doc(id).delete();
+            await fdb.collection('users').doc(cleanId).delete();
         } catch (e) {
             console.warn('Direct Firestore deleteUser error:', e);
         }
         if (window.KaghanDB_Cache && window.KaghanDB_Cache.users) {
-            window.KaghanDB_Cache.users = window.KaghanDB_Cache.users.filter(u => u.id !== id && u.uid !== id);
+            window.KaghanDB_Cache.users = window.KaghanDB_Cache.users.filter(u => u.id !== cleanId && u.uid !== cleanId);
         }
         return true;
     },

@@ -227,16 +227,26 @@
         return true;
     };
 
-    // Permanently delete user profile from database
+    // Permanently delete user profile from database (Strict Manual Admin Action Only)
     db.deleteUser = async (userId) => {
+        if (!userId || typeof userId !== 'string' || !userId.trim()) {
+            console.warn("deleteUser safety abort: invalid or missing userId.");
+            return false;
+        }
+
+        const cleanId = userId.trim();
+        const currentUser = db.getCurrentUser();
+
+        // Safety Guard: Require logged in admin/staff session with manage_guests permission
+        if (!currentUser || !['admin', 'moderator'].includes(currentUser.role)) {
+            console.warn("deleteUser safety abort: caller does not have administrative permission.");
+            return false;
+        }
+
         try {
-            await fdb.collection('users').doc(userId).delete();
+            await fdb.collection('users').doc(cleanId).delete();
             if (window.KaghanDB_Cache && window.KaghanDB_Cache.users) {
-                window.KaghanDB_Cache.users = window.KaghanDB_Cache.users.filter(u => u.id !== userId && u.uid !== userId);
-            }
-            const currentUser = db.getCurrentUser();
-            if (currentUser && (currentUser.id === userId || currentUser.uid === userId)) {
-                localStorage.removeItem('kaghan_hotel_session');
+                window.KaghanDB_Cache.users = window.KaghanDB_Cache.users.filter(u => u.id !== cleanId && u.uid !== cleanId);
             }
             return true;
         } catch (err) {
