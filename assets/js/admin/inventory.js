@@ -98,34 +98,55 @@
             mapObj = new google.maps.Map(container, {
                 center: coords,
                 zoom: 15,
+                mapId: 'DEMO_MAP_ID',
                 mapTypeId: 'roadmap',
                 zoomControl: true,
                 streetViewControl: false,
                 mapTypeControl: false
             });
 
-            markerObj = new google.maps.Marker({
-                position: coords,
-                map: mapObj,
-                draggable: true,
-                title: 'Drag pin to update exact location'
-            });
+            if (google.maps.marker && google.maps.marker.AdvancedMarkerElement) {
+                markerObj = new google.maps.marker.AdvancedMarkerElement({
+                    position: coords,
+                    map: mapObj,
+                    gmpDraggable: true,
+                    title: 'Drag pin to update exact location'
+                });
+                markerObj.addListener('dragend', () => {
+                    const pos = markerObj.position;
+                    const dragLat = typeof pos.lat === 'function' ? pos.lat() : pos.lat;
+                    const dragLng = typeof pos.lng === 'function' ? pos.lng() : pos.lng;
+                    document.getElementById(`${mode}-room-lat`).value = dragLat;
+                    document.getElementById(`${mode}-room-lng`).value = dragLng;
+                    reverseGeocodeAdminMap(dragLat, dragLng, mode);
+                });
+            } else {
+                markerObj = new google.maps.Marker({
+                    position: coords,
+                    map: mapObj,
+                    draggable: true,
+                    title: 'Drag pin to update exact location'
+                });
+                markerObj.addListener('dragend', (e) => {
+                    const dragLat = e.latLng.lat();
+                    const dragLng = e.latLng.lng();
+                    document.getElementById(`${mode}-room-lat`).value = dragLat;
+                    document.getElementById(`${mode}-room-lng`).value = dragLng;
+                    reverseGeocodeAdminMap(dragLat, dragLng, mode);
+                });
+            }
 
             mapObj.addListener('click', (e) => {
                 const clickLat = e.latLng.lat();
                 const clickLng = e.latLng.lng();
-                markerObj.setPosition(e.latLng);
+                if (markerObj.position !== undefined) {
+                    markerObj.position = e.latLng;
+                } else if (markerObj.setPosition) {
+                    markerObj.setPosition(e.latLng);
+                }
                 document.getElementById(`${mode}-room-lat`).value = clickLat;
                 document.getElementById(`${mode}-room-lng`).value = clickLng;
                 reverseGeocodeAdminMap(clickLat, clickLng, mode);
-            });
-
-            markerObj.addListener('dragend', (e) => {
-                const dragLat = e.latLng.lat();
-                const dragLng = e.latLng.lng();
-                document.getElementById(`${mode}-room-lat`).value = dragLat;
-                document.getElementById(`${mode}-room-lng`).value = dragLng;
-                reverseGeocodeAdminMap(dragLat, dragLng, mode);
             });
 
             if (mode === 'add') {
@@ -138,7 +159,11 @@
         } else {
             mapObj.setCenter(coords);
             mapObj.setZoom(15);
-            markerObj.setPosition(coords);
+            if (markerObj.position !== undefined) {
+                markerObj.position = coords;
+            } else if (markerObj.setPosition) {
+                markerObj.setPosition(coords);
+            }
             google.maps.event.trigger(mapObj, 'resize');
         }
     }

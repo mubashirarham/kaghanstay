@@ -6,7 +6,7 @@
     let sdkLoadedCallbacks = [];
 
     /**
-     * Ensures Google Maps JavaScript SDK (with Places & Geocoding) is loaded cleanly.
+     * Ensures Google Maps JavaScript SDK (with Places, Advanced Markers & Geocoding) is loaded cleanly.
      */
     function loadSdk(callback) {
         if (window.google && window.google.maps && window.google.maps.places) {
@@ -26,12 +26,12 @@
 
         const script = document.createElement('script');
         script.id = 'kaghan-google-maps-sdk';
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(API_KEY)}&libraries=places,geometry`;
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(API_KEY)}&libraries=places,marker,geometry&v=weekly`;
         script.async = true;
         script.defer = true;
 
         script.onload = () => {
-            console.log("Google Maps JS, Places & Geocoding SDK loaded successfully.");
+            console.log("Google Maps JS (Advanced Markers, Places & Geocoding) SDK loaded successfully.");
             isSdkLoading = false;
             sdkLoadedCallbacks.forEach(cb => {
                 try { cb(); } catch (e) { console.error("SDK load callback error:", e); }
@@ -90,7 +90,7 @@
 
                 input.dataset.googleAutocompleteBound = 'true';
             } catch (err) {
-                console.warn("Google Places Autocomplete attach error:", err);
+                console.warn("Google Places Autocomplete attach warning:", err);
             }
         });
     }
@@ -123,14 +123,14 @@
     }
 
     /**
-     * Renders a interactive Google Map with custom gold marker and InfoWindow.
+     * Renders an interactive Google Map using AdvancedMarkerElement when available.
      */
     function renderMap(containerId, config = {}) {
         loadSdk(() => {
             const container = document.getElementById(containerId);
             if (!container || !window.google || !window.google.maps) return;
 
-            const lat = parseFloat(config.lat || 33.7294); // Default to Islamabad
+            const lat = parseFloat(config.lat || 33.7294);
             const lng = parseFloat(config.lng || 73.0931);
             const centerCoords = { lat, lng };
 
@@ -139,49 +139,52 @@
                 { "elementType": "geometry", "stylers": [{ "color": "#1d2c4d" }] },
                 { "elementType": "labels.text.fill", "stylers": [{ "color": "#8ec3b9" }] },
                 { "elementType": "labels.text.stroke", "stylers": [{ "color": "#1a3646" }] },
-                {
-                    "featureType": "administrative.country",
-                    "elementType": "geometry.stroke",
-                    "stylers": [{ "color": "#4b687a" }]
-                },
-                {
-                    "featureType": "landscape.natural",
-                    "elementType": "geometry",
-                    "stylers": [{ "color": "#023e58" }]
-                },
-                {
-                    "featureType": "poi",
-                    "elementType": "geometry",
-                    "stylers": [{ "color": "#283d6a" }]
-                },
-                {
-                    "featureType": "road",
-                    "elementType": "geometry",
-                    "stylers": [{ "color": "#304a7d" }]
-                },
-                {
-                    "featureType": "water",
-                    "elementType": "geometry",
-                    "stylers": [{ "color": "#0e1626" }]
-                }
+                { "featureType": "administrative.country", "elementType": "geometry.stroke", "stylers": [{ "color": "#4b687a" }] },
+                { "featureType": "landscape.natural", "elementType": "geometry", "stylers": [{ "color": "#023e58" }] },
+                { "featureType": "poi", "elementType": "geometry", "stylers": [{ "color": "#283d6a" }] },
+                { "featureType": "road", "elementType": "geometry", "stylers": [{ "color": "#304a7d" }] },
+                { "featureType": "water", "elementType": "geometry", "stylers": [{ "color": "#0e1626" }] }
             ];
 
             const map = new google.maps.Map(container, {
                 center: centerCoords,
                 zoom: config.zoom || 15,
+                mapId: 'DEMO_MAP_ID',
                 styles: config.darkTheme !== false ? darkMapStyle : [],
                 disableDefaultUI: config.disableDefaultUI || false,
                 zoomControl: true,
                 mapTypeControl: false
             });
 
-            // Create Marker Pin
-            const marker = new google.maps.Marker({
-                position: centerCoords,
-                map: map,
-                title: config.title || 'Kaghan Stay Hotel & Suite',
-                animation: google.maps.Animation.DROP
-            });
+            let marker;
+            if (google.maps.marker && google.maps.marker.AdvancedMarkerElement) {
+                marker = new google.maps.marker.AdvancedMarkerElement({
+                    position: centerCoords,
+                    map: map,
+                    title: config.title || 'Kaghan Stay Hotel & Suite',
+                    gmpDraggable: !!config.draggable
+                });
+                if (config.draggable && typeof config.onDragEnd === 'function') {
+                    marker.addListener('dragend', () => {
+                        const pos = marker.position;
+                        const newLat = typeof pos.lat === 'function' ? pos.lat() : pos.lat;
+                        const newLng = typeof pos.lng === 'function' ? pos.lng() : pos.lng;
+                        config.onDragEnd({ lat: newLat, lng: newLng });
+                    });
+                }
+            } else {
+                marker = new google.maps.Marker({
+                    position: centerCoords,
+                    map: map,
+                    title: config.title || 'Kaghan Stay Hotel & Suite',
+                    draggable: !!config.draggable
+                });
+                if (config.draggable && typeof config.onDragEnd === 'function') {
+                    marker.addListener('dragend', (e) => {
+                        config.onDragEnd({ lat: e.latLng.lat(), lng: e.latLng.lng() });
+                    });
+                }
+            }
 
             // InfoWindow Content
             if (config.title || config.address) {
@@ -194,19 +197,12 @@
                     </div>
                 `;
                 const infoWindow = new google.maps.InfoWindow({ content: infoContent });
-                marker.addListener('click', () => {
-                    infoWindow.open(map, marker);
-                });
-            }
-
-            // Draggable Marker Callback
-            if (config.draggable && typeof config.onDragEnd === 'function') {
-                marker.setDraggable(true);
-                marker.addListener('dragend', (e) => {
-                    const newLat = e.latLng.lat();
-                    const newLng = e.latLng.lng();
-                    config.onDragEnd({ lat: newLat, lng: newLng });
-                });
+                const markerTarget = marker.element || marker;
+                if (marker.addListener) {
+                    marker.addListener('click', () => { infoWindow.open(map, marker); });
+                } else if (markerTarget && markerTarget.addEventListener) {
+                    markerTarget.addEventListener('click', () => { infoWindow.open(map, marker); });
+                }
             }
 
             return { map, marker };
@@ -214,7 +210,7 @@
     }
 
     /**
-     * Uses Google Places Service to find nearby attractions (Restaurants, Views, Trails, Parks).
+     * Uses Google Places Service to find nearby attractions.
      */
     function fetchNearbyAttractions(lat, lng, containerId) {
         loadSdk(() => {
@@ -227,7 +223,7 @@
 
             const request = {
                 location: location,
-                radius: '5000', // 5 km radius
+                radius: '5000',
                 type: ['tourist_attraction', 'restaurant', 'park', 'natural_feature', 'point_of_interest']
             };
 
@@ -267,10 +263,8 @@
         });
     }
 
-    // Auto-load SDK on page load
     loadSdk();
 
-    // Export global KaghanMaps interface
     window.KaghanMaps = {
         loadSdk,
         initAutocomplete,
