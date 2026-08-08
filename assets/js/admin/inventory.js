@@ -82,44 +82,84 @@
         }
     }
 
-    function createGooglePinMarker(lat, lng) {
-        if (typeof L === 'undefined') return null;
-        const googlePinHtml = `
-            <div class="relative flex items-center justify-center -translate-x-1/2 -translate-y-full">
-                <div class="w-8 h-8 rounded-full bg-red-600 border-2 border-white shadow-xl flex items-center justify-center text-white text-xs font-bold ring-4 ring-red-500/20">
-                    <i class="fa-solid fa-location-dot"></i>
-                </div>
-                <div class="absolute -bottom-1 w-2.5 h-2.5 bg-red-600 rotate-45 border-r border-b border-white"></div>
-            </div>
-        `;
-        const icon = L.divIcon({
-            className: 'custom-google-maps-pin',
-            html: googlePinHtml,
-            iconSize: [32, 36],
-            iconAnchor: [16, 36]
-        });
-        return L.marker([lat, lng], { draggable: true, icon });
+    function initNativeAdminMap(mode, lat, lng) {
+        if (!window.google || !window.google.maps) return;
+
+        const containerId = `${mode}-room-map`;
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        const coords = { lat: parseFloat(lat), lng: parseFloat(lng) };
+
+        let mapObj = mode === 'add' ? addRoomMap : editRoomMap;
+        let markerObj = mode === 'add' ? addRoomMarker : editRoomMarker;
+
+        if (!mapObj) {
+            mapObj = new google.maps.Map(container, {
+                center: coords,
+                zoom: 15,
+                mapTypeId: 'roadmap',
+                zoomControl: true,
+                streetViewControl: false,
+                mapTypeControl: false
+            });
+
+            markerObj = new google.maps.Marker({
+                position: coords,
+                map: mapObj,
+                draggable: true,
+                title: 'Drag pin to update exact location'
+            });
+
+            mapObj.addListener('click', (e) => {
+                const clickLat = e.latLng.lat();
+                const clickLng = e.latLng.lng();
+                markerObj.setPosition(e.latLng);
+                document.getElementById(`${mode}-room-lat`).value = clickLat;
+                document.getElementById(`${mode}-room-lng`).value = clickLng;
+                reverseGeocodeAdminMap(clickLat, clickLng, mode);
+            });
+
+            markerObj.addListener('dragend', (e) => {
+                const dragLat = e.latLng.lat();
+                const dragLng = e.latLng.lng();
+                document.getElementById(`${mode}-room-lat`).value = dragLat;
+                document.getElementById(`${mode}-room-lng`).value = dragLng;
+                reverseGeocodeAdminMap(dragLat, dragLng, mode);
+            });
+
+            if (mode === 'add') {
+                addRoomMap = mapObj;
+                addRoomMarker = markerObj;
+            } else {
+                editRoomMap = mapObj;
+                editRoomMarker = markerObj;
+            }
+        } else {
+            mapObj.setCenter(coords);
+            mapObj.setZoom(15);
+            markerObj.setPosition(coords);
+            google.maps.event.trigger(mapObj, 'resize');
+        }
     }
 
     window.switchMapTileStyle = function(mode, style) {
         const mapObj = mode === 'add' ? addRoomMap : editRoomMap;
-        if (!mapObj) return;
+        if (!mapObj || !mapObj.setMapTypeId) return;
 
-        const tileUrl = GOOGLE_MAPS_TILES[style] || GOOGLE_MAPS_TILES.roadmap;
-
-        if (mode === 'add') {
-            if (addMapTileLayer) mapObj.removeLayer(addMapTileLayer);
-            addMapTileLayer = L.tileLayer(tileUrl, { maxZoom: 20, attribution: '&copy; Google Maps' }).addTo(mapObj);
-        } else {
-            if (editMapTileLayer) mapObj.removeLayer(editMapTileLayer);
-            editMapTileLayer = L.tileLayer(tileUrl, { maxZoom: 20, attribution: '&copy; Google Maps' }).addTo(mapObj);
-        }
+        const mapTypeId = style === 'satellite' ? 'hybrid' : 'roadmap';
+        mapObj.setMapTypeId(mapTypeId);
 
         const roadmapBtn = document.getElementById(`${mode}-map-style-roadmap`);
         const satelliteBtn = document.getElementById(`${mode}-map-style-satellite`);
         if (roadmapBtn && satelliteBtn) {
-            roadmapBtn.className = `px-2.5 py-1 rounded-lg transition-all ${style === 'roadmap' ? 'bg-[#0B0F19] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`;
-            satelliteBtn.className = `px-2.5 py-1 rounded-lg transition-all ${style === 'satellite' ? 'bg-[#0B0F19] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`;
+            if (style === 'satellite') {
+                satelliteBtn.className = 'px-2.5 py-1 rounded-lg bg-[#0B0F19] text-white transition-all shadow-sm';
+                roadmapBtn.className = 'px-2.5 py-1 rounded-lg text-slate-600 hover:bg-slate-100 transition-all';
+            } else {
+                roadmapBtn.className = 'px-2.5 py-1 rounded-lg bg-[#0B0F19] text-white transition-all shadow-sm';
+                satelliteBtn.className = 'px-2.5 py-1 rounded-lg text-slate-600 hover:bg-slate-100 transition-all';
+            }
         }
     };
 
@@ -147,15 +187,15 @@
     };
 
     async function reverseGeocodeAdminMap(lat, lng, mode) {
-        try {
-            const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
-            if (!res.ok) return;
-            const data = await res.json();
-            if (data && data.display_name) {
-                updateMapBadgeDisplay(lat, lng, data.display_name, mode);
+        if (window.KaghanMaps) {
+            try {
+                const geoRes = await KaghanMaps.reverseGeocode(lat, lng);
+                if (geoRes && geoRes.formattedAddress) {
+                    updateMapBadgeDisplay(lat, lng, geoRes.formattedAddress, mode);
+                }
+            } catch (err) {
+                console.warn("Reverse geocode error:", err);
             }
-        } catch (err) {
-            console.warn("Reverse geocode error:", err);
         }
     }
 
@@ -168,7 +208,6 @@
         if (detectedText) detectedText.textContent = address;
         if (coordsBadge) coordsBadge.textContent = `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
 
-        // Auto-select location dropdown if city matches
         const lowerAddr = address.toLowerCase();
         const locSelect = document.getElementById(`${mode}-room-location`);
         if (locSelect) {
@@ -186,8 +225,10 @@
         const markerObj = mode === 'add' ? addRoomMarker : editRoomMarker;
 
         if (mapObj && markerObj) {
-            mapObj.setView([lat, lng], 16);
-            markerObj.setLatLng([lat, lng]);
+            const coords = { lat: parseFloat(lat), lng: parseFloat(lng) };
+            if (mapObj.setCenter) mapObj.setCenter(coords);
+            if (mapObj.setZoom) mapObj.setZoom(16);
+            if (markerObj.setPosition) markerObj.setPosition(coords);
         }
 
         updateMapBadgeDisplay(lat, lng, address, mode);
@@ -286,131 +327,15 @@
 
     function setupMapSearchAutocomplete(mode) {
         const input = document.getElementById(`${mode}-room-map-search`);
-        const suggestionsBox = document.getElementById(`${mode}-map-search-suggestions`);
-        if (!input || !suggestionsBox) return;
-
-        let debounceTimer = null;
-
-        input.addEventListener('input', (e) => {
-            const rawQuery = e.target.value.trim();
-            clearTimeout(debounceTimer);
-
-            if (rawQuery.length < 2) {
-                suggestionsBox.classList.add('hidden');
-                suggestionsBox.innerHTML = '';
-                return;
-            }
-
-            debounceTimer = setTimeout(async () => {
-                let html = '';
-                const normalized = normalizeQueryForLocation(rawQuery);
-
-                // 1. Fuzzy Match on POPULAR_LOCATIONS
-                const scoredLocations = POPULAR_LOCATIONS.map(loc => {
-                    const fullStr = `${loc.title} ${loc.city} ${loc.address} ${loc.category}`;
-                    const score = Math.max(
-                        calculateFuzzyMatchScore(rawQuery, fullStr),
-                        calculateFuzzyMatchScore(normalized, fullStr)
-                    );
-                    return { ...loc, score };
-                }).filter(l => l.score >= 0.30)
-                  .sort((a, b) => b.score - a.score);
-
-                scoredLocations.forEach(item => {
-                    const iconHtml = getLocationCategoryIcon(item.category);
-                    const catBadge = item.category ? item.category.toUpperCase() : 'LOCAL';
-                    html += `
-                        <div onclick="selectLocationPrediction(${item.lat}, ${item.lng}, '${item.address.replace(/'/g, "\\'")}', '${mode}')" class="p-3 hover:bg-emerald-50/50 cursor-pointer transition-colors flex items-start justify-between gap-3 text-xs border-b border-slate-50">
-                            <div class="flex items-start gap-2.5">
-                                ${iconHtml}
-                                <div>
-                                    <div class="font-bold text-slate-900 flex items-center gap-1.5">
-                                        ${KaghanSafe.escapeHTML(item.title)}
-                                    </div>
-                                    <div class="text-[10px] text-slate-500">${KaghanSafe.escapeHTML(item.address)}</div>
-                                </div>
-                            </div>
-                            <span class="text-[9px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded font-bold shrink-0">${catBadge}</span>
-                        </div>
-                    `;
-                });
-
-                // 2. Photon Free POI & Spot Geocoder Server (No Card / No Key Needed)
-                try {
-                    const photonUrl = `https://photon.komoot.io/api/?q=${encodeURIComponent(rawQuery)}&lat=33.6844&lon=73.2045&limit=6`;
-                    const res = await fetch(photonUrl);
-                    const photonData = await res.json();
-                    if (photonData && photonData.features && photonData.features.length > 0) {
-                        photonData.features.forEach(f => {
-                            const props = f.properties || {};
-                            const coords = f.geometry ? f.geometry.coordinates : [73.0931, 33.7294];
-                            const name = props.name || props.street || rawQuery;
-                            const addr = [props.street, props.city, props.state, props.country].filter(Boolean).join(', ');
-                            html += `
-                                <div onclick="selectLocationPrediction(${coords[1]}, ${coords[0]}, '${(addr || name).replace(/'/g, "\\'")}', '${mode}')" class="p-3 hover:bg-amber-50/50 cursor-pointer transition-colors flex items-start justify-between gap-3 text-xs border-b border-slate-50">
-                                    <div class="flex items-start gap-2.5">
-                                        <i class="fa-solid fa-location-dot text-amber-600 mt-0.5 text-xs shrink-0"></i>
-                                        <div>
-                                            <div class="font-bold text-slate-900">${KaghanSafe.escapeHTML(name)}</div>
-                                            <div class="text-[10px] text-slate-500">${KaghanSafe.escapeHTML(addr || name)}</div>
-                                        </div>
-                                    </div>
-                                    <span class="text-[9px] bg-amber-50 text-amber-700 px-2 py-0.5 rounded font-bold shrink-0">SPOT</span>
-                                </div>
-                            `;
-                        });
-                    }
-                } catch (pErr) {
-                    console.warn("Photon API fetch error:", pErr);
+        if (!input) return;
+        if (window.KaghanMaps) {
+            KaghanMaps.initAutocomplete(`${mode}-room-map-search`, (locData) => {
+                selectLocationPrediction(locData.lat, locData.lng, locData.formattedAddress, mode);
+                if (window.KaghanUI) {
+                    KaghanUI.showToast(`Exact location pinned: ${locData.name || locData.formattedAddress}`, 'success');
                 }
-
-                // 3. OpenStreetMap Nominatim Free Search Server
-                try {
-                    const searchTerms = Array.from(new Set([rawQuery, normalized]));
-                    for (const term of searchTerms) {
-                        const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(term)}&limit=5`);
-                        const apiResults = await res.json();
-                        if (apiResults && apiResults.length > 0) {
-                            apiResults.forEach(item => {
-                                const lat = parseFloat(item.lat);
-                                const lng = parseFloat(item.lon);
-                                const name = item.display_name.split(',')[0];
-                                const typeBadge = (item.type || 'MAP').toUpperCase();
-                                html += `
-                                    <div onclick="selectLocationPrediction(${lat}, ${lng}, '${item.display_name.replace(/'/g, "\\'")}', '${mode}')" class="p-3 hover:bg-slate-50 cursor-pointer transition-colors flex items-start justify-between gap-3 text-xs border-b border-slate-50">
-                                        <div class="flex items-start gap-2.5">
-                                            <i class="fa-solid fa-magnifying-glass text-blue-500 mt-0.5 text-xs shrink-0"></i>
-                                            <div>
-                                                <div class="font-bold text-slate-900">${KaghanSafe.escapeHTML(name)}</div>
-                                                <div class="text-[10px] text-slate-500">${KaghanSafe.escapeHTML(item.display_name)}</div>
-                                            </div>
-                                        </div>
-                                        <span class="text-[9px] bg-blue-50 text-blue-700 px-2 py-0.5 rounded font-semibold shrink-0">${typeBadge}</span>
-                                    </div>
-                                `;
-                            });
-                            break;
-                        }
-                    }
-                } catch (err) {
-                    console.warn("Nominatim API fetch error:", err);
-                }
-
-                if (html) {
-                    suggestionsBox.innerHTML = html;
-                    suggestionsBox.classList.remove('hidden');
-                } else {
-                    suggestionsBox.classList.add('hidden');
-                }
-            }, 250);
-        });
-
-        // Hide suggestions when clicking outside
-        document.addEventListener('click', (evt) => {
-            if (!input.contains(evt.target) && !suggestionsBox.contains(evt.target)) {
-                suggestionsBox.classList.add('hidden');
-            }
-        });
+            });
+        }
     }
 
     window.searchAdminMapLocation = async function(mode) {
@@ -421,69 +346,32 @@
         }
 
         const rawQuery = searchInput.value.trim();
-        const normalized = normalizeQueryForLocation(rawQuery);
         const btn = document.getElementById(`${mode}-room-map-search-btn`) || searchInput.nextElementSibling;
         const origBtnText = btn ? btn.textContent : 'Search';
         if (btn) btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
 
         try {
-            // Try 1: Raw Query via Photon POI
-            let pRes = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(rawQuery)}&lat=33.6844&lon=73.2045&limit=1`);
-            let pData = await pRes.json();
-            if (pData && pData.features && pData.features.length > 0) {
-                const f = pData.features[0];
-                const coords = f.geometry ? f.geometry.coordinates : null;
-                if (coords) {
-                    const name = f.properties.name || rawQuery;
-                    const addr = [f.properties.name, f.properties.street, f.properties.city, f.properties.state, 'Pakistan'].filter(Boolean).join(', ');
-                    selectLocationPrediction(coords[1], coords[0], addr, mode);
-                    if (window.KaghanUI) KaghanUI.showToast(`Pinned location: ${name}`, 'success');
-                    return;
-                }
-            }
-
-            // Try 2: Raw Query via OSM Nominatim
-            let res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(rawQuery)}&limit=1`);
-            let results = await res.json();
-
-            // Try 3: Normalized / Corrected Spelling Query
-            if ((!results || results.length === 0) && normalized !== rawQuery) {
-                res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(normalized)}&limit=1`);
-                results = await res.json();
-            }
-
-            // Try 4: Normalized Query + " Pakistan"
-            if (!results || results.length === 0) {
-                res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(normalized + ', Pakistan')}&limit=1`);
-                results = await res.json();
-            }
-
-            // Try 5: Top Fuzzy Local Match Fallback
-            if (!results || results.length === 0) {
-                const bestLocal = POPULAR_LOCATIONS.map(loc => ({
-                    ...loc,
-                    score: calculateFuzzyMatchScore(rawQuery, `${loc.title} ${loc.city} ${loc.address} ${loc.category}`)
-                })).sort((a, b) => b.score - a.score)[0];
-
-                if (bestLocal && bestLocal.score >= 0.25) {
-                    selectLocationPrediction(bestLocal.lat, bestLocal.lng, bestLocal.address, mode);
-                    if (window.KaghanUI) KaghanUI.showToast(`Found location: ${bestLocal.title}`, 'success');
-                    return;
-                }
-            }
-
-            if (results && results.length > 0) {
-                const loc = results[0];
-                const lat = parseFloat(loc.lat);
-                const lng = parseFloat(loc.lon);
-                selectLocationPrediction(lat, lng, loc.display_name, mode);
-                if (window.KaghanUI) KaghanUI.showToast(`Pinned location: ${loc.display_name.split(',')[0]}`, 'success');
-            } else {
-                if (window.KaghanUI) KaghanUI.showToast(`Location not found for "${rawQuery}". Try typing city e.g. "Islamabad"`, 'warning');
+            if (window.google && window.google.maps && window.google.maps.Geocoder) {
+                const geocoder = new google.maps.Geocoder();
+                geocoder.geocode({ address: rawQuery }, (results, status) => {
+                    if (status === 'OK' && results && results[0]) {
+                        const place = results[0];
+                        const lat = place.geometry.location.lat();
+                        const lng = place.geometry.location.lng();
+                        const addr = place.formatted_address || rawQuery;
+                        selectLocationPrediction(lat, lng, addr, mode);
+                        if (window.KaghanUI) KaghanUI.showToast(`Pinned location: ${place.formatted_address.split(',')[0]}`, 'success');
+                    } else {
+                        if (window.KaghanUI) KaghanUI.showToast(`No exact match found on Google Maps for "${rawQuery}"`, 'error');
+                    }
+                });
+            } else if (window.KaghanMaps) {
+                const geoRes = await KaghanMaps.reverseGeocode(33.7294, 73.0931);
+                if (geoRes) selectLocationPrediction(33.7294, 73.0931, rawQuery, mode);
             }
         } catch (err) {
             console.error("Map search error:", err);
-            if (window.KaghanUI) KaghanUI.showToast('Error searching location', 'error');
+            if (window.KaghanUI) KaghanUI.showToast('Error searching location via Google Maps API', 'error');
         } finally {
             if (btn) btn.textContent = origBtnText;
         }
@@ -866,9 +754,43 @@
         });
     }
 
+    function initOfficialGooglePlacesAutocomplete(mode) {
+        const input = document.getElementById(`${mode}-room-map-search`);
+        if (!input || !window.google || !window.google.maps || !window.google.maps.places) return;
+        if (input.dataset.googleAutocompleteInit) return;
+
+        try {
+            const autocomplete = new google.maps.places.Autocomplete(input, {
+                fields: ['formatted_address', 'geometry', 'name', 'place_id']
+            });
+
+            autocomplete.addListener('place_changed', () => {
+                const place = autocomplete.getPlace();
+                if (!place.geometry || !place.geometry.location) return;
+
+                const lat = place.geometry.location.lat();
+                const lng = place.geometry.location.lng();
+                const address = place.formatted_address || place.name || input.value;
+
+                selectLocationPrediction(lat, lng, address, mode);
+                if (window.KaghanUI) {
+                    KaghanUI.showToast(`Exact location pinned: ${place.name || address}`, 'success');
+                }
+            });
+
+            input.dataset.googleAutocompleteInit = 'true';
+        } catch (e) {
+            console.warn("Google Places Autocomplete init warning:", e);
+        }
+    }
+
     function ensureGoogleMapsApiLoaded() {
-        const savedKey = localStorage.getItem('GOOGLE_MAPS_API_KEY') || 'AIzaSyDHjKfA8O6LZL2FczPX7JbOzSVBPTa47zo';
-        if (window.google && window.google.maps) return;
+        const savedKey = localStorage.getItem('GOOGLE_MAPS_API_KEY') || 'AIzaSyBZDGmZLoC7CiNY1nV6y2UtsfexCD-C9Lk';
+        if (window.google && window.google.maps) {
+            initOfficialGooglePlacesAutocomplete('add');
+            initOfficialGooglePlacesAutocomplete('edit');
+            return;
+        }
 
         const existingScript = document.getElementById('google-maps-js-sdk');
         if (existingScript) return;
@@ -879,7 +801,9 @@
         script.async = true;
         script.defer = true;
         script.onload = () => {
-            console.log("Google Maps Places API loaded for inventory creation & edit.");
+            console.log("Official Google Maps Places API loaded for inventory creation & edit.");
+            initOfficialGooglePlacesAutocomplete('add');
+            initOfficialGooglePlacesAutocomplete('edit');
         };
         document.head.appendChild(script);
     }
@@ -940,37 +864,7 @@
             setupMapSearchAutocomplete('edit');
             const initialAddr = room.address || (room.locationName ? `${room.locationName}, ${room.location}` : 'Islamabad, Pakistan');
             updateMapBadgeDisplay(lat, lng, initialAddr, 'edit');
-            
-            if (!editRoomMap) {
-                editRoomMap = L.map('edit-room-map').setView([lat, lng], 14);
-                editMapTileLayer = L.tileLayer(GOOGLE_MAPS_TILES.roadmap, {
-                    maxZoom: 20,
-                    attribution: '&copy; Google Maps'
-                }).addTo(editRoomMap);
-
-                editRoomMarker = createGooglePinMarker(lat, lng);
-                if (editRoomMarker) editRoomMarker.addTo(editRoomMap);
-                
-                editRoomMap.on('click', (e) => {
-                    if (editRoomMarker) editRoomMarker.setLatLng(e.latlng);
-                    document.getElementById('edit-room-lat').value = e.latlng.lat;
-                    document.getElementById('edit-room-lng').value = e.latlng.lng;
-                    reverseGeocodeAdminMap(e.latlng.lat, e.latlng.lng, 'edit');
-                });
-                
-                if (editRoomMarker) {
-                    editRoomMarker.on('dragend', (e) => {
-                        const position = editRoomMarker.getLatLng();
-                        document.getElementById('edit-room-lat').value = position.lat;
-                        document.getElementById('edit-room-lng').value = position.lng;
-                        reverseGeocodeAdminMap(position.lat, position.lng, 'edit');
-                    });
-                }
-            } else {
-                editRoomMap.setView([lat, lng], 14);
-                if (editRoomMarker) editRoomMarker.setLatLng([lat, lng]);
-                editRoomMap.invalidateSize();
-            }
+            initNativeAdminMap('edit', lat, lng);
         }, 300); // give time for transition so map size calculates correctly
     };
 
@@ -1146,37 +1040,7 @@
 
                 setupMapSearchAutocomplete('add');
                 updateMapBadgeDisplay(lat, lng, 'Islamabad, Pakistan', 'add');
-                
-                if (!addRoomMap) {
-                    addRoomMap = L.map('add-room-map').setView([lat, lng], 14);
-                    addMapTileLayer = L.tileLayer(GOOGLE_MAPS_TILES.roadmap, {
-                        maxZoom: 20,
-                        attribution: '&copy; Google Maps'
-                    }).addTo(addRoomMap);
-
-                    addRoomMarker = createGooglePinMarker(lat, lng);
-                    if (addRoomMarker) addRoomMarker.addTo(addRoomMap);
-                    
-                    addRoomMap.on('click', (e) => {
-                        if (addRoomMarker) addRoomMarker.setLatLng(e.latlng);
-                        document.getElementById('add-room-lat').value = e.latlng.lat;
-                        document.getElementById('add-room-lng').value = e.latlng.lng;
-                        reverseGeocodeAdminMap(e.latlng.lat, e.latlng.lng, 'add');
-                    });
-                    
-                    if (addRoomMarker) {
-                        addRoomMarker.on('dragend', (e) => {
-                            const position = addRoomMarker.getLatLng();
-                            document.getElementById('add-room-lat').value = position.lat;
-                            document.getElementById('add-room-lng').value = position.lng;
-                            reverseGeocodeAdminMap(position.lat, position.lng, 'add');
-                        });
-                    }
-                } else {
-                    addRoomMap.setView([lat, lng], 14);
-                    if (addRoomMarker) addRoomMarker.setLatLng([lat, lng]);
-                    addRoomMap.invalidateSize();
-                }
+                initNativeAdminMap('add', lat, lng);
             }, 300);
         };
 

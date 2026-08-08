@@ -58,6 +58,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
     <!-- Global CSS -->
     <link rel="stylesheet" href="assets/css/style.css?v=5">
+    <!-- Google Maps & Places Integration Module -->
+    <script src="assets/js/google-maps.js"></script>
 </head>
 <body class="bg-[#F8FAFC] text-[#0F172A] overflow-x-clip font-sans pt-24 min-h-screen flex flex-col justify-between pb-24 md:pb-0">
 
@@ -331,6 +333,20 @@
                         <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
                             <span class="font-bold text-slate-900 block mb-0.5"><i class="fa-solid fa-bag-shopping text-[#C5A059] mr-1"></i> Supermarket</span>
                             <span>2 Mins walk to Sector C Commercial Hub</span>
+                        </div>
+                    </div>
+
+                    <!-- Google Places Nearby Attractions -->
+                    <div class="mt-6 border-t border-slate-100 pt-6 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-sm font-bold outfit text-slate-900 flex items-center gap-2">
+                                <i class="fa-solid fa-compass text-[#C5A059]"></i>
+                                Nearby Attractions & Dining (Google Places)
+                            </h4>
+                            <span class="text-[10px] text-slate-400 font-medium">5 km Radius</span>
+                        </div>
+                        <div id="pdp-nearby-attractions-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <p class="text-xs text-slate-400 py-4 col-span-full text-center">Loading nearby attractions via Google Places API...</p>
                         </div>
                     </div>
                 </div>
@@ -1463,14 +1479,10 @@
             }
         };
 
-        // Initialize Google Maps Locator from Firestore lat/lng & room data
+        // Initialize Google Maps Locator & Places API Nearby Search from Firestore data
         function initDetailMap(room) {
             const mapContainer = document.getElementById('room-detail-map');
-            if (!mapContainer || typeof L === 'undefined') return;
-
-            if (detailMap) {
-                detailMap.remove();
-            }
+            if (!mapContainer) return;
 
             let lat = room.lat || 33.7294;
             let lng = room.lng || 73.0931;
@@ -1478,32 +1490,23 @@
             const locStr = (room.location || '').toLowerCase();
             if (locStr.includes('nathia')) { lat = 34.0722; lng = 73.3831; }
 
-            detailMap = L.map('room-detail-map').setView([lat, lng], 15);
-            pdpMapTileLayer = L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
-                maxZoom: 20,
-                attribution: '&copy; Google Maps'
-            }).addTo(detailMap);
+            const displayName = room.address || (room.locationName ? `${room.locationName}, ${room.location || ''}` : (room.location || 'Islamabad, Pakistan'));
 
-            const googlePinHtml = `
-                <div class="relative flex items-center justify-center -translate-x-1/2 -translate-y-full">
-                    <div class="w-9 h-9 rounded-full bg-red-600 border-2 border-white shadow-xl flex items-center justify-center text-white text-xs font-bold ring-4 ring-red-500/20">
-                        <i class="fa-solid fa-hotel"></i>
-                    </div>
-                    <div class="absolute -bottom-1 w-2.5 h-2.5 bg-red-600 rotate-45 border-r border-b border-white"></div>
-                </div>
-            `;
-            const icon = L.divIcon({
-                className: 'custom-pdp-google-pin',
-                html: googlePinHtml,
-                iconSize: [36, 40],
-                iconAnchor: [18, 40]
-            });
+            if (window.KaghanMaps) {
+                window.KaghanMaps.renderMap('room-detail-map', {
+                    lat: lat,
+                    lng: lng,
+                    zoom: 15,
+                    title: room.name,
+                    address: displayName,
+                    price: room.priceDaily || room.price
+                });
 
-            L.marker([lat, lng], { icon }).addTo(detailMap)
-                .bindPopup(`<b>${KaghanSafe.escapeHTML(room.name)}</b><br>${KaghanUI.formatPKR(room.priceDaily || room.price)} / night`)
-                .openPopup();
+                // Fetch Nearby Attractions via Places API
+                window.KaghanMaps.fetchNearbyAttractions(lat, lng, 'pdp-nearby-attractions-grid');
+            }
 
-            // Set Google Maps Pinned Links
+            // Set Google Maps Direct Links
             const gmapsLink = document.getElementById('pdp-gmaps-link');
             const gmapsDirLink = document.getElementById('pdp-gmaps-dir-link');
             const addrText = document.getElementById('pdp-address-text');
@@ -1512,7 +1515,6 @@
             if (gmapsDirLink) gmapsDirLink.href = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
 
             if (addrText) {
-                const displayName = room.address || (room.locationName ? `${room.locationName}, ${room.location || ''}` : (room.location || 'Islamabad, Pakistan'));
                 addrText.innerHTML = `<i class="fa-solid fa-location-dot text-[#C5A059]"></i> ${KaghanSafe.escapeHTML(displayName)}`;
             }
         }
