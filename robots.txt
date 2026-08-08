@@ -1,12 +1,6 @@
 # User-Agent rules for Kaghan Stay (https://kphstay.com)
 User-agent: *
 Allow: /
-Allow: /assets/
-Allow: /rooms
-Allow: /blog
-Allow: /contact
-Allow: /booking
-Allow: /track
 
 # Restricted Private & Internal Directories
 Disallow: /admin/
@@ -15,14 +9,27 @@ Disallow: /.netlify/
 Disallow: /*.json$
 Disallow: /404.html
 
-# Crawl-Delay (politeness directive)
-Crawl-delay: 1
-
-# Googlebot / Bingbot specific optimizations
+# Search Engine & Social Crawlers
 User-agent: Googlebot
 Allow: /
 
 User-agent: Bingbot
+Allow: /
+
+# AI Answer Engines & Generative Search Crawlers
+User-agent: GPTBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: CCBot
 Allow: /
 
 # Sitemap Index Location

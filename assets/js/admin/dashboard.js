@@ -59,10 +59,11 @@ const TAB_PERMISSIONS = {
     reviews: ['manage_reviews'],
     blogs: ['manage_rooms'],
     coupons: ['manage_discounts'],
-    settings: ['manage_settings']
+    settings: ['manage_settings'],
+    seo: ['manage_settings']
 };
 
-const ALL_TABS = ['overview', 'bookings', 'messages', 'calendar', 'rooms', 'guests', 'newsletter', 'reviews', 'blogs', 'coupons', 'settings'];
+const ALL_TABS = ['overview', 'bookings', 'messages', 'calendar', 'rooms', 'guests', 'newsletter', 'reviews', 'blogs', 'coupons', 'settings', 'seo'];
 
 function getUserPermissions(user) {
     if (!user) return [];

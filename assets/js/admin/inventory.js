@@ -716,37 +716,79 @@
     };
 
     // Gallery helpers
-    function renderGalleryPreview(containerId, dataInputId, imageUrls) {
+    function renderGalleryPreview(containerId, dataInputId, imageUrls, activeCoverUrl = null, coverInputId = null) {
         const container = document.getElementById(containerId);
         const dataInput = document.getElementById(dataInputId);
         if (!container || !dataInput) return;
         
         dataInput.value = JSON.stringify(imageUrls);
 
+        const coverInput = coverInputId ? document.getElementById(coverInputId) : null;
+
+        if (!activeCoverUrl || !imageUrls.includes(activeCoverUrl)) {
+            activeCoverUrl = imageUrls.length > 0 ? imageUrls[0] : '';
+        }
+
+        if (coverInput) {
+            coverInput.value = activeCoverUrl;
+        }
+
         if (imageUrls.length === 0) {
-            container.innerHTML = `<span class="text-[10px] text-slate-400 m-auto">No images uploaded.</span>`;
+            container.innerHTML = `<span class="text-[10px] text-slate-400 m-auto">No images uploaded yet.</span>`;
             return;
         }
 
-        container.innerHTML = imageUrls.map((url, idx) => `
-            <div class="relative w-16 h-16 shrink-0 rounded-lg overflow-hidden border border-slate-200 group">
-                <img src="${KaghanSafe.escapeHTML(url)}" alt="Room gallery preview ${idx + 1}" class="w-full h-full object-cover">
-                <button type="button" onclick="removeGalleryImage('${containerId}', '${dataInputId}', ${idx})" class="absolute top-1 right-1 bg-white rounded-full w-5 h-5 flex items-center justify-center text-rose-500 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity">
-                    <i class="fa-solid fa-times text-[10px]"></i>
-                </button>
-            </div>
-        `).join('');
+        container.innerHTML = imageUrls.map((url, idx) => {
+            const isCover = url === activeCoverUrl;
+            return `
+                <div class="relative w-24 h-24 shrink-0 rounded-xl overflow-hidden border-2 ${isCover ? 'border-[#D4AF37] ring-2 ring-[#D4AF37]/30 shadow-md' : 'border-slate-200'} group transition-all bg-slate-100">
+                    <img src="${KaghanSafe.escapeHTML(url)}" alt="Room photo ${idx + 1}" class="w-full h-full object-cover">
+                    
+                    ${isCover ? `
+                        <div class="absolute top-1 left-1 bg-[#D4AF37] text-slate-950 text-[9px] font-black px-1.5 py-0.5 rounded shadow flex items-center gap-1 z-10">
+                            <i class="fa-solid fa-star text-[8px]"></i> Cover
+                        </div>
+                    ` : `
+                        <button type="button" onclick="setCoverImage('${containerId}', '${dataInputId}', '${coverInputId || ''}', '${KaghanSafe.escapeHTML(url)}')" class="absolute top-1 left-1 bg-black/70 hover:bg-[#D4AF37] hover:text-slate-950 text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow opacity-0 group-hover:opacity-100 transition-all flex items-center gap-1 z-10" title="Set as Cover Image">
+                            <i class="fa-regular fa-star text-[8px]"></i> Set Cover
+                        </button>
+                    `}
+                    
+                    <button type="button" onclick="removeGalleryImage('${containerId}', '${dataInputId}', ${idx}, '${coverInputId || ''}')" class="absolute top-1 right-1 bg-white/90 hover:bg-rose-500 hover:text-white rounded-full w-5 h-5 flex items-center justify-center text-slate-600 shadow-sm opacity-0 group-hover:opacity-100 transition-all z-10" title="Remove Image">
+                        <i class="fa-solid fa-times text-[10px]"></i>
+                    </button>
+                </div>
+            `;
+        }).join('');
     }
 
-    window.removeGalleryImage = (containerId, dataInputId, indexToRemove) => {
+    window.setCoverImage = (containerId, dataInputId, coverInputId, coverUrl) => {
+        const coverInput = coverInputId ? document.getElementById(coverInputId) : null;
+        if (coverInput) coverInput.value = coverUrl;
+        const dataInput = document.getElementById(dataInputId);
+        const currentUrls = JSON.parse(dataInput?.value || '[]');
+        renderGalleryPreview(containerId, dataInputId, currentUrls, coverUrl, coverInputId);
+        if (window.KaghanUI) KaghanUI.showToast('Cover image selected!', 'success');
+    };
+
+    window.removeGalleryImage = (containerId, dataInputId, indexToRemove, coverInputId) => {
         const dataInput = document.getElementById(dataInputId);
         if (!dataInput) return;
         const currentUrls = JSON.parse(dataInput.value || '[]');
+        const removedUrl = currentUrls[indexToRemove];
         currentUrls.splice(indexToRemove, 1);
-        renderGalleryPreview(containerId, dataInputId, currentUrls);
+
+        const coverInput = coverInputId ? document.getElementById(coverInputId) : null;
+        let currentCover = coverInput ? coverInput.value : null;
+
+        if (currentCover === removedUrl) {
+            currentCover = currentUrls.length > 0 ? currentUrls[0] : '';
+        }
+
+        renderGalleryPreview(containerId, dataInputId, currentUrls, currentCover, coverInputId);
     };
 
-    function setupCloudinaryGallery(btnId, containerId, dataInputId) {
+    function setupCloudinaryGallery(btnId, containerId, dataInputId, coverInputId) {
         document.getElementById(btnId)?.addEventListener('click', () => {
             if (typeof cloudinary === 'undefined') {
                 if(window.KaghanUI) KaghanUI.showToast("Cloudinary widget not loaded.", "error");
@@ -769,7 +811,9 @@
                             const dataInput = document.getElementById(dataInputId);
                             const currentUrls = JSON.parse(dataInput.value || '[]');
                             const newUrls = [...currentUrls, ...uploadedUrls];
-                            renderGalleryPreview(containerId, dataInputId, newUrls);
+                            const coverInput = coverInputId ? document.getElementById(coverInputId) : null;
+                            const currentCover = coverInput ? coverInput.value : (newUrls[0] || '');
+                            renderGalleryPreview(containerId, dataInputId, newUrls, currentCover, coverInputId);
                             if(window.KaghanUI) KaghanUI.showToast(`${uploadedUrls.length} image(s) added to gallery!`, "success");
                             uploadedUrls = [];
                         }
@@ -846,7 +890,8 @@
         document.getElementById('edit-room-amenities').value = (room.amenities || []).join(', ');
 
         const imagesArray = room.images || (room.image ? [room.image] : []);
-        renderGalleryPreview('edit-room-gallery-preview', 'edit-room-images-data', imagesArray);
+        const initialCoverUrl = room.image || (imagesArray.length > 0 ? imagesArray[0] : '');
+        renderGalleryPreview('edit-room-gallery-preview', 'edit-room-images-data', imagesArray, initialCoverUrl, 'edit-room-cover-image');
 
         const modal = document.getElementById('edit-room-modal');
         modal.classList.remove('hidden');
@@ -915,12 +960,25 @@
                 const amenitiesInput = document.getElementById('edit-room-amenities').value.trim();
                 const imagesStr = document.getElementById('edit-room-images-data').value;
                 const imagesArray = JSON.parse(imagesStr || '[]');
+                const coverImageVal = document.getElementById('edit-room-cover-image')?.value || '';
                 const lat = parseFloat(document.getElementById('edit-room-lat').value);
                 const lng = parseFloat(document.getElementById('edit-room-lng').value);
 
                 if (!name || isNaN(price) || price <= 0 || !description || isNaN(maxGuests) || maxGuests <= 0) {
                     KaghanUI.showToast('Please enter valid room details.', 'error');
                     return;
+                }
+
+                let selectedCoverImage = (coverImageVal && imagesArray.includes(coverImageVal))
+                    ? coverImageVal
+                    : (imagesArray.length > 0 ? imagesArray[0] : '');
+
+                if (selectedCoverImage && imagesArray.includes(selectedCoverImage)) {
+                    const coverIdx = imagesArray.indexOf(selectedCoverImage);
+                    if (coverIdx > 0) {
+                        imagesArray.splice(coverIdx, 1);
+                        imagesArray.unshift(selectedCoverImage);
+                    }
                 }
 
                 const amenities = amenitiesInput
@@ -955,7 +1013,7 @@
                     lat: isNaN(lat) ? null : lat,
                     lng: isNaN(lng) ? null : lng,
                     images: imagesArray,
-                    image: imagesArray.length > 0 ? imagesArray[0] : ''
+                    image: selectedCoverImage
                 };
 
                 const success = await KaghanDB.updateRoom(activeEditRoomId, updatedData);
@@ -1016,7 +1074,7 @@
         window.openAddRoomModal = async () => {
             ensureGoogleMapsApiLoaded();
             await populateSelects();
-            renderGalleryPreview('add-room-gallery-preview', 'add-room-images-data', []);
+            renderGalleryPreview('add-room-gallery-preview', 'add-room-images-data', [], '', 'add-room-cover-image');
             window.setAddRoomStep(1);
             const modal = document.getElementById('add-room-modal');
             modal.classList.remove('hidden');
@@ -1083,6 +1141,7 @@
                 
                 const imagesStr = document.getElementById('add-room-images-data').value;
                 const imagesArray = JSON.parse(imagesStr || '[]');
+                const coverImageVal = document.getElementById('add-room-cover-image')?.value || '';
                 const lat = parseFloat(document.getElementById('add-room-lat').value);
                 const lng = parseFloat(document.getElementById('add-room-lng').value);
 
@@ -1102,8 +1161,19 @@
                     ? highlightsInput.split(',').map(h => h.trim()).filter(h => h !== '')
                     : [];
 
-                let imageUrl = imagesArray.length > 0 ? imagesArray[0] : 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80';
-                if (imagesArray.length === 0) imagesArray.push(imageUrl);
+                let selectedCoverImage = (coverImageVal && imagesArray.includes(coverImageVal))
+                    ? coverImageVal
+                    : (imagesArray.length > 0 ? imagesArray[0] : 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80');
+
+                if (imagesArray.length === 0) imagesArray.push(selectedCoverImage);
+
+                if (selectedCoverImage && imagesArray.includes(selectedCoverImage)) {
+                    const coverIdx = imagesArray.indexOf(selectedCoverImage);
+                    if (coverIdx > 0) {
+                        imagesArray.splice(coverIdx, 1);
+                        imagesArray.unshift(selectedCoverImage);
+                    }
+                }
 
                 const amenities = amenitiesInput
                     ? amenitiesInput.split(',').map(a => a.trim()).filter(a => a !== '')
@@ -1120,7 +1190,7 @@
                     isApartment: true,
                     priceWeekly: isNaN(priceWeekly) ? null : priceWeekly,
                     priceMonthly: isNaN(priceMonthly) ? null : priceMonthly,
-                    image: imageUrl,
+                    image: selectedCoverImage,
                     images: imagesArray,
                     maxGuests,
                     bedrooms: isNaN(bedrooms) ? 1 : bedrooms,
@@ -1376,8 +1446,8 @@
         initForms: () => {
             setupEditRoomForm();
             setupAddRoomForm();
-            setupCloudinaryGallery('upload-edit-room-img-btn', 'edit-room-gallery-preview', 'edit-room-images-data');
-            setupCloudinaryGallery('upload-add-room-img-btn', 'add-room-gallery-preview', 'add-room-images-data');
+            setupCloudinaryGallery('upload-edit-room-img-btn', 'edit-room-gallery-preview', 'edit-room-images-data', 'edit-room-cover-image');
+            setupCloudinaryGallery('upload-add-room-img-btn', 'add-room-gallery-preview', 'add-room-images-data', 'add-room-cover-image');
             
             // Initialize TinyMCE editors with high z-index for dropdowns & popups
             if (typeof tinymce !== 'undefined') {

@@ -62,14 +62,12 @@ exports.handler = async (event, context) => {
 
         const todayStr = new Date().toISOString().split('T')[0];
 
-        // 1. Static site routes with proper priority hierarchy
+        // 1. Static site routes with proper priority hierarchy (excluding noindex pages)
         const staticRoutes = [
             { path: '/', priority: '1.0', changefreq: 'daily' },
             { path: '/rooms', priority: '0.9', changefreq: 'daily' },
             { path: '/contact', priority: '0.8', changefreq: 'weekly' },
             { path: '/blog', priority: '0.8', changefreq: 'weekly' },
-            { path: '/booking', priority: '0.7', changefreq: 'weekly' },
-            { path: '/track', priority: '0.5', changefreq: 'monthly' },
             { path: '/privacy', priority: '0.3', changefreq: 'monthly' },
             { path: '/terms', priority: '0.3', changefreq: 'monthly' },
             { path: '/refund', priority: '0.3', changefreq: 'monthly' },
@@ -99,21 +97,15 @@ exports.handler = async (event, context) => {
         <lastmod>${roomModDate}</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>${baseUrl}/booking?room=${room.id}</loc>
-        <lastmod>${roomModDate}</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.7</priority>
     </url>`;
             }
         });
 
-        // 3. Dynamic Journal/Blog routes
+        // 3. Dynamic Journal/Blog clean routes
         const stayBlogs = (blogs || []).filter(b => !b.portal || b.portal === 'stay');
         stayBlogs.forEach(blog => {
             const blogDate = blog.createdAt ? blog.createdAt.split('T')[0] : todayStr;
-            const blogUrl = blog.slug ? `${baseUrl}/blog#${blog.slug}` : `${baseUrl}/blog?id=${blog.id}`;
+            const blogUrl = `${baseUrl}/blog/${blog.slug || blog.id}`;
             xml += `
     <url>
         <loc>${blogUrl}</loc>

@@ -1,0 +1,28 @@
+# KPH Stay — Luxury Service Apartments & Resorts
+
+> KPH Stay (Kaghan Hotel & Resorts) operates premium luxury service apartments, resort suites, and vacation rentals in Pakistan's primary travel destinations: Islamabad (Bahria Enclave & Margalla Foothills) and Nathia Gali (Kaghan Valley Highlands).
+
+## Property Overview
+
+- **Canonical Brand Name**: KPH Stay / Kaghan Hotel & Resorts
+- **Website**: https://kphstay.com
+- **Locations**:
+  - **Islamabad**: Asian Arcade, Sector C, Bahria Enclave, Islamabad, Pakistan (Coordinates: 33.6844, 73.2045)
+  - **Nathia Gali**: Main Resort Road, Nathia Gali, Abbottabad / Kaghan Valley, KP, Pakistan (Coordinates: 34.0722, 73.3831)
+- **Property Types**: 1BHK Executive Apartments, 2BHK Luxury Family Suites, 3BHK Mountain View Penthouses, Studio Apartments.
+- **Starting Price Range**: PKR 12,000 to PKR 45,000 per night (Weekly & Monthly rates available).
+- **Core Amenities**: High-Speed Wi-Fi, Heated Swimming Pool, 24/7 Security & Concierge, Dedicated Parking, Fully Equipped Kitchens, Panoramic Mountain Views, Smart TV, Hot-Stone Spa Sauna.
+
+## Essential Policies
+
+- **Check-in / Check-out**: Check-in from 14:00 PKT; Check-out by 12:00 PKT.
+- **Booking**: Instant online reservation via https://kphstay.com/rooms
+- **Cancellation**: Full refund available up to 48 hours before check-in date.
+
+## Key Canonical URLs
+
+- **Accommodations Catalog**: https://kphstay.com/rooms
+- **Resort Journal & Local Travel Guides**: https://kphstay.com/blog
+- **Contact & Concierge Desk**: https://kphstay.com/contact
+- **Terms of Stay**: https://kphstay.com/terms
+- **Privacy Policy**: https://kphstay.com/privacy

@@ -243,59 +243,180 @@ function prerenderRooms(html, rooms) {
     return modified;
 }
 
-// Pre-render the Blog Page Catalog
-function prerenderBlog(html, blogs) {
+// Pre-render Individual Room Details Page
+function prerenderRoomDetails(html, room) {
     let modified = html;
-    const gridId = 'id="blog-grid"';
-    const stayBlogs = blogs.filter(b => b.portal === 'stay');
-    
-    const cardsHtml = stayBlogs.map(b => {
-        const img = b.imageUrl || 'assets/images/logo.png';
-        return `
-        <div class="bg-white rounded-[2.5rem] border border-slate-100 overflow-hidden shadow-sm hover-lift hover:border-[#D4AF37] transition-all flex flex-col justify-between">
-            <div class="h-56 overflow-hidden relative">
-                <img src="${escapeHTML(img)}" alt="${escapeHTML(b.title)}" class="w-full h-full object-cover">
-                <span class="absolute top-4 left-4 bg-slate-900 text-white text-[9px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">${escapeHTML(b.category)}</span>
-            </div>
-            <div class="p-8 flex-grow flex flex-col justify-between">
-                <div>
-                    <h4 class="text-lg font-bold outfit text-slate-900 mb-3 leading-snug">${escapeHTML(b.title)}</h4>
-                    <p class="text-slate-500 text-xs leading-relaxed mb-6">${escapeHTML(b.excerpt)}</p>
-                </div>
-                <div class="pt-4 border-t border-slate-50 flex justify-between items-center text-[10px] font-semibold text-slate-400">
-                    <span>BY ${escapeHTML(b.author.toUpperCase())}</span>
-                    <a href="#${escapeHTML(b.slug)}" class="text-[#D4AF37] font-bold uppercase tracking-wider hover:underline flex items-center gap-1.5">Read Post <i class="fa-solid fa-arrow-right text-[8px]"></i></a>
-                </div>
-            </div>
-        </div>
-        `;
-    }).join('\n');
+    const roomTitle = `${escapeHTML(room.name)} — ${escapeHTML(room.type)} in ${escapeHTML(room.location || 'Islamabad')} | KPH Stay`;
+    const rawDesc = room.description ? room.description.replace(/<[^>]*>?/gm, '').trim() : `${room.name} luxury stay in ${room.location || 'Islamabad'}. Rates from ${formatPKR(room.price)}.`;
+    const roomDesc = escapeHTML(rawDesc.slice(0, 160));
+    const roomUrl = `https://kphstay.com/room-details?id=${escapeHTML(room.id)}`;
+    const roomImg = escapeHTML(room.image || (room.images && room.images.length ? room.images[0] : 'https://kphstay.com/assets/images/logo.png'));
+    const pkrPrice = Number(room.price) || 0;
 
-    const gridIndex = modified.indexOf(gridId);
-    if (gridIndex !== -1) {
-        const closeTagIndex = modified.indexOf('>', gridIndex);
-        if (closeTagIndex !== -1) {
-            modified = modified.slice(0, closeTagIndex + 1) + cardsHtml + modified.slice(closeTagIndex + 1);
-        }
+    // 1. Replace Title
+    if (/<title>.*?<\/title>/i.test(modified)) {
+        modified = modified.replace(/<title>.*?<\/title>/i, `<title>${roomTitle}</title>`);
+    } else {
+        modified = modified.replace(/<\/head>/i, `  <title>${roomTitle}</title>\n</head>`);
     }
-    
+
+    // 2. Replace or Insert Meta Description
+    if (/<meta\s+name=["']description["']/i.test(modified)) {
+        modified = modified.replace(/<meta\s+name=["']description["'][^>]*>/i, `<meta name="description" content="${roomDesc}">`);
+    } else {
+        modified = modified.replace(/<\/head>/i, `  <meta name="description" content="${roomDesc}">\n</head>`);
+    }
+
+    // 3. Replace or Insert Canonical URL
+    if (/<link\s+rel=["']canonical["']/i.test(modified)) {
+        modified = modified.replace(/<link\s+rel=["']canonical["'][^>]*>/i, `<link rel="canonical" href="${roomUrl}">`);
+    } else {
+        modified = modified.replace(/<\/head>/i, `  <link rel="canonical" href="${roomUrl}">\n</head>`);
+    }
+
+    // 4. OpenGraph Tags
+    const ogTags = `
+  <meta property="og:title" content="${roomTitle}">
+  <meta property="og:description" content="${roomDesc}">
+  <meta property="og:image" content="${roomImg}">
+  <meta property="og:url" content="${roomUrl}">
+  <meta property="og:type" content="website">`;
+    modified = modified.replace(/<\/head>/i, `${ogTags}\n</head>`);
+
+    // 5. JSON-LD Product & LodgingBusiness Schema
+    const jsonLd = {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": room.name,
+        "description": rawDesc,
+        "image": [roomImg],
+        "category": room.type || "Apartment",
+        "offers": {
+            "@type": "Offer",
+            "price": pkrPrice,
+            "priceCurrency": "PKR",
+            "availability": room.status === "maintenance" ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
+            "url": roomUrl
+        }
+    };
+
+    if (room.rating) {
+        jsonLd.aggregateRating = {
+            "@type": "AggregateRating",
+            "ratingValue": room.rating,
+            "reviewCount": room.reviewsCount || 1
+        };
+    }
+
+    const jsonLdScript = `\n<script type="application/ld+json">\n${JSON.stringify(jsonLd, null, 2)}\n</script>\n`;
+    modified = modified.replace(/<\/head>/i, `${jsonLdScript}</head>`);
+
+    return modified;
+}
+
+// Pre-render Individual Blog Post Page
+function prerenderBlogPost(html, post) {
+    let modified = html;
+    const postTitle = `${escapeHTML(post.title)} | KPH Stay Resort Journal`;
+    const rawExcerpt = post.excerpt || post.description || post.title;
+    const postDesc = escapeHTML(rawExcerpt.slice(0, 160));
+    const postUrl = `https://kphstay.com/blog/${escapeHTML(post.slug)}`;
+    const postImg = escapeHTML(post.imageUrl || 'https://kphstay.com/assets/images/logo.png');
+
+    if (/<title>.*?<\/title>/i.test(modified)) {
+        modified = modified.replace(/<title>.*?<\/title>/i, `<title>${postTitle}</title>`);
+    } else {
+        modified = modified.replace(/<\/head>/i, `  <title>${postTitle}</title>\n</head>`);
+    }
+
+    if (/<meta\s+name=["']description["']/i.test(modified)) {
+        modified = modified.replace(/<meta\s+name=["']description["'][^>]*>/i, `<meta name="description" content="${postDesc}">`);
+    } else {
+        modified = modified.replace(/<\/head>/i, `  <meta name="description" content="${postDesc}">\n</head>`);
+    }
+
+    if (/<link\s+rel=["']canonical["']/i.test(modified)) {
+        modified = modified.replace(/<link\s+rel=["']canonical["'][^>]*>/i, `<link rel="canonical" href="${postUrl}">`);
+    } else {
+        modified = modified.replace(/<\/head>/i, `  <link rel="canonical" href="${postUrl}">\n</head>`);
+    }
+
+    const ogTags = `
+  <meta property="og:title" content="${postTitle}">
+  <meta property="og:description" content="${postDesc}">
+  <meta property="og:image" content="${postImg}">
+  <meta property="og:url" content="${postUrl}">
+  <meta property="og:type" content="article">`;
+    modified = modified.replace(/<\/head>/i, `${ogTags}\n</head>`);
+
+    const jsonLd = {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": post.title,
+        "image": [postImg],
+        "datePublished": post.createdAt || post.date || new Date().toISOString(),
+        "author": {
+            "@type": "Organization",
+            "name": post.author || "Kaghan Stay"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "KPH Stay",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://kphstay.com/assets/images/logo.png"
+            }
+        },
+        "description": rawExcerpt
+    };
+
+    const jsonLdScript = `\n<script type="application/ld+json">\n${JSON.stringify(jsonLd, null, 2)}\n</script>\n`;
+    modified = modified.replace(/<\/head>/i, `${jsonLdScript}</head>`);
+
     return modified;
 }
 
 exports.handler = async (event, context) => {
-    const pagePath = event.queryStringParameters.page || '/';
-    console.log(`[SEO Prerenderer] Generating static rendering for path: ${pagePath}`);
+    const rawPage = (event.queryStringParameters && event.queryStringParameters.page) || '/';
+    console.log(`[SEO Prerenderer] Generating static rendering for path: ${rawPage}`);
     
-    // Map path to template file
+    // Parse URL path and query parameters cleanly
+    let parsedUrl;
+    try {
+        parsedUrl = new URL(rawPage, 'https://kphstay.com');
+    } catch (e) {
+        parsedUrl = new URL('/', 'https://kphstay.com');
+    }
+    const pagePath = parsedUrl.pathname.toLowerCase();
+
+    // Map path to exact template file (Most specific first)
     let templateFile = 'index.html';
-    if (pagePath.includes('rooms')) {
+    if (pagePath.startsWith('/room-details')) {
+        templateFile = 'room-details.html';
+    } else if (pagePath.startsWith('/rooms')) {
         templateFile = 'rooms.html';
-    } else if (pagePath.includes('blog')) {
+    } else if (pagePath.startsWith('/blog')) {
         templateFile = 'blog.html';
-    } else if (pagePath.includes('booking')) {
+    } else if (pagePath.startsWith('/booking')) {
         templateFile = 'booking.html';
-    } else if (pagePath.includes('login')) {
+    } else if (pagePath.startsWith('/login')) {
         templateFile = 'login.html';
+    } else if (pagePath.startsWith('/contact')) {
+        templateFile = 'contact.html';
+    } else if (pagePath.startsWith('/privacy')) {
+        templateFile = 'privacy.html';
+    } else if (pagePath.startsWith('/terms')) {
+        templateFile = 'terms.html';
+    } else if (pagePath.startsWith('/refund')) {
+        templateFile = 'refund.html';
+    } else if (pagePath.startsWith('/cookies')) {
+        templateFile = 'cookies.html';
+    } else if (pagePath.startsWith('/track')) {
+        templateFile = 'track.html';
+    } else if (pagePath === '/' || pagePath === '/index.html' || pagePath === '') {
+        templateFile = 'index.html';
+    } else {
+        templateFile = 'index.html';
     }
 
     try {
@@ -303,6 +424,7 @@ exports.handler = async (event, context) => {
         if (!fs.existsSync(templatePath)) {
             return {
                 statusCode: 404,
+                headers: { 'Content-Type': 'text/html; charset=utf-8' },
                 body: "Template not found"
             };
         }
@@ -316,17 +438,44 @@ exports.handler = async (event, context) => {
         ]);
 
         // Inject dynamic content based on page template
-        if (templateFile === 'index.html') {
+        if (templateFile === 'room-details.html') {
+            const roomId = parsedUrl.searchParams.get('id') || (event.queryStringParameters && (event.queryStringParameters.id || event.queryStringParameters.room));
+            if (roomId) {
+                const targetRoom = rooms.find(r => String(r.id) === String(roomId));
+                if (!targetRoom) {
+                    return {
+                        statusCode: 404,
+                        headers: { 'Content-Type': 'text/html; charset=utf-8' },
+                        body: '<!DOCTYPE html><html><head><title>404 Room Not Found | KPH Stay</title></head><body><h1>404 Suite Style Not Found</h1></body></html>'
+                    };
+                }
+                html = prerenderRoomDetails(html, targetRoom);
+            }
+        } else if (templateFile === 'index.html') {
             html = prerenderIndex(html, rooms, blogs);
         } else if (templateFile === 'rooms.html') {
             html = prerenderRooms(html, rooms);
         } else if (templateFile === 'blog.html') {
-            html = prerenderBlog(html, blogs);
+            let blogSlug = parsedUrl.searchParams.get('slug') || (event.queryStringParameters && event.queryStringParameters.slug);
+            if (!blogSlug && pagePath.startsWith('/blog/') && pagePath !== '/blog.html' && pagePath !== '/blog') {
+                blogSlug = pagePath.replace('/blog/', '').replace('.html', '');
+            }
+            if (blogSlug) {
+                const targetPost = blogs.find(b => b.slug === blogSlug || b.id === blogSlug);
+                if (targetPost) {
+                    html = prerenderBlogPost(html, targetPost);
+                } else {
+                    html = prerenderBlog(html, blogs);
+                }
+            } else {
+                html = prerenderBlog(html, blogs);
+            }
         }
 
-        // Add additional general crawler tags (indexing rules)
-        const seoRobotsTag = `<meta name="robots" content="index, follow">`;
-        html = html.replace(/<\/head>/i, `  ${seoRobotsTag}\n</head>`);
+        // Add additional general crawler tags ONLY if not already present
+        if (!/<meta\s+name=["']robots["']/i.test(html)) {
+            html = html.replace(/<\/head>/i, `  <meta name="robots" content="index, follow">\n</head>`);
+        }
 
         return {
             statusCode: 200,

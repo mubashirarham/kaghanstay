@@ -72,8 +72,8 @@
     }
     </script>
 
-    <!-- Tailwind CSS (Play CDN with JIT) -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Compiled Tailwind Production CSS -->
+    <link rel="stylesheet" href="assets/css/tailwind.min.css">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Google Fonts -->
@@ -278,7 +278,7 @@
                     slug: "pine-valley-hiking-trails-islamabad",
                     excerpt: "A hiker's roadmap detailing secret paths, flora, and sunrise spots adjacent to Kaghan Resorts Islamabad.",
                     content: `<p>Located in the scenic foothills of Islamabad, Kaghan Resorts offers direct access to some of the most serene, untouched hiking trails in the Margalla region. These trails wind through thick pine clusters, leading to panoramic lookouts of the capital valley.</p>
-                              <p>Our favorite trailâ€”Trail 3Bâ€”starts just 5 minutes from the resort lobby. It takes hikers on a moderate 45-minute climb, leading to Pinecrest Ridge. Sunrise from this point is breathtaking, offering panoramic views of Rawal Lake and the city skyline in a fresh, mist-covered alpine landscape.</p>
+                               <p>Our favorite trail—Trail 3B—starts just 5 minutes from the resort lobby. It takes hikers on a moderate 45-minute climb, leading to Pinecrest Ridge. Sunrise from this point is breathtaking, offering panoramic views of Rawal Lake and the city skyline in a fresh, mist-covered alpine landscape.</p>
                               <p>Our concierge desks provides complimentary hiking kits, including map layouts, local safety guidelines, water bottles, and walking sticks. Ensure you wear sturdy footwear and head out early to experience the raw morning tranquility.</p>`,
                     author: "Resort Concierge",
                     imageUrl: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=800&q=80",
@@ -328,7 +328,7 @@
                             </div>
                             <div class="pt-4 border-t border-slate-50 flex justify-between items-center text-[10px] font-semibold text-slate-400">
                                 <span>BY ${b.author.toUpperCase()}</span>
-                                <a href="#${b.slug}" class="text-[#D4AF37] font-bold uppercase tracking-wider hover:underline flex items-center gap-1.5">Read Post <i class="fa-solid fa-arrow-right text-[8px]"></i></a>
+                                <a href="/blog/${b.slug}" class="text-[#D4AF37] font-bold uppercase tracking-wider hover:underline flex items-center gap-1.5">Read Post <i class="fa-solid fa-arrow-right text-[8px]"></i></a>
                             </div>
                         </div>
                     </div>
@@ -348,7 +348,7 @@
 
         // Show Single Article Reader
         function openReader(slug) {
-            const article = allBlogs.find(b => b.slug === slug);
+            const article = allBlogs.find(b => b.slug === slug || b.id === slug);
             if (!article) {
                 closeReader();
                 return;
@@ -361,7 +361,7 @@
             document.getElementById('read-title').innerText = article.title;
             document.getElementById('read-cat').innerText = article.category;
             document.getElementById('read-author').innerText = article.author;
-            document.getElementById('read-date').innerText = new Date(article.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById('read-date').innerText = new Date(article.createdAt || Date.now()).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
             document.getElementById('read-image').src = article.imageUrl || '../assets/images/logo.png';
             document.getElementById('read-image').onerror = function() { this.src = '../assets/images/logo.png'; };
             document.getElementById('read-content').innerHTML = article.content;
@@ -399,7 +399,9 @@
         }
 
         function closeReader() {
-            window.location.hash = '';
+            if (window.location.hash) {
+                history.replaceState(null, '', window.location.pathname);
+            }
             document.getElementById('blog-reader-view').classList.add('hidden');
             document.getElementById('blog-list-view').classList.remove('hidden');
 
@@ -408,15 +410,20 @@
             if (dynamicSchema) dynamicSchema.remove();
         }
 
-        // Hash Routing
+        // Clean URL & Hash Routing
         function checkHashRoute() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const slugParam = urlParams.get('slug');
             const hash = window.location.hash.substring(1);
-            if (hash) {
-                openReader(hash);
+            const targetSlug = slugParam || hash;
+
+            if (targetSlug) {
+                openReader(targetSlug);
             } else {
                 closeReader();
                 renderBlogs();
             }
+        }
         }
 
         // Listen for real-time blog database updates
