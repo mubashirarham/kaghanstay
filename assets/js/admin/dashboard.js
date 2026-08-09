@@ -42,9 +42,9 @@ if (window.KaghanDB) {
 
 // Role & Section Permission Mapping for Admin Console
 const DEFAULT_ROLE_PERMS = {
-    admin: ['manage_bookings', 'manage_rooms', 'manage_reviews', 'manage_guests', 'manage_discounts', 'manage_settings'],
-    moderator: ['manage_bookings', 'manage_reviews', 'manage_guests'],
-    editor: ['manage_rooms', 'manage_discounts', 'manage_reviews'],
+    admin: ['manage_bookings', 'manage_rooms', 'manage_reviews', 'manage_guests', 'manage_discounts', 'manage_settings', 'manage_seo'],
+    moderator: ['manage_bookings', 'manage_reviews', 'manage_guests', 'manage_seo'],
+    editor: ['manage_rooms', 'manage_discounts', 'manage_reviews', 'manage_seo'],
     user: []
 };
 
@@ -213,6 +213,9 @@ async function refreshAll() {
         if (window.hasPermissionForTab(sessionUser, 'blogs') && window.AdminBlogsModule) {
             await window.AdminBlogsModule.render();
         }
+        if (window.hasPermissionForTab(sessionUser, 'seo') && window.AdminSEOModule) {
+            await window.AdminSEOModule.render();
+        }
         if (window.hasPermissionForTab(sessionUser, 'newsletter')) {
             await renderNewsletter();
         }
@@ -264,6 +267,10 @@ window.switchTab = (tabName) => {
 
     const activeView = document.getElementById(`view-${tabName}`);
     if (activeView) activeView.classList.remove('hidden');
+
+    if (tabName === 'seo' && window.AdminSEOModule) {
+        window.AdminSEOModule.render();
+    }
 
     const buttons = document.querySelectorAll('#sidebar-nav button');
     buttons.forEach(btn => {

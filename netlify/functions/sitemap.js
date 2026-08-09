@@ -87,13 +87,25 @@ exports.handler = async (event, context) => {
     </url>`;
         });
 
+        function slugify(text) {
+            if (!text) return '';
+            return text.toString().toLowerCase().trim()
+                .replace(/\s+/g, '-')
+                .replace(/[^\w\-]+/g, '')
+                .replace(/\-\-+/g, '-')
+                .replace(/^-+/, '')
+                .replace(/-+$/, '');
+        }
+
         // 2. Dynamic Room detail routes
         (rooms || []).forEach(room => {
             if (room.status === 'available' || !room.status) {
                 const roomModDate = room.updatedAt ? room.updatedAt.split('T')[0] : todayStr;
+                const roomSlug = (room.slug && room.slug.trim()) ? room.slug.trim().toLowerCase() : slugify(room.name || 'room');
+                const roomLoc = roomSlug ? `${baseUrl}/room-details?slug=${encodeURIComponent(roomSlug)}` : `${baseUrl}/room-details?id=${room.id}`;
                 xml += `
     <url>
-        <loc>${baseUrl}/room-details?id=${room.id}</loc>
+        <loc>${roomLoc}</loc>
         <lastmod>${roomModDate}</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>

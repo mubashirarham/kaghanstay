@@ -1038,7 +1038,8 @@
                 const seoTitle = document.getElementById('edit-room-seo-title')?.value.trim() || '';
                 const seoDescription = document.getElementById('edit-room-seo-desc')?.value.trim() || '';
                 const seoKeywords = document.getElementById('edit-room-seo-keywords')?.value.trim() || '';
-                const slug = document.getElementById('edit-room-seo-slug')?.value.trim() || '';
+                const rawSlug = document.getElementById('edit-room-seo-slug')?.value.trim() || '';
+                const slug = rawSlug || (window.KaghanDB && window.KaghanDB.generateSlug ? window.KaghanDB.generateSlug(name) : name.toLowerCase().replace(/\s+/g, '-'));
                 const seoIndex = document.getElementById('edit-room-seo-index')?.value || 'index, follow';
                 const isPinned = document.getElementById('edit-room-pinned')?.checked || false;
 
@@ -1240,7 +1241,8 @@
                 const seoTitle = document.getElementById('add-room-seo-title')?.value.trim() || '';
                 const seoDescription = document.getElementById('add-room-seo-desc')?.value.trim() || '';
                 const seoKeywords = document.getElementById('add-room-seo-keywords')?.value.trim() || '';
-                const slug = document.getElementById('add-room-seo-slug')?.value.trim() || '';
+                const rawSlug = document.getElementById('add-room-seo-slug')?.value.trim() || '';
+                const slug = rawSlug || (window.KaghanDB && window.KaghanDB.generateSlug ? window.KaghanDB.generateSlug(name) : name.toLowerCase().replace(/\s+/g, '-'));
                 const seoIndex = document.getElementById('add-room-seo-index')?.value || 'index, follow';
                 const isPinned = document.getElementById('add-room-pinned')?.checked || false;
 
@@ -1541,6 +1543,72 @@
                         e.stopImmediatePropagation();
                     }
                 }, true);
+            }
+        }
+    };
+
+    window.generateRoomSEO = async function(mode) {
+        const btn = document.getElementById(`${mode}-room-ai-seo-btn`);
+        const name = document.getElementById(`${mode}-room-name`)?.value.trim() || '';
+        const type = document.getElementById(`${mode}-room-type`)?.value || '';
+        const locationSelect = document.getElementById(`${mode}-room-location`);
+        const location = locationSelect ? (locationSelect.options[locationSelect.selectedIndex]?.text || locationSelect.value) : 'Islamabad';
+        const price = document.getElementById(`${mode}-room-price`)?.value || '';
+        const amenities = document.getElementById(`${mode}-room-amenities`)?.value || '';
+        let description = document.getElementById(`${mode}-room-desc`)?.value || '';
+        if (typeof tinymce !== 'undefined' && tinymce.get(`${mode}-room-desc`)) {
+            description = tinymce.get(`${mode}-room-desc`).getContent({ format: 'text' }) || description;
+        }
+
+        if (!name) {
+            if (window.KaghanUI) KaghanUI.showToast("Please enter a listing name before generating SEO.", "warning");
+            return;
+        }
+
+        const origHtml = btn ? btn.innerHTML : '';
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-xs"></i> Generating...';
+        }
+
+        try {
+            if (window.KaghanUI) KaghanUI.showToast("Generating Groq AI SEO metadata...", "info");
+            const res = await window.safeFetch('/.netlify/functions/generate-seo', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, type, location, description, amenities, price })
+            });
+
+            if (!res.ok) {
+                const errData = await res.json().catch(() => ({}));
+                throw new Error(errData.error || `HTTP error ${res.status}`);
+            }
+
+            const data = await res.json();
+            if (document.getElementById(`${mode}-room-seo-title`)) {
+                document.getElementById(`${mode}-room-seo-title`).value = data.seoTitle || '';
+            }
+            if (document.getElementById(`${mode}-room-seo-desc`)) {
+                document.getElementById(`${mode}-room-seo-desc`).value = data.seoDescription || '';
+            }
+            if (document.getElementById(`${mode}-room-seo-keywords`)) {
+                document.getElementById(`${mode}-room-seo-keywords`).value = data.seoKeywords || '';
+            }
+            if (document.getElementById(`${mode}-room-seo-slug`)) {
+                document.getElementById(`${mode}-room-seo-slug`).value = data.slug || '';
+            }
+
+            if (window.KaghanUI) {
+                const intentInfo = data.searchIntent ? ` [Intent: ${data.searchIntent}]` : '';
+                KaghanUI.showToast(`SEO & Data Analyst Metadata populated successfully!${intentInfo}`, "success");
+            }
+        } catch (err) {
+            console.error("Error generating AI SEO:", err);
+            if (window.KaghanUI) KaghanUI.showToast(err.message || "Failed to generate AI SEO metadata.", "error");
+        } finally {
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = origHtml;
             }
         }
     };

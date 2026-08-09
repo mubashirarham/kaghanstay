@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZDPMHR68PZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-ZDPMHR68PZ');
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
     <title>Realtime Availability Calendar | Kaghan Stay User Panel</title>
@@ -280,7 +289,7 @@
                 document.getElementById('strip-room-title').textContent = selectedRoom.name;
                 document.getElementById('strip-room-location').textContent = selectedRoom.location || 'Islamabad';
                 document.getElementById('strip-room-price').textContent = `${KaghanUI.formatPKR(selectedRoom.priceDaily || selectedRoom.price || 0)} / night`;
-                document.getElementById('strip-detail-link').href = `room-details.html?id=${selectedRoom.id}`;
+                document.getElementById('strip-detail-link').href = KaghanDB.getRoomLink ? KaghanDB.getRoomLink(selectedRoom) : `room-details.html?id=${selectedRoom.id}`;
             }
 
             // Fetch Booked Dates for this Room

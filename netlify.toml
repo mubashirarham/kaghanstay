@@ -23,7 +23,17 @@
 # Clean URLs rewrites for Stay site
 [[redirects]]
   from = "/blog/:slug"
-  to = "/blog.html?slug=:slug"
+  to = "/blog-details.html?slug=:slug"
+  status = 200
+
+[[redirects]]
+  from = "/room/:slug"
+  to = "/room-details.html?slug=:slug"
+  status = 200
+
+[[redirects]]
+  from = "/rooms/:slug"
+  to = "/room-details.html?slug=:slug"
   status = 200
 
 [[redirects]]

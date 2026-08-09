@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZDPMHR68PZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-ZDPMHR68PZ');
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
     <title>Administrator Console | KPH Stay</title>
@@ -181,9 +190,12 @@
                 <button onclick="switchTab('blogs')" id="tab-btn-blogs" class="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white hover:bg-slate-800/20 text-left">
                     <i class="fa-solid fa-newspaper w-5 text-sm"></i> Blog Management
                 </button>
-                <div class="h-px bg-slate-800 my-2 w-full"></div>
                 <button onclick="switchTab('coupons')" id="tab-btn-coupons" class="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white hover:bg-slate-800/20 text-left">
                     <i class="fa-solid fa-tags w-5 text-sm"></i> Coupons
+                </button>
+
+                <button onclick="switchTab('seo')" id="tab-btn-seo" class="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white hover:bg-slate-800/20 text-left">
+                    <i class="fa-solid fa-chart-line w-5 text-sm text-[#D4AF37]"></i> SEO & PageSpeed
                 </button>
 
                 <button onclick="switchTab('settings')" id="tab-btn-settings" class="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white hover:bg-slate-800/20 text-left">
@@ -669,63 +681,122 @@
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <!-- Write Blog Post Form -->
-                    <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md h-fit">
-                        <h3 class="text-lg font-bold outfit text-slate-950 mb-6">Write Blog Post</h3>
+                    <!-- Write Blog Post Form (Main Workspace - 2 Columns) -->
+                    <div class="lg:col-span-2 bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md h-fit">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+                            <div>
+                                <h3 class="text-lg font-bold outfit text-slate-950">Write & Edit Journal Article</h3>
+                                <p class="text-xs text-slate-400">Compose rich HTML content or auto-write full articles with Groq AI.</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button type="button" onclick="window.generateBlogAI()" class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white text-[11px] font-extrabold px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 shadow-sm">
+                                    <i class="fa-solid fa-wand-magic-sparkles text-amber-200"></i> ✨ Write Article with Groq AI
+                                </button>
+                            </div>
+                        </div>
                         <form id="blog-form" class="space-y-4">
-                            <div>
-                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Blog Title</label>
-                                <input type="text" id="blog-title" required placeholder="e.g. Hiking Trails of Pine Valley" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Blog Title</label>
+                                    <input type="text" id="blog-title" required placeholder="e.g. Top 5 Scenic Places to Visit in Nathia Gali" class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Category Taxonomy</label>
+                                    <select id="blog-cat" class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                                        <option value="Travel Guide">Travel Guide</option>
+                                        <option value="Resort Activities & Wellness">Resort Activities & Wellness</option>
+                                        <option value="Islamabad & Margalla Travel">Islamabad & Margalla Travel</option>
+                                        <option value="Murree & Jhika Gali Guides">Murree & Jhika Gali Guides</option>
+                                        <option value="Nathia Gali Mountain Trails">Nathia Gali Mountain Trails</option>
+                                        <option value="Kaghan & Naran Expeditions">Kaghan & Naran Expeditions</option>
+                                        <option value="Dining & Culinary Spotlight">Dining & Culinary Spotlight</option>
+                                        <option value="Luxury Stay Offers & News">Luxury Stay Offers & News</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div>
-                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Category</label>
-                                <select id="blog-cat" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
-                                    <option value="Resort Activities">Resort Activities</option>
-                                    <option value="Pine Valley Guides">Pine Valley Guides</option>
-                                    <option value="Dining & Spa">Dining & Spa</option>
-                                    <option value="Local Attractions">Local Attractions</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Author</label>
-                                <input type="text" id="blog-author" required value="Resort Manager" placeholder="Author name" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
-                            </div>
-                            <div>
-                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Featured Image</label>
-                                <div class="flex gap-2">
-                                    <input type="text" id="blog-img" placeholder="https://res.cloudinary.com/..." class="flex-grow border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
-                                    <button type="button" id="upload-blog-img-btn" class="bg-slate-800 hover:bg-[#D4AF37] hover:text-slate-950 text-white px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0">
-                                        <i class="fa-solid fa-cloud-arrow-up"></i> Upload
-                                    </button>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Author Name</label>
+                                    <input type="text" id="blog-author" required value="Resort Manager" placeholder="Author name" class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Featured Header Image</label>
+                                    <div class="flex gap-2">
+                                        <input type="text" id="blog-img" placeholder="https://res.cloudinary.com/..." class="flex-grow border border-slate-200 rounded-xl px-3 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                                        <button type="button" id="upload-blog-img-btn" class="bg-slate-800 hover:bg-[#D4AF37] hover:text-slate-950 text-white px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0">
+                                            <i class="fa-solid fa-cloud-arrow-up"></i> Upload
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                             <div>
-                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Brief Excerpt</label>
-                                <input type="text" id="blog-excerpt" required placeholder="A short 1-2 sentence description..." class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Brief Excerpt (1-2 sentences)</label>
+                                <input type="text" id="blog-excerpt" required placeholder="A concise 1-2 sentence article summary..." class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
                             </div>
                             <div>
-                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Article Body Content (HTML allowed)</label>
-                                <textarea id="blog-content" rows="6" required placeholder="Write the main blog article content..." class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37] resize-none"></textarea>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Article Body Content (TinyMCE Rich Text Editor - 480px Canvas)</label>
+                                <textarea id="blog-content" rows="12" placeholder="Write or generate full blog article content..." class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]"></textarea>
                             </div>
-                            <button type="submit" class="w-full bg-gradient-to-r from-[#D4AF37] to-[#DC2626] text-white font-bold py-3 rounded-xl hover:opacity-90 transition-all text-xs shadow-md mt-4 flex items-center justify-center gap-2">
+
+                            <!-- Extreme SEO Settings Section -->
+                            <div class="border-t border-slate-100 pt-5 space-y-4">
+                                <div class="flex justify-between items-center">
+                                    <h4 class="text-xs font-bold uppercase tracking-wider text-[#D4AF37] flex items-center gap-1.5">
+                                        <i class="fa-solid fa-magnifying-glass"></i> Extreme SEO & Search Intent Metadata
+                                    </h4>
+                                    <button type="button" onclick="window.generateBlogSEOAI()" class="bg-amber-50 border border-amber-200 text-amber-900 hover:bg-amber-100 text-[10px] font-bold px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5">
+                                        <i class="fa-solid fa-wand-magic-sparkles text-amber-600"></i> ✨ Auto-Generate Blog SEO with Groq AI
+                                    </button>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">SEO Title (50-60 chars)</label>
+                                        <input type="text" id="blog-seo-title" placeholder="e.g. Top 5 Nathia Gali Places to Visit | KPH Stay" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">URL Slug</label>
+                                        <input type="text" id="blog-seo-slug" placeholder="top-5-nathia-gali-places" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">SEO Meta Description (140-160 chars)</label>
+                                    <input type="text" id="blog-seo-desc" placeholder="High-converting meta description..." class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Focus & LSI Keywords</label>
+                                        <input type="text" id="blog-seo-keywords" placeholder="nathia gali, luxury travel, kph stay..." class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Search Index Policy</label>
+                                        <select id="blog-seo-index" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                                            <option value="index, follow">Index, Follow (Recommended)</option>
+                                            <option value="noindex, nofollow">Noindex, Nofollow</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="w-full bg-gradient-to-r from-[#D4AF37] to-[#DC2626] text-white font-bold py-3.5 rounded-2xl hover:opacity-90 transition-all text-xs shadow-md mt-6 flex items-center justify-center gap-2">
                                 <i class="fa-solid fa-plus text-xs"></i>
-                                Publish Journal Post
+                                Publish Journal Article
                             </button>
                         </form>
                     </div>
 
-                    <!-- Blog Posts List -->
-                    <div class="lg:col-span-2 bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md">
-                        <h3 class="text-lg font-bold outfit text-slate-950 mb-6">Published Journal Articles</h3>
+                    <!-- Published Journal Articles List (Side Panel - 1 Column) -->
+                    <div class="lg:col-span-1 bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md h-fit">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-lg font-bold outfit text-slate-950">Published Articles</h3>
+                            <span class="text-[10px] font-bold bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full">Live Catalog</span>
+                        </div>
                         
                         <div class="table-scroll-container overflow-x-auto">
                             <table class="w-full text-left border-collapse">
                                 <thead>
                                     <tr class="border-b border-slate-100 text-slate-400 text-[9px] uppercase tracking-wider font-bold">
-                                        <th class="px-6 py-3">Preview</th>
-                                        <th class="px-6 py-3">Article Info</th>
-                                        <th class="px-6 py-3">Published Date</th>
-                                        <th class="px-6 py-3">Actions</th>
+                                        <th class="py-3 px-2">Article</th>
+                                        <th class="py-3 px-2 text-right">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody id="admin-blogs-tbody">
@@ -770,6 +841,194 @@
                                 <!-- Loaded dynamically -->
                             </tbody>
                         </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================ -->
+            <!-- VIEW: SEO DASHBOARD & GOOGLE SEARCH CONTROL CENTER -->
+            <!-- ============================================================ -->
+            <div id="view-seo" class="tab-view hidden space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <span class="text-[#D4AF37] text-xs font-bold uppercase tracking-wider">Search Engine Command Center</span>
+                        <h1 class="text-2xl font-extrabold outfit text-slate-900 mt-0.5">Google Search & PageSpeed Intelligence</h1>
+                        <p class="text-slate-400 text-xs font-light">Monitor Google PageSpeed Insights Core Web Vitals, Search Console clicks, top keyword rankings, and instant indexing.</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="window.runBatchSEOOptimization()" class="bg-[#0F172A] hover:bg-[#D4AF37] hover:text-slate-950 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-all shadow flex items-center gap-1.5">
+                            <i class="fa-solid fa-wand-magic-sparkles text-amber-400"></i> Batch AI Room SEO
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Google PageSpeed Insights Live Auditor -->
+                <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md space-y-6">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-5">
+                        <div>
+                            <h3 class="text-lg font-bold outfit text-slate-950 flex items-center gap-2">
+                                <i class="fa-solid fa-[#4285F4] fa-gauge-high text-amber-500"></i> Google PageSpeed Insights Auditor
+                            </h3>
+                            <p class="text-xs text-slate-400">Live Lighthouse performance metrics, accessibility ratings, and Core Web Vitals directly from Google's API.</p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="bg-slate-100 p-1 rounded-xl flex items-center gap-1 text-xs font-bold">
+                                <button id="pagespeed-strategy-mobile" onclick="setPageSpeedStrategy('mobile')" class="px-3 py-1.5 rounded-lg bg-slate-900 text-white transition-all">Mobile</button>
+                                <button id="pagespeed-strategy-desktop" onclick="setPageSpeedStrategy('desktop')" class="px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition-all">Desktop</button>
+                            </div>
+                            <button onclick="runPageSpeedAudit()" id="run-pagespeed-btn" class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-all shadow flex items-center gap-2">
+                                <i class="fa-solid fa-play text-xs"></i> Run Audit
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Scores Gauges Grid -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100 text-center">
+                            <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400 block mb-1">Performance</span>
+                            <div id="pagespeed-score-perf" class="text-3xl font-extrabold outfit text-emerald-600">96</div>
+                            <span class="text-[9px] text-slate-400 block mt-1">Lighthouse Score</span>
+                        </div>
+                        <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100 text-center">
+                            <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400 block mb-1">Accessibility</span>
+                            <div id="pagespeed-score-access" class="text-3xl font-extrabold outfit text-emerald-600">98</div>
+                            <span class="text-[9px] text-slate-400 block mt-1">Lighthouse Score</span>
+                        </div>
+                        <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100 text-center">
+                            <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400 block mb-1">Best Practices</span>
+                            <div id="pagespeed-score-practices" class="text-3xl font-extrabold outfit text-emerald-600">100</div>
+                            <span class="text-[9px] text-slate-400 block mt-1">Lighthouse Score</span>
+                        </div>
+                        <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100 text-center">
+                            <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400 block mb-1">SEO Score</span>
+                            <div id="pagespeed-score-seo" class="text-3xl font-extrabold outfit text-emerald-600">100</div>
+                            <span class="text-[9px] text-slate-400 block mt-1">Lighthouse Score</span>
+                        </div>
+                    </div>
+
+                    <!-- Core Web Vitals Metrics -->
+                    <div class="border-t border-slate-100 pt-5">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">Core Web Vitals Metrics (Real-Time Experience)</h4>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4" id="pagespeed-vitals-container">
+                            <div class="border border-slate-100 rounded-xl p-3 bg-white">
+                                <span class="text-[10px] font-bold text-slate-400 uppercase block">FCP (First Paint)</span>
+                                <span id="vital-fcp" class="text-base font-extrabold text-slate-800">0.8 s</span>
+                            </div>
+                            <div class="border border-slate-100 rounded-xl p-3 bg-white">
+                                <span class="text-[10px] font-bold text-slate-400 uppercase block">LCP (Largest Paint)</span>
+                                <span id="vital-lcp" class="text-base font-extrabold text-slate-800">1.4 s</span>
+                            </div>
+                            <div class="border border-slate-100 rounded-xl p-3 bg-white">
+                                <span class="text-[10px] font-bold text-slate-400 uppercase block">CLS (Layout Shift)</span>
+                                <span id="vital-cls" class="text-base font-extrabold text-slate-800">0.002</span>
+                            </div>
+                            <div class="border border-slate-100 rounded-xl p-3 bg-white">
+                                <span class="text-[10px] font-bold text-slate-400 uppercase block">TBT (Blocking Time)</span>
+                                <span id="vital-tbt" class="text-base font-extrabold text-slate-800">10 ms</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Top Opportunities -->
+                    <div class="border-t border-slate-100 pt-5">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">Performance Audit Recommendations</h4>
+                        <div id="pagespeed-opportunities-list" class="space-y-2 text-xs text-slate-600">
+                            <div class="p-3 bg-emerald-50 border border-emerald-100 rounded-xl text-emerald-900 font-semibold flex items-center justify-between">
+                                <span><i class="fa-solid fa-circle-check text-emerald-600 mr-2"></i> All Core Web Vitals meet Google's recommended 90+ threshold!</span>
+                                <span class="text-[10px] uppercase font-bold tracking-wider bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded-md">PASS</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Google Search Console & Keyword Rankings -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Search Console Performance -->
+                    <div class="lg:col-span-2 bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md space-y-6">
+                        <div class="flex justify-between items-center border-b border-slate-100 pb-4">
+                            <div>
+                                <h3 class="text-lg font-bold outfit text-slate-950 flex items-center gap-2">
+                                    <i class="fa-solid fa-magnifying-glass text-[#D4AF37]"></i> Google Search Console Performance
+                                </h3>
+                                <p class="text-xs text-slate-400">Total organic impressions, clicks, CTR %, and query position rankings (Last 28 Days).</p>
+                            </div>
+                            <button onclick="loadSearchConsoleData()" class="text-slate-400 hover:text-slate-800 text-xs font-bold flex items-center gap-1">
+                                <i class="fa-solid fa-rotate-right"></i> Refresh
+                            </button>
+                        </div>
+
+                        <!-- Stats Grid -->
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                            <div class="bg-amber-50/50 rounded-2xl p-4 border border-amber-100">
+                                <span class="text-[10px] font-bold text-slate-400 uppercase block">Total Organic Clicks</span>
+                                <span id="gsc-clicks" class="text-2xl font-extrabold outfit text-slate-900 mt-1 block">1,420</span>
+                            </div>
+                            <div class="bg-blue-50/50 rounded-2xl p-4 border border-blue-100">
+                                <span class="text-[10px] font-bold text-slate-400 uppercase block">Search Impressions</span>
+                                <span id="gsc-impressions" class="text-2xl font-extrabold outfit text-slate-900 mt-1 block">28,450</span>
+                            </div>
+                            <div class="bg-purple-50/50 rounded-2xl p-4 border border-purple-100">
+                                <span class="text-[10px] font-bold text-slate-400 uppercase block">Average CTR %</span>
+                                <span id="gsc-ctr" class="text-2xl font-extrabold outfit text-slate-900 mt-1 block">4.99%</span>
+                            </div>
+                            <div class="bg-emerald-50/50 rounded-2xl p-4 border border-emerald-100">
+                                <span class="text-[10px] font-bold text-slate-400 uppercase block">Avg Search Position</span>
+                                <span id="gsc-position" class="text-2xl font-extrabold outfit text-emerald-700 mt-1 block">#4.2</span>
+                            </div>
+                        </div>
+
+                        <!-- Top Search Keywords Table -->
+                        <div>
+                            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">Top Organic Search Keywords</h4>
+                            <div class="table-scroll-container overflow-x-auto">
+                                <table class="w-full text-left border-collapse text-xs">
+                                    <thead>
+                                        <tr class="border-b border-slate-100 text-slate-400 text-[9px] uppercase tracking-wider font-bold">
+                                            <th class="py-2.5 px-3">Search Query</th>
+                                            <th class="py-2.5 px-3">Clicks</th>
+                                            <th class="py-2.5 px-3">Impressions</th>
+                                            <th class="py-2.5 px-3">CTR %</th>
+                                            <th class="py-2.5 px-3">Avg Position</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="gsc-queries-tbody">
+                                        <!-- Loaded dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Instant Google Indexing Request Tool -->
+                    <div class="lg:col-span-1 bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md space-y-5 h-fit">
+                        <div>
+                            <h3 class="text-lg font-bold outfit text-slate-950 flex items-center gap-2">
+                                <i class="fa-solid fa-bolt text-amber-500"></i> Instant Google Indexing
+                            </h3>
+                            <p class="text-xs text-slate-400">Notify Google immediately when a new room or blog post URL is published.</p>
+                        </div>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Target URL to Index</label>
+                                <input type="text" id="gsc-index-url" placeholder="https://kphstay.com/room/presidential-suite" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                <button onclick="requestGoogleIndexing()" class="w-full bg-slate-900 hover:bg-[#D4AF37] hover:text-slate-950 text-white font-bold py-2.5 rounded-xl transition-all text-xs flex items-center justify-center gap-2 shadow">
+                                    <i class="fa-solid fa-paper-plane text-xs"></i> Submit Single URL
+                                </button>
+                                <button id="index-all-pages-btn" onclick="indexAllSitePages()" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold py-2.5 rounded-xl transition-all text-xs flex items-center justify-center gap-2 shadow">
+                                    <i class="fa-solid fa-bolt text-xs"></i> Index All Site Pages
+                                </button>
+                            </div>
+                        </div>
+                        <div class="border-t border-slate-100 pt-4 space-y-2">
+                            <h4 class="text-[11px] font-bold text-slate-800 flex items-center gap-1.5">
+                                <i class="fa-solid fa-key text-amber-500"></i> Google API Key Setup
+                            </h4>
+                            <p class="text-[11px] text-slate-500 leading-relaxed">
+                                PageSpeed Insights API is 100% free and active out of the box. To query your private Search Console data, configure your Google Service Account in environment variables.
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1129,9 +1388,14 @@
                     </div>
 
                     <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm space-y-4">
-                        <h4 class="text-sm font-bold uppercase tracking-wider text-[#D4AF37] flex items-center gap-2">
-                            <i class="fa-solid fa-magnifying-glass text-[#D4AF37]"></i> SEO Metadata & Search Indexing
-                        </h4>
+                        <div class="flex justify-between items-center">
+                            <h4 class="text-sm font-bold uppercase tracking-wider text-[#D4AF37] flex items-center gap-2">
+                                <i class="fa-solid fa-magnifying-glass text-[#D4AF37]"></i> SEO Metadata & Search Indexing
+                            </h4>
+                            <button type="button" id="edit-room-ai-seo-btn" onclick="window.generateRoomSEO('edit')" class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white text-[10px] font-extrabold uppercase tracking-wider px-3.5 py-1.5 rounded-xl shadow-xs transition-all flex items-center gap-1.5">
+                                <i class="fa-solid fa-wand-magic-sparkles text-xs"></i> Auto-Generate with Groq AI
+                            </button>
+                        </div>
                         <div>
                             <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">SEO Title Override (50 - 60 Chars)</label>
                             <input type="text" id="edit-room-seo-title" placeholder="e.g. Executive 2BHK Suite in Bahria Enclave | KPH Stay" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
@@ -1381,9 +1645,14 @@
                     </div>
 
                     <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm space-y-4">
-                        <h4 class="text-sm font-bold uppercase tracking-wider text-[#D4AF37] flex items-center gap-2">
-                            <i class="fa-solid fa-magnifying-glass text-[#D4AF37]"></i> SEO Metadata & Search Indexing
-                        </h4>
+                        <div class="flex justify-between items-center">
+                            <h4 class="text-sm font-bold uppercase tracking-wider text-[#D4AF37] flex items-center gap-2">
+                                <i class="fa-solid fa-magnifying-glass text-[#D4AF37]"></i> SEO Metadata & Search Indexing
+                            </h4>
+                            <button type="button" id="add-room-ai-seo-btn" onclick="window.generateRoomSEO('add')" class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white text-[10px] font-extrabold uppercase tracking-wider px-3.5 py-1.5 rounded-xl shadow-xs transition-all flex items-center gap-1.5">
+                                <i class="fa-solid fa-wand-magic-sparkles text-xs"></i> Auto-Generate with Groq AI
+                            </button>
+                        </div>
                         <div>
                             <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">SEO Title Override (50 - 60 Chars)</label>
                             <input type="text" id="add-room-seo-title" placeholder="e.g. Executive 2BHK Suite in Bahria Enclave | KPH Stay" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
@@ -2008,6 +2277,7 @@
     <script src="../assets/js/admin/settings.js?v=10"></script>
     <script src="../assets/js/admin/coupons.js?v=10"></script>
     <script src="../assets/js/admin/messaging.js?v=10"></script>
+    <script src="../assets/js/admin/seo.js?v=10"></script>
 
 </body>
 </html>

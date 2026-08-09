@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZDPMHR68PZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-ZDPMHR68PZ');
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
     <title>Book Your Stay | KPH Stay</title>
@@ -21,14 +30,14 @@
     <meta property="og:url" content="https://kphstay.com/booking">
     <meta property="og:title" content="Book Your Stay | KPH Stay">
     <meta property="og:description" content="Secure your luxury accommodations at KPH Stay. Fast, secure online booking, custom dining upgrades, and instant booking confirmation.">
-    <meta property="og:image" content="https://kphstay.com/assets/images/logo.png">
+    <meta property="og:image" content="https://kphstay.com/assets/images/og-share.jpg">
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="https://kphstay.com/booking">
     <meta name="twitter:title" content="Book Your Stay | KPH Stay">
     <meta name="twitter:description" content="Secure your luxury accommodations at KPH Stay. Fast, secure online booking, custom dining upgrades, and instant booking confirmation.">
-    <meta name="twitter:image" content="https://kphstay.com/assets/images/logo.png">
+    <meta name="twitter:image" content="https://kphstay.com/assets/images/og-share.jpg">
 
     <!-- BreadcrumbList Schema -->
     <script type="application/ld+json">
@@ -930,7 +939,7 @@
 
             const linkEl = document.getElementById('prop-full-details-link');
             if (linkEl) {
-                linkEl.href = `room-details.html?id=${room.id}`;
+                linkEl.href = KaghanDB.getRoomLink ? KaghanDB.getRoomLink(room) : `room-details.html?id=${room.id}`;
             }
 
             // Key Specs

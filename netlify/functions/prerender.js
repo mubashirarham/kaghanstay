@@ -26,6 +26,16 @@ function formatPKR(amount) {
     }).format(amount);
 }
 
+function slugify(text) {
+    if (!text) return '';
+    return text.toString().toLowerCase().trim()
+        .replace(/\s+/g, '-')
+        .replace(/[^\w\-]+/g, '')
+        .replace(/\-\-+/g, '-')
+        .replace(/^-+/, '')
+        .replace(/-+$/, '');
+}
+
 // Convert Firestore REST document structure to standard JS objects
 function parseFirestoreValue(value) {
     if (!value) return null;
@@ -256,8 +266,8 @@ function prerenderRoomDetails(html, room) {
     const rawDesc = customDesc || (room.description ? room.description.replace(/<[^>]*>?/gm, '').trim() : `${room.name} luxury stay in ${room.location || 'Islamabad'}. Rates from ${formatPKR(room.price)}.`);
     const roomDesc = escapeHTML(rawDesc.slice(0, 160));
     
-    const slugQuery = room.slug ? `&slug=${escapeHTML(room.slug)}` : '';
-    const roomUrl = `https://kphstay.com/room-details?id=${escapeHTML(room.id)}${slugQuery}`;
+    const roomSlug = room.slug || slugify(room.name || 'room');
+    const roomUrl = `https://kphstay.com/room-details?slug=${escapeHTML(roomSlug)}`;
     const roomImg = escapeHTML(room.image || (room.images && room.images.length ? room.images[0] : 'https://kphstay.com/assets/images/logo.png'));
     const pkrPrice = Number(room.price) || 0;
     const robotsTag = room.seoIndex || 'index, follow';
@@ -412,7 +422,7 @@ exports.handler = async (event, context) => {
 
     // Map path to exact template file (Most specific first)
     let templateFile = 'index.html';
-    if (pagePath.startsWith('/room-details')) {
+    if (pagePath.startsWith('/room-details') || pagePath.startsWith('/room/') || (pagePath.startsWith('/rooms/') && pagePath !== '/rooms.html' && pagePath !== '/rooms')) {
         templateFile = 'room-details.html';
     } else if (pagePath.startsWith('/rooms')) {
         templateFile = 'rooms.html';
@@ -460,17 +470,39 @@ exports.handler = async (event, context) => {
 
         // Inject dynamic content based on page template
         if (templateFile === 'room-details.html') {
-            const roomId = parsedUrl.searchParams.get('id') || (event.queryStringParameters && (event.queryStringParameters.id || event.queryStringParameters.room));
-            if (roomId) {
-                const targetRoom = rooms.find(r => String(r.id) === String(roomId));
-                if (!targetRoom) {
-                    return {
-                        statusCode: 404,
-                        headers: { 'Content-Type': 'text/html; charset=utf-8' },
-                        body: '<!DOCTYPE html><html><head><title>404 Room Not Found | KPH Stay</title></head><body><h1>404 Suite Style Not Found</h1></body></html>'
-                    };
+            let roomId = parsedUrl.searchParams.get('id') || (event.queryStringParameters && (event.queryStringParameters.id || event.queryStringParameters.room));
+            let roomSlug = parsedUrl.searchParams.get('slug') || (event.queryStringParameters && event.queryStringParameters.slug);
+
+            if (!roomSlug && !roomId) {
+                if (pagePath.startsWith('/room/') || pagePath.startsWith('/rooms/')) {
+                    roomSlug = pagePath.replace(/^\/(room|rooms)\//, '').replace('.html', '');
                 }
+            }
+
+            let targetRoom = null;
+            if (roomSlug) {
+                const cleanSlug = roomSlug.toLowerCase().trim();
+                targetRoom = rooms.find(r => 
+                    (r.slug && r.slug.toLowerCase() === cleanSlug) || 
+                    slugify(r.name) === cleanSlug || 
+                    String(r.id).toLowerCase() === cleanSlug
+                );
+            }
+            if (!targetRoom && roomId) {
+                targetRoom = rooms.find(r => String(r.id) === String(roomId));
+            }
+            if (!targetRoom && rooms.length > 0) {
+                targetRoom = rooms[0];
+            }
+
+            if (targetRoom) {
                 html = prerenderRoomDetails(html, targetRoom);
+            } else {
+                return {
+                    statusCode: 404,
+                    headers: { 'Content-Type': 'text/html; charset=utf-8' },
+                    body: '<!DOCTYPE html><html><head><title>404 Room Not Found | KPH Stay</title></head><body><h1>404 Suite Style Not Found</h1></body></html>'
+                };
             }
         } else if (templateFile === 'index.html') {
             html = prerenderIndex(html, rooms, blogs);

@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZDPMHR68PZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-ZDPMHR68PZ');
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
     <title>Search & Filter Suites | Kaghan Stay User Panel</title>
@@ -377,7 +386,7 @@
                                 <span class="text-[9px] uppercase tracking-wider text-slate-400 block font-bold">Nightly Rate</span>
                                 <span class="text-base font-bold text-[#C5A059] outfit">${KaghanUI.formatPKR(room.priceDaily || room.price || 0)}</span>
                             </div>
-                            <a href="room-details.html?id=${room.id}" class="bg-[#0B0F19] text-white text-[10px] uppercase font-bold tracking-wider px-4 py-2.5 rounded-xl hover:bg-[#C5A059] hover:text-slate-900 transition-all shadow-xs">
+                            <a href="${window.KaghanDB && window.KaghanDB.getRoomLink ? window.KaghanDB.getRoomLink(room) : `room-details.html?id=${room.id}`}" class="bg-[#0B0F19] text-white text-[10px] uppercase font-bold tracking-wider px-4 py-2.5 rounded-xl hover:bg-[#C5A059] hover:text-slate-900 transition-all shadow-xs">
                                 View Suite
                             </a>
                         </div>

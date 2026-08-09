@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZDPMHR68PZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-ZDPMHR68PZ');
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
     <title>Room Details | KPH Stay Luxury Service Apartments</title>
@@ -21,14 +30,14 @@
     <meta property="og:url" content="https://kphstay.com/room-details">
     <meta property="og:title" content="Suite & Apartment Details | Kaghan Stay">
     <meta property="og:description" content="Explore details, luxury amenities, virtual photos, and transparent pricing for Kaghan Stay luxury suites in Islamabad & Nathia Gali.">
-    <meta property="og:image" content="https://kphstay.com/assets/images/logo.png">
+    <meta property="og:image" content="https://kphstay.com/assets/images/og-share.jpg">
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="https://kphstay.com/room-details">
     <meta name="twitter:title" content="Suite & Apartment Details | Kaghan Stay">
     <meta name="twitter:description" content="Explore details, luxury amenities, virtual photos, and transparent pricing for Kaghan Stay luxury suites in Islamabad & Nathia Gali.">
-    <meta name="twitter:image" content="https://kphstay.com/assets/images/logo.png">
+    <meta name="twitter:image" content="https://kphstay.com/assets/images/og-share.jpg">
 
     <!-- BreadcrumbList Schema -->
     <script type="application/ld+json">
@@ -778,10 +787,18 @@
             });
 
             const urlParams = new URLSearchParams(window.location.search);
-            const roomId = urlParams.get('id') || urlParams.get('roomId');
+            const pathParts = window.location.pathname.split('/');
+            let routeSlug = '';
+            if (pathParts.length > 2 && (pathParts[1] === 'room' || pathParts[1] === 'rooms')) {
+                routeSlug = decodeURIComponent(pathParts[2].replace('.html', ''));
+            }
 
-            if (roomId) {
-                await loadRoomDetails(roomId);
+            const roomSlug = urlParams.get('slug') || routeSlug;
+            const roomId = urlParams.get('id') || urlParams.get('roomId');
+            const targetIdentifier = roomSlug || roomId;
+
+            if (targetIdentifier) {
+                await loadRoomDetails(targetIdentifier);
             } else {
                 const rooms = await KaghanDB.getRooms();
                 if (rooms.length > 0) {
@@ -794,7 +811,7 @@
 
             // Real-time updates
             window.addEventListener('kaghan-db-rooms', async () => {
-                if (roomId) await loadRoomDetails(roomId);
+                if (targetIdentifier) await loadRoomDetails(targetIdentifier);
                 await loadMoreListings();
             });
         });
@@ -1656,8 +1673,9 @@
                 container.innerHTML = otherRooms.slice(0, 4).map(r => {
                     const price = r.priceDaily || r.price || 0;
                     const img = r.image || (r.images && r.images.length ? r.images[0] : 'assets/images/logo.png');
+                    const roomHref = KaghanDB.getRoomLink ? KaghanDB.getRoomLink(r) : `room-details.html?id=${r.id}`;
                     return `
-                        <a href="room-details.html?id=${r.id}" class="flex items-center gap-3 p-3 rounded-2xl border border-slate-100 hover:border-[#C5A059]/40 bg-slate-50/60 hover:bg-white transition-all duration-300 group">
+                        <a href="${roomHref}" class="flex items-center gap-3 p-3 rounded-2xl border border-slate-100 hover:border-[#C5A059]/40 bg-slate-50/60 hover:bg-white transition-all duration-300 group">
                             <div class="w-20 h-20 rounded-xl overflow-hidden shrink-0 bg-slate-200">
                                 <img src="${img}" alt="${KaghanSafe.escapeHTML(r.name)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                             </div>

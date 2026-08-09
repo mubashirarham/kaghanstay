@@ -12,9 +12,12 @@
     "packageJson": {
       "dependencies": [
         "npm:@netlify/blobs@^10.7.9",
+        "npm:autoprefixer@^10.5.4",
         "npm:dotenv@^16.4.5",
         "npm:firebase-admin@^14.1.0",
         "npm:nodemailer@^9.0.3",
+        "npm:postcss@^8.5.26",
+        "npm:tailwindcss@^3.4.19",
         "npm:zod@^3.22.4"
       ],
       "overrides": {

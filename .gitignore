@@ -5,4 +5,7 @@ dist/
 .env
 *.json.key
 *-firebase-adminsdk-*.json
+*-6ddebc22f141.json
+run-batch-seo.js
 dns-records.md
+

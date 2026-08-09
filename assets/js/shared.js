@@ -20,6 +20,15 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const fdb = firebase.firestore();
 
+// Google Analytics 4 (GA4) Event Tracker for G-ZDPMHR68PZ
+window.trackGA4Event = function(eventName, params = {}) {
+    if (typeof window.gtag === 'function') {
+        window.gtag('event', eventName, params);
+    } else if (window.dataLayer) {
+        window.dataLayer.push({ event: eventName, ...params });
+    }
+};
+
 // ⚡ Force long-polling to eliminate QUIC protocol connection stalls (ERR_QUIC_PROTOCOL_ERROR)
 try {
     fdb.settings({ experimentalForceLongPolling: true });
@@ -588,19 +597,47 @@ const db = {
         try { localStorage.setItem('kaghan_swr_rooms', JSON.stringify(list)); } catch(e) {}
         return list;
     },
-    getRoomById: async (id, forceRefresh = false) => {
-        if (!id) return null;
-        if (!forceRefresh && window.KaghanDB_Cache.rooms) {
-            const match = window.KaghanDB_Cache.rooms.find(r => r.id === id || r.id === String(id));
-            if (match) return match;
+    generateSlug: (text) => {
+        if (!text) return '';
+        return text.toString().toLowerCase().trim()
+            .replace(/\s+/g, '-')
+            .replace(/[^\w\-]+/g, '')
+            .replace(/\-\-+/g, '-')
+            .replace(/^-+/, '')
+            .replace(/-+$/, '');
+    },
+    getRoomSlug: (room) => {
+        if (!room) return '';
+        if (room.slug && room.slug.trim()) return room.slug.trim().toLowerCase();
+        return db.generateSlug(room.name || room.title || room.id || '');
+    },
+    getRoomLink: (room) => {
+        if (!room) return 'room-details.html';
+        const slug = db.getRoomSlug(room);
+        return slug ? `room-details.html?slug=${encodeURIComponent(slug)}` : `room-details.html?id=${room.id}`;
+    },
+    getRoomById: async (idOrSlug, forceRefresh = false) => {
+        if (!idOrSlug) return null;
+        const targetStr = String(idOrSlug).toLowerCase().trim();
+
+        // 1. Check in-memory cache first by ID, stored slug, or generated slug
+        if (!forceRefresh && window.KaghanDB_Cache.rooms && window.KaghanDB_Cache.rooms.length) {
+            const cachedMatch = window.KaghanDB_Cache.rooms.find(r => 
+                String(r.id).toLowerCase() === targetStr ||
+                (r.slug && r.slug.toLowerCase() === targetStr) ||
+                db.generateSlug(r.name) === targetStr
+            );
+            if (cachedMatch) return cachedMatch;
         }
+
+        // 2. Try direct Firestore document lookup by ID
         try {
-            const doc = await fdb.collection('rooms').doc(id).get();
+            const doc = await fdb.collection('rooms').doc(idOrSlug).get();
             if (doc.exists) {
                 const data = doc.data();
                 const freshRoom = { ...data, id: data.id || doc.id };
                 if (window.KaghanDB_Cache.rooms) {
-                    const idx = window.KaghanDB_Cache.rooms.findIndex(r => r.id === id);
+                    const idx = window.KaghanDB_Cache.rooms.findIndex(r => r.id === freshRoom.id);
                     if (idx !== -1) window.KaghanDB_Cache.rooms[idx] = freshRoom;
                     else window.KaghanDB_Cache.rooms.push(freshRoom);
                     try { localStorage.setItem('kaghan_swr_rooms', JSON.stringify(window.KaghanDB_Cache.rooms)); } catch(e) {}
@@ -610,9 +647,15 @@ const db = {
         } catch (e) {
             console.warn("getRoomById doc fetch warning:", e.message);
         }
+
+        // 3. Fetch all rooms and match by ID or slug
         try {
             const rooms = await window.KaghanDB.getRooms();
-            return rooms.find(r => r.id === id || r.id === String(id)) || null;
+            return rooms.find(r => 
+                String(r.id).toLowerCase() === targetStr ||
+                (r.slug && r.slug.toLowerCase() === targetStr) ||
+                db.generateSlug(r.name) === targetStr
+            ) || null;
         } catch (e) {
             return null;
         }
@@ -1528,9 +1571,17 @@ const UI = {
         const options = { year: 'numeric', month: 'short', day: 'numeric' };
         return new Date(dateStr).toLocaleDateString('en-US', options);
     },
-    openRoomDetailModal: (roomId) => {
-        if (roomId) {
-            window.location.href = `room-details.html?id=${roomId}`;
+    openRoomDetailModal: async (idOrRoom) => {
+        if (!idOrRoom) return;
+        if (typeof idOrRoom === 'object') {
+            window.location.href = window.KaghanDB.getRoomLink ? window.KaghanDB.getRoomLink(idOrRoom) : `room-details.html?id=${idOrRoom.id}`;
+            return;
+        }
+        const room = window.KaghanDB && window.KaghanDB.getRoomById ? await window.KaghanDB.getRoomById(idOrRoom) : null;
+        if (room && window.KaghanDB.getRoomLink) {
+            window.location.href = window.KaghanDB.getRoomLink(room);
+        } else {
+            window.location.href = `room-details.html?id=${idOrRoom}`;
         }
     },
     getStatusBadge: (status) => {
@@ -1594,9 +1645,11 @@ function injectChatbot() {
             
             <!-- Quick Options -->
             <div id="kph-chat-chips" class="flex flex-wrap gap-2 pt-2">
-                <button onclick="sendQuickMessage('What suites are available?')" class="bg-slate-800/80 border border-[#D4AF37]/20 hover:border-[#D4AF37] text-slate-300 text-[10px] px-3 py-1.5 rounded-full transition-all text-left font-medium">✨ Check Suite Availability</button>
-                <button onclick="sendQuickMessage('Tell me about resort hiking trails')" class="bg-slate-800/80 border border-[#D4AF37]/20 hover:border-[#D4AF37] text-slate-300 text-[10px] px-3 py-1.5 rounded-full transition-all text-left font-medium">🥾 Explore Hiking Guides</button>
-                <button onclick="sendQuickMessage('Help me book a room')" class="bg-slate-800/80 border border-[#D4AF37]/20 hover:border-[#D4AF37] text-slate-300 text-[10px] px-3 py-1.5 rounded-full transition-all text-left font-medium">🛎️ Reserve a Room Style</button>
+                <button onclick="sendQuickMessage('Check suite availability')" class="bg-slate-800/80 border border-[#D4AF37]/20 hover:border-[#D4AF37] text-slate-300 text-[10px] px-3 py-1.5 rounded-full transition-all text-left font-medium">✨ Check Suite Availability</button>
+                <button onclick="sendQuickMessage('Find me a room under 25000 PKR for 2 guests')" class="bg-slate-800/80 border border-[#D4AF37]/20 hover:border-[#D4AF37] text-slate-300 text-[10px] px-3 py-1.5 rounded-full transition-all text-left font-medium">🎯 Best Room Matches</button>
+                <button onclick="sendQuickMessage('What do guests say in reviews?')" class="bg-slate-800/80 border border-[#D4AF37]/20 hover:border-[#D4AF37] text-slate-300 text-[10px] px-3 py-1.5 rounded-full transition-all text-left font-medium">⭐ Customer Reviews & Feedback</button>
+                <button onclick="sendQuickMessage('What is your cancellation and check-in policy?')" class="bg-slate-800/80 border border-[#D4AF37]/20 hover:border-[#D4AF37] text-slate-300 text-[10px] px-3 py-1.5 rounded-full transition-all text-left font-medium">📋 Reservation Policies & FAQ</button>
+                <button onclick="sendQuickMessage('Track my booking')" class="bg-slate-800/80 border border-[#D4AF37]/20 hover:border-[#D4AF37] text-slate-300 text-[10px] px-3 py-1.5 rounded-full transition-all text-left font-medium">🔍 Track My Reservation</button>
             </div>
         </div>
 
@@ -1735,16 +1788,44 @@ function injectChatbot() {
         }
     });
 
+    // Luxury Markdown & Component Formatter for AI Concierge Chat Stream
+    function formatChatMessage(msg) {
+        if (!msg) return '';
+
+        let formatted = msg;
+
+        // 1. Convert Markdown links [Text](url) into interactive luxury buttons or links
+        formatted = formatted.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (match, label, url) => {
+            const isRoomLink = url.includes('room-details.html') || url.includes('booking.html');
+            if (isRoomLink) {
+                return `<a href="${url}" class="inline-flex items-center gap-1.5 bg-gradient-to-r from-[#D4AF37] to-amber-600 hover:from-amber-400 hover:to-[#D4AF37] text-slate-950 font-extrabold px-3.5 py-1.5 rounded-xl text-[10px] uppercase tracking-wider my-1.5 shadow-md transition-all hover:scale-105">${label} <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i></a>`;
+            }
+            return `<a href="${url}" target="_blank" class="text-[#D4AF37] font-semibold underline hover:text-white transition-colors">${label}</a>`;
+        });
+
+        // 2. Bold emphasis **text**
+        formatted = formatted.replace(/\*\*([^*]+)\*\*/g, '<strong class="font-bold text-amber-300">$1</strong>');
+
+        // 3. Bullet list items * item or - item
+        formatted = formatted.replace(/(?:^|\n)[*|-]\s+([^\n]+)/g, '<div class="flex items-start gap-2 my-1"><i class="fa-solid fa-circle-check text-[#D4AF37] text-[9px] mt-1 shrink-0"></i><span>$1</span></div>');
+
+        // 4. Linebreaks
+        formatted = formatted.replace(/\n/g, '<br>');
+
+        return formatted;
+    }
+
     // Helper functions
     async function appendMessage(msg, sender) {
         const bubble = document.createElement('div');
         if (sender === 'user') {
-            bubble.className = 'bg-[#D4AF37] text-slate-950 p-3 rounded-2xl rounded-tr-none max-w-[85%] self-end font-medium leading-relaxed animate-fade-in shadow-md';
+            bubble.className = 'bg-[#D4AF37] text-slate-950 p-3.5 rounded-2xl rounded-tr-none max-w-[85%] self-end font-medium leading-relaxed animate-fade-in shadow-md text-xs';
+            bubble.innerHTML = KaghanSafe.escapeHTML(msg).replace(/\n/g, '<br>');
         } else {
-            bubble.className = 'bg-slate-800/60 text-slate-300 p-3 rounded-2xl rounded-tl-none border border-slate-700/40 max-w-[85%] self-start leading-relaxed animate-fade-in shadow-sm';
+            bubble.className = 'bg-slate-900/90 text-slate-200 p-4 rounded-2xl rounded-tl-none border border-[#D4AF37]/30 max-w-[90%] self-start leading-relaxed animate-fade-in shadow-lg text-xs space-y-2';
+            bubble.innerHTML = formatChatMessage(msg);
         }
         
-        bubble.innerHTML = KaghanSafe.sanitizeHTML(msg.replace(/\n/g, '<br>'));
         messagesArea.appendChild(bubble);
         messagesArea.scrollTop = messagesArea.scrollHeight;
     }
@@ -1752,12 +1833,13 @@ function injectChatbot() {
     function appendMessageSilent(msg, sender) {
         const bubble = document.createElement('div');
         if (sender === 'user') {
-            bubble.className = 'bg-[#D4AF37] text-slate-950 p-3 rounded-2xl rounded-tr-none max-w-[85%] self-end font-medium leading-relaxed shadow-md';
+            bubble.className = 'bg-[#D4AF37] text-slate-950 p-3.5 rounded-2xl rounded-tr-none max-w-[85%] self-end font-medium leading-relaxed shadow-md text-xs';
+            bubble.innerHTML = KaghanSafe.escapeHTML(msg).replace(/\n/g, '<br>');
         } else {
-            bubble.className = 'bg-slate-800/60 text-slate-300 p-3 rounded-2xl rounded-tl-none border border-slate-700/40 max-w-[85%] self-start leading-relaxed shadow-sm';
+            bubble.className = 'bg-slate-900/90 text-slate-200 p-4 rounded-2xl rounded-tl-none border border-[#D4AF37]/30 max-w-[90%] self-start leading-relaxed shadow-lg text-xs space-y-2';
+            bubble.innerHTML = formatChatMessage(msg);
         }
         
-        bubble.innerHTML = KaghanSafe.sanitizeHTML(msg.replace(/\n/g, '<br>'));
         messagesArea.appendChild(bubble);
     }
 
@@ -2522,3 +2604,74 @@ if ('serviceWorker' in navigator) {
             });
     });
 }
+
+// === Automatic Header & Footer Journal Nav Link Injector ===
+function ensureJournalNavLinks() {
+    try {
+        const navbar = document.getElementById('hotel-navbar');
+        if (navbar) {
+            const navContainer = navbar.querySelector('.hidden.md\\:flex') || navbar.querySelector('div.gap-8');
+            if (navContainer) {
+                const links = Array.from(navContainer.querySelectorAll('a'));
+                const hasBlogLink = links.some(a => {
+                    const href = a.getAttribute('href') || '';
+                    const text = (a.innerText || '').trim().toLowerCase();
+                    return href.includes('blog') || text === 'journal' || text === 'blog';
+                });
+
+                if (!hasBlogLink) {
+                    const isCurrentBlog = window.location.pathname.includes('blog');
+                    const blogLink = document.createElement('a');
+                    blogLink.href = 'blog.html';
+                    blogLink.className = (isCurrentBlog ? 'text-[#D4AF37]' : 'hover:text-[#D4AF37]') + ' transition-colors';
+                    blogLink.innerText = 'Journal';
+
+                    const roomsLink = links.find(a => (a.getAttribute('href') || '').includes('rooms'));
+                    if (roomsLink && roomsLink.parentNode === navContainer) {
+                        roomsLink.insertAdjacentElement('afterend', blogLink);
+                    } else {
+                        const authDiv = navContainer.querySelector('#auth-links');
+                        if (authDiv) {
+                            navContainer.insertBefore(blogLink, authDiv);
+                        } else {
+                            navContainer.appendChild(blogLink);
+                        }
+                    }
+                }
+            }
+        }
+
+        // Footer links check
+        const footers = document.querySelectorAll('footer');
+        footers.forEach(footer => {
+            const uls = footer.querySelectorAll('ul');
+            uls.forEach(ul => {
+                const links = Array.from(ul.querySelectorAll('a'));
+                const hasBlogLink = links.some(a => {
+                    const href = a.getAttribute('href') || '';
+                    const text = (a.innerText || '').trim().toLowerCase();
+                    return href.includes('blog') || text.includes('journal') || text.includes('blog');
+                });
+
+                if (!hasBlogLink && links.length >= 2) {
+                    const firstLi = ul.querySelector('li');
+                    if (firstLi) {
+                        const blogLi = document.createElement('li');
+                        blogLi.innerHTML = `<a href="blog.html" class="hover:text-[#D4AF37] transition-colors">Resort Journal</a>`;
+                        firstLi.insertAdjacentElement('afterend', blogLi);
+                    }
+                }
+            });
+        });
+    } catch (e) {
+        console.warn("Error ensuring journal nav links:", e);
+    }
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', ensureJournalNavLinks);
+} else {
+    ensureJournalNavLinks();
+}
+window.addEventListener('load', ensureJournalNavLinks);
+

@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZDPMHR68PZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-ZDPMHR68PZ');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+    <title>Blog Article | KPH Stay</title>
+    <meta name="description" content="Read luxury travel guides, dining recommendations, and resort insights at KPH Stay.">
+    <link rel="canonical" href="https://kphstay.com/blog-details">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
+    <link rel="apple-touch-icon" href="assets/images/logo.png">
+    <meta name="theme-color" content="#0F172A">
+
+    <!-- DOMPurify for HTML Sanitization -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://kphstay.com/blog-details">
+    <meta property="og:title" content="Resort Journal Article | KPH Stay">
+    <meta property="og:description" content="Read luxury travel guides and resort insights at KPH Stay.">
+    <meta property="og:image" content="https://kphstay.com/assets/images/og-share.jpg">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Resort Journal Article | KPH Stay">
+    <meta name="twitter:description" content="Read luxury travel guides and resort insights at KPH Stay.">
+    <meta name="twitter:image" content="https://kphstay.com/assets/images/og-share.jpg">
+
+    <!-- Tailwind CSS & Font Awesome -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css?v=4">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .outfit { font-family: 'Outfit', sans-serif; }
+        .prose h2 { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.5rem; color: #0F172A; margin-top: 2rem; margin-bottom: 1rem; }
+        .prose h3 { font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 1.25rem; color: #1E293B; margin-top: 1.5rem; margin-bottom: 0.75rem; }
+        .prose p { color: #334155; line-height: 1.8; margin-bottom: 1.25rem; font-size: 0.95rem; }
+        .prose ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1.25rem; color: #334155; }
+        .prose li { margin-bottom: 0.5rem; font-size: 0.95rem; }
+        .prose blockquote { border-left: 4px solid #D4AF37; padding-left: 1.25rem; font-style: italic; color: #475569; margin: 1.5rem 0; background-color: #F8FAFC; padding-top: 0.75rem; padding-bottom: 0.75rem; border-radius: 0 0.75rem 0.75rem 0; }
+    </style>
+</head>
+<body class="bg-[#F8FAFC] text-[#0F172A] flex flex-col min-h-screen">
+
+    <!-- Header / Navigation -->
+    <nav id="hotel-navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-5 px-6 md:px-12 flex justify-between items-center text-white bg-[#0F172A]/90 backdrop-blur-md border-b border-white/10">
+        <a href="index.html" class="flex items-center gap-3 hover:opacity-90 transition-opacity shrink-0">
+            <img src="assets/images/logo.png" alt="KPH Stay Logo" class="h-10 w-auto object-contain">
+            <div class="flex flex-col">
+                <span class="text-lg font-bold tracking-wider uppercase outfit leading-none">KPH</span>
+                <span class="text-xs text-[#D4AF37] tracking-[0.2em] uppercase font-semibold">Stay</span>
+            </div>
+        </a>
+
+        <!-- Navigation Links -->
+        <div class="hidden md:flex gap-8 items-center font-medium">
+            <a href="index.html" class="hover:text-[#D4AF37] transition-colors">Home</a>
+            <a href="rooms.html" class="hover:text-[#D4AF37] transition-colors">Rooms</a>
+            <a href="blog.html" class="text-[#D4AF37] transition-colors">Journal</a>
+            <a href="track.html" class="hover:text-[#D4AF37] transition-colors">Track Stay</a>
+            <div id="auth-links" class="flex gap-4 items-center">
+                <a href="login.html" class="border border-[#D4AF37] text-white px-5 py-2 rounded-full hover:bg-[#D4AF37] hover:text-white transition-all text-sm font-semibold">Login</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow pt-28 pb-20">
+        <div class="max-w-4xl mx-auto px-6">
+            
+            <!-- Breadcrumbs -->
+            <nav class="flex text-xs font-semibold text-slate-400 mb-6 gap-2 items-center">
+                <a href="index.html" class="hover:text-[#D4AF37] transition-colors">Home</a>
+                <i class="fa-solid fa-chevron-right text-[9px]"></i>
+                <a href="blog.html" class="hover:text-[#D4AF37] transition-colors">Journal</a>
+                <i class="fa-solid fa-chevron-right text-[9px]"></i>
+                <span id="breadcrumb-article-title" class="text-slate-700 truncate">Loading Article...</span>
+            </nav>
+
+            <!-- Article Header -->
+            <header class="space-y-4 mb-8">
+                <div class="flex flex-wrap items-center gap-3">
+                    <span id="article-category" class="bg-amber-100 text-amber-800 text-[10px] uppercase font-bold tracking-widest px-3 py-1 rounded-full border border-amber-200">
+                        Travel Guide
+                    </span>
+                    <span id="article-date" class="text-xs text-slate-400 font-medium">
+                        August 2026
+                    </span>
+                    <span class="text-slate-300">•</span>
+                    <span id="article-read-time" class="text-xs text-slate-500 font-bold flex items-center gap-1">
+                        <i class="fa-regular fa-clock text-amber-600"></i> 3 min read
+                    </span>
+                    <span class="text-slate-300">•</span>
+                    <span id="article-word-count" class="text-xs text-slate-400 font-mono">
+                        650 words
+                    </span>
+                </div>
+                <h1 id="article-title" class="text-3xl md:text-5xl font-extrabold outfit text-slate-900 leading-tight">
+                    Loading Luxury Travel Journal...
+                </h1>
+                <div class="flex items-center gap-3 pt-2 border-t border-slate-200/60">
+                    <div class="w-10 h-10 rounded-full bg-[#0F172A] text-white flex items-center justify-center font-bold text-sm shrink-0">
+                        <i class="fa-solid fa-user-pen text-amber-400 text-xs"></i>
+                    </div>
+                    <div>
+                        <span id="article-author" class="font-bold text-xs text-slate-900 block">KPH Stay Editorial</span>
+                        <span class="text-[10px] text-slate-400">Resort & Hospitality Insights</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Article Hero Image -->
+            <div class="relative rounded-3xl overflow-hidden shadow-xl mb-12 bg-slate-900 aspect-video">
+                <img id="article-hero-img" src="assets/images/logo.png" alt="Blog Hero Image" class="w-full h-full object-cover">
+            </div>
+
+            <!-- Social Share Bar & Article Content Layout -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+                <!-- Share Sidebar -->
+                <div class="lg:col-span-2 flex lg:flex-col gap-3 justify-center lg:justify-start items-center">
+                    <span class="text-[10px] uppercase font-bold tracking-widest text-slate-400 lg:mb-1 block">Share</span>
+                    <button onclick="shareArticle('whatsapp')" class="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-emerald-600 hover:text-white transition-all flex items-center justify-center text-sm shadow-xs" title="Share on WhatsApp">
+                        <i class="fa-brands fa-whatsapp"></i>
+                    </button>
+                    <button onclick="shareArticle('facebook')" class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 border border-blue-200 hover:bg-blue-600 hover:text-white transition-all flex items-center justify-center text-sm shadow-xs" title="Share on Facebook">
+                        <i class="fa-brands fa-facebook-f"></i>
+                    </button>
+                    <button onclick="shareArticle('twitter')" class="w-10 h-10 rounded-full bg-sky-50 text-sky-600 border border-sky-200 hover:bg-sky-600 hover:text-white transition-all flex items-center justify-center text-sm shadow-xs" title="Share on Twitter">
+                        <i class="fa-brands fa-x-twitter"></i>
+                    </button>
+                    <button onclick="copyArticleLink()" class="w-10 h-10 rounded-full bg-slate-100 text-slate-700 border border-slate-200 hover:bg-[#0F172A] hover:text-white transition-all flex items-center justify-center text-sm shadow-xs" title="Copy Link">
+                        <i class="fa-solid fa-link"></i>
+                    </button>
+                </div>
+
+                <!-- Main Prose Body -->
+                <div class="lg:col-span-10">
+                    <div id="article-prose" class="prose max-w-none">
+                        <div class="animate-pulse space-y-4">
+                            <div class="h-4 bg-slate-200 rounded w-3/4"></div>
+                            <div class="h-4 bg-slate-200 rounded w-full"></div>
+                            <div class="h-4 bg-slate-200 rounded w-5/6"></div>
+                        </div>
+                    </div>
+
+                    <!-- Call To Action Card -->
+                    <div class="mt-12 bg-gradient-to-r from-slate-900 to-amber-950 text-white rounded-3xl p-8 shadow-xl flex flex-col md:flex-row justify-between items-center gap-6 border border-amber-500/20">
+                        <div class="space-y-2">
+                            <span class="text-[10px] uppercase font-bold tracking-widest text-[#D4AF37]">Experience Pakistan In Luxury</span>
+                            <h3 class="text-2xl font-bold outfit leading-tight">Ready to book your luxury stay?</h3>
+                            <p class="text-xs text-slate-300 font-light">Explore serviced apartments and alpine resort suites in Islamabad, Murree & Nathia Gali.</p>
+                        </div>
+                        <a href="rooms.html" class="bg-[#D4AF37] text-slate-900 text-xs font-extrabold uppercase tracking-wider px-6 py-3.5 rounded-2xl hover:bg-white transition-all shrink-0 shadow-md">
+                            Browse Accommodations <i class="fa-solid fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Related Articles -->
+            <section class="mt-20 border-t border-slate-200/80 pt-12">
+                <h3 class="text-2xl font-extrabold outfit text-slate-900 mb-6">More from the KPH Stay Journal</h3>
+                <div id="related-blogs-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Loaded dynamically -->
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-[#0F172A] text-slate-400 py-12 border-t border-white/10 mt-auto">
+        <div class="max-w-6xl mx-auto px-6 text-center text-xs space-y-4">
+            <p>&copy; 2026 KPH Stay (Kaghan Properties Hospitality). All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Firebase & Core Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="assets/js/shared.js"></script>
+
+    <script>
+        let currentPost = null;
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const pathParts = window.location.pathname.split('/');
+            let routeSlug = '';
+            if (pathParts.length > 2 && pathParts[1] === 'blog') {
+                routeSlug = decodeURIComponent(pathParts[2].replace('.html', ''));
+            }
+
+            const slug = urlParams.get('slug') || routeSlug;
+            const id = urlParams.get('id');
+            const targetIdentifier = slug || id;
+
+            if (targetIdentifier) {
+                await loadArticle(targetIdentifier);
+            } else {
+                const blogs = await KaghanDB.getBlogs();
+                if (blogs.length > 0) await loadArticle(blogs[0].slug || blogs[0].id);
+            }
+
+            await loadRelatedArticles();
+        });
+
+        async function loadArticle(identifier) {
+            try {
+                const blogs = await KaghanDB.getBlogs();
+                const targetStr = String(identifier).toLowerCase().trim();
+                currentPost = blogs.find(b => 
+                    (b.slug && b.slug.toLowerCase() === targetStr) || 
+                    String(b.id).toLowerCase() === targetStr
+                ) || blogs[0];
+
+                if (!currentPost) return;
+
+                // Render Metadata & Title
+                const postTitle = currentPost.seoTitle || `${currentPost.title} | KPH Stay Journal`;
+                const postDesc = currentPost.seoDescription || (currentPost.excerpt ? currentPost.excerpt.slice(0, 160) : `Read ${currentPost.title} on KPH Stay.`);
+                const postImg = currentPost.imageUrl || 'assets/images/logo.png';
+
+                document.title = postTitle;
+                document.getElementById('breadcrumb-article-title').innerText = currentPost.title;
+                document.getElementById('article-title').innerText = currentPost.title;
+                document.getElementById('article-category').innerText = currentPost.category || 'Travel Guide';
+                document.getElementById('article-author').innerText = currentPost.author || 'KPH Stay Editorial';
+                document.getElementById('article-date').innerText = currentPost.createdAt ? KaghanUI.formatDate(currentPost.createdAt) : 'Recent Article';
+                document.getElementById('article-hero-img').src = postImg;
+                document.getElementById('article-hero-img').alt = currentPost.title;
+
+                // Render Sanitized Rich Text Body
+                const rawContent = currentPost.content || `<p>${currentPost.excerpt || 'No detailed content available.'}</p>`;
+                const cleanHtml = typeof DOMPurify !== 'undefined' ? DOMPurify.sanitize(rawContent) : rawContent;
+                document.getElementById('article-prose').innerHTML = cleanHtml;
+
+                // Word count & Reading time computation
+                const textOnly = rawContent.replace(/<[^>]*>?/gm, ' ').replace(/\s+/g, ' ').trim();
+                const wordCount = textOnly ? textOnly.split(' ').length : 150;
+                const readingMinutes = Math.max(1, Math.ceil(wordCount / 200));
+
+                const readTimeEl = document.getElementById('article-read-time');
+                if (readTimeEl) readTimeEl.innerHTML = `<i class="fa-regular fa-clock text-amber-600"></i> ${readingMinutes} min read`;
+                
+                const wordCountEl = document.getElementById('article-word-count');
+                if (wordCountEl) wordCountEl.innerText = `${wordCount} words`;
+
+                // Inject SEO Tags
+                let metaDesc = document.querySelector('meta[name="description"]');
+                if (metaDesc) metaDesc.setAttribute('content', postDesc);
+
+                // Inject Extreme Structured JSON-LD Schema
+                let jsonLd = document.getElementById('dynamic-blog-schema');
+                if (jsonLd) jsonLd.remove();
+                jsonLd = document.createElement('script');
+                jsonLd.id = 'dynamic-blog-schema';
+                jsonLd.type = 'application/ld+json';
+                jsonLd.text = JSON.stringify({
+                    "@context": "https://schema.org",
+                    "@type": "BlogPosting",
+                    "mainEntityOfPage": {
+                        "@type": "WebPage",
+                        "@id": window.location.href
+                    },
+                    "headline": currentPost.title,
+                    "description": postDesc,
+                    "image": [postImg],
+                    "datePublished": currentPost.createdAt || new Date().toISOString(),
+                    "dateModified": currentPost.updatedAt || currentPost.createdAt || new Date().toISOString(),
+                    "wordCount": wordCount,
+                    "timeRequired": `PT${readingMinutes}M`,
+                    "inLanguage": "en",
+                    "articleSection": currentPost.category || "Travel Guide",
+                    "keywords": currentPost.seoKeywords || "travel, islamabad, resort",
+                    "author": {
+                        "@type": "Person",
+                        "name": currentPost.author || "KPH Stay Editorial",
+                        "jobTitle": "Resort Travel Journalist",
+                        "worksFor": {
+                            "@type": "Organization",
+                            "name": "KPH Stay"
+                        }
+                    },
+                    "publisher": {
+                        "@type": "Organization",
+                        "name": "KPH Stay",
+                        "url": "https://kphstay.com",
+                        "logo": {
+                            "@type": "ImageObject",
+                            "url": "https://kphstay.com/assets/images/logo.png"
+                        }
+                    }
+                });
+                document.head.appendChild(jsonLd);
+
+            } catch (err) {
+                console.error("Failed to load article:", err);
+            }
+        }
+
+        async function loadRelatedArticles() {
+            try {
+                const blogs = await KaghanDB.getBlogs();
+                const container = document.getElementById('related-blogs-grid');
+                if (!container) return;
+
+                const otherBlogs = blogs.filter(b => currentPost && b.id !== currentPost.id);
+                if (otherBlogs.length === 0) {
+                    container.innerHTML = '<p class="text-xs text-slate-400 italic col-span-full">No other articles listed.</p>';
+                    return;
+                }
+
+                container.innerHTML = otherBlogs.slice(0, 3).map(b => {
+                    const slug = b.slug || b.id;
+                    const img = b.imageUrl || 'assets/images/logo.png';
+                    return `
+                        <a href="blog-details.html?slug=${encodeURIComponent(slug)}" class="bg-white border border-slate-100 rounded-3xl p-4 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group">
+                            <div class="h-36 rounded-2xl overflow-hidden mb-3 bg-slate-100">
+                                <img src="${img}" alt="${KaghanSafe.escapeHTML(b.title)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            </div>
+                            <div>
+                                <span class="text-[9px] uppercase font-bold text-[#D4AF37] block tracking-wider mb-1">${KaghanSafe.escapeHTML(b.category || 'Guide')}</span>
+                                <h4 class="font-bold text-slate-900 text-sm line-clamp-2 group-hover:text-[#D4AF37] transition-colors">${KaghanSafe.escapeHTML(b.title)}</h4>
+                            </div>
+                        </a>
+                    `;
+                }).join('');
+            } catch (e) {}
+        }
+
+        function shareArticle(platform) {
+            if (!currentPost) return;
+            const url = encodeURIComponent(window.location.href);
+            const title = encodeURIComponent(currentPost.title);
+
+            let shareUrl = '';
+            if (platform === 'whatsapp') shareUrl = `https://api.whatsapp.com/send?text=${title}%20${url}`;
+            else if (platform === 'facebook') shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+            else if (platform === 'twitter') shareUrl = `https://twitter.com/intent/tweet?text=${title}&url=${url}`;
+
+            if (shareUrl) window.open(shareUrl, '_blank', 'width=600,height=400');
+        }
+
+        function copyArticleLink() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                if (window.KaghanUI) KaghanUI.showToast("Article link copied to clipboard!", "success");
+            }).catch(() => {
+                prompt("Copy article link:", window.location.href);
+            });
+        }
+    </script>
+</body>
+</html>

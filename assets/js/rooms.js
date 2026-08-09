@@ -132,7 +132,7 @@
                     </div>
                     <h4 class="font-bold text-sm text-slate-900 leading-tight mb-1">${KaghanSafe.escapeHTML(room.name)}</h4>
                     <p class="text-xs text-[#C5A059] font-bold">${priceText} <span class="text-slate-500 font-normal">/ Night</span></p>
-                    <a href="room-details.html?id=${room.id}" class="block text-center bg-slate-900 text-white text-xs py-1.5 rounded-xl mt-2 font-bold hover:bg-[#C5A059] transition-colors">View Stay</a>
+                    <a href="${window.KaghanDB && window.KaghanDB.getRoomLink ? window.KaghanDB.getRoomLink(room) : `room-details.html?id=${room.id}`}" class="block text-center bg-slate-900 text-white text-xs py-1.5 rounded-xl mt-2 font-bold hover:bg-[#C5A059] transition-colors">View Stay</a>
                 </div>
             `);
 
@@ -648,7 +648,7 @@
                 return `
                 <div data-room-id="${room.id}" data-animate="fade-up" style="transition-delay: ${idx * 80}ms;" onclick="KaghanUI.openRoomDetailModal('${room.id}')" class="bg-white/80 backdrop-blur-md rounded-[2.5rem] overflow-hidden border border-[#C5A059]/10 shadow-[0_12px_40px_-15px_rgba(11,15,25,0.05)] hover:border-[#C5A059]/30 transition-all duration-500 group cursor-pointer flex flex-col h-full hover-lift relative">
                     <div class="relative h-56 overflow-hidden bg-slate-100 shrink-0">
-                        <img src="${KaghanSafe.escapeHTML(mainImg)}" alt="${KaghanSafe.escapeHTML(room.name || 'Luxury Suite')}" class="w-full h-full object-cover group-hover:scale-105 group-hover:brightness-95 transition-all duration-700">
+                        <img src="${KaghanSafe.escapeHTML(mainImg)}" alt="${KaghanSafe.escapeHTML(room.name || 'Luxury Suite')}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 group-hover:brightness-95 transition-all duration-700">
                         ${room.isPinned ? `
                         <div class="absolute bottom-3 left-4 bg-gradient-to-r from-[#D4AF37] to-[#B8860B] text-white text-[9px] font-extrabold uppercase tracking-widest px-3 py-1 rounded-full shadow-md flex items-center gap-1.5 z-10">
                             <i class="fa-solid fa-thumbtack text-[8px]"></i> Pinned
@@ -698,7 +698,7 @@
                                 <button onclick="event.stopPropagation(); window.shareRoomCard('${room.id}', '${KaghanSafe.escapeHTML(room.name)}');" class="bg-slate-100 hover:bg-[#C5A059] hover:text-white text-slate-700 w-8 h-8 rounded-full flex items-center justify-center text-xs transition-all shadow-sm" title="Share Listing">
                                     <i class="fa-solid fa-share-nodes"></i>
                                 </button>
-                                <button onclick="event.stopPropagation(); window.location.href='room-details.html?id=${room.id}'" class="bg-[#0B0F19] text-white text-[10px] uppercase tracking-wider font-bold px-3 py-2 rounded-xl hover:bg-[#C5A059] transition-all shadow-sm">
+                                <button onclick="event.stopPropagation(); window.location.href='${window.KaghanDB && window.KaghanDB.getRoomLink ? window.KaghanDB.getRoomLink(room) : `room-details.html?id=${room.id}`}'" class="bg-[#0B0F19] text-white text-[10px] uppercase tracking-wider font-bold px-3 py-2 rounded-xl hover:bg-[#C5A059] transition-all shadow-sm">
                                     View Details
                                 </button>
                                 <button onclick="event.stopPropagation(); window.location.href='booking.html?id=${room.id}'" class="bg-[#C5A059] text-white text-[10px] uppercase tracking-wider font-bold px-3 py-2 rounded-xl hover:bg-[#0B0F19] transition-all shadow-sm">
@@ -932,10 +932,11 @@
         await applyFilters();
     }
 
-    window.shareRoomCard = function(roomId, roomName) {
+    window.shareRoomCard = function(roomId, roomName, roomSlug) {
         const title = roomName ? `${roomName} | KPH Stay` : 'KPH Stay Luxury Suite';
         const text = `Explore ${roomName || 'luxury service suite'} in Islamabad & Nathia Gali on KPH Stay!`;
-        const url = `https://kphstay.com/room-details?id=${roomId}`;
+        const slug = roomSlug || (window.KaghanDB && window.KaghanDB.generateSlug ? window.KaghanDB.generateSlug(roomName) : roomId);
+        const url = `https://kphstay.com/room-details?slug=${encodeURIComponent(slug)}`;
 
         if (navigator.share) {
             navigator.share({ title, text, url }).catch(e => console.log('Share dismissed:', e));
