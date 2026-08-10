@@ -44,4 +44,4 @@ All development and remediation must strictly adhere to the following security r
 * Ensure Edge Functions are secure and do not bypass serverless function security policies.
 
 ### C. Git & Version Control
-* **Explicit Consent Required:** NEVER execute `git commit` or `git push` without explicit user request or written consent. All local modifications must remain staged/unstaged for user review.
+* **NEVER EVER PUSH TO GITHUB WITHOUT EXPLICIT PERMISSION:** Never execute `git push` or `git commit` unless the user explicitly requests it in their message. All local modifications must remain strictly local for user review.
