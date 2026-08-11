@@ -100,32 +100,75 @@
         }
     };
 
-    // Registration procedure
-    db.register = async (name, email, password, phone = '') => {
+    // Registration procedure via Netlify Serverless API (Turnstile CAPTCHA & Email Verification guarded)
+    db.register = async (name, email, password, phone = '', turnstileToken = '') => {
         try {
-            if (typeof firebase !== 'undefined' && firebase.auth) {
-                await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+            const resp = await fetch('/.netlify/functions/register-user', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, password, phone, turnstileToken })
+            });
+            const data = await resp.json();
+
+            if (!resp.ok || !data.success) {
+                return { success: false, message: data.error || data.message || 'Registration failed.' };
             }
-            const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
-            const firebaseUser = userCredential.user;
-            await firebaseUser.updateProfile({ displayName: name }).catch(() => {});
 
-            const userData = {
-                id: firebaseUser.uid,
-                uid: firebaseUser.uid,
-                name: name,
-                email: email,
-                phone: phone || '',
-                role: 'user',
-                createdAt: new Date().toISOString()
+            return {
+                success: true,
+                requiresOtp: data.requiresOtp,
+                devOtp: data.devOtp,
+                email: data.email || email,
+                message: data.message || 'Account created! Please check your email inbox to verify your account.',
+                requiresVerification: true
             };
-
-            await fdb.collection('users').doc(firebaseUser.uid).set(userData);
-            localStorage.setItem('kaghan_hotel_session', JSON.stringify(userData));
-            return { success: true, user: userData };
         } catch (err) {
-            console.error("Registration error:", err);
-            return { success: false, message: err.message };
+            console.error("Registration API error:", err);
+            return { success: false, message: err.message || 'Registration failed. Please check your network connection.' };
+        }
+    };
+
+    // Email Token Verification procedure
+    db.verifyEmailToken = async (token) => {
+        try {
+            const resp = await fetch('/.netlify/functions/verify-email', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token })
+            });
+            const data = await resp.json();
+            if (!resp.ok || !data.success) {
+                return { success: false, message: data.error || data.message || 'Email verification failed.' };
+            }
+            if (data.user) {
+                localStorage.setItem('kaghan_hotel_session', JSON.stringify(data.user));
+            }
+            return { success: true, message: data.message, user: data.user };
+        } catch (err) {
+            console.error("Verification error:", err);
+            return { success: false, message: err.message || 'Verification failed.' };
+        }
+    };
+
+    // Email OTP Verification procedure (2-Step In-Form Verification)
+    db.verifyEmailOTP = async (email, otp) => {
+        try {
+            const resp = await fetch('/.netlify/functions/verify-email', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, otp })
+            });
+            const data = await resp.json();
+            if (!resp.ok || !data.success) {
+                return { success: false, message: data.error || data.message || 'Verification failed.' };
+            }
+            if (data.user) {
+                localStorage.setItem('kaghan_hotel_session', JSON.stringify(data.user));
+            }
+            return { success: true, message: data.message, user: data.user };
+        } catch (err) {
+            console.error("OTP verification error:", err);
+            return { success: false, message: err.message || 'OTP verification failed.' };
         }
     };
 

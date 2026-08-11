@@ -52,7 +52,13 @@ service cloud.firestore {
 
     // 4. User Profiles & Wishlists — Owner & Authenticated Access
     match /users/{uid} {
-      allow read, write: if isAuthenticated();
+      allow read: if isAuthenticated();
+      allow update: if isAuthenticated() && request.auth.uid == uid;
+      allow create, delete: if false; // Handled exclusively via Serverless Functions using Firebase Admin SDK
+    }
+
+    match /email_verifications/{id} {
+      allow read, write: if false; // Serverless Admin SDK access only
     }
 
     match /wishlists/{uid} {
