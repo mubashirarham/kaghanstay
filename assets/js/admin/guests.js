@@ -17,6 +17,57 @@
     };
 
     let cachedUsers = [];
+    let selectedUserIds = new Set();
+
+    function updateMetricsAndBulkToolbar(filteredUsers = []) {
+        const total = cachedUsers.length;
+        const adminsCount = cachedUsers.filter(u => ['admin', 'moderator', 'editor'].includes(u.role)).length;
+        const usersCount = cachedUsers.filter(u => !u.role || u.role === 'user').length;
+        const selectedCount = selectedUserIds.size;
+
+        const totalEl = document.getElementById('stat-guests-total');
+        const adminsEl = document.getElementById('stat-guests-admins');
+        const usersEl = document.getElementById('stat-guests-users');
+        const selectedEl = document.getElementById('stat-guests-selected');
+        const summaryEl = document.getElementById('guests-count-summary');
+
+        if (totalEl) totalEl.textContent = total;
+        if (adminsEl) adminsEl.textContent = adminsCount;
+        if (usersEl) usersEl.textContent = usersCount;
+        if (selectedEl) selectedEl.textContent = selectedCount;
+
+        if (summaryEl) {
+            summaryEl.textContent = `Showing ${filteredUsers.length} of ${total} registered account(s)`;
+        }
+
+        // Bulk Actions Bar
+        const bulkBar = document.getElementById('guest-bulk-actions-bar');
+        const bulkLabel = document.getElementById('guest-bulk-count-label');
+        const masterCb = document.getElementById('guest-select-all-cb');
+
+        if (bulkBar) {
+            if (selectedCount > 0) {
+                bulkBar.classList.remove('hidden');
+                if (bulkLabel) bulkLabel.textContent = `${selectedCount} account(s) selected`;
+            } else {
+                bulkBar.classList.add('hidden');
+            }
+        }
+
+        if (masterCb) {
+            const currentFilteredIds = filteredUsers.map(u => u.id || u.uid);
+            if (currentFilteredIds.length > 0 && currentFilteredIds.every(id => selectedUserIds.has(id))) {
+                masterCb.checked = true;
+                masterCb.indeterminate = false;
+            } else if (currentFilteredIds.some(id => selectedUserIds.has(id))) {
+                masterCb.checked = false;
+                masterCb.indeterminate = true;
+            } else {
+                masterCb.checked = false;
+                masterCb.indeterminate = false;
+            }
+        }
+    }
 
     async function renderGuests(searchKeyword = '') {
         cachedUsers = await KaghanDB.getUsers();
@@ -37,6 +88,8 @@
             return matchesKeyword && matchesRole;
         });
 
+        updateMetricsAndBulkToolbar(filtered);
+
         if (filtered.length === 0) {
             tbody.innerHTML = '';
             if (emptyState) emptyState.classList.remove('hidden');
@@ -46,6 +99,8 @@
         if (emptyState) emptyState.classList.add('hidden');
 
         tbody.innerHTML = filtered.map(guest => {
+            const uid = guest.id || guest.uid;
+            const isSelected = selectedUserIds.has(uid);
             let roleBadge = '';
             const role = guest.role || 'user';
             
@@ -54,7 +109,7 @@
             } else if (role === 'moderator') {
                 roleBadge = `<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-purple-100 text-purple-800 border border-purple-300 flex items-center gap-1 w-fit"><i class="fa-solid fa-shield text-[9px]"></i> Moderator</span>`;
             } else if (role === 'editor') {
-                roleBadge = `<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1 w-fit"><i class="fa-solid fa-[#C5A059] text-[9px]"></i> Editor</span>`;
+                roleBadge = `<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1 w-fit"><i class="fa-solid fa-user-pen text-[9px]"></i> Editor</span>`;
             } else {
                 roleBadge = `<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800 border border-blue-300 flex items-center gap-1 w-fit"><i class="fa-solid fa-user text-[9px]"></i> User</span>`;
             }
@@ -67,41 +122,208 @@
             const initials = (guest.name || 'U').split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
 
             return `
-                <tr class="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
-                    <td class="px-6 py-4">
+                <tr class="border-b border-slate-100 ${isSelected ? 'bg-amber-50/40' : 'hover:bg-slate-50/50'} transition-colors">
+                    <td class="px-4 py-3.5 text-center">
+                        <input type="checkbox" class="guest-row-cb rounded border-slate-300 text-[#D4AF37] focus:ring-[#D4AF37] cursor-pointer" data-id="${uid}" ${isSelected ? 'checked' : ''} onchange="AdminGuestsModule.onRowCbChange(this)">
+                    </td>
+                    <td class="px-6 py-3.5">
                         <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 rounded-full bg-[#0B0F19] text-[#C5A059] font-bold text-xs flex items-center justify-center shrink-0 border border-slate-800">
+                            <div class="w-9 h-9 rounded-full bg-[#0B0F19] text-[#C5A059] font-bold text-xs flex items-center justify-center shrink-0 border border-slate-800 shadow-sm">
                                 ${initials}
                             </div>
                             <div>
                                 <span class="font-bold text-slate-900 text-xs block">${KaghanSafe.escapeHTML(guest.name || 'Unnamed')}</span>
-                                <span class="text-[10px] text-slate-400 font-mono">ID: ${guest.id || guest.uid || 'N/A'}</span>
+                                <span class="text-[10px] text-slate-400 font-mono">ID: ${uid}</span>
                             </div>
                         </div>
                     </td>
-                    <td class="px-6 py-4 text-xs font-semibold text-slate-600">${KaghanSafe.escapeHTML(guest.email || '')}</td>
-                    <td class="px-6 py-4 text-xs font-semibold text-slate-600">${KaghanSafe.escapeHTML(guest.phone || 'N/A')}</td>
-                    <td class="px-6 py-4 text-xs font-semibold">${roleBadge}</td>
-                    <td class="px-6 py-4">
+                    <td class="px-6 py-3.5 text-xs font-semibold text-slate-600">${KaghanSafe.escapeHTML(guest.email || '')}</td>
+                    <td class="px-6 py-3.5 text-xs font-semibold text-slate-600">${KaghanSafe.escapeHTML(guest.phone || 'N/A')}</td>
+                    <td class="px-6 py-3.5 text-xs font-semibold">${roleBadge}</td>
+                    <td class="px-6 py-3.5">
                         <div class="flex flex-wrap gap-1 max-w-xs">${permTags}</div>
                     </td>
-                    <td class="px-6 py-4 text-right space-x-1">
-                        <button onclick="openChangeUserPasswordModal('${guest.id || guest.uid}', '${KaghanSafe.escapeHTML(guest.email || '')}', '${KaghanSafe.escapeHTML(guest.name || 'User')}')" class="text-amber-600 hover:text-amber-700 p-1.5 rounded hover:bg-amber-50 transition-colors font-semibold text-xs" title="Change User Password">
-                            <i class="fa-solid fa-key text-xs"></i> Password
-                        </button>
-                        <button onclick="sendUserPasswordResetLink('${KaghanSafe.escapeHTML(guest.email || '')}', '${KaghanSafe.escapeHTML(guest.name || 'User')}')" class="text-blue-600 hover:text-blue-700 p-1.5 rounded hover:bg-blue-50 transition-colors font-semibold text-xs" title="Send Password Reset Email">
-                            <i class="fa-solid fa-paper-plane text-xs"></i> Reset Link
-                        </button>
-                        <button onclick="openEditUserModal('${guest.id || guest.uid}')" class="text-slate-600 hover:text-[#C5A059] p-1.5 rounded hover:bg-slate-100 transition-colors font-semibold text-xs" title="Edit User & Permissions">
-                            <i class="fa-solid fa-pen-to-square text-xs"></i> Edit
-                        </button>
-                        <button onclick="deleteGuestAccount('${guest.id || guest.uid}', '${KaghanSafe.escapeHTML(guest.name || '')}')" class="text-rose-500 hover:text-rose-700 p-1.5 rounded hover:bg-rose-50 transition-colors font-semibold text-xs" title="Delete Account">
-                            <i class="fa-solid fa-trash-can text-xs"></i>
+                    <td class="px-6 py-3.5 text-right whitespace-nowrap">
+                        <button onclick="openEditUserModal('${uid}')" class="bg-slate-900 hover:bg-[#D4AF37] hover:text-slate-950 text-white px-3.5 py-1.5 rounded-xl font-bold text-xs transition-all flex items-center gap-1.5 ml-auto shadow-sm" title="Edit Profile, Change Password & Delete Account">
+                            <i class="fa-solid fa-user-pen text-xs"></i> Edit Account
                         </button>
                     </td>
                 </tr>
             `;
         }).join('');
+    }
+
+    function toggleSelectAll(masterCb) {
+        const isChecked = masterCb.checked;
+        const rowCbs = document.querySelectorAll('.guest-row-cb');
+        rowCbs.forEach(cb => {
+            cb.checked = isChecked;
+            const uid = cb.getAttribute('data-id');
+            if (uid) {
+                if (isChecked) selectedUserIds.add(uid);
+                else selectedUserIds.delete(uid);
+            }
+        });
+        updateMetricsAndBulkToolbar(cachedUsers);
+    }
+
+    function onRowCbChange(cb) {
+        const uid = cb.getAttribute('data-id');
+        if (!uid) return;
+        if (cb.checked) {
+            selectedUserIds.add(uid);
+        } else {
+            selectedUserIds.delete(uid);
+        }
+        updateMetricsAndBulkToolbar(cachedUsers);
+    }
+
+    function clearSelection() {
+        selectedUserIds.clear();
+        const masterCb = document.getElementById('guest-select-all-cb');
+        if (masterCb) masterCb.checked = false;
+        renderGuests(document.getElementById('guest-search-input')?.value || '');
+    }
+
+    async function bulkChangeRole() {
+        const roleSelect = document.getElementById('guest-bulk-role-select');
+        const newRole = roleSelect ? roleSelect.value : '';
+        if (!newRole) {
+            KaghanUI.showToast("Please select a target role to apply.", "warning");
+            return;
+        }
+        if (selectedUserIds.size === 0) {
+            KaghanUI.showToast("No account rows selected.", "warning");
+            return;
+        }
+
+        if (!confirm(`Are you sure you want to change the role of ${selectedUserIds.size} selected account(s) to "${newRole.toUpperCase()}"?`)) return;
+
+        let successCount = 0;
+        const totalToUpdate = selectedUserIds.size;
+        const defaultPerms = DEFAULT_ROLE_PERMS[newRole] || [];
+
+        for (const uid of Array.from(selectedUserIds)) {
+            try {
+                await KaghanDB.adminUpdateUser(uid, {
+                    role: newRole,
+                    permissions: defaultPerms,
+                    updatedAt: new Date().toISOString()
+                });
+                successCount++;
+            } catch (err) {
+                console.error(`Bulk role update error for ${uid}:`, err);
+            }
+        }
+
+        KaghanUI.showToast(`Successfully updated role for ${successCount} of ${totalToUpdate} account(s)!`, "success");
+        clearSelection();
+        await renderGuests();
+    }
+
+    async function bulkSendPasswordReset() {
+        if (selectedUserIds.size === 0) {
+            KaghanUI.showToast("No account rows selected.", "warning");
+            return;
+        }
+
+        const selectedUsers = cachedUsers.filter(u => selectedUserIds.has(u.id || u.uid));
+        const validEmails = selectedUsers.filter(u => u.email && u.email.includes('@'));
+
+        if (validEmails.length === 0) {
+            KaghanUI.showToast("None of the selected accounts have valid email addresses.", "warning");
+            return;
+        }
+
+        if (!confirm(`Send password reset emails to ${validEmails.length} selected account(s)?`)) return;
+
+        let sentCount = 0;
+        for (const u of validEmails) {
+            try {
+                const res = await KaghanDB.sendPasswordResetEmail(u.email);
+                if (res.success) sentCount++;
+            } catch (err) {
+                console.error(`Bulk password reset error for ${u.email}:`, err);
+            }
+        }
+
+        KaghanUI.showToast(`Password reset emails dispatched to ${sentCount} account(s)!`, "success");
+        clearSelection();
+    }
+
+    async function bulkDeleteAccounts() {
+        if (selectedUserIds.size === 0) {
+            KaghanUI.showToast("No account rows selected.", "warning");
+            return;
+        }
+
+        const count = selectedUserIds.size;
+        if (!confirm(`⚠️ DANGER: Are you sure you want to permanently delete ${count} selected user account(s)? This action cannot be undone.`)) return;
+
+        let deletedCount = 0;
+        for (const uid of Array.from(selectedUserIds)) {
+            try {
+                const success = await KaghanDB.deleteUser(uid);
+                if (success) deletedCount++;
+            } catch (err) {
+                console.error(`Bulk delete error for ${uid}:`, err);
+            }
+        }
+
+        KaghanUI.showToast(`Permanently deleted ${deletedCount} of ${count} selected account(s).`, "success");
+        clearSelection();
+        await renderGuests();
+    }
+
+    // Modal Action Helper 1: Update Password directly from Edit User Modal
+    async function updatePasswordFromEditModal() {
+        const userId = document.getElementById('edit-user-id')?.value;
+        const passInput = document.getElementById('edit-user-password');
+        const newPassword = passInput ? passInput.value.trim() : '';
+
+        if (!userId) {
+            KaghanUI.showToast("No user account selected.", "error");
+            return;
+        }
+        if (!newPassword || newPassword.length < 6) {
+            KaghanUI.showToast("Password must be at least 6 characters long.", "warning");
+            return;
+        }
+
+        try {
+            await window.KaghanDB.changeUserPassword(userId, newPassword);
+            KaghanUI.showToast("User password updated successfully!", "success");
+            if (passInput) passInput.value = '';
+        } catch (err) {
+            console.error("Update password from edit modal error:", err);
+            KaghanUI.showToast(err.message || "Failed to update user password.", "error");
+        }
+    }
+
+    // Modal Action Helper 2: Send Password Reset Link from Edit User Modal
+    async function sendResetLinkFromEditModal() {
+        const email = document.getElementById('edit-user-email')?.value?.trim();
+        const name = document.getElementById('edit-user-name')?.value?.trim() || 'User';
+
+        if (!email || !email.includes('@')) {
+            KaghanUI.showToast("Please enter a valid email address.", "warning");
+            return;
+        }
+        await sendUserPasswordResetLink(email, name);
+    }
+
+    // Modal Action Helper 3: Delete Account directly from Edit User Modal
+    async function deleteAccountFromEditModal() {
+        const userId = document.getElementById('edit-user-id')?.value;
+        const name = document.getElementById('edit-user-name')?.value?.trim() || 'User';
+
+        if (!userId) {
+            KaghanUI.showToast("No user account selected.", "error");
+            return;
+        }
+
+        closeEditUserModal();
+        await deleteGuestAccount(userId, name);
     }
 
     // Global Helper: Toggle password input visibility (Show / Hide plaintext as typed)
@@ -120,121 +342,6 @@
             if (icon) {
                 icon.classList.remove('fa-eye-slash');
                 icon.classList.add('fa-eye');
-            }
-        }
-    };
-
-    // Modal controls for changing user password
-    window.openChangeUserPasswordModal = (userId, userEmail, userName) => {
-        document.getElementById('change-user-password-id').value = userId;
-        document.getElementById('change-user-password-target').textContent = `${userName} (${userEmail})`;
-        const passInput = document.getElementById('change-user-password-input');
-        if (passInput) {
-            passInput.value = '';
-            passInput.type = 'password';
-        }
-        const toggleIcon = document.querySelector('#change-user-password-modal .toggle-pass-btn i');
-        if (toggleIcon) {
-            toggleIcon.className = 'fa-solid fa-eye text-xs';
-        }
-
-        const modal = document.getElementById('change-user-password-modal');
-        if (modal) {
-            modal.classList.remove('hidden');
-            setTimeout(() => modal.classList.remove('opacity-0'), 10);
-        }
-    };
-
-    window.closeChangeUserPasswordModal = () => {
-        const modal = document.getElementById('change-user-password-modal');
-        if (modal) {
-            modal.classList.add('opacity-0');
-            setTimeout(() => modal.classList.add('hidden'), 300);
-        }
-    };
-
-    window.submitChangeUserPassword = async (e) => {
-        e.preventDefault();
-        const submitBtn = document.getElementById('change-user-password-btn');
-        const origText = submitBtn ? submitBtn.innerHTML : 'Update Password';
-        if (submitBtn) {
-            submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Updating...';
-            submitBtn.disabled = true;
-        }
-
-        try {
-            const userId = document.getElementById('change-user-password-id').value;
-            const newPassword = document.getElementById('change-user-password-input').value.trim();
-
-            if (!newPassword || newPassword.length < 6) {
-                throw new Error("Password must be at least 6 characters long.");
-            }
-
-            await window.KaghanDB.changeUserPassword(userId, newPassword);
-            KaghanUI.showToast("User password updated successfully!", "success");
-            closeChangeUserPasswordModal();
-        } catch (error) {
-            console.error("Change password error:", error);
-            KaghanUI.showToast(error.message || "Failed to update password.", "error");
-        } finally {
-            if (submitBtn) {
-                submitBtn.innerHTML = origText;
-                submitBtn.disabled = false;
-            }
-        }
-    };
-
-    // Modal control for Admin / User changing own logged-in password
-    window.openChangeMyPasswordModal = () => {
-        const modal = document.getElementById('change-my-password-modal');
-        const passInput = document.getElementById('change-my-password-input');
-        if (passInput) {
-            passInput.value = '';
-            passInput.type = 'password';
-        }
-        const toggleIcon = document.querySelector('#change-my-password-modal .toggle-pass-btn i');
-        if (toggleIcon) {
-            toggleIcon.className = 'fa-solid fa-eye text-xs';
-        }
-        if (modal) {
-            modal.classList.remove('hidden');
-            setTimeout(() => modal.classList.remove('opacity-0'), 10);
-        }
-    };
-
-    window.closeChangeMyPasswordModal = () => {
-        const modal = document.getElementById('change-my-password-modal');
-        if (modal) {
-            modal.classList.add('opacity-0');
-            setTimeout(() => modal.classList.add('hidden'), 300);
-        }
-    };
-
-    window.submitChangeMyPassword = async (e) => {
-        e.preventDefault();
-        const submitBtn = document.getElementById('change-my-password-btn');
-        const origText = submitBtn ? submitBtn.innerHTML : 'Update My Password';
-        if (submitBtn) {
-            submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Updating...';
-            submitBtn.disabled = true;
-        }
-
-        try {
-            const newPassword = document.getElementById('change-my-password-input').value.trim();
-            if (!newPassword || newPassword.length < 6) {
-                throw new Error("Password must be at least 6 characters long.");
-            }
-
-            await window.KaghanDB.changeMyPassword(newPassword);
-            KaghanUI.showToast("Your account password has been updated successfully!", "success");
-            closeChangeMyPasswordModal();
-        } catch (error) {
-            console.error("Change my password error:", error);
-            KaghanUI.showToast(error.message || "Failed to update your password.", "error");
-        } finally {
-            if (submitBtn) {
-                submitBtn.innerHTML = origText;
-                submitBtn.disabled = false;
             }
         }
     };
@@ -334,9 +441,12 @@
         document.getElementById('edit-user-email').value = user.email || '';
         document.getElementById('edit-user-phone').value = user.phone || '';
         document.getElementById('edit-user-role').value = user.role || 'user';
-        if (document.getElementById('edit-user-password')) {
-            document.getElementById('edit-user-password').value = '';
-        }
+        
+        const passInput = document.getElementById('edit-user-password');
+        if (passInput) passInput.value = '';
+
+        const subtitleEl = document.getElementById('edit-user-modal-subtitle');
+        if (subtitleEl) subtitleEl.textContent = `Managing credentials for ${user.name || 'User'} (${user.email || userId})`;
 
         const userPerms = user.permissions || DEFAULT_ROLE_PERMS[user.role || 'user'] || [];
         document.querySelectorAll('.edit-user-perm-cb').forEach(cb => {
@@ -443,6 +553,15 @@
 
     // Export to window
     window.AdminGuestsModule = {
-        render: renderGuests
+        render: renderGuests,
+        toggleSelectAll,
+        onRowCbChange,
+        clearSelection,
+        bulkChangeRole,
+        bulkSendPasswordReset,
+        bulkDeleteAccounts,
+        updatePasswordFromEditModal,
+        sendResetLinkFromEditModal,
+        deleteAccountFromEditModal
     };
 })();

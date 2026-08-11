@@ -4,7 +4,9 @@
   "description": "Kaghan Stay resort platform service wrapper",
   "main": "netlify/functions/booking-email.js",
   "scripts": {
-    "build": "tailwindcss -i ./assets/css/input.css -o ./assets/css/tailwind.min.css --minify"
+    "build": "tailwindcss -i ./assets/css/input.css -o ./assets/css/tailwind.min.css --minify",
+    "index:google": "node scripts/submit-indexing.js",
+    "index:listings": "node scripts/submit-indexing.js --listings"
   },
   "dependencies": {
     "@netlify/blobs": "^10.7.9",

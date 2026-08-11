@@ -172,6 +172,10 @@
                     <i class="fa-solid fa-comments w-5 text-sm text-[#C5A059]"></i> Guest Messages
                     <span id="admin-unread-messages-count" class="hidden bg-rose-500 text-white text-[9px] font-black px-2 py-0.5 rounded-full ml-auto shadow-sm">0</span>
                 </button>
+                <button onclick="switchTab('inquiries')" id="tab-btn-inquiries" class="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white hover:bg-slate-800/20 text-left relative">
+                    <i class="fa-solid fa-inbox w-5 text-sm text-[#D4AF37]"></i> Contact Inquiries
+                    <span id="admin-unread-inquiries-count" class="hidden bg-rose-500 text-white text-[9px] font-black px-2 py-0.5 rounded-full ml-auto shadow-sm">0</span>
+                </button>
                 <button onclick="switchTab('calendar')" id="tab-btn-calendar" class="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white hover:bg-slate-800/20 text-left">
                     <i class="fa-solid fa-calendar-alt w-5 text-sm"></i> Booking Calendar
                 </button>
@@ -524,52 +528,149 @@
                 </div>
             </div>
 
-            <!-- VIEW: GUESTS -->
+            <!-- VIEW: GUESTS (USERS & ADMINS) -->
             <div id="view-guests" class="tab-view hidden space-y-6">
-                <div>
-                    <span class="text-[#D4AF37] text-xs font-bold uppercase tracking-wider">Accounts Circle</span>
-                    <h1 class="text-2xl font-extrabold outfit text-slate-900 mt-0.5">Users & Admins Management</h1>
-                    <p class="text-slate-400 text-xs font-light">View and manage registered clients and administrative accounts.</p>
-                </div>
-
-                <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md space-y-6">
-                    <div class="flex gap-4 items-center justify-between flex-wrap">
-                        <div class="flex gap-3 items-center flex-wrap w-full sm:w-auto">
-                            <div class="relative w-full sm:w-72">
-                                <input type="text" id="guest-search-input" placeholder="Search by name, email, phone..." class="w-full border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-xs bg-slate-50 outline-none focus:border-[#D4AF37]">
-                                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-400 text-xs"></i>
-                            </div>
-                            <select id="guest-role-filter" class="border border-slate-200 rounded-xl px-3 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37] font-medium cursor-pointer">
-                                <option value="">All User Roles</option>
-                                <option value="admin">Admin</option>
-                                <option value="moderator">Moderator</option>
-                                <option value="editor">Editor</option>
-                                <option value="user">User / Guest</option>
-                            </select>
-                        </div>
-                        <button onclick="openAddUserModal()" class="bg-gradient-to-r from-[#D4AF37] to-[#DC2626] text-white font-bold px-5 py-2.5 rounded-xl hover:opacity-90 transition-all text-xs shadow-md flex items-center gap-2">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <span class="text-[#D4AF37] text-xs font-bold uppercase tracking-wider">Accounts Circle</span>
+                        <h1 class="text-2xl font-extrabold outfit text-slate-900 mt-0.5">Users & Admins Management</h1>
+                        <p class="text-slate-400 text-xs font-light">View and manage registered clients, staff roles, and administrative clearances.</p>
+                    </div>
+                    <div class="flex items-center gap-2 self-start sm:self-auto">
+                        <button onclick="AdminGuestsModule.render()" class="bg-slate-900 hover:bg-[#D4AF37] hover:text-slate-950 text-white px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm">
+                            <i class="fa-solid fa-rotate text-xs"></i> Refresh
+                        </button>
+                        <button onclick="openAddUserModal()" class="bg-gradient-to-r from-[#D4AF37] to-[#DC2626] text-white font-bold px-4 py-2.5 rounded-xl hover:opacity-90 transition-all text-xs shadow-md flex items-center gap-1.5">
                             <i class="fa-solid fa-user-plus"></i> Add Account
                         </button>
                     </div>
+                </div>
 
-                    <div class="table-scroll-container overflow-x-auto">
+                <!-- Metrics Top Bar -->
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                    <div class="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-amber-50 text-[#D4AF37] flex items-center justify-center font-bold text-sm">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Total Accounts</span>
+                            <h4 class="text-lg font-black outfit text-slate-900" id="stat-guests-total">0</h4>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-sm">
+                            <i class="fa-solid fa-crown"></i>
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Admins & Staff</span>
+                            <h4 class="text-lg font-black outfit text-amber-700" id="stat-guests-admins">0</h4>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-sm">
+                            <i class="fa-solid fa-user-tag"></i>
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Guest Accounts</span>
+                            <h4 class="text-lg font-black outfit text-slate-900" id="stat-guests-users">0</h4>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-sm">
+                            <i class="fa-solid fa-check-double"></i>
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Selected Rows</span>
+                            <h4 class="text-lg font-black outfit text-emerald-600" id="stat-guests-selected">0</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Container Card -->
+                <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md space-y-6">
+                    <!-- Filter Controls & Bulk Action Bar Row -->
+                    <div class="space-y-4">
+                        <div class="flex gap-4 items-center justify-between flex-wrap">
+                            <div class="flex gap-3 items-center flex-wrap flex-grow">
+                                <div class="relative flex-grow sm:flex-grow-0 sm:w-80">
+                                    <input type="text" id="guest-search-input" placeholder="Search by name, email, phone..." class="w-full border border-slate-200 rounded-xl pl-10 pr-8 py-2.5 text-xs bg-slate-50 outline-none focus:border-[#D4AF37]">
+                                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-400 text-xs"></i>
+                                    <button type="button" onclick="document.getElementById('guest-search-input').value=''; AdminGuestsModule.render();" class="absolute right-2.5 top-3 text-slate-400 hover:text-slate-600 text-xs">
+                                        <i class="fa-solid fa-circle-xmark"></i>
+                                    </button>
+                                </div>
+                                <select id="guest-role-filter" class="border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37] font-medium cursor-pointer">
+                                    <option value="">All User Roles</option>
+                                    <option value="admin">Admin</option>
+                                    <option value="moderator">Moderator</option>
+                                    <option value="editor">Editor</option>
+                                    <option value="user">User / Guest</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Bulk Actions Toolbar (Slide-in when rows checked) -->
+                        <div id="guest-bulk-actions-bar" class="hidden bg-slate-900 text-white p-3.5 rounded-2xl flex items-center justify-between gap-3 flex-wrap shadow-lg animate-fade-in">
+                            <div class="flex items-center gap-2 px-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                                <span class="text-xs font-bold text-slate-200" id="guest-bulk-count-label">0 Selected</span>
+                            </div>
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <select id="guest-bulk-role-select" class="bg-slate-800 border border-slate-700 text-white rounded-xl px-3 py-1.5 text-xs outline-none focus:border-[#D4AF37]">
+                                    <option value="">Change Role to...</option>
+                                    <option value="admin">Admin</option>
+                                    <option value="moderator">Moderator</option>
+                                    <option value="editor">Editor</option>
+                                    <option value="user">User / Guest</option>
+                                </select>
+                                <button onclick="AdminGuestsModule.bulkChangeRole()" class="bg-[#D4AF37] hover:bg-white hover:text-slate-950 text-slate-950 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 shadow-sm">
+                                    <i class="fa-solid fa-user-gear text-[10px]"></i> Apply Role
+                                </button>
+                                <button onclick="AdminGuestsModule.bulkSendPasswordReset()" class="bg-blue-600 hover:bg-blue-500 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 shadow-sm">
+                                    <i class="fa-solid fa-paper-plane text-[10px]"></i> Bulk Reset Links
+                                </button>
+                                <button onclick="AdminGuestsModule.bulkDeleteAccounts()" class="bg-rose-600 hover:bg-rose-500 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 shadow-sm">
+                                    <i class="fa-solid fa-trash-can text-[10px]"></i> Bulk Delete
+                                </button>
+                                <button onclick="AdminGuestsModule.clearSelection()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all">
+                                    <i class="fa-solid fa-xmark mr-1"></i> Deselect
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Clean Table without Forced Inner Scrollbars -->
+                    <div class="overflow-x-auto rounded-2xl border border-slate-100">
                         <table class="w-full text-left border-collapse">
                             <thead>
-                                <tr class="border-b border-slate-100 text-slate-400 text-[9px] uppercase tracking-wider font-bold">
-                                    <th class="px-6 py-3">User Details</th>
-                                    <th class="px-6 py-3">Email Address</th>
-                                    <th class="px-6 py-3">Phone Line</th>
-                                    <th class="px-6 py-3">Role</th>
-                                    <th class="px-6 py-3">Granted Permissions</th>
-                                    <th class="px-6 py-3 text-right">Actions</th>
+                                <tr class="bg-slate-50 border-b border-slate-100 text-slate-500 text-[10px] uppercase tracking-wider font-bold">
+                                    <th class="px-4 py-3.5 text-center w-10">
+                                        <input type="checkbox" id="guest-select-all-cb" onclick="AdminGuestsModule.toggleSelectAll(this)" class="rounded border-slate-300 text-[#D4AF37] focus:ring-[#D4AF37] cursor-pointer">
+                                    </th>
+                                    <th class="px-6 py-3.5">User Details</th>
+                                    <th class="px-6 py-3.5">Email Address</th>
+                                    <th class="px-6 py-3.5">Phone Line</th>
+                                    <th class="px-6 py-3.5">Role</th>
+                                    <th class="px-6 py-3.5">Granted Permissions</th>
+                                    <th class="px-6 py-3.5 text-right">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody id="admin-guests-tbody">
+                            <tbody id="admin-guests-tbody" class="divide-y divide-slate-100 text-xs">
                                 <!-- Loaded dynamically -->
                             </tbody>
                         </table>
                     </div>
-                    <div id="guests-empty-state" class="hidden text-center py-12">
+
+                    <!-- Table Summary Footer -->
+                    <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs text-slate-500">
+                        <span id="guests-count-summary" class="font-semibold text-slate-600">Showing accounts</span>
+                    </div>
+
+                    <div id="guests-empty-state" class="hidden text-center py-16">
+                        <div class="w-14 h-14 rounded-full bg-slate-50 text-slate-300 flex items-center justify-center text-2xl mx-auto mb-3 border border-slate-100">
+                            <i class="fa-solid fa-users-slash"></i>
+                        </div>
+                        <p class="text-slate-600 font-bold text-sm mb-1">No Accounts Found</p>
                         <p class="text-slate-400 text-xs">No user or admin profiles matching your search filters.</p>
                     </div>
                 </div>
@@ -1151,6 +1252,67 @@
                             </form>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <!-- ============================================================ -->
+            <!-- VIEW: INQUIRIES (WEBSITE CONTACT FORM MESSAGES) -->
+            <!-- ============================================================ -->
+            <div id="view-inquiries" class="tab-view hidden space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <span class="text-[#D4AF37] text-xs font-bold uppercase tracking-wider">Website Leads</span>
+                        <h1 class="text-2xl font-extrabold outfit text-slate-900 mt-0.5">Contact Form Inquiries</h1>
+                        <p class="text-slate-400 text-xs font-light">View and manage messages submitted through the website contact page (info@kphstay.com).</p>
+                    </div>
+                    <button onclick="KaghanInquiries.loadInquiries()" class="bg-slate-900 hover:bg-[#D4AF37] hover:text-slate-950 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 self-start sm:self-auto shadow-sm">
+                        <i class="fa-solid fa-rotate text-xs"></i> Refresh Inquiries
+                    </button>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                    <div class="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-amber-50 text-[#D4AF37] flex items-center justify-center text-lg">
+                            <i class="fa-solid fa-inbox"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs text-slate-400 font-bold uppercase tracking-wider">Total Received</span>
+                            <h3 class="text-2xl font-black outfit text-slate-900" id="stat-total-inquiries">0</h3>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-500 flex items-center justify-center text-lg">
+                            <i class="fa-solid fa-bell"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs text-slate-400 font-bold uppercase tracking-wider">Unread Messages</span>
+                            <h3 class="text-2xl font-black outfit text-rose-600" id="stat-unread-inquiries">0</h3>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg">
+                            <i class="fa-solid fa-calendar-day"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs text-slate-400 font-bold uppercase tracking-wider">Received Today</span>
+                            <h3 class="text-2xl font-black outfit text-slate-900" id="stat-today-inquiries">0</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Inquiries List Container -->
+                <div id="admin-inquiries-list" class="space-y-4">
+                    <!-- Loaded dynamically via KaghanInquiries.loadInquiries() -->
+                </div>
+
+                <!-- Empty State -->
+                <div id="admin-inquiries-empty" class="hidden bg-white rounded-3xl border border-slate-100 p-16 text-center shadow-sm">
+                    <div class="w-16 h-16 rounded-full bg-slate-50 text-slate-300 flex items-center justify-center text-3xl mx-auto mb-4 border border-slate-100">
+                        <i class="fa-solid fa-inbox"></i>
+                    </div>
+                    <h3 class="font-bold outfit text-slate-800 text-lg mb-1">No Inquiries Found</h3>
+                    <p class="text-xs text-slate-400 max-w-sm mx-auto">When guests submit messages on the contact page, they will appear here and be delivered to info@kphstay.com.</p>
                 </div>
             </div>
 
@@ -2014,68 +2176,120 @@
 
     <!-- MODAL: EDIT USER & PERMISSIONS -->
     <div id="edit-user-modal" class="fixed inset-0 bg-[#0F172A]/70 z-[100] flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
-        <div class="bg-white rounded-3xl max-w-md w-full overflow-hidden shadow-2xl relative border border-slate-100 transform scale-95 transition-transform duration-300 p-8 text-slate-800">
-            <button onclick="closeEditUserModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700">
+        <div class="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl relative border border-slate-100 transform scale-95 transition-transform duration-300 p-6 md:p-8 text-slate-800 max-h-[90vh] overflow-y-auto">
+            <button onclick="closeEditUserModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700">
                 <i class="fa-solid fa-times text-lg"></i>
             </button>
-            <h3 class="text-lg font-bold outfit text-slate-950 mb-1">Edit User Profile & Permissions</h3>
-            <p class="text-xs text-slate-400 font-light mb-4">Modify user role and check allowed management actions.</p>
+            <div class="flex items-center gap-3 mb-1">
+                <div class="w-10 h-10 rounded-2xl bg-amber-50 text-[#D4AF37] flex items-center justify-center font-bold text-lg shrink-0">
+                    <i class="fa-solid fa-user-gear"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold outfit text-slate-950 leading-tight">Edit Account & Security</h3>
+                    <p class="text-xs text-slate-400 font-light" id="edit-user-modal-subtitle">Manage profile details, security credentials, and access permissions.</p>
+                </div>
+            </div>
             
-            <form id="edit-user-form" class="space-y-4">
+            <form id="edit-user-form" class="space-y-5 mt-4">
                 <input type="hidden" id="edit-user-id">
-                <div>
-                    <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Full Name</label>
-                    <input type="text" id="edit-user-name" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
-                </div>
-                <div class="grid grid-cols-2 gap-4">
+                
+                <!-- Section 1: Profile Details -->
+                <div class="space-y-3">
+                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block border-b border-slate-100 pb-1">1. Profile Details</span>
                     <div>
-                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Email Address</label>
-                        <input type="email" id="edit-user-email" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Full Name</label>
+                        <input type="text" id="edit-user-name" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Email Address</label>
+                            <input type="email" id="edit-user-email" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Phone Line</label>
+                            <input type="text" id="edit-user-phone" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Role & Permissions -->
+                <div class="space-y-3">
+                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block border-b border-slate-100 pb-1">2. Role & Access Clearance</span>
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">User Role</label>
+                        <select id="edit-user-role" required onchange="onRoleChangeSyncPerms('edit-user-role', 'edit-user-perm-cb')" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none cursor-pointer focus:border-[#D4AF37] font-semibold">
+                            <option value="user">User / Guest</option>
+                            <option value="editor">Editor (Catalog & Suites Content)</option>
+                            <option value="moderator">Moderator (Bookings & Guest Reviews)</option>
+                            <option value="admin">Administrator (Full Access)</option>
+                        </select>
                     </div>
                     <div>
-                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Phone Line</label>
-                        <input type="text" id="edit-user-phone" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1.5">Granted Permissions</label>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-2 text-xs font-medium text-slate-700 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" value="manage_bookings" class="edit-user-perm-cb rounded text-[#D4AF37]">
+                                <span>Bookings</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" value="manage_rooms" class="edit-user-perm-cb rounded text-[#D4AF37]">
+                                <span>Suites / Rooms</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" value="manage_reviews" class="edit-user-perm-cb rounded text-[#D4AF37]">
+                                <span>Reviews</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" value="manage_guests" class="edit-user-perm-cb rounded text-[#D4AF37]">
+                                <span>Guest Accounts</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" value="manage_discounts" class="edit-user-perm-cb rounded text-[#D4AF37]">
+                                <span>Discounts</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" value="manage_settings" class="edit-user-perm-cb rounded text-[#D4AF37]">
+                                <span>Settings</span>
+                            </label>
+                        </div>
                     </div>
                 </div>
-                <div>
-                    <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">User Role</label>
-                    <select id="edit-user-role" required onchange="onRoleChangeSyncPerms('edit-user-role', 'edit-user-perm-cb')" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none cursor-pointer focus:border-[#D4AF37] font-semibold">
-                        <option value="user">User / Guest</option>
-                        <option value="editor">Editor (Catalog & Suites Content)</option>
-                        <option value="moderator">Moderator (Bookings & Guest Reviews)</option>
-                        <option value="admin">Administrator (Full Access)</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-2">Allowed Actions & Permissions</label>
-                    <div class="grid grid-cols-2 gap-2 text-xs font-medium text-slate-700 bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" value="manage_bookings" class="edit-user-perm-cb rounded text-[#D4AF37]">
-                            <span>Bookings</span>
-                        </label>
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" value="manage_rooms" class="edit-user-perm-cb rounded text-[#D4AF37]">
-                            <span>Suites / Rooms</span>
-                        </label>
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" value="manage_reviews" class="edit-user-perm-cb rounded text-[#D4AF37]">
-                            <span>Reviews</span>
-                        </label>
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" value="manage_guests" class="edit-user-perm-cb rounded text-[#D4AF37]">
-                            <span>Guest Accounts</span>
-                        </label>
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" value="manage_discounts" class="edit-user-perm-cb rounded text-[#D4AF37]">
-                            <span>Discounts</span>
-                        </label>
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" value="manage_settings" class="edit-user-perm-cb rounded text-[#D4AF37]">
-                            <span>Settings</span>
-                        </label>
+
+                <!-- Section 3: Password & Security Actions -->
+                <div class="space-y-3 bg-amber-50/40 p-4 rounded-2xl border border-amber-200/60">
+                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-amber-800 block border-b border-amber-200/60 pb-1">3. Password & Security Credentials</span>
+                    
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-wider text-slate-600 font-semibold mb-1">Set New Password (Manual Override)</label>
+                        <div class="flex gap-2">
+                            <div class="relative flex-grow">
+                                <input type="password" id="edit-user-password" placeholder="Enter new password (min 6 chars)" class="w-full border border-slate-200 rounded-xl pl-3 pr-10 py-2 text-xs bg-white text-slate-800 outline-none focus:border-[#D4AF37]">
+                                <button type="button" onclick="togglePasswordVisibility('edit-user-password', this)" class="toggle-pass-btn absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1" title="Toggle password visibility">
+                                    <i class="fa-solid fa-eye text-xs"></i>
+                                </button>
+                            </div>
+                            <button type="button" onclick="AdminGuestsModule.updatePasswordFromEditModal()" class="bg-amber-600 hover:bg-amber-700 text-white font-bold px-3.5 py-2 rounded-xl text-xs transition-all shrink-0 flex items-center gap-1 shadow-sm">
+                                <i class="fa-solid fa-key text-[10px]"></i> Update Password
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="pt-1">
+                        <button type="button" onclick="AdminGuestsModule.sendResetLinkFromEditModal()" class="w-full bg-slate-900 hover:bg-blue-700 text-white py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-sm">
+                            <i class="fa-solid fa-paper-plane text-xs"></i> Send Password Reset Email Link
+                        </button>
                     </div>
                 </div>
-                <div class="flex gap-4 pt-2">
+
+                <!-- Section 4: Danger Zone -->
+                <div class="pt-1">
+                    <button type="button" onclick="AdminGuestsModule.deleteAccountFromEditModal()" class="w-full bg-rose-50 hover:bg-rose-600 hover:text-white text-rose-600 border border-rose-200 py-2.5 rounded-xl font-bold transition-all text-xs flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-trash-can text-xs"></i> Permanently Delete Account
+                    </button>
+                </div>
+
+                <!-- Footer Action Buttons -->
+                <div class="flex gap-3 pt-3 border-t border-slate-100">
                     <button type="button" onclick="closeEditUserModal()" class="w-1/2 border border-slate-200 text-slate-800 font-bold py-3 rounded-xl hover:bg-slate-100 transition-all text-xs">Cancel</button>
                     <button type="submit" class="w-1/2 bg-gradient-to-r from-[#D4AF37] to-[#DC2626] text-white font-bold py-3 rounded-xl hover:opacity-90 transition-all text-xs shadow-md">Save Changes</button>
                 </div>
@@ -2277,6 +2491,7 @@
     <script src="../assets/js/admin/settings.js?v=10"></script>
     <script src="../assets/js/admin/coupons.js?v=10"></script>
     <script src="../assets/js/admin/messaging.js?v=10"></script>
+    <script src="../assets/js/admin/inquiries.js?v=10"></script>
     <script src="../assets/js/admin/seo.js?v=10"></script>
 
 </body>

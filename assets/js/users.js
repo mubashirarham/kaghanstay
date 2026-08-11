@@ -39,6 +39,7 @@
                     const snap = await fdb.collection('users').where('email', '==', cleanEmail).limit(1).get();
                     if (!snap.empty) {
                         userData = snap.docs[0].data();
+                        await fdb.collection('users').doc(firebaseUser.uid).set({ ...userData, uid: firebaseUser.uid }, { merge: true });
                     }
                 }
 

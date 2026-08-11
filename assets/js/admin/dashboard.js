@@ -52,6 +52,7 @@ const TAB_PERMISSIONS = {
     overview: ['manage_settings'],
     bookings: ['manage_bookings'],
     messages: ['manage_bookings'],
+    inquiries: ['manage_bookings'],
     calendar: ['manage_bookings'],
     rooms: ['manage_rooms'],
     guests: ['manage_guests'],
@@ -63,7 +64,7 @@ const TAB_PERMISSIONS = {
     seo: ['manage_settings']
 };
 
-const ALL_TABS = ['overview', 'bookings', 'messages', 'calendar', 'rooms', 'guests', 'newsletter', 'reviews', 'blogs', 'coupons', 'settings', 'seo'];
+const ALL_TABS = ['overview', 'bookings', 'messages', 'inquiries', 'calendar', 'rooms', 'guests', 'newsletter', 'reviews', 'blogs', 'coupons', 'settings', 'seo'];
 
 function getUserPermissions(user) {
     if (!user) return [];
@@ -151,15 +152,53 @@ document.addEventListener('DOMContentLoaded', () => {
     let authChecked = false;
     firebase.auth().onAuthStateChanged(async (firebaseUser) => {
         if (authChecked) return;
+
         if (!firebaseUser) {
-            localStorage.removeItem('kaghan_hotel_session');
-            window.location.href = '../login.html';
+            // Give Firebase Auth SDK a grace period on fresh page loads before redirecting
+            setTimeout(() => {
+                if (!firebase.auth().currentUser && !KaghanDB.getCurrentUser()) {
+                    localStorage.removeItem('kaghan_hotel_session');
+                    window.location.href = '../login.html';
+                }
+            }, 1500);
             return;
         }
+
         authChecked = true;
+
+        // Verify live user profile in Firestore
         try {
+            const userDoc = await firebase.firestore().collection('users').doc(firebaseUser.uid).get();
+            if (userDoc.exists) {
+                const liveData = userDoc.data();
+                if (ADMIN_STAFF_ROLES.includes(liveData.role)) {
+                    localStorage.setItem('kaghan_hotel_session', JSON.stringify(liveData));
+                } else {
+                    localStorage.removeItem('kaghan_hotel_session');
+                    window.location.href = '../user/index.html';
+                    return;
+                }
+            } else {
+                // Check by email if doc(uid) not found directly
+                const cleanEmail = (firebaseUser.email || '').toLowerCase().trim();
+                if (cleanEmail) {
+                    const snap = await firebase.firestore().collection('users').where('email', '==', cleanEmail).limit(1).get();
+                    if (!snap.empty) {
+                        const liveData = snap.docs[0].data();
+                        await firebase.firestore().collection('users').doc(firebaseUser.uid).set({ ...liveData, uid: firebaseUser.uid }, { merge: true });
+                        if (ADMIN_STAFF_ROLES.includes(liveData.role)) {
+                            localStorage.setItem('kaghan_hotel_session', JSON.stringify(liveData));
+                        } else {
+                            window.location.href = '../user/index.html';
+                            return;
+                        }
+                    }
+                }
+            }
             await firebaseUser.getIdToken(true);
-        } catch(e) {}
+        } catch(e) {
+            console.warn("Auth token sync notice:", e.message);
+        }
     });
 });
 
@@ -270,6 +309,9 @@ window.switchTab = (tabName) => {
 
     if (tabName === 'seo' && window.AdminSEOModule) {
         window.AdminSEOModule.render();
+    }
+    if (tabName === 'inquiries' && window.KaghanInquiries) {
+        window.KaghanInquiries.loadInquiries();
     }
 
     const buttons = document.querySelectorAll('#sidebar-nav button');

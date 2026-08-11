@@ -174,7 +174,7 @@
                     </div>
                     <div>
                         <h4 class="outfit font-bold text-slate-800 text-base mb-1">Email Inquiries</h4>
-                        <p class="text-slate-600 text-sm font-medium mb-1">lobby@kphstay.com</p>
+                        <p class="text-slate-600 text-sm font-medium mb-1"><a href="mailto:info@kphstay.com" class="hover:text-[#D4AF37]">info@kphstay.com</a></p>
                         <p class="text-[11px] text-slate-400">Average response time: 2 hours</p>
                     </div>
                 </div>
@@ -348,6 +348,7 @@
             <div>
                 <h5 class="text-xs uppercase tracking-widest font-bold text-[#D4AF37] mb-4">Legal Guides</h5>
                 <ul class="space-y-2 text-xs font-light text-slate-300">
+                    <li><a href="pricing.html" class="hover:text-white">Pricing & Payment Policy</a></li>
                     <li><a href="terms.html" class="hover:text-white">Terms & Conditions</a></li>
                     <li><a href="privacy.html" class="hover:text-white">Privacy Policy</a></li>
                     <li><a href="refund.html" class="hover:text-white">Refund Policy</a></li>
@@ -357,8 +358,9 @@
             <div>
                 <h5 class="text-xs uppercase tracking-widest font-bold text-[#D4AF37] mb-4">Contact Info</h5>
                 <p class="text-xs text-slate-300 font-light leading-relaxed">
-                    +92 51 8461975<br>
-                    lobby@kphstay.com
+                    Asian Arcade, Sector C, Bahria Enclave, Islamabad<br>
+                    +92 334 009 1127 | +92 51 8461975<br>
+                    info@kphstay.com
                 </p>
             </div>
         </div>
@@ -374,33 +376,53 @@
     <script>
         document.getElementById('contact-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const name = document.getElementById('contact-name').value;
-            const email = document.getElementById('contact-email').value;
-            const subject = document.getElementById('contact-subject').value;
-            const message = document.getElementById('contact-message').value;
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalBtnHTML = submitBtn ? submitBtn.innerHTML : 'Submit Inquiry';
+
+            const name = document.getElementById('contact-name').value.trim();
+            const email = document.getElementById('contact-email').value.trim();
+            const subject = document.getElementById('contact-subject').value.trim();
+            const message = document.getElementById('contact-message').value.trim();
+
+            if (!name || !email || !subject || !message) {
+                if (window.KaghanUI) KaghanUI.showToast('Please fill in all required fields.', 'warning');
+                return;
+            }
 
             try {
-                // Submit inquiry to Firestore using global fdb ref in shared.js
-                await fdb.collection('inquiries').add({
-                    name,
-                    email,
-                    subject,
-                    message,
-                    createdAt: new Date().toISOString(),
-                    status: 'unread'
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Sending Inquiry...';
+                }
+
+                const res = await (window.safeFetch ? window.safeFetch : fetch)('/.netlify/functions/submit-inquiry', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, subject, message })
                 });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    throw new Error(data.error || `HTTP Error ${res.status}`);
+                }
 
                 // Clear form
                 document.getElementById('contact-form').reset();
 
                 // Alert user
                 if (window.KaghanUI) {
-                    KaghanUI.showToast('Inquiry sent successfully. Our team will contact you shortly!', 'success');
+                    KaghanUI.showToast(data.message || 'Inquiry submitted successfully! We will contact you shortly.', 'success');
                 }
             } catch (err) {
                 console.error("Error submitting inquiry:", err);
                 if (window.KaghanUI) {
-                    KaghanUI.showToast('Failed to submit message. Please check connection and try again.', 'error');
+                    KaghanUI.showToast(err.message || 'Failed to submit message. Please try again.', 'error');
+                }
+            } finally {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnHTML;
                 }
             }
         });

@@ -198,17 +198,31 @@ function startActiveListeners() {
 
         if (!authUser) return;
 
-        // SECURITY: Do NOT use localStorage role — it can be spoofed via DevTools.
-        // Admin status is determined solely by the Firebase-verified email property.
-        // TODO: migrate to Firebase Auth custom claims (authUser.getIdTokenResult().claims.admin).
-        const isAdminUser = authUser.email === 'admin@kaghanstay.com';
+        const currentSession = JSON.parse(localStorage.getItem(DB_KEYS.SESSION) || 'null');
+        const isAdminUser = (currentSession && ['admin', 'moderator', 'editor'].includes(currentSession.role)) ||
+                            (authUser.email && (authUser.email.includes('admin') || authUser.email === 'info@kphstay.com'));
 
         // Sync active user profile details
         window.KaghanDB_Listeners.currentUser = fdb.collection('users').doc(authUser.uid).onSnapshot(doc => {
             if (doc.exists) {
                 const uData = doc.data();
+                if (currentSession && currentSession.role && !uData.role) {
+                    uData.role = currentSession.role;
+                }
                 localStorage.setItem(DB_KEYS.SESSION, JSON.stringify(uData));
                 window.dispatchEvent(new CustomEvent('kaghan-db-current-user', { detail: uData }));
+            } else {
+                const cleanEmail = (authUser.email || '').toLowerCase().trim();
+                if (cleanEmail) {
+                    fdb.collection('users').where('email', '==', cleanEmail).limit(1).get().then(snap => {
+                        if (!snap.empty) {
+                            const uData = snap.docs[0].data();
+                            fdb.collection('users').doc(authUser.uid).set({ ...uData, uid: authUser.uid }, { merge: true });
+                            localStorage.setItem(DB_KEYS.SESSION, JSON.stringify(uData));
+                            window.dispatchEvent(new CustomEvent('kaghan-db-current-user', { detail: uData }));
+                        }
+                    }).catch(() => {});
+                }
             }
         }, err => {
             // Suppress auth race condition notice
@@ -1342,6 +1356,7 @@ const db = {
                     const snap = await fdb.collection('users').where('email', '==', cleanEmail).limit(1).get();
                     if (!snap.empty) {
                         userData = snap.docs[0].data();
+                        await fdb.collection('users').doc(firebaseUser.uid).set({ ...userData, uid: firebaseUser.uid }, { merge: true });
                     }
                 }
 

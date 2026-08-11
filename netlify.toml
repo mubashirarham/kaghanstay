@@ -82,6 +82,11 @@
   status = 200
 
 [[redirects]]
+  from = "/pricing"
+  to = "/pricing.html"
+  status = 200
+
+[[redirects]]
   from = "/cookies"
   to = "/cookies.html"
   status = 200

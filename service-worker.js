@@ -10,6 +10,8 @@ const ASSETS_TO_CACHE = [
   '/contact.html',
   '/terms.html',
   '/privacy.html',
+  '/refund.html',
+  '/pricing.html',
   '/manifest.json',
   '/assets/css/style.css?v=10',
   '/assets/js/rooms.js?v=10',

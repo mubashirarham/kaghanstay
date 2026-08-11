@@ -136,6 +136,27 @@ exports.handler = async (event, context) => {
                 result = true;
                 break;
             }
+            case 'getInquiries': {
+                const snap = await fdb.collection('inquiries').orderBy('createdAt', 'desc').get();
+                const inquiries = [];
+                snap.forEach(doc => inquiries.push({ id: doc.id, ...doc.data() }));
+                result = inquiries;
+                break;
+            }
+            case 'markInquiryRead': {
+                const { id } = data;
+                if (!id) throw new Error("Inquiry ID is required.");
+                await fdb.collection('inquiries').doc(id).update({ status: 'read', read: true });
+                result = true;
+                break;
+            }
+            case 'deleteInquiry': {
+                const { id } = data;
+                if (!id) throw new Error("Inquiry ID is required.");
+                await fdb.collection('inquiries').doc(id).delete();
+                result = true;
+                break;
+            }
             case 'updateRoom': {
                 const { id, updatedData } = data;
                 if (!id || !updatedData) throw new Error("Room ID and updatedData are required.");
@@ -309,6 +330,18 @@ exports.handler = async (event, context) => {
                     await userRef.update({ passwordUpdatedAt: new Date().toISOString() });
                 }
 
+                result = true;
+                break;
+            }
+            case 'deleteUser': {
+                const { id } = data;
+                if (!id) throw new Error("User ID is required.");
+                try {
+                    await auth.deleteUser(id);
+                } catch (authErr) {
+                    console.warn(`[deleteUser] Firebase Auth deletion notice for ${id}:`, authErr.message);
+                }
+                await fdb.collection('users').doc(id).delete();
                 result = true;
                 break;
             }
