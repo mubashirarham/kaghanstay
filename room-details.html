@@ -92,6 +92,7 @@
         <div class="hidden md:flex gap-8 items-center font-medium">
             <a href="index.html" class="hover:text-[#C5A059] transition-colors">Home</a>
             <a href="rooms.html" class="hover:text-[#C5A059] transition-colors">Rooms</a>
+            <a href="blog.html" class="hover:text-[#C5A059] transition-colors">Blog</a>
             <a href="track.html" class="hover:text-[#C5A059] transition-colors">Track Stay</a>
             <div id="auth-links" class="flex gap-4 items-center">
                 <a href="login.html" class="border border-[#C5A059] text-white px-5 py-2 rounded-full hover:bg-[#C5A059] hover:text-white transition-all text-sm font-semibold">Login</a>
@@ -111,6 +112,7 @@
         </button>
         <a href="index.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Home</a>
         <a href="rooms.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Rooms</a>
+        <a href="blog.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Blog</a>
         <a href="track.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Track Stay</a>
         <div id="auth-links-mobile" class="flex flex-col gap-4 w-64 text-center">
             <a href="login.html" class="border border-[#C5A059] text-white py-3 rounded-full hover:bg-[#C5A059] transition-all text-base" onclick="toggleDrawer()">Login</a>
@@ -139,20 +141,25 @@
                 <!-- RoomHero Gallery Component -->
                 <div class="bg-white/80 backdrop-blur-md rounded-[2.5rem] border border-[#C5A059]/10 shadow-[0_12px_40px_-15px_rgba(11,15,25,0.05)] hover:border-[#C5A059]/30 transition-all duration-500 p-4 md:p-6 overflow-hidden">
                     
-                    <!-- Main Display Image Container -->
-                    <div class="relative h-72 md:h-[420px] rounded-2xl overflow-hidden bg-slate-900 group">
+                    <!-- Main Display Image Container with Touch Swipe & Fullscreen Lightbox -->
+                    <div id="pdp-gallery-main-container" class="relative h-72 md:h-[420px] rounded-2xl overflow-hidden bg-slate-900 group cursor-pointer" onclick="openPDPFullScreenLightbox()">
                         <img id="gallery-main-img" src="assets/images/logo.png" alt="Suite View" class="w-full h-full object-cover transition-all duration-500">
                         
                         <!-- Floating Navigation Arrows -->
-                        <button onclick="prevGalleryImage()" class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-slate-900/60 hover:bg-[#C5A059] text-white flex items-center justify-center backdrop-blur-md transition-all shadow-md">
+                        <button onclick="event.stopPropagation(); prevGalleryImage();" class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-slate-900/60 hover:bg-[#C5A059] text-white flex items-center justify-center backdrop-blur-md transition-all shadow-md z-10" aria-label="Previous Image">
                             <i class="fa-solid fa-chevron-left text-sm"></i>
                         </button>
-                        <button onclick="nextGalleryImage()" class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-slate-900/60 hover:bg-[#C5A059] text-white flex items-center justify-center backdrop-blur-md transition-all shadow-md">
+                        <button onclick="event.stopPropagation(); nextGalleryImage();" class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-slate-900/60 hover:bg-[#C5A059] text-white flex items-center justify-center backdrop-blur-md transition-all shadow-md z-10" aria-label="Next Image">
                             <i class="fa-solid fa-chevron-right text-sm"></i>
                         </button>
 
+                        <!-- Expand Fullscreen Gallery Badge Button -->
+                        <button onclick="event.stopPropagation(); openPDPFullScreenLightbox();" class="absolute top-4 right-4 bg-black/60 hover:bg-[#C5A059] text-white px-3.5 py-1.5 rounded-full text-xs font-bold backdrop-blur-md transition-all shadow-md flex items-center gap-1.5 z-10 border border-white/20">
+                            <i class="fa-solid fa-expand text-xs"></i> <span class="hidden sm:inline">Fullscreen</span>
+                        </button>
+
                         <!-- Room Badges -->
-                        <div class="absolute top-4 left-4 flex flex-wrap gap-2">
+                        <div class="absolute top-4 left-4 flex flex-wrap gap-2 pointer-events-none">
                             <span id="detail-category-badge" class="bg-[#0B0F19]/80 text-[#C5A059] text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full border border-white/10 backdrop-blur-md">
                                 Luxury Suite
                             </span>
@@ -1407,6 +1414,13 @@
                     </button>
                 `).join('');
             }
+
+            if (window.KaghanUI && window.KaghanUI.enableTouchSwipe) {
+                KaghanUI.enableTouchSwipe('pdp-gallery-main-container', {
+                    onSwipeLeft: nextGalleryImage,
+                    onSwipeRight: prevGalleryImage
+                });
+            }
         }
 
         function selectGalleryImage(idx) {
@@ -1423,6 +1437,107 @@
             activeImgIdx = (activeImgIdx + 1) % roomImages.length;
             renderGallery();
         }
+
+        // Mobile-first Fullscreen Touch Swipe Lightbox Viewer
+        window.openPDPFullScreenLightbox = function() {
+            if (!roomImages || roomImages.length === 0) return;
+
+            let lightbox = document.getElementById('pdp-fullscreen-lightbox');
+            if (!lightbox) {
+                lightbox = document.createElement('div');
+                lightbox.id = 'pdp-fullscreen-lightbox';
+                lightbox.className = 'fixed inset-0 z-[100000] bg-black/95 backdrop-blur-xl flex flex-col justify-between p-4 md:p-8 transition-all duration-300 opacity-0 select-none';
+                document.body.appendChild(lightbox);
+            }
+
+            const renderLightboxContent = () => {
+                lightbox.innerHTML = `
+                    <div class="flex items-center justify-between z-10">
+                        <span class="text-white text-xs font-bold bg-white/10 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
+                            <i class="fa-regular fa-image text-[#C5A059] mr-1"></i> <span id="lb-counter">${activeImgIdx + 1}</span> / ${roomImages.length}
+                        </span>
+                        <div class="flex items-center gap-3">
+                            <span class="text-[10px] text-slate-400 font-medium hidden md:inline">Swipe left/right or use arrow keys</span>
+                            <button onclick="closePDPFullScreenLightbox()" class="w-10 h-10 rounded-full bg-white/10 hover:bg-rose-600 text-white flex items-center justify-center backdrop-blur-md transition-all text-base focus:outline-none cursor-pointer">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="lb-image-wrapper" class="relative flex-grow flex items-center justify-center my-4 overflow-hidden touch-pan-y cursor-pointer">
+                        <button onclick="prevPDPModalImg(event)" class="absolute left-2 md:left-6 z-20 w-12 h-12 rounded-full bg-black/50 hover:bg-[#C5A059] text-white flex items-center justify-center backdrop-blur-md transition-all shadow-xl border border-white/10" aria-label="Previous">
+                            <i class="fa-solid fa-chevron-left text-base"></i>
+                        </button>
+
+                        <img id="lb-main-img" src="${roomImages[activeImgIdx]}" alt="Full page view" class="max-w-full max-h-[75vh] object-contain rounded-2xl shadow-2xl transition-all duration-300 transform scale-100">
+
+                        <button onclick="nextPDPModalImg(event)" class="absolute right-2 md:right-6 z-20 w-12 h-12 rounded-full bg-black/50 hover:bg-[#C5A059] text-white flex items-center justify-center backdrop-blur-md transition-all shadow-xl border border-white/10" aria-label="Next">
+                            <i class="fa-solid fa-chevron-right text-base"></i>
+                        </button>
+                    </div>
+
+                    <div class="z-10 overflow-x-auto pb-2 scrollbar-thin hide-scrollbar flex justify-center gap-3">
+                        ${roomImages.map((img, idx) => `
+                            <button onclick="selectPDPModalImg(${idx})" class="w-14 h-14 rounded-xl overflow-hidden shrink-0 border-2 transition-all cursor-pointer ${idx === activeImgIdx ? 'border-[#C5A059] ring-2 ring-[#C5A059]/40 scale-105 opacity-100' : 'border-white/20 opacity-40 hover:opacity-100'}">
+                                <img src="${img}" class="w-full h-full object-cover">
+                            </button>
+                        `).join('')}
+                    </div>
+                `;
+
+                if (window.KaghanUI && window.KaghanUI.enableTouchSwipe) {
+                    KaghanUI.enableTouchSwipe('lb-image-wrapper', {
+                        onSwipeLeft: () => window.nextPDPModalImg(),
+                        onSwipeRight: () => window.prevPDPModalImg()
+                    });
+                    KaghanUI.enableTouchSwipe('pdp-fullscreen-lightbox', {
+                        onSwipeLeft: () => window.nextPDPModalImg(),
+                        onSwipeRight: () => window.prevPDPModalImg()
+                    });
+                }
+            };
+
+            renderLightboxContent();
+            setTimeout(() => lightbox.classList.remove('opacity-0'), 10);
+            document.body.style.overflow = 'hidden';
+
+            window.pdpKeydownHandler = (e) => {
+                if (e.key === 'ArrowRight') window.nextPDPModalImg();
+                if (e.key === 'ArrowLeft') window.prevPDPModalImg();
+                if (e.key === 'Escape') window.closePDPFullScreenLightbox();
+            };
+            document.addEventListener('keydown', window.pdpKeydownHandler);
+
+            window.selectPDPModalImg = (idx) => {
+                activeImgIdx = idx;
+                renderGallery();
+                renderLightboxContent();
+            };
+
+            window.nextPDPModalImg = (e) => {
+                if (e) e.stopPropagation();
+                activeImgIdx = (activeImgIdx + 1) % roomImages.length;
+                renderGallery();
+                renderLightboxContent();
+            };
+
+            window.prevPDPModalImg = (e) => {
+                if (e) e.stopPropagation();
+                activeImgIdx = (activeImgIdx - 1 + roomImages.length) % roomImages.length;
+                renderGallery();
+                renderLightboxContent();
+            };
+
+            window.closePDPFullScreenLightbox = () => {
+                const lb = document.getElementById('pdp-fullscreen-lightbox');
+                if (lb) {
+                    lb.classList.add('opacity-0');
+                    document.removeEventListener('keydown', window.pdpKeydownHandler);
+                    document.body.style.overflow = '';
+                    setTimeout(() => lb.remove(), 300);
+                }
+            };
+        };
 
         // Render Amenities strictly from Firestore data array
         function renderAmenities(amenities) {

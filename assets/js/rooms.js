@@ -731,27 +731,18 @@
             // Re-trigger scroll animations observer for the newly loaded rooms
             if (window.setupScrollAnimations) window.setupScrollAnimations();
 
-            // Render Pagination controls
-            if (pagination) {
-                let pHTML = '';
-                // Prev btn
-                pHTML += `<button type="button" onclick="changePage(${currentPage - 1})" class="w-10 h-10 rounded-xl flex items-center justify-center font-bold transition-all border ${currentPage === 1 ? 'border-slate-100 text-slate-300 cursor-not-allowed bg-slate-50' : 'border-slate-200 text-slate-600 hover:border-[#D4AF37] hover:text-[#D4AF37] bg-white shadow-sm'}" ${currentPage === 1 ? 'disabled' : ''}><i class="fa-solid fa-chevron-left"></i></button>`;
-                
-                // Number btns
-                for(let i = 1; i <= totalPages; i++) {
-                    if(i === currentPage) {
-                        pHTML += `<button type="button" class="w-10 h-10 rounded-xl flex items-center justify-center font-bold transition-all border border-[#D4AF37] bg-[#D4AF37] text-white shadow-md">${i}</button>`;
-                    } else {
-                        pHTML += `<button type="button" onclick="changePage(${i})" class="w-10 h-10 rounded-xl flex items-center justify-center font-bold transition-all border border-slate-200 text-slate-600 hover:border-[#D4AF37] hover:text-[#D4AF37] bg-white shadow-sm">${i}</button>`;
+            // Render Pagination controls using universal KaghanUI helper
+            if (window.KaghanUI && window.KaghanUI.renderPaginationControls) {
+                KaghanUI.renderPaginationControls({
+                    container: 'rooms-pagination',
+                    currentPage: currentPage,
+                    totalPages: totalPages,
+                    totalItems: roomsList.length,
+                    itemsPerPage: itemsPerPage,
+                    onPageChange: (p) => {
+                        window.changePage(p);
                     }
-                }
-
-                // Next btn
-                pHTML += `<button type="button" onclick="changePage(${currentPage + 1})" class="w-10 h-10 rounded-xl flex items-center justify-center font-bold transition-all border ${currentPage === totalPages ? 'border-slate-100 text-slate-300 cursor-not-allowed bg-slate-50' : 'border-slate-200 text-slate-600 hover:border-[#D4AF37] hover:text-[#D4AF37] bg-white shadow-sm'}" ${currentPage === totalPages ? 'disabled' : ''}><i class="fa-solid fa-chevron-right"></i></button>`;
-                
-                if(totalPages <= 1) pHTML = ''; // Hide if only 1 page
-                
-                pagination.innerHTML = pHTML;
+                });
             }
         }
     }
@@ -878,20 +869,90 @@
         }
     };
 
-    window.openLightbox = (imgSrc) => {
-        // very basic lightbox
-        const lightbox = document.createElement('div');
-        lightbox.className = 'fixed inset-0 z-[100] bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 opacity-0 transition-opacity';
-        lightbox.onclick = () => {
-            lightbox.classList.add('opacity-0');
-            setTimeout(() => lightbox.remove(), 300);
+    window.openLightbox = (imgSrc, imgList = []) => {
+        let list = (imgList && imgList.length > 0) ? imgList : [imgSrc];
+        let idx = list.indexOf(imgSrc);
+        if (idx === -1) idx = 0;
+
+        let lightbox = document.getElementById('rooms-catalog-lightbox');
+        if (lightbox) lightbox.remove();
+
+        lightbox = document.createElement('div');
+        lightbox.id = 'rooms-catalog-lightbox';
+        lightbox.className = 'fixed inset-0 z-[100000] bg-black/95 backdrop-blur-md flex flex-col justify-between p-4 opacity-0 transition-opacity duration-300 select-none';
+
+        const updateLightbox = () => {
+            lightbox.innerHTML = `
+                <div class="flex items-center justify-between z-10">
+                    <span class="text-white text-xs font-bold bg-white/10 px-3 py-1.5 rounded-full border border-white/10">
+                        ${idx + 1} / ${list.length}
+                    </span>
+                    <button onclick="closeRoomsLightbox()" class="w-10 h-10 rounded-full bg-white/10 hover:bg-rose-600 text-white flex items-center justify-center text-base focus:outline-none cursor-pointer">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <div id="rooms-lb-wrapper" class="relative flex-grow flex items-center justify-center my-4 overflow-hidden touch-pan-y cursor-pointer">
+                    ${list.length > 1 ? `
+                    <button onclick="changeRoomsLbImg(-1, event)" class="absolute left-2 md:left-6 z-20 w-12 h-12 rounded-full bg-black/50 hover:bg-[#D4AF37] text-white flex items-center justify-center backdrop-blur-md transition-all shadow-xl border border-white/10" aria-label="Previous">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    ` : ''}
+                    <img src="${list[idx]}" class="max-w-full max-h-[80vh] rounded-2xl shadow-2xl object-contain">
+                    ${list.length > 1 ? `
+                    <button onclick="changeRoomsLbImg(1, event)" class="absolute right-2 md:right-6 z-20 w-12 h-12 rounded-full bg-black/50 hover:bg-[#D4AF37] text-white flex items-center justify-center backdrop-blur-md transition-all shadow-xl border border-white/10" aria-label="Next">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                    ` : ''}
+                </div>
+                ${list.length > 1 ? `
+                <div class="z-10 overflow-x-auto pb-2 scrollbar-thin hide-scrollbar flex justify-center gap-2">
+                    ${list.map((img, i) => `
+                        <button onclick="setRoomsLbImg(${i})" class="w-12 h-12 rounded-xl overflow-hidden shrink-0 border-2 transition-all cursor-pointer ${i === idx ? 'border-[#D4AF37] opacity-100 scale-105' : 'border-white/20 opacity-40 hover:opacity-100'}">
+                            <img src="${img}" class="w-full h-full object-cover">
+                        </button>
+                    `).join('')}
+                </div>
+                ` : ''}
+            `;
+
+            if (window.KaghanUI && window.KaghanUI.enableTouchSwipe) {
+                KaghanUI.enableTouchSwipe('rooms-lb-wrapper', {
+                    onSwipeLeft: () => window.changeRoomsLbImg(1),
+                    onSwipeRight: () => window.changeRoomsLbImg(-1)
+                });
+                KaghanUI.enableTouchSwipe('rooms-catalog-lightbox', {
+                    onSwipeLeft: () => window.changeRoomsLbImg(1),
+                    onSwipeRight: () => window.changeRoomsLbImg(-1)
+                });
+            }
         };
-        const img = document.createElement('img');
-        img.src = imgSrc;
-        img.className = 'max-w-full max-h-full rounded-2xl shadow-2xl';
-        lightbox.appendChild(img);
+
+        updateLightbox();
+        lightbox.onclick = (e) => {
+            if (e.target === lightbox) window.closeRoomsLightbox();
+        };
+
         document.body.appendChild(lightbox);
         setTimeout(() => lightbox.classList.remove('opacity-0'), 10);
+
+        window.changeRoomsLbImg = (step, e) => {
+            if (e) e.stopPropagation();
+            idx = (idx + step + list.length) % list.length;
+            updateLightbox();
+        };
+
+        window.setRoomsLbImg = (i) => {
+            idx = i;
+            updateLightbox();
+        };
+
+        window.closeRoomsLightbox = () => {
+            const lb = document.getElementById('rooms-catalog-lightbox');
+            if (lb) {
+                lb.classList.add('opacity-0');
+                setTimeout(() => lb.remove(), 300);
+            }
+        };
     };
 
     // Extract URL query params to auto-filter on load

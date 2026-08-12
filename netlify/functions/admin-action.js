@@ -230,6 +230,14 @@ exports.handler = async (event, context) => {
                 result = docRef.id;
                 break;
             }
+            case 'updateBlog': {
+                const { blog } = data;
+                if (!blog || !blog.id) throw new Error("Blog data with ID is required.");
+                blog.updatedAt = new Date().toISOString();
+                await fdb.collection('blogs').doc(blog.id).set(blog, { merge: true });
+                result = true;
+                break;
+            }
             case 'deleteBlog': {
                 const { id } = data;
                 if (!id) throw new Error("Blog ID is required.");

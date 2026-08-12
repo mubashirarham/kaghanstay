@@ -442,6 +442,7 @@
                             </tbody>
                         </table>
                     </div>
+                    <div id="admin-bookings-pagination" class="mt-4 hidden"></div>
                     <div id="bookings-empty-state" class="hidden text-center py-12">
                         <p class="text-slate-400 text-xs">No matching bookings found in the database.</p>
                     </div>
@@ -526,6 +527,7 @@
                 <div id="admin-rooms-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <!-- Loaded dynamically -->
                 </div>
+                <div id="admin-rooms-pagination" class="mt-6 hidden"></div>
             </div>
 
             <!-- VIEW: GUESTS (USERS & ADMINS) -->
@@ -665,6 +667,7 @@
                     <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs text-slate-500">
                         <span id="guests-count-summary" class="font-semibold text-slate-600">Showing accounts</span>
                     </div>
+                    <div id="admin-guests-pagination" class="mt-4 hidden"></div>
 
                     <div id="guests-empty-state" class="hidden text-center py-16">
                         <div class="w-14 h-14 rounded-full bg-slate-50 text-slate-300 flex items-center justify-center text-2xl mx-auto mb-3 border border-slate-100">
@@ -796,6 +799,7 @@
                             </div>
                         </div>
                         <form id="blog-form" class="space-y-4">
+                            <input type="hidden" id="blog-id" value="">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Blog Title</label>
@@ -878,10 +882,15 @@
                                 </div>
                             </div>
 
-                            <button type="submit" class="w-full bg-gradient-to-r from-[#D4AF37] to-[#DC2626] text-white font-bold py-3.5 rounded-2xl hover:opacity-90 transition-all text-xs shadow-md mt-6 flex items-center justify-center gap-2">
-                                <i class="fa-solid fa-plus text-xs"></i>
-                                Publish Journal Article
-                            </button>
+                            <div class="flex gap-3 mt-6">
+                                <button type="submit" id="blog-submit-btn" class="flex-grow bg-gradient-to-r from-[#D4AF37] to-[#DC2626] text-white font-bold py-3.5 rounded-2xl hover:opacity-90 transition-all text-xs shadow-md flex items-center justify-center gap-2">
+                                    <i id="blog-btn-icon" class="fa-solid fa-plus text-xs"></i>
+                                    <span id="blog-btn-text">Publish Journal Article</span>
+                                </button>
+                                <button type="button" id="blog-cancel-edit-btn" onclick="window.cancelBlogEdit()" class="hidden bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-3.5 rounded-2xl transition-all text-xs flex items-center gap-1.5 shrink-0">
+                                    <i class="fa-solid fa-xmark"></i> Cancel Edit
+                                </button>
+                            </div>
                         </form>
                     </div>
 
@@ -905,6 +914,7 @@
                                 </tbody>
                             </table>
                         </div>
+                        <div id="admin-blogs-pagination" class="mt-4 hidden"></div>
                         <div id="blogs-empty-state" class="hidden text-center py-12">
                             <p class="text-slate-400 text-xs">No journal articles published yet.</p>
                         </div>

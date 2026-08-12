@@ -2,6 +2,8 @@
 (function() {
     let allInventoryRooms = [];
     let inventoryFiltersBound = false;
+    let inventoryPage = 1;
+    const inventoryPerPage = 6;
     let activeEditRoomId = null;
     let editRoomMap = null;
     let editRoomMarker = null;
@@ -632,7 +634,13 @@
         // Sort Pinned Rooms to the top
         filtered.sort((a, b) => (b.isPinned ? 1 : 0) - (a.isPinned ? 1 : 0));
 
-        grid.innerHTML = filtered.map(room => `
+        const totalPages = Math.ceil(filtered.length / inventoryPerPage);
+        if (inventoryPage > totalPages) inventoryPage = 1;
+
+        const startIndex = (inventoryPage - 1) * inventoryPerPage;
+        const paginated = filtered.slice(startIndex, startIndex + inventoryPerPage);
+
+        grid.innerHTML = paginated.map(room => `
             <div class="bg-white border border-slate-100 rounded-3xl p-5 flex flex-col justify-between hover:border-[#D4AF37] transition-all shadow-md group">
                 <div>
                     <div class="relative h-44 overflow-hidden rounded-2xl mb-4 bg-slate-100">
@@ -701,6 +709,20 @@
                 </div>
             </div>
         `).join('');
+
+        if (window.KaghanUI && window.KaghanUI.renderPaginationControls) {
+            KaghanUI.renderPaginationControls({
+                container: 'admin-rooms-pagination',
+                currentPage: inventoryPage,
+                totalPages: totalPages,
+                totalItems: filtered.length,
+                itemsPerPage: inventoryPerPage,
+                onPageChange: (p) => {
+                    inventoryPage = p;
+                    applyInventoryFilters();
+                }
+            });
+        }
     }
 
     async function renderRooms() {

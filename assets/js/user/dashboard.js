@@ -319,6 +319,9 @@ window.filterUserListings = function(cat, btnEl) {
     }
 };
 
+let userListingsPage = 1;
+const userListingsPerPage = 6;
+
 async function renderAllUserListings() {
     const container = document.getElementById('user-all-listings-grid');
     if (!container) return;
@@ -350,10 +353,18 @@ async function renderAllUserListings() {
                 <button onclick="filterUserListings('all', this)" class="inline-block bg-[#C5A059] text-white text-xs font-bold px-5 py-2.5 rounded-xl mt-4 hover:bg-[#0B0F19] transition-all shadow-md">Show All Suites</button>
             </div>
         `;
+        const pagContainer = document.getElementById('user-listings-pagination');
+        if (pagContainer) pagContainer.classList.add('hidden');
         return;
     }
 
-    container.innerHTML = filtered.map(room => {
+    const totalPages = Math.ceil(filtered.length / userListingsPerPage);
+    if (userListingsPage > totalPages) userListingsPage = 1;
+
+    const startIndex = (userListingsPage - 1) * userListingsPerPage;
+    const paginated = filtered.slice(startIndex, startIndex + userListingsPerPage);
+
+    container.innerHTML = paginated.map(room => {
         const isSaved = savedWishlist.includes(room.id);
         const mainImg = room.image || (room.images && room.images.length ? room.images[0] : '../assets/images/room1.jpg');
         const formattedPrice = KaghanUI.formatPKR(room.priceDaily || room.price || 0);
@@ -409,6 +420,20 @@ async function renderAllUserListings() {
             </div>
         `;
     }).join('');
+
+    if (window.KaghanUI && window.KaghanUI.renderPaginationControls) {
+        KaghanUI.renderPaginationControls({
+            container: 'user-listings-pagination',
+            currentPage: userListingsPage,
+            totalPages: totalPages,
+            totalItems: filtered.length,
+            itemsPerPage: userListingsPerPage,
+            onPageChange: (p) => {
+                userListingsPage = p;
+                renderAllUserListings();
+            }
+        });
+    }
 }
 
 async function renderGuestWishlists() {

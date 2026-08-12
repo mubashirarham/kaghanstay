@@ -26,8 +26,13 @@
         });
     }
 
+    let cachedBlogs = [];
+    let adminBlogsPage = 1;
+    const adminBlogsPerPage = 5;
+
     async function renderBlogs() {
         const blogs = await KaghanDB.getBlogs();
+        cachedBlogs = blogs;
         const tbody = document.getElementById('admin-blogs-tbody');
         const emptyState = document.getElementById('blogs-empty-state');
 
@@ -39,11 +44,20 @@
         if (filtered.length === 0) {
             tbody.innerHTML = '';
             if (emptyState) emptyState.classList.remove('hidden');
+            const pagContainer = document.getElementById('admin-blogs-pagination');
+            if (pagContainer) pagContainer.classList.add('hidden');
             return;
         }
 
         if (emptyState) emptyState.classList.add('hidden');
-        tbody.innerHTML = filtered.map(blog => {
+
+        const totalPages = Math.ceil(filtered.length / adminBlogsPerPage);
+        if (adminBlogsPage > totalPages) adminBlogsPage = 1;
+
+        const startIndex = (adminBlogsPage - 1) * adminBlogsPerPage;
+        const paginated = filtered.slice(startIndex, startIndex + adminBlogsPerPage);
+
+        tbody.innerHTML = paginated.map(blog => {
             const img = blog.imageUrl || '../assets/images/logo.png';
             const slug = blog.slug || blog.id;
             return `
@@ -61,14 +75,97 @@
                         </div>
                     </td>
                     <td class="py-3 px-2 text-right shrink-0">
-                        <button onclick="deleteBlogRecord('${blog.id}')" class="bg-rose-50 border border-rose-100 text-rose-600 text-[10px] font-bold px-2 py-1 rounded-lg hover:bg-rose-600 hover:text-white transition-all">
-                            <i class="fa-solid fa-trash-can text-[9px]"></i> Delete
-                        </button>
+                        <div class="flex items-center justify-end gap-1.5">
+                            <button onclick="editBlogRecord('${blog.id}')" class="bg-amber-50 border border-amber-200 text-amber-700 text-[10px] font-bold px-2.5 py-1 rounded-lg hover:bg-[#D4AF37] hover:text-white transition-all flex items-center gap-1">
+                                <i class="fa-solid fa-pen-to-square text-[9px]"></i> Edit
+                            </button>
+                            <button onclick="deleteBlogRecord('${blog.id}')" class="bg-rose-50 border border-rose-100 text-rose-600 text-[10px] font-bold px-2 py-1 rounded-lg hover:bg-rose-600 hover:text-white transition-all flex items-center gap-1">
+                                <i class="fa-solid fa-trash-can text-[9px]"></i> Delete
+                            </button>
+                        </div>
                     </td>
                 </tr>
             `;
         }).join('');
+
+        if (window.KaghanUI && window.KaghanUI.renderPaginationControls) {
+            KaghanUI.renderPaginationControls({
+                container: 'admin-blogs-pagination',
+                currentPage: adminBlogsPage,
+                totalPages: totalPages,
+                totalItems: filtered.length,
+                itemsPerPage: adminBlogsPerPage,
+                onPageChange: (p) => {
+                    adminBlogsPage = p;
+                    renderBlogs();
+                }
+            });
+        }
     }
+
+    window.editBlogRecord = (blogId) => {
+        const blog = cachedBlogs.find(b => b.id === blogId);
+        if (!blog) {
+            if (window.KaghanUI) KaghanUI.showToast("Blog article not found.", "error");
+            return;
+        }
+
+        const idInput = document.getElementById('blog-id');
+        if (idInput) idInput.value = blog.id;
+
+        document.getElementById('blog-title').value = blog.title || '';
+        document.getElementById('blog-cat').value = blog.category || 'Travel Guide';
+        document.getElementById('blog-author').value = blog.author || 'Resort Manager';
+        document.getElementById('blog-img').value = blog.imageUrl || '';
+        document.getElementById('blog-excerpt').value = blog.excerpt || '';
+
+        document.getElementById('blog-seo-title').value = blog.seoTitle || '';
+        document.getElementById('blog-seo-desc').value = blog.seoDescription || '';
+        document.getElementById('blog-seo-keywords').value = blog.seoKeywords || '';
+        document.getElementById('blog-seo-slug').value = blog.slug || '';
+        document.getElementById('blog-seo-index').value = blog.seoIndex || 'index, follow';
+
+        if (typeof tinymce !== 'undefined' && tinymce.get('blog-content')) {
+            tinymce.get('blog-content').setContent(blog.content || '');
+        } else {
+            document.getElementById('blog-content').value = blog.content || '';
+        }
+
+        const submitBtnText = document.getElementById('blog-btn-text');
+        const submitBtnIcon = document.getElementById('blog-btn-icon');
+        const cancelBtn = document.getElementById('blog-cancel-edit-btn');
+
+        if (submitBtnText) submitBtnText.textContent = 'Update Journal Article';
+        if (submitBtnIcon) submitBtnIcon.className = 'fa-solid fa-floppy-disk text-xs';
+        if (cancelBtn) cancelBtn.classList.remove('hidden');
+
+        const form = document.getElementById('blog-form');
+        if (form) {
+            form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        if (window.KaghanUI) KaghanUI.showToast(`Editing article: "${blog.title}"`, 'info');
+    };
+
+    window.cancelBlogEdit = () => {
+        const idInput = document.getElementById('blog-id');
+        if (idInput) idInput.value = '';
+
+        const form = document.getElementById('blog-form');
+        if (form) form.reset();
+
+        if (typeof tinymce !== 'undefined' && tinymce.get('blog-content')) {
+            tinymce.get('blog-content').setContent('');
+        }
+        document.getElementById('blog-author').value = "Resort Manager";
+
+        const submitBtnText = document.getElementById('blog-btn-text');
+        const submitBtnIcon = document.getElementById('blog-btn-icon');
+        const cancelBtn = document.getElementById('blog-cancel-edit-btn');
+
+        if (submitBtnText) submitBtnText.textContent = 'Publish Journal Article';
+        if (submitBtnIcon) submitBtnIcon.className = 'fa-solid fa-plus text-xs';
+        if (cancelBtn) cancelBtn.classList.add('hidden');
+    };
 
     window.deleteBlogRecord = async (blogId) => {
         if (!confirm(`Are you sure you want to permanently delete this blog post?`)) return;
@@ -76,6 +173,9 @@
         const success = await KaghanDB.deleteBlog(blogId);
         if (success) {
             KaghanUI.showToast("Blog article deleted successfully.", "success");
+            if (document.getElementById('blog-id')?.value === blogId) {
+                window.cancelBlogEdit();
+            }
             if (window.AdminBlogsModule) {
                 await window.AdminBlogsModule.render();
             }
@@ -194,6 +294,7 @@
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
+            const existingId = document.getElementById('blog-id')?.value.trim();
             const title = document.getElementById('blog-title').value.trim();
             const category = document.getElementById('blog-cat').value;
             const author = document.getElementById('blog-author').value.trim();
@@ -220,7 +321,7 @@
             }
 
             try {
-                const res = await KaghanDB.addBlog({
+                const blogPayload = {
                     title,
                     category,
                     author,
@@ -233,22 +334,27 @@
                     slug,
                     seoIndex,
                     portal: 'stay'
-                });
+                };
 
-                if (res.success) {
-                    KaghanUI.showToast(`Blog article "${title}" published!`, 'success');
-                    form.reset();
-                    if (typeof tinymce !== 'undefined' && tinymce.get('blog-content')) {
-                        tinymce.get('blog-content').setContent('');
-                    }
-                    document.getElementById('blog-author').value = "Resort Manager";
+                let res;
+                if (existingId) {
+                    blogPayload.id = existingId;
+                    res = await KaghanDB.updateBlog(blogPayload);
+                } else {
+                    res = await KaghanDB.addBlog(blogPayload);
+                }
+
+                if (res && res.success) {
+                    const actionMsg = existingId ? 'updated' : 'published';
+                    KaghanUI.showToast(`Blog article "${title}" ${actionMsg}!`, 'success');
+                    window.cancelBlogEdit();
                     if (window.AdminBlogsModule) {
                         await window.AdminBlogsModule.render();
                     }
                 }
             } catch (err) {
                 console.error("Failed to submit blog:", err);
-                KaghanUI.showToast("Failed to publish blog article.", "error");
+                KaghanUI.showToast("Failed to save blog article.", "error");
             }
         });
     }

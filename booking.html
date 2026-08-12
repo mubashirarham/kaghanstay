@@ -73,6 +73,7 @@
         <div class="hidden md:flex gap-8 items-center font-medium">
             <a href="index.html" class="hover:text-[#C5A059] transition-colors">Home</a>
             <a href="rooms.html" class="hover:text-[#C5A059] transition-colors">Rooms</a>
+            <a href="blog.html" class="hover:text-[#C5A059] transition-colors">Blog</a>
             <a href="track.html" class="hover:text-[#C5A059] transition-colors">Track Stay</a>
             <a href="booking.html" aria-current="page" class="text-[#C5A059] font-bold border-b-2 border-[#C5A059] pb-0.5">Book Now</a>
             <div id="auth-links" class="flex gap-4 items-center">
@@ -93,6 +94,7 @@
         </button>
         <a href="index.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Home</a>
         <a href="rooms.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Rooms</a>
+        <a href="blog.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Blog</a>
         <a href="track.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Track Stay</a>
         <div id="auth-links-mobile" class="flex flex-col gap-4 w-64 text-center">
             <a href="login.html" class="border border-[#C5A059] text-white py-3 rounded-full hover:bg-[#C5A059] transition-all text-base" onclick="toggleDrawer()">Login</a>
@@ -810,6 +812,13 @@
 
             document.body.appendChild(lightbox);
             setTimeout(() => lightbox.classList.remove('opacity-0'), 10);
+
+            if (window.KaghanUI && window.KaghanUI.enableTouchSwipe) {
+                KaghanUI.enableTouchSwipe(lightbox, {
+                    onSwipeLeft: () => window.changeLightboxImage(1),
+                    onSwipeRight: () => window.changeLightboxImage(-1)
+                });
+            }
 
             window.lightboxKeydownHandler = (e) => {
                 if (e.key === 'ArrowRight') changeLightboxImage(1, e);

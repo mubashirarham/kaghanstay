@@ -1,5 +1,8 @@
 // Kaghan Hotel - Admin Bookings Manager Module
 (function() {
+    let adminBookingsPage = 1;
+    const adminBookingsPerPage = 8;
+
     async function renderBookings() {
         const bookings = await KaghanDB.getBookings();
         const rooms = await KaghanDB.getRooms();
@@ -30,11 +33,20 @@
         if (filtered.length === 0) {
             tbody.innerHTML = '';
             if (emptyState) emptyState.classList.remove('hidden');
+            const pagContainer = document.getElementById('admin-bookings-pagination');
+            if (pagContainer) pagContainer.classList.add('hidden');
             return;
         }
 
         if (emptyState) emptyState.classList.add('hidden');
-        tbody.innerHTML = filtered.map(booking => {
+
+        const totalPages = Math.ceil(filtered.length / adminBookingsPerPage);
+        if (adminBookingsPage > totalPages) adminBookingsPage = 1;
+
+        const startIndex = (adminBookingsPage - 1) * adminBookingsPerPage;
+        const paginated = filtered.slice(startIndex, startIndex + adminBookingsPerPage);
+
+        tbody.innerHTML = paginated.map(booking => {
             const room = rooms.find(r => r.id === booking.roomId) || { name: 'Unknown Suite' };
             
             const badge = KaghanUI.getStatusBadge(booking.status);
@@ -80,10 +92,25 @@
                 </tr>
             `;
         }).join('');
+
+        if (window.KaghanUI && window.KaghanUI.renderPaginationControls) {
+            KaghanUI.renderPaginationControls({
+                container: 'admin-bookings-pagination',
+                currentPage: adminBookingsPage,
+                totalPages: totalPages,
+                totalItems: filtered.length,
+                itemsPerPage: adminBookingsPerPage,
+                onPageChange: (p) => {
+                    adminBookingsPage = p;
+                    renderBookings();
+                }
+            });
+        }
     }
 
     // Quick filter pills state sync and style update
     window.setBookingFilterStatus = (status) => {
+        adminBookingsPage = 1;
         const select = document.getElementById('booking-filter-status');
         if (select) {
             select.value = status;

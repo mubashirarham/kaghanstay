@@ -1522,6 +1522,11 @@ const db = {
         return { success: true, id };
     },
 
+    updateBlog: async (blog) => {
+        const res = await callAdminAction('updateBlog', { blog });
+        return { success: true, res };
+    },
+
     deleteBlog: async (id) => {
         return await callAdminAction('deleteBlog', { id });
     },
@@ -1606,6 +1611,128 @@ const UI = {
             cancelled: { label: 'Cancelled', classes: 'text-rose-600 border-rose-200 bg-rose-50/20' }
         };
         return map[status] || { label: status || 'Unknown', classes: 'text-slate-600 border-slate-200 bg-slate-50/20' };
+    },
+    renderPaginationControls: (config) => {
+        let container = typeof config.container === 'string' ? document.getElementById(config.container) : config.container;
+        if (!container) return;
+
+        const currentPage = config.currentPage || 1;
+        const totalPages = config.totalPages || 1;
+        const totalItems = config.totalItems;
+        const itemsPerPage = config.itemsPerPage;
+
+        if (totalPages <= 1) {
+            container.innerHTML = '';
+            container.classList.add('hidden');
+            return;
+        }
+
+        container.classList.remove('hidden');
+
+        const pages = [];
+        const delta = 1;
+        for (let i = 1; i <= totalPages; i++) {
+            if (i === 1 || i === totalPages || (i >= currentPage - delta && i <= currentPage + delta)) {
+                pages.push(i);
+            } else if (pages[pages.length - 1] !== '...') {
+                pages.push('...');
+            }
+        }
+
+        let itemsInfoHtml = '';
+        if (totalItems && itemsPerPage) {
+            const startItem = (currentPage - 1) * itemsPerPage + 1;
+            const endItem = Math.min(currentPage * itemsPerPage, totalItems);
+            itemsInfoHtml = `<span class="text-xs text-slate-500 font-medium">Showing <strong class="text-slate-900 font-bold">${startItem}-${endItem}</strong> of <strong class="text-slate-900 font-bold">${totalItems}</strong></span>`;
+        }
+
+        const prevDisabled = currentPage === 1;
+        const nextDisabled = currentPage === totalPages;
+
+        const prevBtnHtml = `
+            <button type="button" data-page="${currentPage - 1}" ${prevDisabled ? 'disabled' : ''} class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all border flex items-center gap-1.5 ${prevDisabled ? 'border-slate-100 text-slate-300 cursor-not-allowed bg-slate-50' : 'border-slate-200 text-slate-700 hover:border-[#D4AF37] hover:text-[#D4AF37] bg-white shadow-sm hover:shadow-md'}">
+                <i class="fa-solid fa-chevron-left text-[10px]"></i>
+                <span class="hidden sm:inline">Prev</span>
+            </button>
+        `;
+
+        const nextBtnHtml = `
+            <button type="button" data-page="${currentPage + 1}" ${nextDisabled ? 'disabled' : ''} class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all border flex items-center gap-1.5 ${nextDisabled ? 'border-slate-100 text-slate-300 cursor-not-allowed bg-slate-50' : 'border-slate-200 text-slate-700 hover:border-[#D4AF37] hover:text-[#D4AF37] bg-white shadow-sm hover:shadow-md'}">
+                <span class="hidden sm:inline">Next</span>
+                <i class="fa-solid fa-chevron-right text-[10px]"></i>
+            </button>
+        `;
+
+        const pageBtnsHtml = pages.map(p => {
+            if (p === '...') {
+                return `<span class="w-9 h-9 flex items-center justify-center text-slate-400 font-bold text-xs">...</span>`;
+            }
+            const isActive = p === currentPage;
+            return `
+                <button type="button" data-page="${p}" class="w-9 h-9 rounded-xl flex items-center justify-center text-xs font-extrabold transition-all border ${isActive ? 'border-[#D4AF37] bg-[#D4AF37] text-white shadow-md shadow-[#D4AF37]/30 scale-105' : 'border-slate-200 text-slate-700 hover:border-[#D4AF37] hover:text-[#D4AF37] bg-white shadow-sm'}">
+                    ${p}
+                </button>
+            `;
+        }).join('');
+
+        container.innerHTML = `
+            <div class="w-full flex flex-col sm:flex-row items-center justify-between gap-4 py-4 px-2">
+                <div>${itemsInfoHtml}</div>
+                <div class="flex items-center gap-1.5">
+                    ${prevBtnHtml}
+                    <div class="flex items-center gap-1">
+                        ${pageBtnsHtml}
+                    </div>
+                    ${nextBtnHtml}
+                </div>
+            </div>
+        `;
+
+        container.querySelectorAll('button[data-page]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const p = parseInt(btn.getAttribute('data-page'), 10);
+                if (!isNaN(p) && p >= 1 && p <= totalPages && p !== currentPage && typeof config.onPageChange === 'function') {
+                    config.onPageChange(p);
+                }
+            });
+        });
+    },
+    enableTouchSwipe: (element, callbacks = {}) => {
+        let el = typeof element === 'string' ? document.getElementById(element) : element;
+        if (!el) return;
+
+        let startX = 0;
+        let startY = 0;
+        let distX = 0;
+        let distY = 0;
+        const threshold = 35; // minimum horizontal swipe distance in px
+
+        el.addEventListener('touchstart', (e) => {
+            if (e.touches && e.touches.length === 1) {
+                startX = e.touches[0].clientX;
+                startY = e.touches[0].clientY;
+                distX = 0;
+                distY = 0;
+            }
+        }, { passive: true });
+
+        el.addEventListener('touchmove', (e) => {
+            if (e.touches && e.touches.length === 1) {
+                distX = e.touches[0].clientX - startX;
+                distY = e.touches[0].clientY - startY;
+            }
+        }, { passive: true });
+
+        el.addEventListener('touchend', () => {
+            if (Math.abs(distX) >= threshold && Math.abs(distX) > Math.abs(distY)) {
+                if (distX < 0 && typeof callbacks.onSwipeLeft === 'function') {
+                    callbacks.onSwipeLeft();
+                } else if (distX > 0 && typeof callbacks.onSwipeRight === 'function') {
+                    callbacks.onSwipeRight();
+                }
+            }
+        }, { passive: true });
     }
 };
 
@@ -1985,14 +2112,31 @@ window.renderNavbar = () => {
 };
 
 window.renderMobileTabBar = () => {
-    if (window.location.pathname.includes('/admin/')) return;
-    if (window.location.pathname.includes('/user/')) return;
-    if (window.location.pathname.includes('room-details.html')) return;
-    if (document.getElementById('kph-mobile-tab-bar') || document.querySelector('.app-bottom-dock') || document.querySelector('.guest-app-dock')) return;
+    const isUserPanel = window.location.pathname.includes('/user/');
+    const user = (typeof KaghanDB !== 'undefined' && KaghanDB.getCurrentUser) ? KaghanDB.getCurrentUser() : null;
+    const existingBar = document.getElementById('kph-mobile-tab-bar');
+    const existingDock = document.querySelector('.app-bottom-dock');
 
-    const user = KaghanDB.getCurrentUser();
-    const isDashboard = window.location.pathname.includes('/user/');
-    const pathPrefix = isDashboard ? '../' : '';
+    // Rule: User panel lower bar must ONLY appear when user is logged in AND ONLY in the user panel
+    if (!isUserPanel || !user) {
+        if (existingBar) {
+            existingBar.remove();
+        }
+        if (existingDock) {
+            existingDock.style.display = 'none';
+        }
+        document.body.classList.remove('has-mobile-tab-bar');
+        return;
+    }
+
+    // Inside user panel and user IS logged in:
+    if (existingDock) {
+        existingDock.style.display = '';
+        return;
+    }
+
+    if (existingBar) return;
+
     const currentPath = window.location.pathname;
     const searchParams = new URLSearchParams(window.location.search);
     const tabParam = searchParams.get('tab');
@@ -2002,35 +2146,30 @@ window.renderMobileTabBar = () => {
     tabBar.className = 'mobile-tab-bar';
     tabBar.setAttribute('aria-label', 'Mobile Bottom Navigation');
 
-    const exploreActive = (!tabParam && (currentPath.includes('index.html') || currentPath.includes('rooms.html') || currentPath.endsWith('/'))) ? 'active' : '';
+    const overviewActive = (!tabParam || tabParam === 'overview') ? 'active' : '';
     const wishlistActive = tabParam === 'wishlists' ? 'active' : '';
     const tripsActive = tabParam === 'trips' ? 'active' : '';
     const notifActive = tabParam === 'notifications' ? 'active' : '';
     const accountActive = tabParam === 'account' ? 'active' : '';
 
-    const wishlistUrl = user ? `${pathPrefix}user/index.html?tab=wishlists` : `${pathPrefix}login.html`;
-    const tripsUrl = user ? `${pathPrefix}user/index.html?tab=trips` : `${pathPrefix}track.html`;
-    const notifUrl = user ? `${pathPrefix}user/index.html?tab=notifications` : `${pathPrefix}login.html`;
-    const accountUrl = user ? `${pathPrefix}user/index.html?tab=account` : `${pathPrefix}login.html`;
-
     tabBar.innerHTML = `
-        <a href="${pathPrefix}index.html" class="mobile-tab-item ${exploreActive}">
-            <i class="fa-solid fa-compass"></i>
-            <span>Explore</span>
+        <a href="index.html" class="mobile-tab-item ${overviewActive}">
+            <i class="fa-solid fa-hotel"></i>
+            <span>Overview</span>
         </a>
-        <a href="${wishlistUrl}" class="mobile-tab-item ${wishlistActive}">
+        <a href="index.html?tab=wishlists" class="mobile-tab-item ${wishlistActive}">
             <i class="fa-solid fa-heart"></i>
             <span>Wishlists</span>
         </a>
-        <a href="${tripsUrl}" class="mobile-tab-item ${tripsActive}">
+        <a href="index.html?tab=trips" class="mobile-tab-item ${tripsActive}">
             <i class="fa-solid fa-suitcase"></i>
             <span>Trips</span>
         </a>
-        <a href="${notifUrl}" class="mobile-tab-item ${notifActive}">
+        <a href="index.html?tab=notifications" class="mobile-tab-item ${notifActive}">
             <i class="fa-solid fa-bell"></i>
             <span>Alerts</span>
         </a>
-        <a href="${accountUrl}" class="mobile-tab-item ${accountActive}">
+        <a href="index.html?tab=account" class="mobile-tab-item ${accountActive}">
             <i class="fa-solid fa-user"></i>
             <span>Account</span>
         </a>

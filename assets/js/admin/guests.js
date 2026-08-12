@@ -18,6 +18,8 @@
 
     let cachedUsers = [];
     let selectedUserIds = new Set();
+    let guestsCurrentPage = 1;
+    const guestsItemsPerPage = 8;
 
     function updateMetricsAndBulkToolbar(filteredUsers = []) {
         const total = cachedUsers.length;
@@ -93,12 +95,20 @@
         if (filtered.length === 0) {
             tbody.innerHTML = '';
             if (emptyState) emptyState.classList.remove('hidden');
+            const pagContainer = document.getElementById('admin-guests-pagination');
+            if (pagContainer) pagContainer.classList.add('hidden');
             return;
         }
 
         if (emptyState) emptyState.classList.add('hidden');
 
-        tbody.innerHTML = filtered.map(guest => {
+        const totalPages = Math.ceil(filtered.length / guestsItemsPerPage);
+        if (guestsCurrentPage > totalPages) guestsCurrentPage = 1;
+
+        const startIndex = (guestsCurrentPage - 1) * guestsItemsPerPage;
+        const paginated = filtered.slice(startIndex, startIndex + guestsItemsPerPage);
+
+        tbody.innerHTML = paginated.map(guest => {
             const uid = guest.id || guest.uid;
             const isSelected = selectedUserIds.has(uid);
             let roleBadge = '';
@@ -151,6 +161,20 @@
                 </tr>
             `;
         }).join('');
+
+        if (window.KaghanUI && window.KaghanUI.renderPaginationControls) {
+            KaghanUI.renderPaginationControls({
+                container: 'admin-guests-pagination',
+                currentPage: guestsCurrentPage,
+                totalPages: totalPages,
+                totalItems: filtered.length,
+                itemsPerPage: guestsItemsPerPage,
+                onPageChange: (p) => {
+                    guestsCurrentPage = p;
+                    renderGuests(document.getElementById('guest-search-input')?.value || '');
+                }
+            });
+        }
     }
 
     function toggleSelectAll(masterCb) {

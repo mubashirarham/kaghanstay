@@ -149,6 +149,9 @@
             }
         }
 
+    let previousBookingsPage = 1;
+    const previousBookingsPerPage = 5;
+
         // Render Previous/History Table
         const previousTbody = document.getElementById('previous-bookings-tbody');
         const previousEmpty = document.getElementById('previous-bookings-empty-state');
@@ -156,9 +159,30 @@
             if (previousBookings.length === 0) {
                 previousTbody.innerHTML = '';
                 if (previousEmpty) previousEmpty.classList.remove('hidden');
+                const pagContainer = document.getElementById('user-previous-bookings-pagination');
+                if (pagContainer) pagContainer.classList.add('hidden');
             } else {
                 if (previousEmpty) previousEmpty.classList.add('hidden');
-                previousTbody.innerHTML = previousBookings.map(renderBookingRow).join('');
+                const totalPages = Math.ceil(previousBookings.length / previousBookingsPerPage);
+                if (previousBookingsPage > totalPages) previousBookingsPage = 1;
+
+                const startIndex = (previousBookingsPage - 1) * previousBookingsPerPage;
+                const paginated = previousBookings.slice(startIndex, startIndex + previousBookingsPerPage);
+                previousTbody.innerHTML = paginated.map(renderBookingRow).join('');
+
+                if (window.KaghanUI && window.KaghanUI.renderPaginationControls) {
+                    KaghanUI.renderPaginationControls({
+                        container: 'user-previous-bookings-pagination',
+                        currentPage: previousBookingsPage,
+                        totalPages: totalPages,
+                        totalItems: previousBookings.length,
+                        itemsPerPage: previousBookingsPerPage,
+                        onPageChange: (p) => {
+                            previousBookingsPage = p;
+                            renderUserBookings();
+                        }
+                    });
+                }
             }
         }
     }

@@ -176,26 +176,10 @@
 
             <!-- Blog Grid -->
             <div id="blog-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Skeleton cards -->
-                <div class="bg-white rounded-[2.5rem] border border-slate-100 p-8 shadow-sm flex flex-col justify-between h-[400px]">
-                    <div class="skeleton h-48 w-full rounded-2xl mb-6 animate-pulse"></div>
-                    <div class="skeleton h-6 w-3/4 rounded mb-3 animate-pulse"></div>
-                    <div class="skeleton h-4 w-1/2 rounded mb-6 animate-pulse"></div>
-                    <div class="skeleton h-4 w-full rounded mb-3 animate-pulse"></div>
-                </div>
-                <div class="bg-white rounded-[2.5rem] border border-slate-100 p-8 shadow-sm flex flex-col justify-between h-[400px]">
-                    <div class="skeleton h-48 w-full rounded-2xl mb-6 animate-pulse"></div>
-                    <div class="skeleton h-6 w-3/4 rounded mb-3 animate-pulse"></div>
-                    <div class="skeleton h-4 w-1/2 rounded mb-6 animate-pulse"></div>
-                    <div class="skeleton h-4 w-full rounded mb-3 animate-pulse"></div>
-                </div>
-                <div class="bg-white rounded-[2.5rem] border border-slate-100 p-8 shadow-sm flex flex-col justify-between h-[400px]">
-                    <div class="skeleton h-48 w-full rounded-2xl mb-6 animate-pulse"></div>
-                    <div class="skeleton h-6 w-3/4 rounded mb-3 animate-pulse"></div>
-                    <div class="skeleton h-4 w-1/2 rounded mb-6 animate-pulse"></div>
-                    <div class="skeleton h-4 w-full rounded mb-3 animate-pulse"></div>
-                </div>
+                <!-- Dynamic cards -->
             </div>
+            <!-- Pagination Controls -->
+            <div id="blog-pagination" class="mt-12 hidden"></div>
         </div>
 
         <!-- View 2: Full Article Reader (Hidden by default) -->
@@ -259,14 +243,14 @@
         let allBlogs = [];
         let filteredBlogs = [];
         let activeCategory = 'all';
+        let blogCurrentPage = 1;
+        const blogItemsPerPage = 6;
 
         async function initBlog() {
             try {
                 const list = await KaghanDB.getBlogs();
-                // Filter blog posts to only show stay portal posts or all posts
                 allBlogs = list.filter(b => !b.portal || b.portal === 'stay');
                 
-                // Seed dynamic default blog posts if stay collection is empty
                 if (allBlogs.length === 0) {
                     await seedDefaultBlogs();
                     const listReload = await KaghanDB.getBlogs();
@@ -313,17 +297,25 @@
             }
         }
 
-        // Render articles list
+        // Render articles list with pagination
         function renderBlogs() {
             const grid = document.getElementById('blog-grid');
             filteredBlogs = allBlogs.filter(b => activeCategory === 'all' || b.category === activeCategory);
 
             if (filteredBlogs.length === 0) {
                 grid.innerHTML = `<div class="col-span-3 text-center text-slate-500 py-12">No resort updates published under this category yet.</div>`;
+                const pagContainer = document.getElementById('blog-pagination');
+                if (pagContainer) pagContainer.classList.add('hidden');
                 return;
             }
 
-            grid.innerHTML = filteredBlogs.map(b => {
+            const totalPages = Math.ceil(filteredBlogs.length / blogItemsPerPage);
+            if (blogCurrentPage > totalPages) blogCurrentPage = 1;
+
+            const startIndex = (blogCurrentPage - 1) * blogItemsPerPage;
+            const paginated = filteredBlogs.slice(startIndex, startIndex + blogItemsPerPage);
+
+            grid.innerHTML = paginated.map(b => {
                 const img = b.imageUrl || 'assets/images/logo.png';
                 const targetSlug = (b.slug && b.slug.trim()) ? b.slug.trim() : (b.title ? b.title.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^\w\-]+/g, '') : b.id);
                 const articleUrl = `blog-details.html?slug=${encodeURIComponent(targetSlug)}`;
@@ -353,15 +345,33 @@
                     </div>
                 `;
             }).join('');
+
+            if (window.KaghanUI && window.KaghanUI.renderPaginationControls) {
+                KaghanUI.renderPaginationControls({
+                    container: 'blog-pagination',
+                    currentPage: blogCurrentPage,
+                    totalPages: totalPages,
+                    totalItems: filteredBlogs.length,
+                    itemsPerPage: blogItemsPerPage,
+                    onPageChange: (newPage) => {
+                        blogCurrentPage = newPage;
+                        renderBlogs();
+                        const scrollTarget = document.getElementById('blog-grid-view') || document.getElementById('blog-grid');
+                        if (scrollTarget) scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            }
         }
 
         // Filter Category
         function filterCategory(cat) {
             activeCategory = cat;
+            blogCurrentPage = 1;
             document.querySelectorAll('main button[id^="cat-btn-"]').forEach(btn => {
-                btn.className = 'px-5 py-2.5 rounded-full text-xs font-bold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition-all whitespace-nowrap';
+                btn.className = 'px-5 py-2.5 rounded-full text-xs font-bold bg-white border border-slate-200 text-slate-700 hover:bg-[#F8FAFC] transition-all whitespace-nowrap';
             });
-            document.getElementById(`cat-btn-${cat}`).className = 'px-5 py-2.5 rounded-full text-xs font-bold bg-[#0F172A] text-white shadow-md transition-all whitespace-nowrap';
+            const activeBtn = document.getElementById(`cat-btn-${cat}`);
+            if (activeBtn) activeBtn.className = 'px-5 py-2.5 rounded-full text-xs font-bold bg-[#0F172A] text-white shadow-md transition-all whitespace-nowrap';
             renderBlogs();
         }
 
