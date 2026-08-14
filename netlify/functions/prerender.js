@@ -407,6 +407,59 @@ function prerenderBlogPost(html, post) {
     return modified;
 }
 
+// Pre-render the Blog Catalog Page
+function prerenderBlog(html, blogs) {
+    let modified = html;
+    const gridId = 'id="blog-grid"';
+    const stayBlogs = (blogs || []).filter(b => !b.portal || b.portal === 'stay');
+    
+    const cardsHtml = stayBlogs.map(b => {
+        const img = b.imageUrl || 'assets/images/logo.png';
+        const dateStr = b.createdAt ? new Date(b.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+        const link = b.slug ? `blog/${escapeHTML(b.slug)}` : `blog-details.html?id=${escapeHTML(b.id)}`;
+        
+        return `
+        <div class="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-md hover-lift flex flex-col justify-between group">
+            <div>
+                <div class="relative h-52 overflow-hidden">
+                    <img src="${escapeHTML(img)}" alt="${escapeHTML(b.title)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <span class="absolute top-4 left-4 bg-slate-900/80 backdrop-blur-md text-[#D4AF37] text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full border border-white/10">
+                        ${escapeHTML(b.category || 'Journal')}
+                    </span>
+                </div>
+                <div class="p-6">
+                    <div class="text-xs text-slate-400 font-semibold mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-calendar text-[#D4AF37] text-[10px]"></i>
+                        <span>${escapeHTML(dateStr)}</span>
+                    </div>
+                    <h3 class="text-lg font-bold outfit text-slate-900 mb-3 leading-snug group-hover:text-[#D4AF37] transition-colors">
+                        <a href="${link}">${escapeHTML(b.title)}</a>
+                    </h3>
+                    <p class="text-slate-500 text-xs line-clamp-3 leading-relaxed font-light mb-4">
+                        ${escapeHTML(b.excerpt || '')}
+                    </p>
+                </div>
+            </div>
+            <div class="p-6 pt-0">
+                <a href="${link}" class="text-slate-900 hover:text-[#D4AF37] text-xs font-bold uppercase tracking-wider flex items-center gap-1">
+                    Read Article <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                </a>
+            </div>
+        </div>
+        `;
+    }).join('\n');
+
+    const gridIndex = modified.indexOf(gridId);
+    if (gridIndex !== -1) {
+        const closeTagIndex = modified.indexOf('>', gridIndex);
+        if (closeTagIndex !== -1) {
+            modified = modified.slice(0, closeTagIndex + 1) + cardsHtml + modified.slice(closeTagIndex + 1);
+        }
+    }
+    
+    return modified;
+}
+
 exports.handler = async (event, context) => {
     const rawPage = (event.queryStringParameters && event.queryStringParameters.page) || '/';
     console.log(`[SEO Prerenderer] Generating static rendering for path: ${rawPage}`);
@@ -451,13 +504,15 @@ exports.handler = async (event, context) => {
     }
 
     try {
-        const templatePath = path.join(process.cwd(), templateFile);
+        let templatePath = path.join(process.cwd(), templateFile);
         if (!fs.existsSync(templatePath)) {
-            return {
-                statusCode: 404,
-                headers: { 'Content-Type': 'text/html; charset=utf-8' },
-                body: "Template not found"
-            };
+            templatePath = path.join(__dirname, '../../', templateFile);
+        }
+        if (!fs.existsSync(templatePath)) {
+            templatePath = path.join(__dirname, templateFile);
+        }
+        if (!fs.existsSync(templatePath)) {
+            templatePath = path.join(process.cwd(), 'index.html');
         }
 
         let html = fs.readFileSync(templatePath, 'utf8');

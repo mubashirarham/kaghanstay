@@ -61,10 +61,11 @@ async function getAccessToken(keyPath) {
     return data.access_token;
 }
 
-// Format canonical URL with www. prefix
+// Format canonical URL to non-www clean URLs
 function formatCanonicalUrl(urlStr) {
     if (!urlStr) return urlStr;
-    return urlStr.replace('https://kphstay.com', 'https://www.kphstay.com');
+    let u = urlStr.replace('https://www.kphstay.com', 'https://kphstay.com');
+    return u;
 }
 
 async function fetchListingsFromFirestore() {
@@ -81,10 +82,11 @@ async function fetchListingsFromFirestore() {
                     const fields = doc.fields || {};
                     const slug = fields.slug ? fields.slug.stringValue : null;
                     
-                    listingUrls.push(`https://www.kphstay.com/room-details.html?id=${id}`);
-                    if (slug && slug !== id) {
-                        listingUrls.push(`https://www.kphstay.com/room/${slug}`);
+                    if (slug) {
+                        listingUrls.push(`https://kphstay.com/room/${slug}`);
+                        listingUrls.push(`https://kphstay.com/room-details?slug=${slug}`);
                     }
+                    listingUrls.push(`https://kphstay.com/room-details?id=${id}`);
                 });
             }
         }
@@ -103,9 +105,8 @@ async function fetchListingsFromFirestore() {
                     const fields = doc.fields || {};
                     const slug = fields.slug ? fields.slug.stringValue : null;
 
-                    listingUrls.push(`https://www.kphstay.com/blog-details.html?id=${id}`);
-                    if (slug && slug !== id) {
-                        listingUrls.push(`https://www.kphstay.com/blog/${slug}`);
+                    if (slug) {
+                        listingUrls.push(`https://kphstay.com/blog/${slug}`);
                     }
                 });
             }
@@ -147,16 +148,16 @@ async function main() {
     const isListingsOnly = cliArgs.includes('--listings');
 
     const baseUrls = [
-        'https://www.kphstay.com/',
-        'https://www.kphstay.com/rooms.html',
-        'https://www.kphstay.com/blog.html',
-        'https://www.kphstay.com/contact.html',
-        'https://www.kphstay.com/booking.html',
-        'https://www.kphstay.com/login.html',
-        'https://www.kphstay.com/privacy.html',
-        'https://www.kphstay.com/terms.html',
-        'https://www.kphstay.com/refund.html',
-        'https://www.kphstay.com/pricing.html'
+        'https://kphstay.com/',
+        'https://kphstay.com/rooms',
+        'https://kphstay.com/blog',
+        'https://kphstay.com/contact',
+        'https://kphstay.com/booking',
+        'https://kphstay.com/privacy',
+        'https://kphstay.com/terms',
+        'https://kphstay.com/refund',
+        'https://kphstay.com/pricing',
+        'https://kphstay.com/cookies'
     ];
 
     if (isListingsOnly) {
