@@ -198,6 +198,10 @@
                     <i class="fa-solid fa-tags w-5 text-sm"></i> Coupons
                 </button>
 
+                <button onclick="switchTab('announcement')" id="tab-btn-announcement" class="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white hover:bg-slate-800/20 text-left">
+                    <i class="fa-solid fa-bullhorn w-5 text-sm text-[#D4AF37]"></i> Announcement Bar
+                </button>
+
                 <button onclick="switchTab('seo')" id="tab-btn-seo" class="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all text-slate-400 hover:text-white hover:bg-slate-800/20 text-left">
                     <i class="fa-solid fa-chart-line w-5 text-sm text-[#D4AF37]"></i> SEO & PageSpeed
                 </button>
@@ -1154,6 +1158,25 @@
                     <p class="text-slate-400 text-xs font-light">Manage room categories, locations, and other global options.</p>
                 </div>
 
+                <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white rounded-3xl p-6 shadow-md border border-slate-700/60 mb-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-[#D4AF37]/20 text-[#D4AF37] flex items-center justify-center text-xl shrink-0 border border-[#D4AF37]/30">
+                            <i class="fa-solid fa-bullhorn"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-base font-bold outfit text-white flex items-center gap-2">
+                                Dynamic Sitewide Announcement Bar
+                                <span class="text-[9px] bg-emerald-500/20 text-emerald-300 font-bold px-2 py-0.5 rounded-full border border-emerald-500/30">Live Sync</span>
+                            </h3>
+                            <p class="text-xs text-slate-300 font-light mt-0.5">Configure rotating message feeds, luxury color themes, custom typography, emojis, icons, and CTA links.</p>
+                        </div>
+                    </div>
+                    <button onclick="switchTab('announcement')" class="bg-gradient-to-r from-[#D4AF37] to-amber-500 hover:from-amber-500 hover:to-amber-600 text-slate-950 font-extrabold px-5 py-2.5 rounded-xl text-xs transition-all shadow-md flex items-center gap-2 shrink-0">
+                        <span>Open Announcement Studio</span>
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </button>
+                </div>
+
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     <!-- Categories -->
                     <div class="bg-white rounded-3xl border border-slate-100 p-6 shadow-md">
@@ -1192,6 +1215,292 @@
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="admin-upgrades-list">
                         <!-- Loaded dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================ -->
+            <!-- VIEW: ANNOUNCEMENT BAR CONTROL CENTER -->
+            <!-- ============================================================ -->
+            <div id="view-announcement" class="tab-view hidden space-y-8" id="admin-announcement-view-container">
+                <!-- Header -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <span class="text-[#D4AF37] text-xs font-bold uppercase tracking-wider">Public Website Broadcast</span>
+                        <h1 class="text-2xl font-extrabold outfit text-slate-900 mt-0.5">Dynamic Announcement Bar Studio</h1>
+                        <p class="text-slate-400 text-xs font-light">Design and manage real-time sitewide notifications, rotating deal tickers, luxury colors, fonts, and emojis.</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button type="button" id="save-announcement-btn" onclick="AdminAnnouncementModule.saveAnnouncementSettings()" class="bg-gradient-to-r from-[#D4AF37] to-amber-500 hover:from-amber-500 hover:to-amber-600 text-slate-950 font-black px-6 py-3 rounded-2xl text-xs uppercase tracking-wider transition-all shadow-lg flex items-center gap-2">
+                            <i class="fa-solid fa-floppy-disk text-sm"></i> Save & Publish Live
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 1. LIVE INTERACTIVE PREVIEW CARD -->
+                <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-eye text-[#D4AF37]"></i>
+                            <h3 class="text-sm font-bold uppercase tracking-wider text-slate-900">Live Visual Simulation (Real-Time Preview)</h3>
+                        </div>
+                        <span class="text-[10px] text-slate-400 font-semibold uppercase tracking-wider flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Instant Preview
+                        </span>
+                    </div>
+
+                    <!-- Simulated Browser Window Container -->
+                    <div class="rounded-2xl border border-slate-200 overflow-hidden shadow-inner bg-slate-900">
+                        <!-- Browser faux top header -->
+                        <div class="bg-slate-800/90 px-4 py-2 flex items-center justify-between text-[11px] text-slate-400 border-b border-slate-700">
+                            <div class="flex items-center gap-1.5">
+                                <span class="w-2.5 h-2.5 rounded-full bg-rose-500/80"></span>
+                                <span class="w-2.5 h-2.5 rounded-full bg-amber-500/80"></span>
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500/80"></span>
+                            </div>
+                            <div class="bg-slate-900 px-4 py-0.5 rounded-md text-[10px] font-mono text-slate-400 text-center max-w-xs truncate">
+                                https://kphstay.com (Top Banner)
+                            </div>
+                            <div class="w-8"></div>
+                        </div>
+
+                        <!-- Live Announcement Preview Bar -->
+                        <div id="announcement-live-preview-bar" class="px-4 py-2.5 flex items-center justify-between gap-2 min-h-[42px] transition-all duration-300">
+                            <div class="flex items-center justify-center flex-grow text-center min-w-0 overflow-hidden">
+                                <div id="announcement-preview-msg-wrap" class="transition-all duration-200">
+                                    <!-- Dynamic text and badge populated here -->
+                                </div>
+                            </div>
+                            <div class="flex items-center shrink-0" id="announcement-preview-indicators">
+                                <!-- Dots & arrows -->
+                            </div>
+                        </div>
+
+                        <!-- Mini Mock Navbar beneath -->
+                        <div class="bg-slate-950/80 backdrop-blur-md px-6 py-3 flex items-center justify-between border-b border-white/5 text-white text-xs">
+                            <div class="flex items-center gap-2">
+                                <img src="../assets/images/logo.png" alt="Logo" class="h-6 w-auto object-contain">
+                                <span class="font-bold outfit tracking-wider uppercase text-xs">KPH STAY</span>
+                            </div>
+                            <div class="hidden sm:flex gap-4 text-[11px] text-slate-300">
+                                <span class="text-[#D4AF37] font-semibold">Home</span>
+                                <span>Rooms</span>
+                                <span>Journal</span>
+                                <span>Track Stay</span>
+                            </div>
+                            <div class="px-3 py-1 rounded-full bg-[#D4AF37] text-slate-950 font-bold text-[10px]">
+                                Book Now
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. CORE CONTROLS & LUXURY PALETTE STUDIO -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <!-- Left: Master Switch & Visual Palettes (7 cols) -->
+                    <div class="lg:col-span-7 bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md space-y-6">
+                        <div class="border-b border-slate-100 pb-4">
+                            <h3 class="text-base font-bold outfit text-slate-900 flex items-center gap-2">
+                                <i class="fa-solid fa-palette text-[#D4AF37]"></i> Theme, Palette & Typography Studio
+                            </h3>
+                            <p class="text-xs text-slate-400">Choose from curated luxury presets or create custom color gradients and typography.</p>
+                        </div>
+
+                        <!-- Master Toggles -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-200/80">
+                                <div>
+                                    <label for="announcement-active-toggle" class="text-xs font-bold text-slate-800 cursor-pointer block">Active Sitewide</label>
+                                    <span class="text-[10px] text-slate-400">Display banner on website</span>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="announcement-active-toggle" onchange="AdminAnnouncementModule.onFieldChange('active', this.checked)" class="sr-only peer" checked>
+                                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+                                </label>
+                            </div>
+
+                            <div class="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-200/80">
+                                <div>
+                                    <label for="announcement-dismissible-toggle" class="text-xs font-bold text-slate-800 cursor-pointer block">Guest Dismissible</label>
+                                    <span class="text-[10px] text-slate-400">Allow visitors to close ('X')</span>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="announcement-dismissible-toggle" onchange="AdminAnnouncementModule.onFieldChange('dismissible', this.checked)" class="sr-only peer" checked>
+                                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#D4AF37]"></div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- One-Click Luxury Presets -->
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-2">Curated Luxury Color Schemes</label>
+                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                                <button type="button" onclick="AdminAnnouncementModule.applyPreset('royal-gold')" data-preset="royal-gold" class="announcement-preset-btn p-3 rounded-xl border border-slate-200 bg-[#0B0F19] text-white text-left hover:scale-[1.02] transition-all flex items-center justify-between">
+                                    <span class="text-xs font-bold text-[#D4AF37]">👑 Royal Gold</span>
+                                    <span class="w-3 h-3 rounded-full bg-[#D4AF37]"></span>
+                                </button>
+                                <button type="button" onclick="AdminAnnouncementModule.applyPreset('midnight-sapphire')" data-preset="midnight-sapphire" class="announcement-preset-btn p-3 rounded-xl border border-slate-200 bg-[#0F172A] text-white text-left hover:scale-[1.02] transition-all flex items-center justify-between">
+                                    <span class="text-xs font-bold text-[#38BDF8]">🌌 Sapphire</span>
+                                    <span class="w-3 h-3 rounded-full bg-[#38BDF8]"></span>
+                                </button>
+                                <button type="button" onclick="AdminAnnouncementModule.applyPreset('emerald-valley')" data-preset="emerald-valley" class="announcement-preset-btn p-3 rounded-xl border border-slate-200 bg-[#064E3B] text-white text-left hover:scale-[1.02] transition-all flex items-center justify-between">
+                                    <span class="text-xs font-bold text-[#34D399]">🌲 Emerald</span>
+                                    <span class="w-3 h-3 rounded-full bg-[#34D399]"></span>
+                                </button>
+                                <button type="button" onclick="AdminAnnouncementModule.applyPreset('crimson-sunset')" data-preset="crimson-sunset" class="announcement-preset-btn p-3 rounded-xl border border-slate-200 bg-[#450A0A] text-white text-left hover:scale-[1.02] transition-all flex items-center justify-between">
+                                    <span class="text-xs font-bold text-[#FDA4AF]">🌅 Crimson</span>
+                                    <span class="w-3 h-3 rounded-full bg-[#FDA4AF]"></span>
+                                </button>
+                                <button type="button" onclick="AdminAnnouncementModule.applyPreset('pure-obsidian')" data-preset="pure-obsidian" class="announcement-preset-btn p-3 rounded-xl border border-slate-200 bg-[#000000] text-white text-left hover:scale-[1.02] transition-all flex items-center justify-between">
+                                    <span class="text-xs font-bold text-slate-100">💎 Obsidian</span>
+                                    <span class="w-3 h-3 rounded-full bg-white"></span>
+                                </button>
+                                <button type="button" onclick="AdminAnnouncementModule.applyPreset('warm-amber')" data-preset="warm-amber" class="announcement-preset-btn p-3 rounded-xl border border-slate-200 bg-[#78350F] text-white text-left hover:scale-[1.02] transition-all flex items-center justify-between">
+                                    <span class="text-xs font-bold text-[#FDE68A]">☀️ Amber</span>
+                                    <span class="w-3 h-3 rounded-full bg-[#FDE68A]"></span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Custom Hex Color Pickers -->
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-2">Custom Color Palette</label>
+                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                <div>
+                                    <label class="block text-[10px] text-slate-400 font-semibold mb-1">Background</label>
+                                    <div class="flex items-center gap-2 border border-slate-200 rounded-xl p-1.5 bg-slate-50">
+                                        <input type="color" id="announcement-bg-color" oninput="AdminAnnouncementModule.onFieldChange('bgColor', this.value)" class="w-7 h-7 rounded-lg cursor-pointer border-0 p-0 bg-transparent">
+                                        <span class="text-[11px] font-mono text-slate-600 font-bold">Custom</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] text-slate-400 font-semibold mb-1">Text Color</label>
+                                    <div class="flex items-center gap-2 border border-slate-200 rounded-xl p-1.5 bg-slate-50">
+                                        <input type="color" id="announcement-text-color" oninput="AdminAnnouncementModule.onFieldChange('textColor', this.value)" class="w-7 h-7 rounded-lg cursor-pointer border-0 p-0 bg-transparent">
+                                        <span class="text-[11px] font-mono text-slate-600 font-bold">Text</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] text-slate-400 font-semibold mb-1">Accent / CTA Color</label>
+                                    <div class="flex items-center gap-2 border border-slate-200 rounded-xl p-1.5 bg-slate-50">
+                                        <input type="color" id="announcement-accent-color" oninput="AdminAnnouncementModule.onFieldChange('accentColor', this.value)" class="w-7 h-7 rounded-lg cursor-pointer border-0 p-0 bg-transparent">
+                                        <span class="text-[11px] font-mono text-slate-600 font-bold">Accent</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] text-slate-400 font-semibold mb-1">Badge Background</label>
+                                    <div class="flex items-center gap-2 border border-slate-200 rounded-xl p-1.5 bg-slate-50">
+                                        <input type="color" id="announcement-badge-bg" oninput="AdminAnnouncementModule.onFieldChange('badgeBg', this.value)" class="w-7 h-7 rounded-lg cursor-pointer border-0 p-0 bg-transparent">
+                                        <span class="text-[11px] font-mono text-slate-600 font-bold">Badge Bg</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] text-slate-400 font-semibold mb-1">Badge Text Color</label>
+                                    <div class="flex items-center gap-2 border border-slate-200 rounded-xl p-1.5 bg-slate-50">
+                                        <input type="color" id="announcement-badge-text-color" oninput="AdminAnnouncementModule.onFieldChange('badgeTextColor', this.value)" class="w-7 h-7 rounded-lg cursor-pointer border-0 p-0 bg-transparent">
+                                        <span class="text-[11px] font-mono text-slate-600 font-bold">Badge Txt</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Typography & Layout -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-100">
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">Font Family</label>
+                                <select id="announcement-font-select" onchange="AdminAnnouncementModule.onFieldChange('fontFamily', this.value)" class="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                                    <option value="outfit">Outfit (Modern Luxury Sans)</option>
+                                    <option value="inter">Inter (Clean Contemporary)</option>
+                                    <option value="serif">Playfair Display (Editorial / Serif)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">Font Size</label>
+                                <select id="announcement-size-select" onchange="AdminAnnouncementModule.onFieldChange('fontSize', this.value)" class="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                                    <option value="11px">Compact (11px)</option>
+                                    <option value="12px">Standard (12px - Recommended)</option>
+                                    <option value="13px">Medium (13px)</option>
+                                    <option value="14px">Large (14px)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Highlight Badge & Auto-Rotation Behavior (5 cols) -->
+                    <div class="lg:col-span-5 bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md space-y-6">
+                        <div class="border-b border-slate-100 pb-4">
+                            <h3 class="text-base font-bold outfit text-slate-900 flex items-center gap-2">
+                                <i class="fa-solid fa-sliders text-[#D4AF37]"></i> Badge & Ticker Behavior
+                            </h3>
+                            <p class="text-xs text-slate-400">Configure global badge label and multi-message rotation speed.</p>
+                        </div>
+
+                        <!-- Global Highlight Badge -->
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">Global Highlight Badge Text</label>
+                            <input type="text" id="announcement-badge-text" oninput="AdminAnnouncementModule.onFieldChange('badgeText', this.value)" placeholder="e.g. ✨ SPECIAL OFFER, 🔥 LIMITED DEAL" class="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                            <div class="flex flex-wrap gap-1.5 mt-2">
+                                <button type="button" onclick="document.getElementById('announcement-badge-text').value='✨ SPECIAL OFFER'; AdminAnnouncementModule.onFieldChange('badgeText', '✨ SPECIAL OFFER');" class="text-[10px] px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition-colors">✨ SPECIAL OFFER</button>
+                                <button type="button" onclick="document.getElementById('announcement-badge-text').value='🔥 LIMITED DEAL'; AdminAnnouncementModule.onFieldChange('badgeText', '🔥 LIMITED DEAL');" class="text-[10px] px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition-colors">🔥 LIMITED DEAL</button>
+                                <button type="button" onclick="document.getElementById('announcement-badge-text').value='🏔️ NEW SUITES'; AdminAnnouncementModule.onFieldChange('badgeText', '🏔️ NEW SUITES');" class="text-[10px] px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition-colors">🏔️ NEW SUITES</button>
+                                <button type="button" onclick="document.getElementById('announcement-badge-text').value='📢 NOTICE'; AdminAnnouncementModule.onFieldChange('badgeText', '📢 NOTICE');" class="text-[10px] px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition-colors">📢 NOTICE</button>
+                            </div>
+                        </div>
+
+                        <!-- Auto-Rotation Speed Slider -->
+                        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <label class="text-xs font-bold text-slate-800">Auto-Rotation Timer</label>
+                                <span id="announcement-interval-val" class="text-xs font-black text-[#D4AF37] px-2.5 py-0.5 rounded-md bg-amber-50 border border-amber-200 font-mono">5s</span>
+                            </div>
+                            <input type="range" id="announcement-interval-input" min="2" max="12" step="1" value="5" oninput="AdminAnnouncementModule.onFieldChange('rotationInterval', this.value)" class="w-full accent-[#D4AF37] cursor-pointer">
+                            <p class="text-[10px] text-slate-400 leading-relaxed">
+                                Time duration in seconds before cycling to the next announcement message. Pauses automatically on guest mouse hover.
+                            </p>
+                        </div>
+
+                        <!-- Live Status Card -->
+                        <div class="p-4 rounded-2xl bg-gradient-to-br from-slate-900 to-[#0F172A] text-white border border-slate-800 space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] uppercase tracking-wider font-bold text-[#D4AF37]">Deployment Status</span>
+                                <span class="flex items-center gap-1.5 text-[10px] font-bold text-emerald-400">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> Real-Time Synchronized
+                                </span>
+                            </div>
+                            <p class="text-[11px] text-slate-300 leading-relaxed">
+                                Changes are saved securely to Firestore and broadcast instantly across all guest browser tabs without requiring a site rebuild.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. ROTATING ANNOUNCEMENT MESSAGES FEED -->
+                <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md space-y-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
+                        <div>
+                            <h3 class="text-base font-bold outfit text-slate-900 flex items-center gap-2">
+                                <i class="fa-solid fa-list-check text-[#D4AF37]"></i> Announcement Messages Feed (Rotating Ticker)
+                            </h3>
+                            <p class="text-xs text-slate-400">Add multiple promotional messages, custom emojis, FontAwesome icons, and call-to-action buttons.</p>
+                        </div>
+                        <button type="button" onclick="AdminAnnouncementModule.addMessage()" class="bg-slate-900 hover:bg-[#D4AF37] hover:text-slate-950 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-2 self-start sm:self-auto">
+                            <i class="fa-solid fa-plus text-xs"></i> Add Another Message
+                        </button>
+                    </div>
+
+                    <!-- Messages Container List -->
+                    <div id="announcement-messages-list" class="space-y-4">
+                        <!-- Rendered dynamically by AdminAnnouncementModule.renderMessageFeedList() -->
+                    </div>
+
+                    <!-- Bottom Action Bar -->
+                    <div class="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <span class="text-xs text-slate-400 font-medium">Remember to click 'Save & Publish Live' to push changes sitewide.</span>
+                        <div class="flex gap-3 w-full sm:w-auto">
+                            <button type="button" onclick="AdminAnnouncementModule.saveAnnouncementSettings()" class="w-full sm:w-auto bg-gradient-to-r from-[#D4AF37] to-amber-500 hover:from-amber-500 hover:to-amber-600 text-slate-950 font-black px-6 py-3 rounded-2xl text-xs uppercase tracking-wider transition-all shadow-lg flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-floppy-disk text-sm"></i> Save & Publish Live
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -2499,6 +2808,7 @@
     <script src="../assets/js/admin/blogs.js?v=10"></script>
     <script src="../assets/js/admin/dashboard.js?v=10"></script>
     <script src="../assets/js/admin/settings.js?v=10"></script>
+    <script src="../assets/js/admin/announcement.js?v=10"></script>
     <script src="../assets/js/admin/coupons.js?v=10"></script>
     <script src="../assets/js/admin/messaging.js?v=10"></script>
     <script src="../assets/js/admin/inquiries.js?v=10"></script>

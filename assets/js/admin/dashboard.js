@@ -61,10 +61,11 @@ const TAB_PERMISSIONS = {
     blogs: ['manage_rooms'],
     coupons: ['manage_discounts'],
     settings: ['manage_settings'],
+    announcement: ['manage_settings'],
     seo: ['manage_settings']
 };
 
-const ALL_TABS = ['overview', 'bookings', 'messages', 'inquiries', 'calendar', 'rooms', 'guests', 'newsletter', 'reviews', 'blogs', 'coupons', 'settings', 'seo'];
+const ALL_TABS = ['overview', 'bookings', 'messages', 'inquiries', 'calendar', 'rooms', 'guests', 'newsletter', 'reviews', 'blogs', 'coupons', 'announcement', 'settings', 'seo'];
 
 function getUserPermissions(user) {
     if (!user) return [];
@@ -255,6 +256,9 @@ async function refreshAll() {
         if (window.hasPermissionForTab(sessionUser, 'seo') && window.AdminSEOModule) {
             await window.AdminSEOModule.render();
         }
+        if (window.hasPermissionForTab(sessionUser, 'announcement') && window.AdminAnnouncementModule) {
+            await window.AdminAnnouncementModule.init();
+        }
         if (window.hasPermissionForTab(sessionUser, 'newsletter')) {
             await renderNewsletter();
         }
@@ -309,6 +313,9 @@ window.switchTab = (tabName) => {
 
     if (tabName === 'seo' && window.AdminSEOModule) {
         window.AdminSEOModule.render();
+    }
+    if (tabName === 'announcement' && window.AdminAnnouncementModule) {
+        window.AdminAnnouncementModule.render();
     }
     if (tabName === 'inquiries' && window.KaghanInquiries) {
         window.KaghanInquiries.loadInquiries();

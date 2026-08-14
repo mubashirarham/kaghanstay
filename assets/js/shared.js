@@ -45,7 +45,8 @@ window.KaghanDB_Cache = {
     categories: null,
     locations: null,
     coupons: null,
-    upgrades: null
+    upgrades: null,
+    announcement: null
 };
 
 // ⚡ SWR (Stale-While-Revalidate) Instant 0ms LocalStorage Warmup
@@ -64,6 +65,9 @@ try {
     
     const swrReviews = localStorage.getItem('kaghan_swr_reviews');
     if (swrReviews) window.KaghanDB_Cache.reviews = JSON.parse(swrReviews);
+
+    const swrAnnouncement = localStorage.getItem('kaghan_swr_announcement');
+    if (swrAnnouncement) window.KaghanDB_Cache.announcement = JSON.parse(swrAnnouncement);
 } catch (e) {
     console.warn("SWR cache load warning:", e);
 }
@@ -79,7 +83,8 @@ window.KaghanDB_Listeners = {
     categories: null,
     locations: null,
     coupons: null,
-    upgrades: null
+    upgrades: null,
+    announcement: null
 };
 
 function startActiveListeners() {
@@ -185,6 +190,25 @@ function startActiveListeners() {
         window.KaghanDB_Cache.upgrades = list;
         window.dispatchEvent(new CustomEvent('kaghan-db-upgrades', { detail: list }));
     }, err => console.warn("Upgrades listener error:", err));
+
+    // 3.5 Announcement Bar Listener (Public)
+    window.KaghanDB_Listeners.announcement = fdb.collection('settings').doc('announcement').onSnapshot(doc => {
+        if (doc.exists) {
+            const data = doc.data();
+            window.KaghanDB_Cache.announcement = data;
+            try { localStorage.setItem('kaghan_swr_announcement', JSON.stringify(data)); } catch(e) {}
+            window.dispatchEvent(new CustomEvent('kaghan-db-announcement', { detail: data }));
+            if (window.KaghanAnnouncement && window.KaghanAnnouncement.render) {
+                window.KaghanAnnouncement.render(data);
+            }
+        } else {
+            window.KaghanDB_Cache.announcement = null;
+            window.dispatchEvent(new CustomEvent('kaghan-db-announcement', { detail: null }));
+            if (window.KaghanAnnouncement && window.KaghanAnnouncement.hide) {
+                window.KaghanAnnouncement.hide();
+            }
+        }
+    }, err => console.warn("Announcement listener notice:", err));
 
     // 4. Authenticated User Listeners (Subscribed only when Firebase Auth is ready)
     firebase.auth().onAuthStateChanged(authUser => {
@@ -337,7 +361,8 @@ function stopActiveListeners() {
         categories: null,
         locations: null,
         coupons: null,
-        upgrades: null
+        upgrades: null,
+        announcement: null
     };
 }
 
@@ -567,6 +592,65 @@ const db = {
     },
     deleteUpgrade: async (id) => {
         await fdb.collection('upgrades').doc(id).delete();
+        return true;
+    },
+
+    // Announcement Bar CRUD
+    getAnnouncement: async () => {
+        if (window.KaghanDB_Cache.announcement) return window.KaghanDB_Cache.announcement;
+        try {
+            const swr = localStorage.getItem('kaghan_swr_announcement');
+            if (swr) {
+                const data = JSON.parse(swr);
+                if (data) {
+                    window.KaghanDB_Cache.announcement = data;
+                    return data;
+                }
+            }
+        } catch(e) {}
+        try {
+            const doc = await fdb.collection('settings').doc('announcement').get();
+            if (doc.exists) {
+                const data = doc.data();
+                window.KaghanDB_Cache.announcement = data;
+                try { localStorage.setItem('kaghan_swr_announcement', JSON.stringify(data)); } catch(e) {}
+                return data;
+            }
+        } catch(e) {
+            console.warn("getAnnouncement notice:", e.message);
+        }
+        return window.KaghanDB_Cache.announcement || null;
+    },
+    saveAnnouncement: async (announcement) => {
+        let savedViaAdmin = false;
+        try {
+            const user = firebase.auth().currentUser;
+            if (user) {
+                const idToken = await user.getIdToken();
+                const res = await fetch('/.netlify/functions/admin-action', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'saveAnnouncement',
+                        data: { announcement },
+                        idToken
+                    })
+                });
+                if (res.ok) {
+                    savedViaAdmin = true;
+                }
+            }
+        } catch(e) {
+            console.warn("Serverless saveAnnouncement fallback to client SDK:", e);
+        }
+
+        if (!savedViaAdmin) {
+            await fdb.collection('settings').doc('announcement').set(announcement);
+        }
+
+        window.KaghanDB_Cache.announcement = announcement;
+        try { localStorage.setItem('kaghan_swr_announcement', JSON.stringify(announcement)); } catch(e) {}
+        window.dispatchEvent(new CustomEvent('kaghan-db-announcement', { detail: announcement }));
         return true;
     },
 
@@ -2731,4 +2815,263 @@ if (document.readyState === 'loading') {
     ensureJournalNavLinks();
 }
 window.addEventListener('load', ensureJournalNavLinks);
+
+// ============================================================
+// === Dynamic Announcement Bar Engine (Public Rendering) ===
+// ============================================================
+window.KaghanAnnouncement = {
+    timer: null,
+    currentIndex: 0,
+    data: null,
+    isHovered: false,
+
+    init: async function() {
+        // Skip public announcement bar rendering inside admin console
+        if (window.location.pathname.includes('/admin')) return;
+
+        const announcement = await window.KaghanDB.getAnnouncement();
+        if (announcement) {
+            this.render(announcement);
+        }
+    },
+
+    render: function(announcement) {
+        if (!announcement || announcement.active === false || !Array.isArray(announcement.messages) || announcement.messages.length === 0) {
+            this.hide();
+            return;
+        }
+
+        // Check session dismissal state
+        const dismissKey = 'kaghan_announcement_dismissed';
+        const dismissedVal = sessionStorage.getItem(dismissKey);
+        const currentVersion = announcement.updatedAt || 'active';
+        if (announcement.dismissible && dismissedVal === currentVersion) {
+            this.hide();
+            return;
+        }
+
+        this.data = announcement;
+        this.currentIndex = 0;
+        clearInterval(this.timer);
+
+        // Ensure container element
+        let bar = document.getElementById('kaghan-announcement-bar');
+        if (!bar) {
+            bar = document.createElement('div');
+            bar.id = 'kaghan-announcement-bar';
+            document.body.insertBefore(bar, document.body.firstChild);
+        }
+
+        // Visual Styling
+        const bg = announcement.bgGradient || announcement.bgColor || '#0F172A';
+        const textColor = announcement.textColor || '#FFFFFF';
+        const accentColor = announcement.accentColor || '#D4AF37';
+        const fontFamily = announcement.fontFamily === 'serif' ? "'Playfair Display', Georgia, serif" : 
+                           announcement.fontFamily === 'inter' ? "'Inter', sans-serif" : "'Outfit', sans-serif";
+        const fontSize = announcement.fontSize || '12px';
+
+        bar.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 55;
+            background: ${bg};
+            color: ${textColor};
+            font-family: ${fontFamily};
+            font-size: ${fontSize};
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+            overflow: hidden;
+        `;
+
+        this.updateContent(bar);
+        this.updateNavbarOffset();
+
+        bar.onmouseenter = () => { this.isHovered = true; };
+        bar.onmouseleave = () => { this.isHovered = false; };
+
+        // Auto-rotation timer for multi-message feeds
+        if (announcement.messages.length > 1) {
+            const intervalSec = Math.max(2, parseInt(announcement.rotationInterval) || 5);
+            this.timer = setInterval(() => {
+                if (!this.isHovered) {
+                    this.next();
+                }
+            }, intervalSec * 1000);
+        }
+    },
+
+    updateContent: function(bar) {
+        if (!bar) bar = document.getElementById('kaghan-announcement-bar');
+        if (!bar || !this.data) return;
+
+        const announcement = this.data;
+        const msg = announcement.messages[this.currentIndex] || announcement.messages[0];
+        if (!msg) return;
+
+        const textColor = announcement.textColor || '#FFFFFF';
+        const accentColor = announcement.accentColor || '#D4AF37';
+        const badgeBg = announcement.badgeBg || accentColor;
+        const badgeTextColor = announcement.badgeTextColor || '#0F172A';
+        const badgeText = announcement.badgeText || (msg.badge || '');
+
+        const safeText = window.KaghanSafe ? window.KaghanSafe.escapeHTML(msg.text || '') : (msg.text || '');
+        const safeLinkText = msg.linkText ? (window.KaghanSafe ? window.KaghanSafe.escapeHTML(msg.linkText) : msg.linkText) : '';
+        const safeLinkUrl = msg.linkUrl ? (window.KaghanSafe ? window.KaghanSafe.escapeHTML(msg.linkUrl) : msg.linkUrl) : '';
+        const linkTarget = msg.linkTarget === '_blank' ? '_blank' : '_self';
+        const emoji = msg.emoji ? `<span class="inline-block mr-1 text-sm">${window.KaghanSafe ? window.KaghanSafe.escapeHTML(msg.emoji) : msg.emoji}</span>` : '';
+        const icon = msg.icon ? `<i class="fa-solid ${window.KaghanSafe ? window.KaghanSafe.escapeHTML(msg.icon) : msg.icon} mr-1.5" style="color:${accentColor}"></i>` : '';
+
+        const badgeHtml = badgeText ? `
+            <span class="inline-flex items-center text-[9px] uppercase font-black tracking-widest px-2.5 py-0.5 rounded-full mr-2 shadow-xs shrink-0" style="background:${badgeBg}; color:${badgeTextColor}">
+                ${window.KaghanSafe ? window.KaghanSafe.escapeHTML(badgeText) : badgeText}
+            </span>
+        ` : '';
+
+        const ctaHtml = (safeLinkText && safeLinkUrl) ? `
+            <a href="${safeLinkUrl}" target="${linkTarget}" class="inline-flex items-center gap-1 font-bold ml-2 px-3 py-0.5 rounded-full text-[11px] transition-all duration-200 hover:scale-105 active:scale-95 shadow-xs shrink-0" style="background:${accentColor}; color:${badgeTextColor}">
+                <span>${safeLinkText}</span>
+                <i class="fa-solid fa-arrow-right text-[9px]"></i>
+            </a>
+        ` : '';
+
+        const dotsHtml = announcement.messages.length > 1 ? `
+            <div class="hidden sm:flex items-center gap-1.5 mx-2 shrink-0">
+                ${announcement.messages.map((_, i) => `
+                    <button type="button" onclick="KaghanAnnouncement.goTo(${i})" class="w-1.5 h-1.5 rounded-full transition-all duration-300 ${i === this.currentIndex ? 'w-4' : 'opacity-40'}" style="background:${i === this.currentIndex ? accentColor : textColor}" aria-label="Slide ${i+1}"></button>
+                `).join('')}
+            </div>
+        ` : '';
+
+        const navArrowsHtml = announcement.messages.length > 1 ? `
+            <div class="flex items-center gap-0.5 shrink-0 ml-1">
+                <button type="button" onclick="KaghanAnnouncement.prev()" class="w-5 h-5 rounded-full flex items-center justify-center text-[10px] opacity-60 hover:opacity-100 transition-opacity" style="color:${textColor}" aria-label="Previous">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                <button type="button" onclick="KaghanAnnouncement.next()" class="w-5 h-5 rounded-full flex items-center justify-center text-[10px] opacity-60 hover:opacity-100 transition-opacity" style="color:${textColor}" aria-label="Next">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+        ` : '';
+
+        const dismissHtml = announcement.dismissible !== false ? `
+            <button type="button" onclick="KaghanAnnouncement.dismiss()" class="w-6 h-6 rounded-full flex items-center justify-center ml-2 text-xs opacity-60 hover:opacity-100 hover:bg-white/10 transition-all shrink-0" style="color:${textColor}" title="Dismiss announcement">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        ` : '';
+
+        bar.innerHTML = `
+            <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2 flex items-center justify-between gap-2 min-h-[38px]">
+                <div class="flex items-center justify-center flex-grow text-center min-w-0 overflow-hidden text-xs sm:text-sm font-medium">
+                    <div id="kaghan-announcement-msg" class="flex flex-wrap items-center justify-center gap-1.5 truncate transition-all duration-300 transform">
+                        ${badgeHtml}
+                        <span class="truncate leading-tight">${emoji}${icon}${safeText}</span>
+                        ${ctaHtml}
+                    </div>
+                </div>
+                <div class="flex items-center shrink-0">
+                    ${dotsHtml}
+                    ${navArrowsHtml}
+                    ${dismissHtml}
+                </div>
+            </div>
+        `;
+    },
+
+    next: function() {
+        if (!this.data || !this.data.messages || this.data.messages.length <= 1) return;
+        this.currentIndex = (this.currentIndex + 1) % this.data.messages.length;
+        this.animateTransition();
+    },
+
+    prev: function() {
+        if (!this.data || !this.data.messages || this.data.messages.length <= 1) return;
+        this.currentIndex = (this.currentIndex - 1 + this.data.messages.length) % this.data.messages.length;
+        this.animateTransition();
+    },
+
+    goTo: function(index) {
+        if (!this.data || !this.data.messages || index < 0 || index >= this.data.messages.length) return;
+        this.currentIndex = index;
+        this.animateTransition();
+    },
+
+    animateTransition: function() {
+        const msgEl = document.getElementById('kaghan-announcement-msg');
+        if (msgEl) {
+            msgEl.style.opacity = '0';
+            msgEl.style.transform = 'translateY(-4px)';
+            setTimeout(() => {
+                this.updateContent();
+                const newMsgEl = document.getElementById('kaghan-announcement-msg');
+                if (newMsgEl) {
+                    newMsgEl.style.opacity = '1';
+                    newMsgEl.style.transform = 'translateY(0)';
+                }
+            }, 180);
+        } else {
+            this.updateContent();
+        }
+    },
+
+    dismiss: function() {
+        const bar = document.getElementById('kaghan-announcement-bar');
+        if (bar) {
+            bar.style.transform = 'translateY(-100%)';
+            bar.style.opacity = '0';
+            setTimeout(() => {
+                bar.remove();
+                this.resetNavbarOffset();
+            }, 300);
+        }
+        if (this.data && this.data.updatedAt) {
+            sessionStorage.setItem('kaghan_announcement_dismissed', this.data.updatedAt);
+        } else {
+            sessionStorage.setItem('kaghan_announcement_dismissed', 'true');
+        }
+        clearInterval(this.timer);
+    },
+
+    hide: function() {
+        const bar = document.getElementById('kaghan-announcement-bar');
+        if (bar) bar.remove();
+        this.resetNavbarOffset();
+        clearInterval(this.timer);
+    },
+
+    updateNavbarOffset: function() {
+        setTimeout(() => {
+            const bar = document.getElementById('kaghan-announcement-bar');
+            const navbar = document.getElementById('hotel-navbar');
+            if (bar && navbar) {
+                const height = bar.offsetHeight || 38;
+                navbar.style.top = `${height}px`;
+                navbar.style.transition = 'top 0.3s cubic-bezier(0.16, 1, 0.3, 1)';
+            }
+        }, 50);
+    },
+
+    resetNavbarOffset: function() {
+        const navbar = document.getElementById('hotel-navbar');
+        if (navbar) {
+            navbar.style.top = '0px';
+        }
+    }
+};
+
+window.addEventListener('resize', () => {
+    if (window.KaghanAnnouncement && document.getElementById('kaghan-announcement-bar')) {
+        window.KaghanAnnouncement.updateNavbarOffset();
+    }
+});
+
+// Auto-run announcement bar on public pages
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => window.KaghanAnnouncement.init());
+} else {
+    window.KaghanAnnouncement.init();
+}
+
 

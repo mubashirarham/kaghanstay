@@ -136,6 +136,15 @@ exports.handler = async (event, context) => {
                 result = true;
                 break;
             }
+            case 'saveAnnouncement': {
+                const { announcement } = data;
+                if (!announcement) throw new Error("Announcement data is required.");
+                announcement.updatedAt = new Date().toISOString();
+                announcement.updatedBy = decodedToken.email || decodedToken.uid || 'admin';
+                await fdb.collection('settings').doc('announcement').set(announcement);
+                result = true;
+                break;
+            }
             case 'getInquiries': {
                 const snap = await fdb.collection('inquiries').orderBy('createdAt', 'desc').get();
                 const inquiries = [];
