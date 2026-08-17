@@ -320,6 +320,10 @@ window.switchTab = (tabName) => {
     if (tabName === 'inquiries' && window.KaghanInquiries) {
         window.KaghanInquiries.loadInquiries();
     }
+    if (tabName === 'coupons' && window.AdminCouponsModule) {
+        window.AdminCouponsModule.init();
+        window.AdminCouponsModule.render();
+    }
 
     const buttons = document.querySelectorAll('#sidebar-nav button');
     buttons.forEach(btn => {

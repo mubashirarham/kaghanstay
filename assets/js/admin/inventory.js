@@ -956,6 +956,14 @@
         if (document.getElementById('edit-room-seo-index')) document.getElementById('edit-room-seo-index').value = room.seoIndex || 'index, follow';
         if (document.getElementById('edit-room-pinned')) document.getElementById('edit-room-pinned').checked = !!room.isPinned;
 
+        // Airbnb & iCal Multi-Channel Sync
+        const airbnbInput = document.getElementById('edit-room-airbnb-ical');
+        if (airbnbInput) airbnbInput.value = room.airbnbIcalUrl || room.icalUrl || '';
+        const exportUrlEl = document.getElementById('edit-room-ical-export-url');
+        if (exportUrlEl) {
+            exportUrlEl.textContent = `${window.location.origin}/.netlify/functions/ical-export?roomId=${room.id}`;
+        }
+
         const imagesArray = room.images || (room.image ? [room.image] : []);
         const initialCoverUrl = room.image || (imagesArray.length > 0 ? imagesArray[0] : '');
         renderGalleryPreview('edit-room-gallery-preview', 'edit-room-images-data', imagesArray, initialCoverUrl, 'edit-room-cover-image');
@@ -1065,6 +1073,8 @@
                 const seoIndex = document.getElementById('edit-room-seo-index')?.value || 'index, follow';
                 const isPinned = document.getElementById('edit-room-pinned')?.checked || false;
 
+                const airbnbIcalUrl = document.getElementById('edit-room-airbnb-ical')?.value.trim() || '';
+
                 const updatedData = {
                     name,
                     type,
@@ -1088,6 +1098,7 @@
                     lng: isNaN(lng) ? null : lng,
                     images: imagesArray,
                     image: selectedCoverImage,
+                    airbnbIcalUrl,
                     seoTitle,
                     seoDescription,
                     seoKeywords,
@@ -1268,6 +1279,8 @@
                 const seoIndex = document.getElementById('add-room-seo-index')?.value || 'index, follow';
                 const isPinned = document.getElementById('add-room-pinned')?.checked || false;
 
+                const airbnbIcalUrl = document.getElementById('add-room-airbnb-ical')?.value.trim() || '';
+
                 const newRoom = {
                     id: 'room-' + type + '-' + Date.now(),
                     name,
@@ -1292,6 +1305,7 @@
                     address,
                     lat: isNaN(lat) ? null : lat,
                     lng: isNaN(lng) ? null : lng,
+                    airbnbIcalUrl,
                     status: 'available',
                     rating: 5.0,
                     reviewsCount: 0,
@@ -1333,6 +1347,8 @@
     // Admin Availability Calendar & Blocked Dates Management
     let activeAdminRoomId = null;
     let activeAdminBlockedDates = new Set();
+    let activeAdminAirbnbDates = new Set();
+    let activeAdminAirbnbEvents = [];
     let activeAdminBookedDatesMap = new Map(); // isoStr -> booking details
 
     window.openAdminRoomCalendar = async (roomId) => {
@@ -1343,7 +1359,38 @@
         const nameLbl = document.getElementById('admin-calendar-room-name');
         if (nameLbl) nameLbl.textContent = `Calendar: ${room.name}`;
 
-        activeAdminBlockedDates = new Set(room.blockedDates || []);
+        // Separate manual admin blocks from Airbnb blocks
+        activeAdminAirbnbDates = new Set(room.airbnbBlockedDates || []);
+        activeAdminAirbnbEvents = room.airbnbEvents || [];
+        
+        // Manual admin blocked dates: any in room.blockedDates that are NOT airbnb dates
+        const allBlocked = room.blockedDates || [];
+        const manualBlocks = allBlocked.filter(d => !activeAdminAirbnbDates.has(d));
+        activeAdminBlockedDates = new Set(manualBlocks);
+
+        // Update Airbnb Sync Status Bar in Modal
+        const syncBadge = document.getElementById('admin-calendar-airbnb-sync-badge');
+        const urlLabel = document.getElementById('admin-calendar-airbnb-url-label');
+
+        const airbnbUrl = room.airbnbIcalUrl || room.icalUrl || '';
+        if (urlLabel) {
+            urlLabel.textContent = airbnbUrl ? `Sync URL: ${airbnbUrl}` : 'No Airbnb iCal Import URL configured for this suite.';
+        }
+
+        if (syncBadge) {
+            if (!airbnbUrl) {
+                syncBadge.textContent = 'No Airbnb URL';
+                syncBadge.className = 'text-[9px] font-mono px-2 py-0.5 rounded-md bg-slate-800 text-slate-400 border border-slate-700';
+            } else if (room.lastIcalSync) {
+                const syncTime = new Date(room.lastIcalSync).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const syncDate = new Date(room.lastIcalSync).toLocaleDateString();
+                syncBadge.textContent = `Synced: ${syncDate} ${syncTime}`;
+                syncBadge.className = 'text-[9px] font-mono px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-400 border border-emerald-500/30';
+            } else {
+                syncBadge.textContent = 'Ready to Sync';
+                syncBadge.className = 'text-[9px] font-mono px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-300 border border-amber-500/30';
+            }
+        }
         
         // Fetch active bookings for this room
         const bookings = await KaghanDB.getBookings();
@@ -1394,8 +1441,11 @@
         const summary = document.getElementById('admin-calendar-summary');
         if (!container) return;
 
+        const totalManualBlocks = activeAdminBlockedDates.size;
+        const totalAirbnbBlocks = activeAdminAirbnbDates.size;
+
         if (summary) {
-            summary.textContent = `${activeAdminBlockedDates.size} date(s) currently blocked by admin`;
+            summary.innerHTML = `<strong class="text-slate-800">${totalManualBlocks}</strong> manual admin block(s) &bull; <strong class="text-amber-600">${totalAirbnbBlocks}</strong> Airbnb synced date(s)`;
         }
 
         const today = new Date();
@@ -1431,6 +1481,7 @@
 
                 const isPast = cellDate < today;
                 const isGuestReserved = activeAdminBookedDatesMap.has(isoStr);
+                const isAirbnbBlocked = activeAdminAirbnbDates.has(isoStr);
                 const isAdminBlocked = activeAdminBlockedDates.has(isoStr);
 
                 let cellClass = "h-9 rounded-xl flex flex-col items-center justify-center font-bold text-xs transition-all relative cursor-pointer ";
@@ -1442,7 +1493,10 @@
                 } else if (isGuestReserved) {
                     const booking = activeAdminBookedDatesMap.get(isoStr);
                     cellClass += "bg-blue-500 text-white shadow-sm cursor-not-allowed ";
-                    titleAttr = `Guest Booking #${booking.id || ''} (${booking.userName || booking.guestName || 'Guest'})`;
+                    titleAttr = `Direct Booking #${booking.id || ''} (${booking.userName || booking.guestName || 'Guest'})`;
+                } else if (isAirbnbBlocked) {
+                    cellClass += "bg-amber-500 text-white shadow-sm cursor-not-allowed ";
+                    titleAttr = `Airbnb / OTA Reservation (Locked via iCal Sync)`;
                 } else if (isAdminBlocked) {
                     cellClass += "bg-rose-500 text-white shadow-sm hover:bg-rose-600 ";
                     titleAttr = "Admin Blocked - Click to unblock";
@@ -1451,13 +1505,14 @@
                     titleAttr = "Available - Click to block";
                 }
 
-                const clickAttr = (isPast || isGuestReserved) ? '' : `onclick="toggleAdminBlockDate('${isoStr}')"`;
+                const clickAttr = (isPast || isGuestReserved || isAirbnbBlocked) ? '' : `onclick="toggleAdminBlockDate('${isoStr}')"`;
 
                 html += `
                     <div class="${cellClass}" ${clickAttr} title="${titleAttr}">
                         <span>${d}</span>
-                        ${isAdminBlocked ? '<span class="text-[8px] leading-none font-bold uppercase mt-0.5">Blocked</span>' : ''}
-                        ${isGuestReserved ? '<span class="text-[8px] leading-none font-bold uppercase mt-0.5">Booked</span>' : ''}
+                        ${isAdminBlocked ? '<span class="text-[7px] leading-none font-bold uppercase mt-0.5">Blocked</span>' : ''}
+                        ${isAirbnbBlocked ? '<span class="text-[7px] leading-none font-bold uppercase mt-0.5">Airbnb</span>' : ''}
+                        ${isGuestReserved ? '<span class="text-[7px] leading-none font-bold uppercase mt-0.5">Booked</span>' : ''}
                     </div>
                 `;
             }
@@ -1497,7 +1552,7 @@
     window.adminClearAllBlocks = () => {
         activeAdminBlockedDates.clear();
         renderAdminCalendarGrid();
-        if (window.KaghanUI) KaghanUI.showToast("Cleared all admin blocked dates", "info");
+        if (window.KaghanUI) KaghanUI.showToast("Cleared all manual admin blocked dates", "info");
     };
 
     window.saveAdminBlockedDates = async () => {
@@ -1511,8 +1566,14 @@
         }
 
         try {
-            const blockedArray = Array.from(activeAdminBlockedDates).sort();
-            const success = await KaghanDB.updateRoom(activeAdminRoomId, { blockedDates: blockedArray });
+            const manualArray = Array.from(activeAdminBlockedDates).sort();
+            const airbnbArray = Array.from(activeAdminAirbnbDates).sort();
+            const combinedArray = Array.from(new Set([...manualArray, ...airbnbArray])).sort();
+
+            const success = await KaghanDB.updateRoom(activeAdminRoomId, { 
+                adminBlockedDates: manualArray,
+                blockedDates: combinedArray 
+            });
 
             if (success) {
                 if (window.KaghanUI) KaghanUI.showToast("Listing availability & blocked dates updated!", "success");
@@ -1531,6 +1592,117 @@
                 btn.disabled = false;
             }
         }
+    };
+
+    // 2-Way Airbnb Calendar Synchronization Engine
+    window.syncAirbnbCalendar = async (roomId, isAll = false) => {
+        try {
+            if (typeof firebase === 'undefined' || !firebase.auth().currentUser) {
+                if (window.KaghanUI) KaghanUI.showToast("Authentication required to sync Airbnb calendar.", "error");
+                return false;
+            }
+
+            const idToken = await firebase.auth().currentUser.getIdToken();
+            if (window.KaghanUI) KaghanUI.showToast(isAll ? "Synchronizing all Airbnb calendar feeds..." : "Syncing Airbnb calendar feed...", "info");
+
+            const res = await fetch('/.netlify/functions/ical-sync', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ roomId, all: isAll, idToken })
+            });
+
+            const data = await res.json();
+
+            if (!res.ok || !data.success) {
+                throw new Error(data.error || 'Calendar synchronization failed.');
+            }
+
+            if (window.KaghanUI) {
+                KaghanUI.showToast(`Airbnb calendar synced successfully!`, "success");
+            }
+
+            // Invalidate local cached room data
+            if (window.KaghanDB_Cache) {
+                window.KaghanDB_Cache.rooms = null;
+            }
+
+            return data;
+        } catch (err) {
+            console.error("Airbnb sync error:", err);
+            if (window.KaghanUI) {
+                KaghanUI.showToast(`Airbnb Sync Error: ${err.message}`, "error");
+            }
+            return false;
+        }
+    };
+
+    window.syncActiveAdminRoomAirbnb = async () => {
+        if (!activeAdminRoomId) return;
+        const btn = document.getElementById('admin-sync-airbnb-modal-btn');
+        const origText = btn ? btn.innerHTML : '';
+        if (btn) {
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-xs"></i> Syncing...';
+            btn.disabled = true;
+        }
+
+        try {
+            const result = await window.syncAirbnbCalendar(activeAdminRoomId, false);
+            if (result) {
+                // Reopen and reload active calendar view
+                await window.openAdminRoomCalendar(activeAdminRoomId);
+            }
+        } finally {
+            if (btn) {
+                btn.innerHTML = origText;
+                btn.disabled = false;
+            }
+        }
+    };
+
+    window.syncCurrentEditRoomAirbnb = async () => {
+        if (!activeEditRoomId) return;
+        await window.syncAirbnbCalendar(activeEditRoomId, false);
+    };
+
+    window.syncAllAirbnbCalendars = async () => {
+        const btn = document.getElementById('sync-all-airbnb-btn');
+        const origText = btn ? btn.innerHTML : '';
+        if (btn) {
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-xs"></i> Syncing Airbnb...';
+            btn.disabled = true;
+        }
+
+        try {
+            const result = await window.syncAirbnbCalendar(null, true);
+            if (result && window.AdminDashboardModule) {
+                await window.AdminDashboardModule.refreshAll();
+            }
+        } finally {
+            if (btn) {
+                btn.innerHTML = origText;
+                btn.disabled = false;
+            }
+        }
+    };
+
+    window.copyActiveRoomIcalFeed = () => {
+        if (!activeAdminRoomId) return;
+        const url = `${window.location.origin}/.netlify/functions/ical-export?roomId=${activeAdminRoomId}`;
+        navigator.clipboard.writeText(url).then(() => {
+            if (window.KaghanUI) KaghanUI.showToast("Kaghan Stay iCal export link copied! Paste into Airbnb > Import Calendar.", "success");
+        }).catch(() => {
+            prompt("Copy this iCal export URL and paste into Airbnb > Import Calendar:", url);
+        });
+    };
+
+    window.copyEditRoomIcalExport = () => {
+        if (!activeEditRoomId) return;
+        const url = `${window.location.origin}/.netlify/functions/ical-export?roomId=${activeEditRoomId}`;
+        navigator.clipboard.writeText(url).then(() => {
+            if (window.KaghanUI) KaghanUI.showToast("iCal export feed link copied to clipboard!", "success");
+        }).catch(() => {
+            prompt("Copy this iCal export URL:", url);
+        });
     };
 
     // Export to window

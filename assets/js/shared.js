@@ -654,6 +654,93 @@ const db = {
         return true;
     },
 
+    // Coupons CRUD
+    getCoupons: async () => {
+        if (window.KaghanDB_Cache.coupons && window.KaghanDB_Cache.coupons.length) {
+            return window.KaghanDB_Cache.coupons;
+        }
+        try {
+            const snap = await fdb.collection('coupons').get();
+            const list = [];
+            snap.forEach(doc => {
+                const data = doc.data();
+                list.push({ id: doc.id, code: data.code || doc.id, ...data });
+            });
+            window.KaghanDB_Cache.coupons = list;
+            window.dispatchEvent(new CustomEvent('kaghan-db-coupons', { detail: list }));
+            return list;
+        } catch(e) {
+            console.warn("getCoupons notice:", e.message);
+            return window.KaghanDB_Cache.coupons || [];
+        }
+    },
+    saveCoupon: async (coupon) => {
+        let savedViaAdmin = false;
+        try {
+            const user = firebase.auth().currentUser;
+            if (user) {
+                const idToken = await user.getIdToken();
+                const res = await fetch('/.netlify/functions/admin-action', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'saveCoupon',
+                        data: { coupon },
+                        idToken
+                    })
+                });
+                if (res.ok) savedViaAdmin = true;
+            }
+        } catch(e) {
+            console.warn("Serverless saveCoupon fallback:", e);
+        }
+
+        if (!savedViaAdmin) {
+            await fdb.collection('coupons').doc(coupon.id || coupon.code).set(coupon);
+        }
+
+        if (!window.KaghanDB_Cache.coupons) window.KaghanDB_Cache.coupons = [];
+        const idx = window.KaghanDB_Cache.coupons.findIndex(c => c.id === coupon.id || c.code === coupon.code);
+        if (idx >= 0) {
+            window.KaghanDB_Cache.coupons[idx] = coupon;
+        } else {
+            window.KaghanDB_Cache.coupons.push(coupon);
+        }
+        window.dispatchEvent(new CustomEvent('kaghan-db-coupons', { detail: window.KaghanDB_Cache.coupons }));
+        return true;
+    },
+    deleteCoupon: async (id) => {
+        let deletedViaAdmin = false;
+        try {
+            const user = firebase.auth().currentUser;
+            if (user) {
+                const idToken = await user.getIdToken();
+                const res = await fetch('/.netlify/functions/admin-action', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'deleteCoupon',
+                        data: { id },
+                        idToken
+                    })
+                });
+                if (res.ok) deletedViaAdmin = true;
+            }
+        } catch(e) {
+            console.warn("Serverless deleteCoupon fallback:", e);
+        }
+
+        if (!deletedViaAdmin) {
+            await fdb.collection('coupons').doc(id).delete();
+        }
+
+        if (window.KaghanDB_Cache.coupons) {
+            window.KaghanDB_Cache.coupons = window.KaghanDB_Cache.coupons.filter(c => c.id !== id && c.code !== id);
+            window.dispatchEvent(new CustomEvent('kaghan-db-coupons', { detail: window.KaghanDB_Cache.coupons }));
+        }
+        return true;
+    },
+
     // Rooms CRUD
     getRooms: async () => {
         if (!window.KaghanDB_Cache.rooms || !window.KaghanDB_Cache.rooms.length) {
@@ -786,6 +873,42 @@ const db = {
         }
         window.dispatchEvent(new CustomEvent('kaghan-db-rooms', { detail: window.KaghanDB_Cache.rooms }));
         return true;
+    },
+
+    // Room Availability & Multi-Channel Locked Dates Calculation
+    getRoomAvailability: async (roomId) => {
+        if (!roomId) return { unavailableDates: [], isAvailable: true };
+        const room = await db.getRoomById(roomId);
+        if (!room) return { unavailableDates: [], isAvailable: true };
+
+        const unavailableDatesSet = new Set();
+
+        // 1. Add manual blocked dates and airbnb synced blocked dates
+        if (Array.isArray(room.blockedDates)) {
+            room.blockedDates.forEach(d => unavailableDatesSet.add(d));
+        }
+        if (Array.isArray(room.airbnbBlockedDates)) {
+            room.airbnbBlockedDates.forEach(d => unavailableDatesSet.add(d));
+        }
+
+        // 2. Add confirmed bookings from Firestore
+        const bookings = await db.getBookings();
+        if (bookings && bookings.length > 0) {
+            bookings.forEach(b => {
+                if (b.roomId === roomId && b.status !== 'cancelled' && b.paymentStatus !== 'refunded') {
+                    const start = new Date(b.checkIn);
+                    const end = new Date(b.checkOut);
+                    for (let dt = new Date(start); dt < end; dt.setDate(dt.getDate() + 1)) {
+                        unavailableDatesSet.add(dt.toISOString().split('T')[0]);
+                    }
+                }
+            });
+        }
+
+        return {
+            unavailableDates: Array.from(unavailableDatesSet).sort(),
+            isAvailable: true
+        };
     },
 
     // Bookings CRUD - 100% Frontend Autonomous Operation
@@ -2852,105 +2975,237 @@ if (document.readyState === 'loading') {
 window.addEventListener('load', ensureJournalNavLinks);
 
 // ============================================================
-// === Dynamic Announcement Bar Engine (Public Rendering) ===
+// === Dynamic Promotional Popups & VIP Offer Engine (Public) ===
 // ============================================================
-window.KaghanAnnouncement = {
+window.KaghanPromotions = {
     timer: null,
     countdownTimer: null,
-    currentIndex: 0,
+    triggerTimeout: null,
     data: null,
-    isHovered: false,
+    hasTriggered: false,
+    isOpen: false,
 
     init: async function() {
-        // Skip public announcement bar rendering inside admin console
+        // Skip public popups inside admin console
         if (window.location.pathname.includes('/admin')) return;
 
-        const announcement = await window.KaghanDB.getAnnouncement();
-        if (announcement) {
-            this.render(announcement);
+        try {
+            const promoData = await window.KaghanDB.getAnnouncement();
+            if (promoData) {
+                this.setup(promoData);
+            }
+        } catch (e) {
+            console.warn("Promotions init notice:", e);
         }
     },
 
-    render: function(announcement) {
-        if (!announcement || announcement.active === false || !Array.isArray(announcement.messages) || announcement.messages.length === 0) {
+    setup: function(promoData) {
+        if (!promoData) {
             this.hide();
             return;
         }
 
-        // Check session dismissal state
-        const dismissKey = 'kaghan_announcement_dismissed';
-        const dismissedVal = sessionStorage.getItem(dismissKey);
-        const currentVersion = announcement.updatedAt || 'active';
-        if (announcement.dismissible && dismissedVal === currentVersion) {
+        // Unconditional Rule: Always disable promotional popups on /room* and /booking* pages
+        const currentPath = window.location.pathname.toLowerCase();
+        if (
+            currentPath.includes('/room') || 
+            currentPath.includes('/booking') || 
+            currentPath === '/rooms' || 
+            currentPath === '/rooms.html' || 
+            currentPath === '/booking' || 
+            currentPath === '/booking.html' || 
+            currentPath === '/room-details' || 
+            currentPath === '/room-details.html'
+        ) {
             this.hide();
             return;
         }
 
-        this.data = announcement;
-        this.currentIndex = 0;
-        clearInterval(this.timer);
-        clearInterval(this.countdownTimer);
-
-        // Ensure container element
-        let bar = document.getElementById('kaghan-announcement-bar');
-        if (!bar) {
-            bar = document.createElement('div');
-            bar.id = 'kaghan-announcement-bar';
-            document.body.insertBefore(bar, document.body.firstChild);
+        // Support multi-popup campaigns list or single root object
+        let popups = [];
+        if (Array.isArray(promoData.popups) && promoData.popups.length > 0) {
+            popups = promoData.popups;
+        } else if (promoData.active !== false) {
+            popups = [promoData];
         }
 
-        // Visual Styling
-        const bg = announcement.bgGradient || announcement.bgColor || '#0F172A';
-        const textColor = announcement.textColor || '#FFFFFF';
-        const accentColor = announcement.accentColor || '#D4AF37';
-        const fontFamily = announcement.fontFamily === 'serif' ? "'Playfair Display', Georgia, serif" : 
-                           announcement.fontFamily === 'inter' ? "'Inter', sans-serif" : "'Outfit', sans-serif";
-        const fontSize = announcement.fontSize || '12px';
+        // Find the first matching active popup for current page
+        let matchedPopup = null;
 
-        bar.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 55;
-            background: ${bg};
-            color: ${textColor};
-            font-family: ${fontFamily};
-            font-size: ${fontSize};
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
-            overflow: hidden;
-        `;
+        for (const p of popups) {
+            if (p.active === false) continue;
+            if (this.matchesPageRules(p, currentPath)) {
+                // Check snooze for this specific popup or global
+                const snoozeKey = `kaghan_promo_snoozed_${p.id || 'default'}`;
+                const snoozedUntil = localStorage.getItem(snoozeKey) || localStorage.getItem('kaghan_promo_snoozed_until');
+                if (snoozedUntil && Date.now() < parseInt(snoozedUntil, 10)) {
+                    continue;
+                }
+                const sessionDismissKey = `kaghan_promo_session_dismissed_${p.id || 'default'}`;
+                if (p.snoozeDuration === 'session' && (sessionStorage.getItem(sessionDismissKey) || sessionStorage.getItem('kaghan_promo_session_dismissed'))) {
+                    continue;
+                }
 
-        this.updateContent(bar);
-        this.updateNavbarOffset();
+                matchedPopup = p;
+                break;
+            }
+        }
 
-        bar.onmouseenter = () => { this.isHovered = true; };
-        bar.onmouseleave = () => { this.isHovered = false; };
+        if (!matchedPopup) {
+            this.hide();
+            return;
+        }
 
-        // Start countdown timer ticking if enabled
+        this.data = matchedPopup;
+        this.attachTriggers();
+    },
+
+    matchesPageRules: function(p, path) {
+        const mode = p.targetingMode || 'all'; // 'all' | 'specific_include' | 'specific_exclude'
+        const targetPages = Array.isArray(p.targetPages) ? p.targetPages : (typeof p.targetPages === 'string' ? [p.targetPages] : ['all']);
+        const excludedPages = Array.isArray(p.excludedPages) ? p.excludedPages : [];
+        const customUrls = (p.customUrls || '').split(/[\n,]+/).map(u => u.trim().toLowerCase()).filter(Boolean);
+
+        const isHome = (path === '/' || path === '/index.html' || path === '');
+        const isRooms = (path === '/rooms' || path === '/rooms.html');
+        const isRoomDetails = (path.includes('/room-details') || path.includes('room-details.html') || (path.includes('/rooms/') && path !== '/rooms' && path !== '/rooms.html'));
+        const isBooking = (path.includes('/booking') || path.includes('booking.html'));
+        const isBlog = (path.includes('/blog') || path.includes('blog.html'));
+        const isContact = (path.includes('/contact') || path.includes('contact.html'));
+        const isTrack = (path.includes('/track') || path.includes('track.html'));
+
+        // Helper to test custom wildcards
+        const matchesCustom = (urlPattern) => {
+            if (!urlPattern) return false;
+            if (urlPattern.endsWith('*')) {
+                const prefix = urlPattern.slice(0, -1);
+                return path.startsWith(prefix);
+            }
+            return path === urlPattern || path === `${urlPattern}.html`;
+        };
+
+        const pageMatchesCategory = (cat) => {
+            if (cat === 'all') return true;
+            if (cat === 'home' || cat === 'home-only') return isHome;
+            if (cat === 'rooms') return isRooms;
+            if (cat === 'room-details') return isRoomDetails;
+            if (cat === 'rooms-only') return isRooms || isRoomDetails || isBooking;
+            if (cat === 'booking') return isBooking;
+            if (cat === 'blog') return isBlog;
+            if (cat === 'contact') return isContact;
+            if (cat === 'track') return isTrack;
+            return matchesCustom(cat);
+        };
+
+        // Check explicit exclusions first
+        for (const ex of excludedPages) {
+            if (pageMatchesCategory(ex)) return false;
+        }
+        for (const exUrl of customUrls) {
+            if (exUrl.startsWith('!') && matchesCustom(exUrl.slice(1))) return false;
+        }
+
+        if (mode === 'all') {
+            return true;
+        }
+
+        if (mode === 'specific_include') {
+            const hasTargetMatch = targetPages.some(tp => pageMatchesCategory(tp));
+            const hasCustomMatch = customUrls.some(cu => !cu.startsWith('!') && matchesCustom(cu));
+            return hasTargetMatch || hasCustomMatch;
+        }
+
+        if (mode === 'specific_exclude') {
+            return true;
+        }
+
+        return true;
+    },
+
+    attachTriggers: function() {
+        if (this.hasTriggered) return;
+        const triggerType = this.data.triggerType || 'delay';
+        const delaySeconds = Math.max(1, parseInt(this.data.delaySeconds, 10) || 3);
+
+        if (triggerType === 'delay') {
+            this.triggerTimeout = setTimeout(() => {
+                this.show();
+            }, delaySeconds * 1000);
+        } else if (triggerType === 'scroll') {
+            const scrollThreshold = Math.max(10, parseInt(this.data.scrollThreshold, 10) || 30);
+            const onScroll = () => {
+                const scrolled = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+                if (scrolled >= scrollThreshold) {
+                    window.removeEventListener('scroll', onScroll);
+                    this.show();
+                }
+            };
+            window.addEventListener('scroll', onScroll, { passive: true });
+        } else if (triggerType === 'exit-intent') {
+            const onMouseLeave = (e) => {
+                if (e.clientY <= 10 && !this.hasTriggered) {
+                    document.removeEventListener('mouseleave', onMouseLeave);
+                    this.show();
+                }
+            };
+            document.addEventListener('mouseleave', onMouseLeave);
+            // Fallback timer so mobile/tablet users still see the promotion
+            this.triggerTimeout = setTimeout(() => {
+                if (!this.hasTriggered) this.show();
+            }, 8000);
+        } else {
+            // Default delay
+            this.triggerTimeout = setTimeout(() => {
+                this.show();
+            }, delaySeconds * 1000);
+        }
+    },
+
+    show: function(forcePreview = false) {
+        if (this.isOpen && !forcePreview) return;
+        this.hasTriggered = true;
+        this.isOpen = true;
+        clearTimeout(this.triggerTimeout);
+
+        const promo = this.data || {};
+        const layout = promo.layout || 'center-modal'; // 'center-modal' | 'corner-floater' | 'slide-drawer'
+
+        // Clean up any existing popup element
+        const existing = document.getElementById('kaghan-promotional-popup');
+        if (existing) existing.remove();
+
+        const popupEl = document.createElement('div');
+        popupEl.id = 'kaghan-promotional-popup';
+
+        // Render according to selected layout
+        if (layout === 'corner-floater') {
+            this.renderCornerFloater(popupEl, promo);
+        } else if (layout === 'slide-drawer') {
+            this.renderSlideDrawer(popupEl, promo);
+        } else {
+            this.renderCenterModal(popupEl, promo);
+        }
+
+        document.body.appendChild(popupEl);
         this.startCountdownTicking();
 
-        // Auto-rotation timer for multi-message feeds
-        if (announcement.messages.length > 1) {
-            const intervalSec = Math.max(2, parseInt(announcement.rotationInterval) || 5);
-            this.timer = setInterval(() => {
-                if (!this.isHovered) {
-                    this.next();
-                }
-            }, intervalSec * 1000);
-        }
+        // Animate in with smooth requestAnimationFrame
+        requestAnimationFrame(() => {
+            const inner = popupEl.querySelector('.kaghan-popup-anim-target');
+            const backdrop = popupEl.querySelector('.kaghan-popup-backdrop');
+            if (inner) {
+                inner.style.opacity = '1';
+                inner.style.transform = 'translateY(0) scale(1)';
+            }
+            if (backdrop) {
+                backdrop.style.opacity = '1';
+            }
+        });
     },
 
     getCountdownData: function() {
-        if (!this.data) return null;
-        const msg = (this.data.messages && this.data.messages[this.currentIndex]) || {};
-        const expiry = msg.countdownExpiry || this.data.countdownExpiry;
-        const enabled = (msg.countdownEnabled !== undefined ? msg.countdownEnabled : this.data.countdownEnabled);
-        if (!enabled || !expiry) return null;
-
-        const diff = new Date(expiry).getTime() - Date.now();
+        if (!this.data || !this.data.countdownEnabled || !this.data.countdownExpiry) return null;
+        const diff = new Date(this.data.countdownExpiry).getTime() - Date.now();
         if (diff <= 0) return { expired: true, text: '00:00:00' };
 
         const days = Math.floor(diff / (1000 * 60 * 60 * 24));
@@ -2958,266 +3213,340 @@ window.KaghanAnnouncement = {
         const minutes = Math.floor((diff / (1000 * 60)) % 60);
         const seconds = Math.floor((diff / 1000) % 60);
 
-        let timeStr = '';
-        if (days > 0) timeStr += `${days}d `;
-        timeStr += `${String(hours).padStart(2, '0')}h ${String(minutes).padStart(2, '0')}m ${String(seconds).padStart(2, '0')}s`;
-
-        const label = msg.countdownLabel || this.data.countdownLabel || 'Ends in:';
-        return { expired: false, days, hours, minutes, seconds, timeStr, label };
+        return {
+            expired: false,
+            days,
+            hours,
+            minutes,
+            seconds,
+            label: this.data.countdownLabel || '⚡ Flash Offer Ends In:'
+        };
     },
 
     startCountdownTicking: function() {
         clearInterval(this.countdownTimer);
         this.countdownTimer = setInterval(() => {
-            const cdData = this.getCountdownData();
-            const cdEl = document.getElementById('kaghan-announcement-countdown');
-            if (cdEl && cdData) {
-                if (cdData.expired) {
-                    cdEl.innerHTML = `<span class="opacity-75">Offer Expired</span>`;
-                } else {
-                    cdEl.querySelector('.cd-timer-val').textContent = cdData.timeStr;
-                }
+            const cd = this.getCountdownData();
+            const cdContainer = document.getElementById('kaghan-promo-countdown-container');
+            if (!cdContainer) return;
+
+            if (!cd || cd.expired) {
+                cdContainer.innerHTML = `<span class="text-xs font-semibold text-amber-300 opacity-90"><i class="fa-solid fa-clock mr-1"></i> Offer Expired</span>`;
+                clearInterval(this.countdownTimer);
+            } else {
+                const daysEl = cdContainer.querySelector('.cd-days');
+                const hoursEl = cdContainer.querySelector('.cd-hours');
+                const minsEl = cdContainer.querySelector('.cd-mins');
+                const secsEl = cdContainer.querySelector('.cd-secs');
+
+                if (daysEl) daysEl.textContent = String(cd.days).padStart(2, '0');
+                if (hoursEl) hoursEl.textContent = String(cd.hours).padStart(2, '0');
+                if (minsEl) minsEl.textContent = String(cd.minutes).padStart(2, '0');
+                if (secsEl) secsEl.textContent = String(cd.seconds).padStart(2, '0');
             }
         }, 1000);
     },
 
-    updateContent: function(bar) {
-        if (!bar) bar = document.getElementById('kaghan-announcement-bar');
-        if (!bar || !this.data) return;
-
-        const announcement = this.data;
-        const msg = announcement.messages[this.currentIndex] || announcement.messages[0];
-        if (!msg) return;
-
-        const textColor = announcement.textColor || '#FFFFFF';
-        const accentColor = announcement.accentColor || '#D4AF37';
-        const badgeBg = announcement.badgeBg || accentColor;
-        const badgeTextColor = announcement.badgeTextColor || '#0F172A';
-        const badgeText = announcement.badgeText || (msg.badge || '');
-
-        const safeText = window.KaghanSafe ? window.KaghanSafe.escapeHTML(msg.text || '') : (msg.text || '');
-        const emoji = msg.emoji ? `<span class="inline-block mr-1 text-sm">${window.KaghanSafe ? window.KaghanSafe.escapeHTML(msg.emoji) : msg.emoji}</span>` : '';
-        const icon = msg.icon ? `<i class="fa-solid ${window.KaghanSafe ? window.KaghanSafe.escapeHTML(msg.icon) : msg.icon} mr-1.5" style="color:${accentColor}"></i>` : '';
-
-        // 1. Primary Highlight Badge
-        const badgeHtml = badgeText ? `
-            <span class="inline-flex items-center text-[9px] uppercase font-black tracking-widest px-2.5 py-0.5 rounded-full mr-2 shadow-xs shrink-0" style="background:${badgeBg}; color:${badgeTextColor}">
-                ${window.KaghanSafe ? window.KaghanSafe.escapeHTML(badgeText) : badgeText}
-            </span>
-        ` : '';
-
-        // 2. Special Perks Badge (e.g. Free Breakfast, VIP Valet, 15% Off)
-        const perkBadgeText = msg.perkBadge || (announcement.perksEnabled ? announcement.perkBadge || announcement.perkText : '');
-        const perkIcon = msg.perkIcon || announcement.perkIcon || 'fa-gift';
-        const perkHtml = perkBadgeText ? `
-            <span class="inline-flex items-center gap-1 text-[9px] uppercase font-black tracking-wider px-2.5 py-0.5 rounded-full mr-2 shadow-xs shrink-0 bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 border border-amber-300">
-                <i class="fa-solid ${window.KaghanSafe ? window.KaghanSafe.escapeHTML(perkIcon) : perkIcon} text-[9px]"></i>
-                <span>${window.KaghanSafe ? window.KaghanSafe.escapeHTML(perkBadgeText) : perkBadgeText}</span>
-            </span>
-        ` : '';
-
-        // 3. Limited-Time Countdown Timer Pill
-        const cdData = this.getCountdownData();
-        const countdownHtml = (cdData && !cdData.expired) ? `
-            <span id="kaghan-announcement-countdown" class="inline-flex items-center gap-1.5 font-mono text-[10px] font-bold px-2.5 py-0.5 rounded-full mx-1.5 shadow-xs shrink-0 bg-black/40 border border-white/20" style="color:${accentColor}">
-                <i class="fa-solid fa-fire text-amber-400 text-[10px] animate-pulse"></i>
-                <span class="text-white/80 font-sans text-[9px] hidden sm:inline uppercase">${window.KaghanSafe ? window.KaghanSafe.escapeHTML(cdData.label) : cdData.label}</span>
-                <span class="cd-timer-val font-black tracking-wider">${cdData.timeStr}</span>
-            </span>
-        ` : '';
-
-        // 4. Promo Code & 1-Click Claim Button
-        const promoCode = msg.promoCode || announcement.promoCode || '';
-        const claimAction = msg.claimAction || announcement.claimAction || (promoCode ? 'auto-apply' : 'link');
-        let safeLinkText = msg.linkText ? (window.KaghanSafe ? window.KaghanSafe.escapeHTML(msg.linkText) : msg.linkText) : '';
-        let targetUrl = msg.linkUrl || 'rooms.html';
-
-        if (promoCode && !safeLinkText) {
-            safeLinkText = `Claim ${promoCode}`;
+    renderCenterModal: function(wrapper, promo) {
+        const bg = promo.bgColor || '#0B0F19';
+        const textColor = promo.textColor || '#FFFFFF';
+        const accentColor = promo.accentColor || '#D4AF37';
+        const badgeBg = promo.badgeBg || accentColor;
+        const badgeTextColor = promo.badgeTextColor || '#0B0F19';
+        const badgeText = promo.badgeText || '✨ SPECIAL PRIVILEGE';
+        const title = promo.title || (promo.messages && promo.messages[0] && promo.messages[0].text) || 'Unlock Exclusive Direct Booking Privilege';
+        const subtitle = promo.subtitle || 'Book directly on our official portal to enjoy guaranteed lowest rates, VIP amenities, and signature hospitality.';
+        const promoCode = promo.promoCode || (promo.messages && promo.messages[0] && promo.messages[0].promoCode) || 'DIRECT15';
+        const discountPct = promo.discountPercent || 15;
+        const primaryCtaText = promo.primaryCtaText || (promoCode ? `Claim ${promoCode} & Book` : 'Explore Luxury Suites');
+        let primaryCtaUrl = promo.primaryCtaUrl || 'booking.html';
+        if (promoCode) {
+            primaryCtaUrl = primaryCtaUrl.includes('?') ? `${primaryCtaUrl}&coupon=${encodeURIComponent(promoCode)}` : `${primaryCtaUrl}?coupon=${encodeURIComponent(promoCode)}`;
         }
+        const secondaryCtaText = promo.secondaryCtaText || 'No thanks, I will pay full price';
 
-        let ctaHtml = '';
-        if (safeLinkText) {
-            if (claimAction === 'copy-code' && promoCode) {
-                ctaHtml = `
-                    <button type="button" onclick="KaghanAnnouncement.claimPromo('${window.KaghanSafe.escapeHTML(promoCode)}', 'copy-code')" class="inline-flex items-center gap-1 font-bold ml-2 px-3 py-0.5 rounded-full text-[11px] transition-all duration-200 hover:scale-105 active:scale-95 shadow-xs shrink-0 cursor-pointer" style="background:${accentColor}; color:${badgeTextColor}">
-                        <i class="fa-solid fa-copy text-[9px]"></i>
-                        <span>${safeLinkText}</span>
-                    </button>
-                `;
-            } else if (claimAction === 'auto-apply' && promoCode) {
-                const autoApplyUrl = targetUrl.includes('?') ? `${targetUrl}&coupon=${encodeURIComponent(promoCode)}` : `${targetUrl}?coupon=${encodeURIComponent(promoCode)}`;
-                ctaHtml = `
-                    <a href="${autoApplyUrl}" class="inline-flex items-center gap-1 font-bold ml-2 px-3 py-0.5 rounded-full text-[11px] transition-all duration-200 hover:scale-105 active:scale-95 shadow-xs shrink-0 cursor-pointer" style="background:${accentColor}; color:${badgeTextColor}">
-                        <i class="fa-solid fa-tag text-[9px]"></i>
-                        <span>${safeLinkText}</span>
-                        <i class="fa-solid fa-arrow-right text-[9px]"></i>
-                    </a>
-                `;
-            } else {
-                const linkTarget = msg.linkTarget === '_blank' ? '_blank' : '_self';
-                ctaHtml = `
-                    <a href="${window.KaghanSafe ? window.KaghanSafe.escapeHTML(targetUrl) : targetUrl}" target="${linkTarget}" class="inline-flex items-center gap-1 font-bold ml-2 px-3 py-0.5 rounded-full text-[11px] transition-all duration-200 hover:scale-105 active:scale-95 shadow-xs shrink-0" style="background:${accentColor}; color:${badgeTextColor}">
-                        <span>${safeLinkText}</span>
-                        <i class="fa-solid fa-arrow-right text-[9px]"></i>
-                    </a>
-                `;
-            }
-        }
+        // Render Perks Grid
+        const perks = Array.isArray(promo.perks) && promo.perks.length > 0 ? promo.perks : [
+            { icon: 'fa-gift', title: `${discountPct}% Direct Discount`, desc: 'Instant price reduction' },
+            { icon: 'fa-mug-saucer', title: 'Complimentary Breakfast', desc: 'Fresh daily breakfast' },
+            { icon: 'fa-car', title: 'Free Airport Shuttle', desc: 'On selected suites' },
+            { icon: 'fa-clock', title: 'Early Check-In', desc: 'Subject to availability' }
+        ];
 
-        const dotsHtml = announcement.messages.length > 1 ? `
-            <div class="hidden sm:flex items-center gap-1.5 mx-2 shrink-0">
-                ${announcement.messages.map((_, i) => `
-                    <button type="button" onclick="KaghanAnnouncement.goTo(${i})" class="w-1.5 h-1.5 rounded-full transition-all duration-300 ${i === this.currentIndex ? 'w-4' : 'opacity-40'}" style="background:${i === this.currentIndex ? accentColor : textColor}" aria-label="Slide ${i+1}"></button>
-                `).join('')}
+        const perksHtml = (promo.perksEnabled !== false && perks.length > 0) ? `
+            <div class="grid grid-cols-2 gap-2.5 my-5 text-left">
+                ${perks.map(p => {
+                    const tagHtml = p.tag ? `<span class="inline-block text-[8px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-md bg-amber-400/20 text-amber-300 border border-amber-400/30 ml-1 shrink-0">${window.KaghanSafe ? window.KaghanSafe.escapeHTML(p.tag) : p.tag}</span>` : '';
+                    return `
+                    <div class="flex items-start gap-2.5 p-2.5 rounded-2xl bg-white/[0.04] border border-white/[0.08] hover:border-amber-400/30 transition-all">
+                        <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 bg-amber-400/10 border border-amber-400/20 text-amber-400 text-xs">
+                            <i class="fa-solid ${window.KaghanSafe ? window.KaghanSafe.escapeHTML(p.icon || 'fa-gift') : p.icon}"></i>
+                        </div>
+                        <div class="min-w-0 flex-grow">
+                            <div class="text-xs font-bold text-white truncate leading-tight flex items-center justify-between">
+                                <span class="truncate">${window.KaghanSafe ? window.KaghanSafe.escapeHTML(p.title || '') : p.title}</span>
+                                ${tagHtml}
+                            </div>
+                            <div class="text-[10px] text-slate-400 truncate font-light mt-0.5">${window.KaghanSafe ? window.KaghanSafe.escapeHTML(p.desc || '') : p.desc}</div>
+                        </div>
+                    </div>
+                    `;
+                }).join('')}
             </div>
         ` : '';
 
-        const navArrowsHtml = announcement.messages.length > 1 ? `
-            <div class="flex items-center gap-0.5 shrink-0 ml-1">
-                <button type="button" onclick="KaghanAnnouncement.prev()" class="w-5 h-5 rounded-full flex items-center justify-center text-[10px] opacity-60 hover:opacity-100 transition-opacity" style="color:${textColor}" aria-label="Previous">
-                    <i class="fa-solid fa-chevron-left"></i>
-                </button>
-                <button type="button" onclick="KaghanAnnouncement.next()" class="w-5 h-5 rounded-full flex items-center justify-center text-[10px] opacity-60 hover:opacity-100 transition-opacity" style="color:${textColor}" aria-label="Next">
-                    <i class="fa-solid fa-chevron-right"></i>
-                </button>
-            </div>
-        ` : '';
-
-        const dismissHtml = announcement.dismissible !== false ? `
-            <button type="button" onclick="KaghanAnnouncement.dismiss()" class="w-6 h-6 rounded-full flex items-center justify-center ml-2 text-xs opacity-60 hover:opacity-100 hover:bg-white/10 transition-all shrink-0" style="color:${textColor}" title="Dismiss announcement">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-        ` : '';
-
-        bar.innerHTML = `
-            <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2 flex items-center justify-between gap-2 min-h-[38px]">
-                <div class="flex items-center justify-center flex-grow text-center min-w-0 overflow-hidden text-xs sm:text-sm font-medium">
-                    <div id="kaghan-announcement-msg" class="flex flex-wrap items-center justify-center gap-1.5 truncate transition-all duration-300 transform">
-                        ${badgeHtml}
-                        ${perkHtml}
-                        <span class="truncate leading-tight">${emoji}${icon}${safeText}</span>
-                        ${countdownHtml}
-                        ${ctaHtml}
+        // Render Countdown Timer
+        const cd = this.getCountdownData();
+        const countdownHtml = (promo.countdownEnabled && cd && !cd.expired) ? `
+            <div class="my-4 p-3 rounded-2xl bg-black/40 border border-amber-400/20 flex flex-col items-center gap-2">
+                <span class="text-[10px] uppercase font-bold tracking-wider text-amber-300/90 flex items-center gap-1.5">
+                    <i class="fa-solid fa-fire text-amber-400 animate-pulse"></i> ${window.KaghanSafe ? window.KaghanSafe.escapeHTML(cd.label) : cd.label}
+                </span>
+                <div id="kaghan-promo-countdown-container" class="flex items-center gap-2 font-mono">
+                    <div class="flex flex-col items-center bg-white/10 px-2 py-1 rounded-lg min-w-[36px]">
+                        <span class="cd-days text-sm font-black text-white">${String(cd.days).padStart(2, '0')}</span>
+                        <span class="text-[8px] uppercase tracking-tighter text-slate-400">Days</span>
+                    </div>
+                    <span class="text-amber-400 font-bold">:</span>
+                    <div class="flex flex-col items-center bg-white/10 px-2 py-1 rounded-lg min-w-[36px]">
+                        <span class="cd-hours text-sm font-black text-white">${String(cd.hours).padStart(2, '0')}</span>
+                        <span class="text-[8px] uppercase tracking-tighter text-slate-400">Hours</span>
+                    </div>
+                    <span class="text-amber-400 font-bold">:</span>
+                    <div class="flex flex-col items-center bg-white/10 px-2 py-1 rounded-lg min-w-[36px]">
+                        <span class="cd-mins text-sm font-black text-white">${String(cd.minutes).padStart(2, '0')}</span>
+                        <span class="text-[8px] uppercase tracking-tighter text-slate-400">Mins</span>
+                    </div>
+                    <span class="text-amber-400 font-bold">:</span>
+                    <div class="flex flex-col items-center bg-white/10 px-2 py-1 rounded-lg min-w-[36px]">
+                        <span class="cd-secs text-sm font-black text-amber-400">${String(cd.seconds).padStart(2, '0')}</span>
+                        <span class="text-[8px] uppercase tracking-tighter text-slate-400">Secs</span>
                     </div>
                 </div>
-                <div class="flex items-center shrink-0">
-                    ${dotsHtml}
-                    ${navArrowsHtml}
-                    ${dismissHtml}
+            </div>
+        ` : '';
+
+        // Render 1-Click Promo Box
+        const couponBoxHtml = promoCode ? `
+            <div class="flex items-center justify-between gap-2 p-2.5 rounded-2xl bg-amber-400/10 border border-dashed border-amber-400/40 my-3">
+                <div class="flex items-center gap-2 min-w-0 pl-1">
+                    <i class="fa-solid fa-tag text-amber-400 text-xs shrink-0"></i>
+                    <div class="text-left min-w-0">
+                        <span class="text-[9px] uppercase font-bold text-amber-300/80 block leading-tight">Discount Code</span>
+                        <span class="font-mono text-xs font-black text-white tracking-widest truncate block">${window.KaghanSafe ? window.KaghanSafe.escapeHTML(promoCode) : promoCode}</span>
+                    </div>
+                </div>
+                <button type="button" onclick="KaghanPromotions.copyPromoCode('${window.KaghanSafe ? window.KaghanSafe.escapeHTML(promoCode) : promoCode}')" class="px-3 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-black uppercase tracking-wider transition-transform active:scale-95 shadow-sm shrink-0 flex items-center gap-1">
+                    <i class="fa-solid fa-copy text-[10px]"></i> Copy
+                </button>
+            </div>
+        ` : '';
+
+        wrapper.innerHTML = `
+            <div class="fixed inset-0 z-[99999] flex items-center justify-center p-4 overflow-y-auto">
+                <!-- Backdrop Blur -->
+                <div class="kaghan-popup-backdrop fixed inset-0 bg-black/75 backdrop-blur-md transition-opacity duration-300 opacity-0" onclick="KaghanPromotions.dismiss()"></div>
+
+                <!-- Modal Dialog Container -->
+                <div class="kaghan-popup-anim-target relative w-full max-w-lg rounded-3xl p-6 sm:p-8 text-center overflow-hidden shadow-2xl border border-white/10 transition-all duration-300 opacity-0 transform scale-95" style="background: ${bg}; color: ${textColor};">
+                    
+                    <!-- Decorative Golden Ambient Glow -->
+                    <div class="absolute -top-24 -left-24 w-48 h-48 rounded-full blur-3xl opacity-30 pointer-events-none" style="background: ${accentColor};"></div>
+                    <div class="absolute -bottom-24 -right-24 w-48 h-48 rounded-full blur-3xl opacity-20 pointer-events-none" style="background: ${accentColor};"></div>
+
+                    <!-- Close Button -->
+                    <button type="button" onclick="KaghanPromotions.dismiss()" class="absolute top-4 right-4 w-9 h-9 rounded-full flex items-center justify-center bg-white/10 hover:bg-white/20 text-white/70 hover:text-white transition-all text-sm z-10" aria-label="Close promotion">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+
+                    <!-- Top Highlight Badge -->
+                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-md mb-3" style="background: ${badgeBg}; color: ${badgeTextColor};">
+                        <i class="fa-solid fa-crown text-[9px]"></i>
+                        <span>${window.KaghanSafe ? window.KaghanSafe.escapeHTML(badgeText) : badgeText}</span>
+                    </div>
+
+                    <!-- Headline & Subtitle -->
+                    <h3 class="text-xl sm:text-2xl font-black outfit tracking-tight leading-snug mb-2 text-white">
+                        ${window.KaghanSafe ? window.KaghanSafe.escapeHTML(title) : title}
+                    </h3>
+                    <p class="text-xs sm:text-sm text-slate-300 font-light leading-relaxed max-w-md mx-auto">
+                        ${window.KaghanSafe ? window.KaghanSafe.escapeHTML(subtitle) : subtitle}
+                    </p>
+
+                    <!-- Perks Grid -->
+                    ${perksHtml}
+
+                    <!-- Countdown Timer -->
+                    ${countdownHtml}
+
+                    <!-- Promo Code Box -->
+                    ${couponBoxHtml}
+
+                    <!-- CTA Buttons -->
+                    <div class="mt-5 space-y-2.5">
+                        <a href="${window.KaghanSafe ? window.KaghanSafe.escapeHTML(primaryCtaUrl) : primaryCtaUrl}" class="w-full py-3.5 px-6 rounded-2xl font-black text-xs sm:text-sm uppercase tracking-wider text-slate-950 transition-all duration-200 hover:brightness-110 active:scale-[0.98] shadow-lg flex items-center justify-center gap-2" style="background: linear-gradient(135deg, ${accentColor} 0%, #F59E0B 100%);">
+                            <span>${window.KaghanSafe ? window.KaghanSafe.escapeHTML(primaryCtaText) : primaryCtaText}</span>
+                            <i class="fa-solid fa-arrow-right text-xs"></i>
+                        </a>
+
+                        <button type="button" onclick="KaghanPromotions.dismiss()" class="w-full text-center text-[11px] text-slate-400 hover:text-slate-200 transition-colors py-1">
+                            ${window.KaghanSafe ? window.KaghanSafe.escapeHTML(secondaryCtaText) : secondaryCtaText}
+                        </button>
+                    </div>
                 </div>
             </div>
         `;
     },
 
-    claimPromo: function(code, action) {
-        if (action === 'copy-code' && code) {
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(code).then(() => {
-                    if (window.KaghanUI && window.KaghanUI.showToast) {
-                        window.KaghanUI.showToast(`Promo Code "${code}" copied! Paste at checkout to save.`, "success");
-                    } else {
-                        alert(`Promo Code "${code}" copied!`);
-                    }
-                }).catch(() => {});
-            }
+    renderCornerFloater: function(wrapper, promo) {
+        const bg = promo.bgColor || '#0B0F19';
+        const textColor = promo.textColor || '#FFFFFF';
+        const accentColor = promo.accentColor || '#D4AF37';
+        const badgeBg = promo.badgeBg || accentColor;
+        const badgeTextColor = promo.badgeTextColor || '#0B0F19';
+        const badgeText = promo.badgeText || '⚡ VIP EXCLUSIVE';
+        const title = promo.title || 'Special Direct Booking Deal';
+        const promoCode = promo.promoCode || 'DIRECT15';
+        const primaryCtaText = promo.primaryCtaText || 'Claim Offer';
+        let primaryCtaUrl = promo.primaryCtaUrl || 'booking.html';
+        if (promoCode) {
+            primaryCtaUrl = primaryCtaUrl.includes('?') ? `${primaryCtaUrl}&coupon=${encodeURIComponent(promoCode)}` : `${primaryCtaUrl}?coupon=${encodeURIComponent(promoCode)}`;
         }
+
+        wrapper.innerHTML = `
+            <div class="fixed bottom-6 right-6 z-[99999] max-w-sm w-full p-2">
+                <div class="kaghan-popup-anim-target relative rounded-3xl p-5 shadow-2xl border border-white/10 transition-all duration-300 opacity-0 transform translate-y-8" style="background: ${bg}; color: ${textColor};">
+                    
+                    <!-- Close button -->
+                    <button type="button" onclick="KaghanPromotions.dismiss()" class="absolute top-3 right-3 w-7 h-7 rounded-full flex items-center justify-center bg-white/10 hover:bg-white/20 text-white/70 hover:text-white transition-all text-xs" aria-label="Close">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+
+                    <!-- Top Badge -->
+                    <div class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider mb-2" style="background: ${badgeBg}; color: ${badgeTextColor};">
+                        <i class="fa-solid fa-gift text-[8px]"></i>
+                        <span>${window.KaghanSafe ? window.KaghanSafe.escapeHTML(badgeText) : badgeText}</span>
+                    </div>
+
+                    <h4 class="text-base font-bold outfit text-white mb-1.5 pr-6">${window.KaghanSafe ? window.KaghanSafe.escapeHTML(title) : title}</h4>
+                    <p class="text-xs text-slate-300 font-light mb-3">Save 15% & receive complimentary gourmet breakfast on all direct reservations.</p>
+
+                    <div class="flex items-center gap-2">
+                        <a href="${window.KaghanSafe ? window.KaghanSafe.escapeHTML(primaryCtaUrl) : primaryCtaUrl}" class="flex-grow py-2.5 px-4 rounded-xl font-bold text-xs uppercase tracking-wider text-slate-950 text-center transition-all hover:brightness-110" style="background: ${accentColor};">
+                            ${window.KaghanSafe ? window.KaghanSafe.escapeHTML(primaryCtaText) : primaryCtaText}
+                        </a>
+                        ${promoCode ? `
+                            <button type="button" onclick="KaghanPromotions.copyPromoCode('${window.KaghanSafe ? window.KaghanSafe.escapeHTML(promoCode) : promoCode}')" class="px-3 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-mono font-bold transition-all" title="Copy ${promoCode}">
+                                <i class="fa-solid fa-copy"></i>
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+            </div>
+        `;
     },
 
-    next: function() {
-        if (!this.data || !this.data.messages || this.data.messages.length <= 1) return;
-        this.currentIndex = (this.currentIndex + 1) % this.data.messages.length;
-        this.animateTransition();
+    renderSlideDrawer: function(wrapper, promo) {
+        const bg = promo.bgColor || '#0B0F19';
+        const textColor = promo.textColor || '#FFFFFF';
+        const accentColor = promo.accentColor || '#D4AF37';
+        const title = promo.title || 'Direct Booking Perks Active';
+        const promoCode = promo.promoCode || 'DIRECT15';
+        let primaryCtaUrl = promo.primaryCtaUrl || 'booking.html';
+        if (promoCode) {
+            primaryCtaUrl = primaryCtaUrl.includes('?') ? `${primaryCtaUrl}&coupon=${encodeURIComponent(promoCode)}` : `${primaryCtaUrl}?coupon=${encodeURIComponent(promoCode)}`;
+        }
+
+        wrapper.innerHTML = `
+            <div class="fixed inset-x-0 bottom-0 z-[99999] p-3 sm:p-4">
+                <div class="kaghan-popup-backdrop fixed inset-0 bg-black/40 backdrop-blur-xs transition-opacity opacity-0" onclick="KaghanPromotions.dismiss()"></div>
+                <div class="kaghan-popup-anim-target relative max-w-2xl mx-auto rounded-3xl p-4 sm:p-5 shadow-2xl border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 transition-all duration-300 opacity-0 transform translate-y-8" style="background: ${bg}; color: ${textColor};">
+                    
+                    <button type="button" onclick="KaghanPromotions.dismiss()" class="absolute top-2 right-2 w-6 h-6 rounded-full flex items-center justify-center text-slate-400 hover:text-white text-xs">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 bg-amber-400/20 text-amber-400 text-lg border border-amber-400/30">
+                            <i class="fa-solid fa-crown"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold outfit text-white leading-tight">${window.KaghanSafe ? window.KaghanSafe.escapeHTML(title) : title}</h4>
+                            <span class="text-xs text-slate-300 font-light">Includes 15% VIP discount & complimentary breakfast</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 w-full sm:w-auto shrink-0">
+                        <a href="${window.KaghanSafe ? window.KaghanSafe.escapeHTML(primaryCtaUrl) : primaryCtaUrl}" class="flex-grow sm:flex-grow-0 py-2.5 px-5 rounded-xl font-bold text-xs uppercase tracking-wider text-slate-950 transition-all hover:brightness-110 text-center" style="background: ${accentColor};">
+                            Claim 15% Off
+                        </a>
+                    </div>
+                </div>
+            </div>
+        `;
     },
 
-    prev: function() {
-        if (!this.data || !this.data.messages || this.data.messages.length <= 1) return;
-        this.currentIndex = (this.currentIndex - 1 + this.data.messages.length) % this.data.messages.length;
-        this.animateTransition();
-    },
-
-    goTo: function(index) {
-        if (!this.data || !this.data.messages || index < 0 || index >= this.data.messages.length) return;
-        this.currentIndex = index;
-        this.animateTransition();
-    },
-
-    animateTransition: function() {
-        const msgEl = document.getElementById('kaghan-announcement-msg');
-        if (msgEl) {
-            msgEl.style.opacity = '0';
-            msgEl.style.transform = 'translateY(-4px)';
-            setTimeout(() => {
-                this.updateContent();
-                const newMsgEl = document.getElementById('kaghan-announcement-msg');
-                if (newMsgEl) {
-                    newMsgEl.style.opacity = '1';
-                    newMsgEl.style.transform = 'translateY(0)';
+    copyPromoCode: function(code) {
+        if (!code) return;
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(code).then(() => {
+                if (window.KaghanUI && window.KaghanUI.showToast) {
+                    window.KaghanUI.showToast(`✨ Promo Code "${code}" copied! Paste at checkout to save.`, "success");
+                } else {
+                    alert(`Promo Code "${code}" copied!`);
                 }
-            }, 180);
-        } else {
-            this.updateContent();
+            }).catch(() => {});
         }
     },
 
     dismiss: function() {
-        const bar = document.getElementById('kaghan-announcement-bar');
-        if (bar) {
-            bar.style.transform = 'translateY(-100%)';
-            bar.style.opacity = '0';
+        const popupEl = document.getElementById('kaghan-promotional-popup');
+        if (popupEl) {
+            const inner = popupEl.querySelector('.kaghan-popup-anim-target');
+            const backdrop = popupEl.querySelector('.kaghan-popup-backdrop');
+            if (inner) {
+                inner.style.opacity = '0';
+                inner.style.transform = 'translateY(12px) scale(0.95)';
+            }
+            if (backdrop) {
+                backdrop.style.opacity = '0';
+            }
             setTimeout(() => {
-                bar.remove();
-                this.resetNavbarOffset();
+                popupEl.remove();
+                this.isOpen = false;
             }, 300);
         }
-        if (this.data && this.data.updatedAt) {
-            sessionStorage.setItem('kaghan_announcement_dismissed', this.data.updatedAt);
+
+        // Set snooze duration in storage
+        const snoozeHours = (this.data && this.data.snoozeDuration === 'session') ? 0 : 24;
+        if (snoozeHours > 0) {
+            const expireTime = Date.now() + (snoozeHours * 60 * 60 * 1000);
+            localStorage.setItem('kaghan_promo_snoozed_until', String(expireTime));
         } else {
-            sessionStorage.setItem('kaghan_announcement_dismissed', 'true');
+            sessionStorage.setItem('kaghan_promo_session_dismissed', 'true');
         }
-        clearInterval(this.timer);
+
         clearInterval(this.countdownTimer);
     },
 
     hide: function() {
-        const bar = document.getElementById('kaghan-announcement-bar');
-        if (bar) bar.remove();
-        this.resetNavbarOffset();
-        clearInterval(this.timer);
-        clearInterval(this.countdownTimer);
-    },
-
-    updateNavbarOffset: function() {
-        setTimeout(() => {
-            const bar = document.getElementById('kaghan-announcement-bar');
-            const navbar = document.getElementById('hotel-navbar');
-            if (bar && navbar) {
-                const height = bar.offsetHeight || 38;
-                navbar.style.top = `${height}px`;
-                navbar.style.transition = 'top 0.3s cubic-bezier(0.16, 1, 0.3, 1)';
-            }
-        }, 50);
-    },
-
-    resetNavbarOffset: function() {
-        const navbar = document.getElementById('hotel-navbar');
-        if (navbar) {
-            navbar.style.top = '0px';
-        }
+        this.dismiss();
     }
 };
 
-window.addEventListener('resize', () => {
-    if (window.KaghanAnnouncement && document.getElementById('kaghan-announcement-bar')) {
-        window.KaghanAnnouncement.updateNavbarOffset();
-    }
-});
+// Backward-compatible alias for existing database event listeners
+window.KaghanAnnouncement = {
+    init: () => window.KaghanPromotions.init(),
+    render: (data) => window.KaghanPromotions.setup(data),
+    hide: () => window.KaghanPromotions.hide(),
+    dismiss: () => window.KaghanPromotions.dismiss()
+};
 
-// Auto-run announcement bar on public pages
+// Auto-run promotional popups on public pages
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => window.KaghanAnnouncement.init());
+    document.addEventListener('DOMContentLoaded', () => window.KaghanPromotions.init());
 } else {
-    window.KaghanAnnouncement.init();
+    window.KaghanPromotions.init();
 }
 
 

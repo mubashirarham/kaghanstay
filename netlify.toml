@@ -109,6 +109,9 @@
 [build.processing]
   skip_node_bundling = true
 
+[functions."ical-cron-sync"]
+  schedule = "*/5 * * * *"
+
 [build.processing.html]
   pretty_urls = true
 

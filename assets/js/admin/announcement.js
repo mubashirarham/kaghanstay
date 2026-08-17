@@ -1,68 +1,182 @@
-// Kaghan Stay — Admin Dynamic Announcement Bar Controller
-// Manages real-time preview, multi-message ticker feed, visual palettes, typography, icons, emojis, special perks, limited-time countdowns, and discount auto-apply.
+// Kaghan Stay — Admin Dynamic Promotional Popups & VIP Offer Studio
+// Supports multi-campaign popup management (Create, Clone, Delete, Toggle ON/OFF), granular page targeting (Enable/Disable specific pages, custom URL wildcards), categorized icon picker modal, VIP perks builder, countdown timers, and live simulator.
 
 window.AdminAnnouncementModule = {
     initialized: false,
-    currentData: {
-        active: true,
-        theme: 'royal-gold',
-        bgColor: '#0B0F19',
-        textColor: '#FFFFFF',
-        accentColor: '#D4AF37',
-        badgeBg: '#D4AF37',
-        badgeTextColor: '#0B0F19',
-        badgeText: '✨ SPECIAL OFFER',
-        fontFamily: 'outfit',
-        fontSize: '12px',
-        dismissible: true,
-        rotationInterval: 5,
-        // Special Perks & VIP Incentives
-        perksEnabled: true,
-        perkBadge: 'VIP 15% OFF',
-        perkText: 'Free Gourmet Breakfast & High Tea',
-        perkIcon: 'fa-gift',
-        // Limited-Time Offer Countdown
-        countdownEnabled: true,
-        countdownExpiry: '',
-        countdownLabel: '⚡ Flash Offer Ends:',
-        // Promo Code & 1-Click Auto-Apply
-        promoCode: 'DIRECT15',
-        discountPercent: 15,
-        claimAction: 'auto-apply',
-        messages: [
-            {
-                id: 'msg-1',
-                emoji: '✨',
-                icon: 'fa-sparkles',
-                text: 'Exclusive Direct Booking Privilege: Save 15% + Free Welcome High Tea on all luxury 2BHK Suites!',
-                linkText: 'Claim 15% Off',
-                linkUrl: 'booking.html',
-                linkTarget: '_self',
-                promoCode: 'DIRECT15',
-                perkBadge: '15% OFF + FREE TEA'
-            },
-            {
-                id: 'msg-2',
-                emoji: '🏔️',
-                icon: 'fa-mountain-sun',
-                text: 'Limited Season Pass: Margalla Hills View Suites now include complimentary early check-in.',
-                linkText: 'Reserve Now',
-                linkUrl: 'rooms.html',
-                linkTarget: '_self',
-                promoCode: '',
-                perkBadge: 'EARLY CHECK-IN'
-            }
-        ]
-    },
-    previewIndex: 0,
-    previewTimer: null,
+    previewDevice: 'desktop', // 'desktop' | 'tablet' | 'mobile'
     previewCountdownTimer: null,
     availableCoupons: [],
+    activePerkIconTargetIdx: null,
+    activePopupId: 'popup-1',
 
-    // Preset luxury themes
+    // List of all campaigns
+    popups: [
+        {
+            id: 'popup-1',
+            name: '👑 Direct Booking Privilege (15% Off)',
+            active: true,
+            layout: 'center-modal',
+            theme: 'royal-gold',
+            bgColor: '#0B0F19',
+            textColor: '#FFFFFF',
+            accentColor: '#D4AF37',
+            badgeBg: '#D4AF37',
+            badgeTextColor: '#0B0F19',
+            badgeText: '✨ EXCLUSIVE PRIVILEGE',
+            title: 'Unlock Direct Booking Privilege',
+            subtitle: 'Book directly on our official portal to enjoy guaranteed lowest rates, VIP amenities, and signature hospitality in Islamabad & Murree.',
+            promoCode: 'DIRECT15',
+            discountPercent: 15,
+            claimAction: 'auto-apply',
+            primaryCtaText: 'Claim 15% Off & Book Now',
+            primaryCtaUrl: 'booking.html',
+            secondaryCtaText: 'No thanks, I will pay full price',
+            
+            perksEnabled: true,
+            perks: [
+                { id: 'perk-1', icon: 'fa-tags', title: '15% Direct Discount', desc: 'Instant checkout deduction', tag: '15% OFF', color: 'gold' },
+                { id: 'perk-2', icon: 'fa-mug-saucer', title: 'Free Gourmet Breakfast', desc: 'Complimentary daily service', tag: 'FREE', color: 'amber' },
+                { id: 'perk-3', icon: 'fa-van-shuttle', title: 'Free Airport Shuttle', desc: 'On selected luxury suites', tag: 'VIP', color: 'gold' },
+                { id: 'perk-4', icon: 'fa-clock', title: 'Early Check-In', desc: 'Subject to suite availability', tag: 'FLEXIBLE', color: 'emerald' }
+            ],
+
+            countdownEnabled: true,
+            countdownExpiry: '',
+            countdownLabel: '⚡ Flash Offer Ends In:',
+
+            // Page Targeting & Inclusion / Exclusion Rules
+            targetingMode: 'all', // 'all' | 'specific_include' | 'specific_exclude'
+            targetPages: ['home', 'rooms', 'room-details', 'booking', 'blog', 'contact'],
+            excludedPages: [],
+            customUrls: '',
+
+            // Triggers
+            triggerType: 'delay',
+            delaySeconds: 3,
+            scrollThreshold: 30,
+            snoozeDuration: '24h'
+        }
+    ],
+
+    // Comprehensive Categorized Icon Library
+    iconLibrary: [
+        {
+            category: '👑 Privileges & Luxury',
+            icons: [
+                { id: 'fa-crown', name: 'Crown / VIP' },
+                { id: 'fa-gem', name: 'Gem / Luxury' },
+                { id: 'fa-sparkles', name: 'Sparkles' },
+                { id: 'fa-wand-magic-sparkles', name: 'Magic Sparkles' },
+                { id: 'fa-award', name: 'Award Medal' },
+                { id: 'fa-star', name: 'Five Star' },
+                { id: 'fa-shield-halved', name: 'Shield / Guaranteed' },
+                { id: 'fa-certificate', name: 'Certificate' },
+                { id: 'fa-heart', name: 'Heart' },
+                { id: 'fa-hand-sparkles', name: 'Signature Service' }
+            ]
+        },
+        {
+            category: '☕ Dining & Breakfast',
+            icons: [
+                { id: 'fa-mug-saucer', name: 'Hot Tea / Coffee' },
+                { id: 'fa-utensils', name: 'Dining Utensils' },
+                { id: 'fa-champagne-glasses', name: 'Champagne / High Tea' },
+                { id: 'fa-wine-glass', name: 'Wine Glass' },
+                { id: 'fa-bowl-food', name: 'Gourmet Food' },
+                { id: 'fa-apple-whole', name: 'Fresh Fruit' },
+                { id: 'fa-cookie-bite', name: 'Bakery / Treats' },
+                { id: 'fa-kitchen-set', name: 'Equipped Kitchen' },
+                { id: 'fa-bottle-water', name: 'Mineral Water' }
+            ]
+        },
+        {
+            category: '🚗 Transport & Airport',
+            icons: [
+                { id: 'fa-car', name: 'Luxury Car / Valet' },
+                { id: 'fa-van-shuttle', name: 'Airport Shuttle' },
+                { id: 'fa-plane', name: 'Flight / Airport' },
+                { id: 'fa-plane-departure', name: 'Departure' },
+                { id: 'fa-taxi', name: 'Chauffeur Taxi' },
+                { id: 'fa-location-dot', name: 'Prime Location' },
+                { id: 'fa-compass', name: 'Sightseeing / Tour' },
+                { id: 'fa-gas-pump', name: 'Free Parking' }
+            ]
+        },
+        {
+            category: '🏷️ Discounts & Savings',
+            icons: [
+                { id: 'fa-tags', name: 'Price Tags' },
+                { id: 'fa-tag', name: 'Single Tag' },
+                { id: 'fa-percent', name: 'Percent Off' },
+                { id: 'fa-gift', name: 'Gift Box' },
+                { id: 'fa-receipt', name: 'Best Rate Receipt' },
+                { id: 'fa-money-bill-wave', name: 'Cashback / Savings' },
+                { id: 'fa-credit-card', name: 'No Prepayment' },
+                { id: 'fa-wallet', name: 'Wallet Savings' }
+            ]
+        },
+        {
+            category: '🕒 Timing & Flexibility',
+            icons: [
+                { id: 'fa-clock', name: 'Clock / 24h' },
+                { id: 'fa-hourglass-half', name: 'Flexible Time' },
+                { id: 'fa-calendar-check', name: 'Instant Confirmation' },
+                { id: 'fa-calendar-days', name: 'Flexible Dates' },
+                { id: 'fa-bell-concierge', name: '24/7 Concierge' },
+                { id: 'fa-key', name: 'Self Check-in' },
+                { id: 'fa-door-open', name: 'Early Access' },
+                { id: 'fa-bed', name: 'King Bed Setup' }
+            ]
+        },
+        {
+            category: '🏡 Suite & Comfort Amenities',
+            icons: [
+                { id: 'fa-wifi', name: 'High-Speed Wi-Fi' },
+                { id: 'fa-tv', name: 'Smart TV / Netflix' },
+                { id: 'fa-snowflake', name: 'Air Conditioning' },
+                { id: 'fa-fire', name: 'Heater / Fireplace' },
+                { id: 'fa-water-ladder', name: 'Pool Access' },
+                { id: 'fa-spa', name: 'Spa & Wellness' },
+                { id: 'fa-mountain-sun', name: 'Mountain View' },
+                { id: 'fa-tree', name: 'Nature & Pine View' },
+                { id: 'fa-shower', name: 'Rain Shower / Geyser' },
+                { id: 'fa-couch', name: 'Luxury Lounge' },
+                { id: 'fa-broom', name: 'Daily Housekeeping' }
+            ]
+        }
+    ],
+
+    // Categorized Perk Library for 1-Click Addition
+    curatedPerkLibrary: {
+        'culinary': [
+            { icon: 'fa-mug-saucer', title: 'Free Gourmet Breakfast', desc: 'Complimentary daily breakfast spread', tag: 'FREE', color: 'gold' },
+            { icon: 'fa-champagne-glasses', title: 'VIP Welcome High Tea', desc: 'Complimentary signature tea & snacks', tag: 'VIP', color: 'amber' },
+            { icon: 'fa-apple-whole', title: 'Fresh Fruit Basket', desc: 'Platter delivered on suite arrival', tag: 'FREE', color: 'emerald' },
+            { icon: 'fa-bottle-water', title: 'Unlimited Mineral Water', desc: 'Complimentary bottles daily', tag: 'FREE', color: 'cyan' }
+        ],
+        'transport': [
+            { icon: 'fa-van-shuttle', title: 'Free Airport Shuttle', desc: 'Chauffeur airport transfer on suites', tag: 'VIP', color: 'gold' },
+            { icon: 'fa-car', title: 'Free Secured Valet Parking', desc: '24/7 dedicated surveillance parking', tag: 'FREE', color: 'emerald' },
+            { icon: 'fa-compass', title: 'Sightseeing Tour Guide', desc: 'Local Murree & Islamabad tour tips', tag: 'BONUS', color: 'sapphire' }
+        ],
+        'flexibility': [
+            { icon: 'fa-clock', title: 'Priority Early Check-In', desc: 'Subject to suite availability (11 AM)', tag: 'FLEX', color: 'gold' },
+            { icon: 'fa-hourglass-half', title: 'Guaranteed Late Checkout', desc: 'Relax until 2:00 PM on departure', tag: 'POPULAR', color: 'amber' },
+            { icon: 'fa-shield-halved', title: '100% Free Cancellation', desc: 'Risk-free booking up to 24h prior', tag: 'RISK FREE', color: 'emerald' },
+            { icon: 'fa-credit-card', title: 'No Prepayment Required', desc: 'Pay on arrival at property check-in', tag: 'EASY', color: 'cyan' }
+        ],
+        'privileges': [
+            { icon: 'fa-tags', title: '15% Direct Discount', desc: 'Guaranteed lowest rate across all portals', tag: '15% OFF', color: 'gold' },
+            { icon: 'fa-wifi', title: 'Ultra High-Speed Wi-Fi', desc: 'Dedicated 100Mbps optical line', tag: '100MBPS', color: 'cyan' },
+            { icon: 'fa-mountain-sun', title: 'Scenic Valley View Guarantee', desc: 'Panoramic Margalla & Pine views', tag: 'SCENIC', color: 'emerald' },
+            { icon: 'fa-crown', title: 'VIP Concierge Hotline', desc: 'Direct WhatsApp 24/7 butler service', tag: 'EXCLUSIVE', color: 'purple' }
+        ]
+    },
+
+    // Curated Luxury Color Palettes
     presets: {
         'royal-gold': {
-            label: '👑 KPH Royal Gold',
+            label: '👑 Royal Gold Obsidian',
             bgColor: '#0B0F19',
             textColor: '#FFFFFF',
             accentColor: '#D4AF37',
@@ -71,7 +185,7 @@ window.AdminAnnouncementModule = {
         },
         'midnight-sapphire': {
             label: '🌌 Midnight Sapphire',
-            bgColor: 'linear-gradient(135deg, #0F172A 0%, #1E1B4B 100%)',
+            bgColor: '#0F172A',
             textColor: '#F8FAFC',
             accentColor: '#38BDF8',
             badgeBg: '#38BDF8',
@@ -79,7 +193,7 @@ window.AdminAnnouncementModule = {
         },
         'emerald-valley': {
             label: '🌲 Pine Valley Emerald',
-            bgColor: 'linear-gradient(135deg, #064E3B 0%, #022C22 100%)',
+            bgColor: '#064E3B',
             textColor: '#ECFDF5',
             accentColor: '#34D399',
             badgeBg: '#34D399',
@@ -87,743 +201,1068 @@ window.AdminAnnouncementModule = {
         },
         'crimson-sunset': {
             label: '🌅 Velvet Crimson',
-            bgColor: 'linear-gradient(135deg, #450A0A 0%, #7F1D1D 100%)',
+            bgColor: '#450A0A',
             textColor: '#FFF1F2',
             accentColor: '#FDA4AF',
             badgeBg: '#FDA4AF',
             badgeTextColor: '#450A0A'
         },
         'pure-obsidian': {
-            label: '💎 Minimalist Obsidian',
+            label: '💎 Minimalist Pure Dark',
             bgColor: '#000000',
             textColor: '#F1F5F9',
             accentColor: '#E2E8F0',
             badgeBg: '#FFFFFF',
             badgeTextColor: '#000000'
         },
-        'warm-amber': {
-            label: '☀️ Sunrise Amber',
-            bgColor: 'linear-gradient(135deg, #78350F 0%, #B45309 100%)',
-            textColor: '#FFFBEB',
-            accentColor: '#FDE68A',
-            badgeBg: '#FDE68A',
-            badgeTextColor: '#78350F'
+        'opal-pearl': {
+            label: '✨ Opal Pearl Luxe (Light)',
+            bgColor: '#F8FAFC',
+            textColor: '#0F172A',
+            accentColor: '#B45309',
+            badgeBg: '#B45309',
+            badgeTextColor: '#FFFFFF'
         }
     },
 
-    // Special Perk Presets
-    perkPresets: [
-        { badge: '🏷️ 15% OFF', text: 'Exclusive 15% Direct Discount', icon: 'fa-tags' },
-        { badge: '☕ FREE BREAKFAST', text: 'Complimentary Daily Continental Breakfast', icon: 'fa-mug-saucer' },
-        { badge: '🚗 FREE AIRPORT PICKUP', text: 'Complimentary Chauffeur Airport Transfer', icon: 'fa-car' },
-        { badge: '🕒 EARLY CHECK-IN', text: 'Priority Early Check-in & Late Checkout', icon: 'fa-clock' },
-        { badge: '🛡️ FREE CANCELLATION', text: '100% Risk-Free Refundable Booking', icon: 'fa-shield-halved' },
-        { badge: '🌟 VIP WELCOME TEA', text: 'Complimentary Fruit Basket & High Tea', icon: 'fa-crown' },
-        { badge: '⚡ FLASH SALE', text: 'Limited-Time Secret Member Rate', icon: 'fa-bolt' }
-    ],
+    getCurrentPopup: function() {
+        const found = this.popups.find(p => p.id === this.activePopupId);
+        return found || this.popups[0] || {};
+    },
 
     init: async function() {
         if (this.initialized) return;
         this.initialized = true;
 
-        // Set default expiry date if none exists (7 days in future)
-        if (!this.currentData.countdownExpiry) {
-            const d = new Date();
-            d.setDate(d.getDate() + 7);
-            d.setHours(23, 59, 0, 0);
-            this.currentData.countdownExpiry = d.toISOString().slice(0, 16);
-        }
-
         try {
             const saved = await window.KaghanDB.getAnnouncement();
             if (saved && typeof saved === 'object') {
-                this.currentData = { ...this.currentData, ...saved };
-                if (!Array.isArray(this.currentData.messages) || this.currentData.messages.length === 0) {
-                    this.currentData.messages = [
-                        {
-                            id: 'msg-1',
-                            emoji: '✨',
-                            icon: 'fa-sparkles',
-                            text: 'Exclusive Direct Booking Privilege: Save 15% + Free Welcome High Tea on all 2BHK Suites!',
-                            linkText: 'Claim 15% Off',
-                            linkUrl: 'booking.html',
-                            linkTarget: '_self',
-                            promoCode: 'DIRECT15',
-                            perkBadge: '15% OFF + FREE TEA'
-                        }
-                    ];
+                if (Array.isArray(saved.popups) && saved.popups.length > 0) {
+                    this.popups = saved.popups;
+                    this.activePopupId = saved.activePopupId || this.popups[0].id;
+                } else if (saved.title || saved.layout) {
+                    // Migrate single popup schema
+                    const migrated = { ...this.popups[0], ...saved, id: 'popup-1' };
+                    this.popups = [migrated];
+                    this.activePopupId = 'popup-1';
                 }
             }
-        } catch(e) {
-            console.warn("Announcement admin init notice:", e);
+        } catch (e) {
+            console.warn("Could not load promo settings, using defaults:", e);
         }
 
-        // Load existing coupons for quick dropdown assignment
-        this.loadFirestoreCoupons();
+        // Set default expiry date for popups if missing
+        this.popups.forEach(p => {
+            if (!p.countdownExpiry) {
+                const d = new Date();
+                d.setDate(d.getDate() + 7);
+                d.setHours(23, 59, 0, 0);
+                p.countdownExpiry = d.toISOString().slice(0, 16);
+            }
+            if (!Array.isArray(p.targetPages)) p.targetPages = ['home', 'rooms', 'room-details', 'booking', 'blog', 'contact'];
+            if (!Array.isArray(p.excludedPages)) p.excludedPages = [];
+        });
 
-        this.render();
+        await this.loadCouponsDatabase();
+        this.renderCampaignList();
+        this.populateFormFields();
+        this.renderPerksEditor();
+        this.renderIconPickerModal();
+        this.updateLivePreview();
+        this.startPreviewCountdown();
     },
 
-    loadFirestoreCoupons: async function() {
+    // ============================================================
+    // === MULTI-POPUP CAMPAIGN MANAGEMENT (Add, Clone, Delete, Toggle) ===
+    // ============================================================
+    renderCampaignList: function() {
+        const container = document.getElementById('promo-campaigns-list');
+        if (!container) return;
+
+        container.innerHTML = this.popups.map((p) => {
+            const isSelected = p.id === this.activePopupId;
+            const statusBadge = p.active 
+                ? `<span class="inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Active</span>`
+                : `<span class="inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 border border-slate-200">Paused</span>`;
+
+            return `
+            <div class="p-3.5 rounded-2xl border transition-all ${isSelected ? 'border-[#D4AF37] bg-amber-50/20 shadow-md ring-1 ring-[#D4AF37]/30' : 'border-slate-200 bg-white hover:border-slate-300'} flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div class="flex items-center gap-3 min-w-0 cursor-pointer" onclick="AdminAnnouncementModule.selectPopup('${p.id}')">
+                    <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${isSelected ? 'bg-[#D4AF37] text-slate-950 font-black' : 'bg-slate-100 text-slate-600 font-bold'} text-xs">
+                        <i class="fa-solid ${p.layout === 'corner-floater' ? 'fa-square' : p.layout === 'slide-drawer' ? 'fa-sheet-plastic' : 'fa-window-maximize'}"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <div class="flex items-center gap-2">
+                            <h4 class="text-xs font-bold text-slate-900 truncate leading-tight ${isSelected ? 'text-amber-950' : ''}">${p.name || p.title || 'Untitled Campaign'}</h4>
+                            ${statusBadge}
+                        </div>
+                        <p class="text-[10px] text-slate-400 font-light truncate mt-0.5">
+                            Layout: <span class="font-medium text-slate-600">${p.layout || 'center-modal'}</span> • Code: <span class="font-mono font-bold text-amber-700">${p.promoCode || 'NONE'}</span> • Target: <span class="font-medium text-slate-600">${p.targetingMode || 'all'}</span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Actions: Toggle ON/OFF, Edit, Clone, Delete -->
+                <div class="flex items-center justify-between sm:justify-end gap-2 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
+                    <!-- Toggle Switch -->
+                    <div class="flex items-center gap-2">
+                        <span class="text-[10px] font-bold text-slate-500">${p.active ? 'ON' : 'OFF'}</span>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" onchange="AdminAnnouncementModule.togglePopupStatus('${p.id}', this.checked)" class="sr-only peer" ${p.active ? 'checked' : ''}>
+                            <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
+                        </label>
+                    </div>
+
+                    <!-- Edit Selector Button -->
+                    <button type="button" onclick="AdminAnnouncementModule.selectPopup('${p.id}')" class="px-3 py-1.5 text-xs font-bold rounded-xl ${isSelected ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'} transition-colors">
+                        ${isSelected ? 'Editing' : 'Edit'}
+                    </button>
+
+                    <!-- Clone -->
+                    <button type="button" onclick="AdminAnnouncementModule.clonePopup('${p.id}')" class="w-8 h-8 rounded-xl flex items-center justify-center bg-slate-100 hover:bg-amber-100 text-slate-600 hover:text-amber-800 transition-colors text-xs" title="Duplicate Campaign">
+                        <i class="fa-solid fa-copy"></i>
+                    </button>
+
+                    <!-- Delete -->
+                    <button type="button" onclick="AdminAnnouncementModule.deletePopup('${p.id}')" class="w-8 h-8 rounded-xl flex items-center justify-center bg-slate-100 hover:bg-rose-100 text-slate-400 hover:text-rose-600 transition-colors text-xs disabled:opacity-30" ${this.popups.length <= 1 ? 'disabled title="Cannot delete last campaign"' : 'title="Delete Campaign"'}>
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+            </div>
+            `;
+        }).join('');
+    },
+
+    selectPopup: function(id) {
+        this.activePopupId = id;
+        this.renderCampaignList();
+        this.populateFormFields();
+        this.renderPerksEditor();
+        this.updateLivePreview();
+    },
+
+    createPopup: function(presetType = 'discount') {
+        const newId = 'popup-' + Date.now();
+        const d = new Date();
+        d.setDate(d.getDate() + 7);
+        d.setHours(23, 59, 0, 0);
+
+        let newPopup = {
+            id: newId,
+            name: `New Campaign #${this.popups.length + 1}`,
+            active: true,
+            layout: 'center-modal',
+            theme: 'royal-gold',
+            bgColor: '#0B0F19',
+            textColor: '#FFFFFF',
+            accentColor: '#D4AF37',
+            badgeBg: '#D4AF37',
+            badgeTextColor: '#0B0F19',
+            badgeText: '✨ SPECIAL OFFER',
+            title: 'Unlock Direct Booking Privilege',
+            subtitle: 'Book directly on our official portal to enjoy guaranteed lowest rates and luxury perks.',
+            promoCode: 'STAY15',
+            discountPercent: 15,
+            claimAction: 'auto-apply',
+            primaryCtaText: 'Claim Offer & Book',
+            primaryCtaUrl: 'booking.html',
+            secondaryCtaText: 'No thanks, I will pay full price',
+            perksEnabled: true,
+            perks: [
+                { id: 'perk-1', icon: 'fa-tags', title: '15% Direct Discount', desc: 'Instant price reduction', tag: '15% OFF', color: 'gold' },
+                { id: 'perk-2', icon: 'fa-mug-saucer', title: 'Free Breakfast', desc: 'Fresh daily breakfast', tag: 'FREE', color: 'amber' }
+            ],
+            countdownEnabled: true,
+            countdownExpiry: d.toISOString().slice(0, 16),
+            countdownLabel: '⚡ Flash Offer Ends In:',
+            targetingMode: 'all',
+            targetPages: ['home', 'rooms', 'room-details', 'booking', 'blog', 'contact'],
+            excludedPages: [],
+            customUrls: '',
+            triggerType: 'delay',
+            delaySeconds: 3,
+            scrollThreshold: 30,
+            snoozeDuration: '24h'
+        };
+
+        if (presetType === 'floater') {
+            newPopup.name = '✨ Corner Deal Floater';
+            newPopup.layout = 'corner-floater';
+            newPopup.badgeText = '⚡ VIP DEAL';
+            newPopup.title = 'Special Member Rate';
+        } else if (presetType === 'drawer') {
+            newPopup.name = '🎁 Slide-Up Notice Drawer';
+            newPopup.layout = 'slide-drawer';
+            newPopup.badgeText = '📢 SPECIAL ANNOUNCEMENT';
+            newPopup.title = 'Complimentary Breakfast Included on All Stays';
+        }
+
+        this.popups.push(newPopup);
+        this.activePopupId = newId;
+        this.renderCampaignList();
+        this.populateFormFields();
+        this.renderPerksEditor();
+        this.updateLivePreview();
+
+        if (window.KaghanUI && window.KaghanUI.showToast) {
+            window.KaghanUI.showToast(`Created new popup campaign: "${newPopup.name}"`, "success");
+        }
+    },
+
+    clonePopup: function(id) {
+        const source = this.popups.find(p => p.id === id);
+        if (!source) return;
+
+        const cloned = JSON.parse(JSON.stringify(source));
+        cloned.id = 'popup-' + Date.now();
+        cloned.name = `${source.name || 'Campaign'} (Copy)`;
+        
+        this.popups.push(cloned);
+        this.activePopupId = cloned.id;
+        this.renderCampaignList();
+        this.populateFormFields();
+        this.renderPerksEditor();
+        this.updateLivePreview();
+
+        if (window.KaghanUI && window.KaghanUI.showToast) {
+            window.KaghanUI.showToast(`Cloned campaign: "${cloned.name}"`, "success");
+        }
+    },
+
+    deletePopup: function(id) {
+        if (this.popups.length <= 1) {
+            if (window.KaghanUI && window.KaghanUI.showToast) {
+                window.KaghanUI.showToast("Cannot delete the only campaign. You must have at least one popup.", "warning");
+            } else {
+                alert("Cannot delete the only campaign.");
+            }
+            return;
+        }
+
+        const target = this.popups.find(p => p.id === id);
+        const name = target ? target.name : 'this popup';
+        if (!confirm(`Are you sure you want to delete "${name}"?`)) return;
+
+        this.popups = this.popups.filter(p => p.id !== id);
+        if (this.activePopupId === id) {
+            this.activePopupId = this.popups[0].id;
+        }
+
+        this.renderCampaignList();
+        this.populateFormFields();
+        this.renderPerksEditor();
+        this.updateLivePreview();
+
+        if (window.KaghanUI && window.KaghanUI.showToast) {
+            window.KaghanUI.showToast(`Deleted campaign "${name}".`, "info");
+        }
+    },
+
+    togglePopupStatus: function(id, activeState) {
+        const p = this.popups.find(item => item.id === id);
+        if (!p) return;
+        p.active = activeState;
+        this.renderCampaignList();
+        this.populateFormFields();
+        this.updateLivePreview();
+
+        if (window.KaghanUI && window.KaghanUI.showToast) {
+            window.KaghanUI.showToast(`Popup "${p.name}" turned ${activeState ? 'ON (Active)' : 'OFF (Paused)'}.`, activeState ? "success" : "info");
+        }
+    },
+
+    // ============================================================
+    // === FORM FIELDS & GRANULAR PAGE TARGETING ===
+    // ============================================================
+    loadCouponsDatabase: async function() {
         try {
-            const coupons = await window.KaghanDB.getCoupons();
-            this.availableCoupons = coupons || [];
-            this.populateCouponDropdown();
-        } catch(e) {
-            console.warn("Coupon load notice:", e);
+            if (window.KaghanDB && window.KaghanDB.getCoupons) {
+                const coupons = await window.KaghanDB.getCoupons();
+                this.availableCoupons = (coupons || []).filter(c => c.active !== false);
+                this.populateCouponDropdown();
+            }
+        } catch (e) {
+            console.warn("Could not load coupons for promo studio:", e);
         }
     },
 
     populateCouponDropdown: function() {
-        const select = document.getElementById('announcement-coupon-select');
+        const select = document.getElementById('promo-coupon-select');
         if (!select) return;
 
-        select.innerHTML = `
-            <option value="">-- Or Select Existing Active Coupon --</option>
-            ${this.availableCoupons.map(c => `
-                <option value="${c.code || c.id}" data-discount="${c.discountPercentage || 0}">
-                    ${c.code || c.id} (${c.discountPercentage || 0}% OFF)
-                </option>
-            `).join('')}
-        `;
-    },
+        select.innerHTML = '<option value="">-- Connect Active Coupon Code --</option>';
+        this.availableCoupons.forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c.code || c.id;
+            opt.textContent = `${c.code} — (${c.discount || c.percentage || 15}% OFF)`;
+            select.appendChild(opt);
+        });
 
-    render: function() {
-        const container = document.getElementById('admin-announcement-view-container');
-        if (!container) return;
-
-        // Core Toggles
-        const toggle = document.getElementById('announcement-active-toggle');
-        if (toggle) toggle.checked = this.currentData.active !== false;
-
-        const dismissToggle = document.getElementById('announcement-dismissible-toggle');
-        if (dismissToggle) dismissToggle.checked = this.currentData.dismissible !== false;
-
-        const intervalInput = document.getElementById('announcement-interval-input');
-        const intervalLbl = document.getElementById('announcement-interval-val');
-        if (intervalInput) {
-            intervalInput.value = this.currentData.rotationInterval || 5;
-            if (intervalLbl) intervalLbl.textContent = `${intervalInput.value}s`;
+        const cur = this.getCurrentPopup();
+        if (cur.promoCode) {
+            select.value = cur.promoCode;
         }
-
-        const fontSelect = document.getElementById('announcement-font-select');
-        if (fontSelect) fontSelect.value = this.currentData.fontFamily || 'outfit';
-
-        const sizeSelect = document.getElementById('announcement-size-select');
-        if (sizeSelect) sizeSelect.value = this.currentData.fontSize || '12px';
-
-        const badgeTextInput = document.getElementById('announcement-badge-text');
-        if (badgeTextInput) badgeTextInput.value = this.currentData.badgeText || '';
-
-        // Special Perks fields
-        const perksToggle = document.getElementById('announcement-perks-toggle');
-        if (perksToggle) perksToggle.checked = this.currentData.perksEnabled !== false;
-
-        const perkBadgeInput = document.getElementById('announcement-perk-badge');
-        if (perkBadgeInput) perkBadgeInput.value = this.currentData.perkBadge || '';
-
-        const perkTextInput = document.getElementById('announcement-perk-text');
-        if (perkTextInput) perkTextInput.value = this.currentData.perkText || '';
-
-        const perkIconInput = document.getElementById('announcement-perk-icon');
-        if (perkIconInput) perkIconInput.value = this.currentData.perkIcon || 'fa-gift';
-
-        // Countdown Timer fields
-        const cdToggle = document.getElementById('announcement-countdown-toggle');
-        if (cdToggle) cdToggle.checked = this.currentData.countdownEnabled !== false;
-
-        const cdExpiryInput = document.getElementById('announcement-countdown-expiry');
-        if (cdExpiryInput && this.currentData.countdownExpiry) {
-            cdExpiryInput.value = this.currentData.countdownExpiry.slice(0, 16);
-        }
-
-        const cdLabelInput = document.getElementById('announcement-countdown-label');
-        if (cdLabelInput) cdLabelInput.value = this.currentData.countdownLabel || '⚡ Flash Offer Ends:';
-
-        // Promo Code fields
-        const promoInput = document.getElementById('announcement-promo-code');
-        if (promoInput) promoInput.value = this.currentData.promoCode || '';
-
-        const discountInput = document.getElementById('announcement-discount-pct');
-        if (discountInput) discountInput.value = this.currentData.discountPercent || '';
-
-        const claimActionSelect = document.getElementById('announcement-claim-action');
-        if (claimActionSelect) claimActionSelect.value = this.currentData.claimAction || 'auto-apply';
-
-        // Colors
-        this.syncColorInputs();
-
-        // Render Message Feed Cards
-        this.renderMessageFeedList();
-
-        // Update Live Preview
-        this.updateLivePreview();
-        this.startPreviewRotation();
-        this.startPreviewCountdownTicking();
-    },
-
-    syncColorInputs: function() {
-        const bgInput = document.getElementById('announcement-bg-color');
-        const textInput = document.getElementById('announcement-text-color');
-        const accentInput = document.getElementById('announcement-accent-color');
-        const badgeBgInput = document.getElementById('announcement-badge-bg');
-        const badgeTextInput = document.getElementById('announcement-badge-text-color');
-
-        if (bgInput) bgInput.value = this.currentData.bgColor && this.currentData.bgColor.startsWith('#') ? this.currentData.bgColor : '#0B0F19';
-        if (textInput) textInput.value = this.currentData.textColor || '#FFFFFF';
-        if (accentInput) accentInput.value = this.currentData.accentColor || '#D4AF37';
-        if (badgeBgInput) badgeBgInput.value = this.currentData.badgeBg || '#D4AF37';
-        if (badgeTextInput) badgeTextInput.value = this.currentData.badgeTextColor || '#0B0F19';
-    },
-
-    setCountdownPreset: function(hours) {
-        const d = new Date();
-        d.setHours(d.getHours() + hours);
-        const iso = d.toISOString().slice(0, 16);
-        this.currentData.countdownExpiry = iso;
-        const input = document.getElementById('announcement-countdown-expiry');
-        if (input) input.value = iso;
-        this.updateLivePreview();
-    },
-
-    setCountdownEndOfMonth: function() {
-        const d = new Date();
-        const endOfMonth = new Date(d.getFullYear(), d.getMonth() + 1, 0, 23, 59, 59);
-        const iso = endOfMonth.toISOString().slice(0, 16);
-        this.currentData.countdownExpiry = iso;
-        const input = document.getElementById('announcement-countdown-expiry');
-        if (input) input.value = iso;
-        this.updateLivePreview();
-    },
-
-    applyPerkPreset: function(index) {
-        const p = this.perkPresets[index];
-        if (!p) return;
-
-        this.currentData.perkBadge = p.badge;
-        this.currentData.perkText = p.text;
-        this.currentData.perkIcon = p.icon;
-
-        const badgeInput = document.getElementById('announcement-perk-badge');
-        if (badgeInput) badgeInput.value = p.badge;
-
-        const textInput = document.getElementById('announcement-perk-text');
-        if (textInput) textInput.value = p.text;
-
-        const iconInput = document.getElementById('announcement-perk-icon');
-        if (iconInput) iconInput.value = p.icon;
-
-        this.updateLivePreview();
     },
 
     onCouponSelected: function(selectEl) {
-        const val = selectEl.value;
-        if (!val) return;
+        const selectedCode = selectEl.value;
+        const cur = this.getCurrentPopup();
+        if (!selectedCode) return;
 
-        const selectedOption = selectEl.options[selectEl.selectedIndex];
-        const discount = selectedOption.getAttribute('data-discount') || '15';
+        const found = this.availableCoupons.find(c => (c.code || c.id) === selectedCode);
+        cur.promoCode = selectedCode;
+        if (found && (found.discount || found.percentage)) {
+            cur.discountPercent = parseInt(found.discount || found.percentage, 10);
+        }
 
-        this.currentData.promoCode = val;
-        this.currentData.discountPercent = parseInt(discount, 10);
-
-        const promoInput = document.getElementById('announcement-promo-code');
-        if (promoInput) promoInput.value = val;
-
-        const discInput = document.getElementById('announcement-discount-pct');
-        if (discInput) discInput.value = discount;
-
+        this.populateFormFields();
         this.updateLivePreview();
     },
 
-    getLiveCountdownString: function() {
-        const msg = (this.currentData.messages && this.currentData.messages[this.previewIndex]) || {};
-        const expiry = msg.countdownExpiry || this.currentData.countdownExpiry;
-        const enabled = (msg.countdownEnabled !== undefined ? msg.countdownEnabled : this.currentData.countdownEnabled);
+    populateFormFields: function() {
+        const d = this.getCurrentPopup();
 
-        if (!enabled || !expiry) return null;
+        // Campaign Name
+        const nameInput = document.getElementById('promo-campaign-name');
+        if (nameInput) nameInput.value = d.name || '';
 
-        const diff = new Date(expiry).getTime() - Date.now();
-        if (diff <= 0) return { expired: true, text: '00:00:00' };
+        // Master toggle
+        const activeToggle = document.getElementById('promo-active-toggle');
+        if (activeToggle) activeToggle.checked = d.active !== false;
 
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-        const minutes = Math.floor((diff / (1000 * 60)) % 60);
-        const seconds = Math.floor((diff / 1000) % 60);
+        // Layout Selector
+        const layoutSelect = document.getElementById('promo-layout-select');
+        if (layoutSelect) layoutSelect.value = d.layout || 'center-modal';
 
-        let timeStr = '';
-        if (days > 0) timeStr += `${days}d `;
-        timeStr += `${String(hours).padStart(2, '0')}h ${String(minutes).padStart(2, '0')}m ${String(seconds).padStart(2, '0')}s`;
+        // Colors & Theme
+        const bgInput = document.getElementById('promo-bg-color');
+        if (bgInput) bgInput.value = d.bgColor || '#0B0F19';
 
-        const label = msg.countdownLabel || this.currentData.countdownLabel || 'Ends in:';
-        return { expired: false, timeStr, label };
+        const textInput = document.getElementById('promo-text-color');
+        if (textInput) textInput.value = d.textColor || '#FFFFFF';
+
+        const accentInput = document.getElementById('promo-accent-color');
+        if (accentInput) accentInput.value = d.accentColor || '#D4AF37';
+
+        const badgeBgInput = document.getElementById('promo-badge-bg');
+        if (badgeBgInput) badgeBgInput.value = d.badgeBg || '#D4AF37';
+
+        const badgeTextInput = document.getElementById('promo-badge-text-color');
+        if (badgeTextInput) badgeTextInput.value = d.badgeTextColor || '#0B0F19';
+
+        // Offer Content
+        const badgeText = document.getElementById('promo-badge-text');
+        if (badgeText) badgeText.value = d.badgeText || '';
+
+        const titleInput = document.getElementById('promo-title');
+        if (titleInput) titleInput.value = d.title || '';
+
+        const subtitleInput = document.getElementById('promo-subtitle');
+        if (subtitleInput) subtitleInput.value = d.subtitle || '';
+
+        const codeInput = document.getElementById('promo-code');
+        if (codeInput) codeInput.value = d.promoCode || '';
+
+        const discountInput = document.getElementById('promo-discount-pct');
+        if (discountInput) discountInput.value = d.discountPercent || 15;
+
+        const ctaTextInput = document.getElementById('promo-cta-text');
+        if (ctaTextInput) ctaTextInput.value = d.primaryCtaText || '';
+
+        const ctaUrlInput = document.getElementById('promo-cta-url');
+        if (ctaUrlInput) ctaUrlInput.value = d.primaryCtaUrl || 'booking.html';
+
+        // Perks Toggle
+        const perksToggle = document.getElementById('promo-perks-toggle');
+        if (perksToggle) perksToggle.checked = d.perksEnabled !== false;
+
+        // Countdown
+        const cdToggle = document.getElementById('promo-countdown-toggle');
+        if (cdToggle) cdToggle.checked = d.countdownEnabled !== false;
+
+        const cdExpiry = document.getElementById('promo-countdown-expiry');
+        if (cdExpiry) cdExpiry.value = d.countdownExpiry || '';
+
+        const cdLabel = document.getElementById('promo-countdown-label');
+        if (cdLabel) cdLabel.value = d.countdownLabel || '';
+
+        // Triggers
+        const triggerSelect = document.getElementById('promo-trigger-select');
+        if (triggerSelect) triggerSelect.value = d.triggerType || 'delay';
+
+        const delaySlider = document.getElementById('promo-delay-slider');
+        const delayVal = document.getElementById('promo-delay-val');
+        if (delaySlider) delaySlider.value = d.delaySeconds || 3;
+        if (delayVal) delayVal.textContent = `${d.delaySeconds || 3}s`;
+
+        const scrollSlider = document.getElementById('promo-scroll-slider');
+        const scrollVal = document.getElementById('promo-scroll-val');
+        if (scrollSlider) scrollSlider.value = d.scrollThreshold || 30;
+        if (scrollVal) scrollVal.textContent = `${d.scrollThreshold || 30}%`;
+
+        // Granular Page Targeting
+        const modeSelect = document.getElementById('promo-targeting-mode');
+        if (modeSelect) modeSelect.value = d.targetingMode || 'all';
+
+        this.updatePageTargetingUI();
+
+        const customUrls = document.getElementById('promo-custom-urls');
+        if (customUrls) customUrls.value = d.customUrls || '';
+
+        const snoozeSelect = document.getElementById('promo-snooze-duration');
+        if (snoozeSelect) snoozeSelect.value = d.snoozeDuration || '24h';
     },
 
-    startPreviewCountdownTicking: function() {
-        clearInterval(this.previewCountdownTimer);
-        this.previewCountdownTimer = setInterval(() => {
-            const cdData = this.getLiveCountdownString();
-            const cdValEl = document.getElementById('preview-cd-timer-val');
-            if (cdValEl && cdData) {
-                if (cdData.expired) {
-                    cdValEl.textContent = 'Offer Expired';
-                } else {
-                    cdValEl.textContent = cdData.timeStr;
-                }
-            }
-        }, 1000);
+    updatePageTargetingUI: function() {
+        const d = this.getCurrentPopup();
+        const mode = d.targetingMode || 'all';
+
+        const checklistWrap = document.getElementById('promo-page-checklists-wrap');
+        if (checklistWrap) {
+            checklistWrap.style.display = 'block';
+        }
+
+        // Set Include checkboxes
+        const targetPages = Array.isArray(d.targetPages) ? d.targetPages : [];
+        const includeChecks = document.querySelectorAll('.page-target-include-cb');
+        includeChecks.forEach(cb => {
+            cb.checked = targetPages.includes(cb.dataset.page);
+        });
+
+        // Set Exclude checkboxes (Always default exclude rooms and booking pages)
+        if (!Array.isArray(d.excludedPages)) d.excludedPages = ['rooms', 'booking', 'room-details'];
+        if (!d.excludedPages.includes('rooms')) d.excludedPages.push('rooms');
+        if (!d.excludedPages.includes('booking')) d.excludedPages.push('booking');
+        if (!d.excludedPages.includes('room-details')) d.excludedPages.push('room-details');
+
+        const excludeChecks = document.querySelectorAll('.page-target-exclude-cb');
+        excludeChecks.forEach(cb => {
+            cb.checked = d.excludedPages.includes(cb.dataset.page);
+        });
     },
 
-    renderMessageFeedList: function() {
-        const list = document.getElementById('announcement-messages-list');
-        if (!list) return;
-
-        const messages = this.currentData.messages || [];
-
-        if (messages.length === 0) {
-            list.innerHTML = `
-                <div class="p-8 text-center bg-slate-50 rounded-2xl border border-dashed border-slate-200">
-                    <p class="text-xs text-slate-400 font-medium mb-3">No announcement messages in feed yet.</p>
-                    <button type="button" onclick="AdminAnnouncementModule.addMessage()" class="px-4 py-2 bg-slate-900 hover:bg-[#D4AF37] hover:text-slate-900 text-white rounded-xl text-xs font-bold transition-all">
-                        <i class="fa-solid fa-plus mr-1"></i> Add First Message
-                    </button>
-                </div>
-            `;
-            return;
-        }
-
-        const emojiPresets = ['✨', '🏔️', '🏨', '🔥', '🎁', '🌟', '🏷️', '❄️', '☀️', '📢', '🔑', '☕', '🚗', '🎉', '💎', '📍'];
-
-        list.innerHTML = messages.map((msg, index) => `
-            <div class="bg-slate-50/80 border border-slate-200/80 rounded-2xl p-5 shadow-xs relative transition-all hover:border-[#D4AF37]/50" data-msg-index="${index}">
-                <!-- Card Header -->
-                <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-200/60">
-                    <div class="flex items-center gap-2">
-                        <span class="w-6 h-6 rounded-lg bg-slate-200 text-slate-700 text-xs font-black flex items-center justify-center">${index + 1}</span>
-                        <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider">Announcement Message #${index + 1}</h4>
-                        ${index === 0 ? '<span class="text-[9px] bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded-md uppercase tracking-wider">Primary</span>' : ''}
-                    </div>
-                    <div class="flex items-center gap-1">
-                        ${index > 0 ? `
-                            <button type="button" onclick="AdminAnnouncementModule.moveMessage(${index}, -1)" class="w-7 h-7 rounded-lg hover:bg-slate-200 text-slate-500 hover:text-slate-900 flex items-center justify-center text-xs transition-colors" title="Move Up">
-                                <i class="fa-solid fa-arrow-up"></i>
-                            </button>
-                        ` : ''}
-                        ${index < messages.length - 1 ? `
-                            <button type="button" onclick="AdminAnnouncementModule.moveMessage(${index}, 1)" class="w-7 h-7 rounded-lg hover:bg-slate-200 text-slate-500 hover:text-slate-900 flex items-center justify-center text-xs transition-colors" title="Move Down">
-                                <i class="fa-solid fa-arrow-down"></i>
-                            </button>
-                        ` : ''}
-                        <button type="button" onclick="AdminAnnouncementModule.removeMessage(${index})" class="w-7 h-7 rounded-lg hover:bg-rose-100 text-slate-400 hover:text-rose-600 flex items-center justify-center text-xs transition-colors" title="Delete Message">
-                            <i class="fa-solid fa-trash-can"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Fields -->
-                <div class="space-y-4">
-                    <!-- Text -->
-                    <div>
-                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
-                            Announcement Text <span class="text-rose-500">*</span>
-                        </label>
-                        <input type="text" value="${window.KaghanSafe ? window.KaghanSafe.escapeHTML(msg.text || '') : (msg.text || '')}" oninput="AdminAnnouncementModule.updateMessageField(${index}, 'text', this.value)" placeholder="e.g. Book direct on KPH Stay and save 15% on luxury suites!" class="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs bg-white text-slate-800 outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] transition-all">
-                    </div>
-
-                    <!-- Emoji & Icon Selectors -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">Emoji Icon</label>
-                            <div class="flex items-center gap-2">
-                                <input type="text" value="${window.KaghanSafe ? window.KaghanSafe.escapeHTML(msg.emoji || '') : (msg.emoji || '')}" oninput="AdminAnnouncementModule.updateMessageField(${index}, 'emoji', this.value)" placeholder="✨" class="w-16 border border-slate-200 rounded-xl px-2 py-2 text-center text-base bg-white text-slate-800 outline-none focus:border-[#D4AF37]">
-                                <div class="flex flex-wrap gap-1 overflow-x-auto">
-                                    ${emojiPresets.slice(0, 8).map(em => `
-                                        <button type="button" onclick="AdminAnnouncementModule.updateMessageField(${index}, 'emoji', '${em}')" class="w-7 h-7 rounded-lg bg-white border border-slate-200 text-xs hover:scale-110 hover:border-[#D4AF37] transition-all flex items-center justify-center">${em}</button>
-                                    `).join('')}
-                                </div>
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">FontAwesome Icon Class (Optional)</label>
-                            <div class="relative">
-                                <i class="fa-solid ${msg.icon || 'fa-sparkles'} absolute left-3 top-3 text-slate-400 text-xs"></i>
-                                <input type="text" value="${window.KaghanSafe ? window.KaghanSafe.escapeHTML(msg.icon || '') : (msg.icon || '')}" oninput="AdminAnnouncementModule.updateMessageField(${index}, 'icon', this.value)" placeholder="fa-sparkles, fa-tag, fa-gift..." class="w-full border border-slate-200 rounded-xl pl-8 pr-3 py-2 text-xs bg-white text-slate-800 outline-none focus:border-[#D4AF37]">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Perk Badge Override & Promo Code for Message -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-200/50">
-                        <div>
-                            <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">Special Perk Badge (Optional Override)</label>
-                            <input type="text" value="${window.KaghanSafe ? window.KaghanSafe.escapeHTML(msg.perkBadge || '') : (msg.perkBadge || '')}" oninput="AdminAnnouncementModule.updateMessageField(${index}, 'perkBadge', this.value)" placeholder="e.g. 15% OFF + FREE BREAKFAST" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-white text-slate-800 outline-none focus:border-[#D4AF37]">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">Promo Code (Optional)</label>
-                            <input type="text" value="${window.KaghanSafe ? window.KaghanSafe.escapeHTML(msg.promoCode || '') : (msg.promoCode || '')}" oninput="AdminAnnouncementModule.updateMessageField(${index}, 'promoCode', this.value)" placeholder="e.g. DIRECT15" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-white text-slate-800 outline-none focus:border-[#D4AF37] uppercase">
-                        </div>
-                    </div>
-
-                    <!-- Action Link / CTA -->
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 border-t border-slate-200/50">
-                        <div>
-                            <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">Button Text (Optional)</label>
-                            <input type="text" value="${window.KaghanSafe ? window.KaghanSafe.escapeHTML(msg.linkText || '') : (msg.linkText || '')}" oninput="AdminAnnouncementModule.updateMessageField(${index}, 'linkText', this.value)" placeholder="e.g. Claim 15% Off" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-white text-slate-800 outline-none focus:border-[#D4AF37]">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">Target URL</label>
-                            <input type="text" value="${window.KaghanSafe ? window.KaghanSafe.escapeHTML(msg.linkUrl || '') : (msg.linkUrl || '')}" oninput="AdminAnnouncementModule.updateMessageField(${index}, 'linkUrl', this.value)" placeholder="booking.html, rooms.html..." class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-white text-slate-800 outline-none focus:border-[#D4AF37]">
-                        </div>
-                        <div class="flex items-end pb-1">
-                            <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700">
-                                <input type="checkbox" ${msg.linkTarget === '_blank' ? 'checked' : ''} onchange="AdminAnnouncementModule.updateMessageField(${index}, 'linkTarget', this.checked ? '_blank' : '_self')" class="w-4 h-4 rounded accent-[#D4AF37] cursor-pointer">
-                                <span>Open in new tab</span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `).join('');
-    },
-
-    updateLivePreview: function() {
-        const previewContainer = document.getElementById('announcement-live-preview-bar');
-        const previewMsgContainer = document.getElementById('announcement-preview-msg-wrap');
-        const previewIndicators = document.getElementById('announcement-preview-indicators');
-        if (!previewContainer) return;
-
-        const data = this.currentData;
-        const messages = data.messages || [];
-
-        // Apply theme/background styling
-        const bg = data.bgColor || '#0B0F19';
-        const textColor = data.textColor || '#FFFFFF';
-        const accentColor = data.accentColor || '#D4AF37';
-        const fontFamily = data.fontFamily === 'serif' ? "'Playfair Display', Georgia, serif" : 
-                           data.fontFamily === 'inter' ? "'Inter', sans-serif" : "'Outfit', sans-serif";
-        const fontSize = data.fontSize || '12px';
-
-        previewContainer.style.background = bg;
-        previewContainer.style.color = textColor;
-        previewContainer.style.fontFamily = fontFamily;
-        previewContainer.style.fontSize = fontSize;
-
-        if (messages.length === 0) {
-            if (previewMsgContainer) {
-                previewMsgContainer.innerHTML = `<span class="italic opacity-60">No announcement messages configured</span>`;
-            }
-            return;
-        }
-
-        const safeIndex = Math.min(this.previewIndex, messages.length - 1);
-        const msg = messages[safeIndex] || messages[0];
-
-        const badgeBg = data.badgeBg || accentColor;
-        const badgeTextColor = data.badgeTextColor || '#0B0F19';
-        const badgeText = data.badgeText || (msg.badge || '');
-
-        const safeText = window.KaghanSafe ? window.KaghanSafe.escapeHTML(msg.text || '') : (msg.text || '');
-        const emoji = msg.emoji ? `<span class="mr-1 text-sm">${window.KaghanSafe ? window.KaghanSafe.escapeHTML(msg.emoji) : msg.emoji}</span>` : '';
-        const icon = msg.icon ? `<i class="fa-solid ${window.KaghanSafe ? window.KaghanSafe.escapeHTML(msg.icon) : msg.icon} mr-1.5" style="color:${accentColor}"></i>` : '';
-
-        // 1. Primary Highlight Badge
-        const badgeHtml = badgeText ? `
-            <span class="inline-flex items-center text-[9px] uppercase font-black tracking-widest px-2.5 py-0.5 rounded-full mr-1.5 shadow-xs shrink-0" style="background:${badgeBg}; color:${badgeTextColor}">
-                ${window.KaghanSafe ? window.KaghanSafe.escapeHTML(badgeText) : badgeText}
-            </span>
-        ` : '';
-
-        // 2. Special Perks Badge
-        const perkBadgeText = msg.perkBadge || (data.perksEnabled ? data.perkBadge || data.perkText : '');
-        const perkIcon = msg.perkIcon || data.perkIcon || 'fa-gift';
-        const perkHtml = perkBadgeText ? `
-            <span class="inline-flex items-center gap-1 text-[9px] uppercase font-black tracking-wider px-2.5 py-0.5 rounded-full mr-1.5 shadow-xs shrink-0 bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 border border-amber-300">
-                <i class="fa-solid ${window.KaghanSafe ? window.KaghanSafe.escapeHTML(perkIcon) : perkIcon} text-[9px]"></i>
-                <span>${window.KaghanSafe ? window.KaghanSafe.escapeHTML(perkBadgeText) : perkBadgeText}</span>
-            </span>
-        ` : '';
-
-        // 3. Countdown Timer Preview
-        const cdData = this.getLiveCountdownString();
-        const countdownHtml = cdData ? `
-            <span id="preview-countdown-pill" class="inline-flex items-center gap-1.5 font-mono text-[10px] font-bold px-2.5 py-0.5 rounded-full mx-1.5 shadow-xs shrink-0 bg-black/40 border border-white/20" style="color:${accentColor}">
-                <i class="fa-solid fa-fire text-amber-400 text-[10px] animate-pulse"></i>
-                <span class="text-white/80 font-sans text-[9px] hidden sm:inline uppercase">${window.KaghanSafe ? window.KaghanSafe.escapeHTML(cdData.label) : cdData.label}</span>
-                <span id="preview-cd-timer-val" class="font-black tracking-wider">${cdData.timeStr || '02d 14h 30m'}</span>
-            </span>
-        ` : '';
-
-        // 4. CTA Claim Button Preview
-        const promoCode = msg.promoCode || data.promoCode || '';
-        let safeLinkText = msg.linkText ? (window.KaghanSafe ? window.KaghanSafe.escapeHTML(msg.linkText) : msg.linkText) : (promoCode ? `Claim ${promoCode}` : '');
-        const ctaHtml = safeLinkText ? `
-            <span class="inline-flex items-center gap-1 font-bold ml-2 px-3 py-0.5 rounded-full text-[11px] shadow-xs shrink-0 cursor-pointer" style="background:${accentColor}; color:${badgeTextColor}">
-                ${promoCode ? '<i class="fa-solid fa-tag text-[9px]"></i>' : ''}
-                <span>${safeLinkText}</span>
-                <i class="fa-solid fa-arrow-right text-[9px]"></i>
-            </span>
-        ` : '';
-
-        if (previewMsgContainer) {
-            previewMsgContainer.innerHTML = `
-                <div class="flex flex-wrap items-center justify-center gap-1.5 leading-tight">
-                    ${badgeHtml}
-                    ${perkHtml}
-                    <span class="truncate">${emoji}${icon}${safeText}</span>
-                    ${countdownHtml}
-                    ${ctaHtml}
-                </div>
-            `;
-        }
-
-        // Render slide indicators & counter
-        if (previewIndicators) {
-            if (messages.length > 1) {
-                previewIndicators.innerHTML = `
-                    <div class="flex items-center gap-1 mr-2">
-                        ${messages.map((_, i) => `
-                            <button type="button" onclick="AdminAnnouncementModule.setPreviewSlide(${i})" class="w-1.5 h-1.5 rounded-full transition-all ${i === safeIndex ? 'w-4' : 'opacity-40'}" style="background:${i === safeIndex ? accentColor : textColor}"></button>
-                        `).join('')}
-                    </div>
-                    <div class="flex items-center gap-0.5">
-                        <button type="button" onclick="AdminAnnouncementModule.prevPreviewSlide()" class="w-5 h-5 rounded-full flex items-center justify-center text-[9px] opacity-70 hover:opacity-100 transition-opacity" style="color:${textColor}">
-                            <i class="fa-solid fa-chevron-left"></i>
-                        </button>
-                        <button type="button" onclick="AdminAnnouncementModule.nextPreviewSlide()" class="w-5 h-5 rounded-full flex items-center justify-center text-[9px] opacity-70 hover:opacity-100 transition-opacity" style="color:${textColor}">
-                            <i class="fa-solid fa-chevron-right"></i>
-                        </button>
-                    </div>
-                `;
+    onTargetPageCheckboxChange: function(pageKey, type, isChecked) {
+        const d = this.getCurrentPopup();
+        if (type === 'include') {
+            if (!Array.isArray(d.targetPages)) d.targetPages = [];
+            if (isChecked) {
+                if (!d.targetPages.includes(pageKey)) d.targetPages.push(pageKey);
             } else {
-                previewIndicators.innerHTML = '';
+                d.targetPages = d.targetPages.filter(p => p !== pageKey);
+            }
+        } else if (type === 'exclude') {
+            if (!Array.isArray(d.excludedPages)) d.excludedPages = [];
+            if (isChecked) {
+                if (!d.excludedPages.includes(pageKey)) d.excludedPages.push(pageKey);
+            } else {
+                d.excludedPages = d.excludedPages.filter(p => p !== pageKey);
             }
         }
     },
 
-    startPreviewRotation: function() {
-        clearInterval(this.previewTimer);
-        const messages = this.currentData.messages || [];
-        if (messages.length > 1) {
-            const intervalSec = Math.max(2, parseInt(this.currentData.rotationInterval) || 5);
-            this.previewTimer = setInterval(() => {
-                this.nextPreviewSlide();
-            }, intervalSec * 1000);
+    onFieldChange: function(field, value) {
+        const cur = this.getCurrentPopup();
+        cur[field] = value;
+
+        if (field === 'name') {
+            this.renderCampaignList();
         }
-    },
 
-    nextPreviewSlide: function() {
-        const messages = this.currentData.messages || [];
-        if (messages.length <= 1) return;
-        this.previewIndex = (this.previewIndex + 1) % messages.length;
-        this.updateLivePreview();
-    },
+        if (field === 'delaySeconds') {
+            const valEl = document.getElementById('promo-delay-val');
+            if (valEl) valEl.textContent = `${value}s`;
+        }
+        if (field === 'scrollThreshold') {
+            const valEl = document.getElementById('promo-scroll-val');
+            if (valEl) valEl.textContent = `${value}%`;
+        }
+        if (field === 'targetingMode') {
+            this.updatePageTargetingUI();
+            this.renderCampaignList();
+        }
 
-    prevPreviewSlide: function() {
-        const messages = this.currentData.messages || [];
-        if (messages.length <= 1) return;
-        this.previewIndex = (this.previewIndex - 1 + messages.length) % messages.length;
-        this.updateLivePreview();
-    },
-
-    setPreviewSlide: function(index) {
-        this.previewIndex = index;
         this.updateLivePreview();
     },
 
     applyPreset: function(presetKey) {
         const preset = this.presets[presetKey];
-        if (!preset) return;
+        const cur = this.getCurrentPopup();
+        if (!preset || !cur) return;
 
-        this.currentData.theme = presetKey;
-        this.currentData.bgColor = preset.bgColor;
-        this.currentData.textColor = preset.textColor;
-        this.currentData.accentColor = preset.accentColor;
-        this.currentData.badgeBg = preset.badgeBg;
-        this.currentData.badgeTextColor = preset.badgeTextColor;
+        cur.theme = presetKey;
+        cur.bgColor = preset.bgColor;
+        cur.textColor = preset.textColor;
+        cur.accentColor = preset.accentColor;
+        cur.badgeBg = preset.badgeBg;
+        cur.badgeTextColor = preset.badgeTextColor;
 
-        this.syncColorInputs();
+        this.populateFormFields();
         this.updateLivePreview();
 
-        document.querySelectorAll('.announcement-preset-btn').forEach(btn => {
-            if (btn.dataset.preset === presetKey) {
-                btn.classList.add('ring-2', 'ring-[#D4AF37]', 'ring-offset-2');
+        if (window.KaghanUI && window.KaghanUI.showToast) {
+            window.KaghanUI.showToast(`Applied ${preset.label} palette!`, "info");
+        }
+    },
+
+    setDevicePreview: function(device) {
+        this.previewDevice = device;
+        const container = document.getElementById('promo-simulator-frame');
+        const buttons = document.querySelectorAll('.device-preview-btn');
+
+        buttons.forEach(b => {
+            if (b.dataset.device === device) {
+                b.classList.add('bg-[#D4AF37]', 'text-slate-950', 'font-black');
+                b.classList.remove('bg-slate-800', 'text-slate-400');
             } else {
-                btn.classList.remove('ring-2', 'ring-[#D4AF37]', 'ring-offset-2');
+                b.classList.remove('bg-[#D4AF37]', 'text-slate-950', 'font-black');
+                b.classList.add('bg-slate-800', 'text-slate-400');
             }
         });
-    },
 
-    addMessage: function() {
-        if (!this.currentData.messages) this.currentData.messages = [];
-        this.currentData.messages.push({
-            id: `msg-${Date.now()}`,
-            emoji: '✨',
-            icon: 'fa-sparkles',
-            text: 'Special VIP perk available for your next reservation!',
-            linkText: 'Explore Perks',
-            linkUrl: 'rooms.html',
-            linkTarget: '_self',
-            promoCode: '',
-            perkBadge: 'VIP AMENITY'
-        });
-        this.renderMessageFeedList();
-        this.previewIndex = this.currentData.messages.length - 1;
-        this.updateLivePreview();
-        this.startPreviewRotation();
-    },
-
-    removeMessage: function(index) {
-        if (!this.currentData.messages) return;
-        this.currentData.messages.splice(index, 1);
-        this.previewIndex = 0;
-        this.renderMessageFeedList();
-        this.updateLivePreview();
-        this.startPreviewRotation();
-    },
-
-    moveMessage: function(index, direction) {
-        const messages = this.currentData.messages;
-        if (!messages) return;
-        const newIndex = index + direction;
-        if (newIndex < 0 || newIndex >= messages.length) return;
-        const temp = messages[index];
-        messages[index] = messages[newIndex];
-        messages[newIndex] = temp;
-        this.previewIndex = newIndex;
-        this.renderMessageFeedList();
-        this.updateLivePreview();
-    },
-
-    updateMessageField: function(index, field, value) {
-        if (!this.currentData.messages || !this.currentData.messages[index]) return;
-        this.currentData.messages[index][field] = value;
-        this.previewIndex = index;
-        this.updateLivePreview();
-    },
-
-    onFieldChange: function(field, value) {
-        this.currentData[field] = value;
-        if (field === 'rotationInterval') {
-            const lbl = document.getElementById('announcement-interval-val');
-            if (lbl) lbl.textContent = `${value}s`;
-            this.startPreviewRotation();
+        if (container) {
+            if (device === 'mobile') {
+                container.style.maxWidth = '380px';
+            } else if (device === 'tablet') {
+                container.style.maxWidth = '640px';
+            } else {
+                container.style.maxWidth = '100%';
+            }
         }
+
         this.updateLivePreview();
     },
 
+    // ============================================================
+    // === VIP PERKS & AMENITIES MANAGEMENT ===
+    // ============================================================
+    renderPerksEditor: function() {
+        const list = document.getElementById('promo-perks-list');
+        if (!list) return;
+
+        const cur = this.getCurrentPopup();
+        const perks = cur.perks || [];
+        if (perks.length === 0) {
+            list.innerHTML = `<div class="text-xs text-slate-400 py-6 text-center bg-slate-50 rounded-2xl border border-dashed border-slate-200">No VIP perks added yet. Pick from the curated library above or click "+ Add Custom Perk".</div>`;
+            return;
+        }
+
+        list.innerHTML = perks.map((p, idx) => {
+            const iconClass = p.icon || 'fa-gift';
+            const color = p.color || 'gold';
+            const tag = p.tag || '';
+
+            const colorClasses = {
+                gold: 'bg-amber-400/10 text-amber-500 border-amber-400/30',
+                emerald: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/30',
+                sapphire: 'bg-sky-500/10 text-sky-600 border-sky-500/30',
+                purple: 'bg-purple-500/10 text-purple-600 border-purple-500/30',
+                amber: 'bg-orange-500/10 text-orange-600 border-orange-500/30'
+            };
+            const currentBadgeClass = colorClasses[color] || colorClasses.gold;
+
+            return `
+            <div class="flex flex-col sm:flex-row sm:items-center gap-3 p-3.5 rounded-2xl bg-white border border-slate-200 shadow-xs hover:border-amber-400/40 transition-all">
+                
+                <!-- Icon Button with 1-Click Picker Trigger -->
+                <div class="flex items-center gap-2 shrink-0">
+                    <button type="button" onclick="AdminAnnouncementModule.openIconPicker(${idx})" class="w-11 h-11 rounded-xl flex flex-col items-center justify-center border transition-transform hover:scale-105 active:scale-95 cursor-pointer shadow-xs ${currentBadgeClass}" title="Click to pick icon">
+                        <i class="fa-solid ${iconClass} text-base"></i>
+                        <span class="text-[8px] font-bold uppercase tracking-tighter opacity-80 mt-0.5">Change</span>
+                    </button>
+                </div>
+
+                <!-- Titles & Descriptions -->
+                <div class="grid grid-cols-1 sm:grid-cols-12 gap-2 flex-grow min-w-0">
+                    <div class="sm:col-span-5">
+                        <label class="block text-[9px] uppercase font-bold text-slate-400 mb-0.5">Perk Title</label>
+                        <input type="text" value="${p.title || ''}" oninput="AdminAnnouncementModule.updatePerk(${idx}, 'title', this.value)" placeholder="Perk Title (e.g. Free Breakfast)" class="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-xl outline-none focus:border-[#D4AF37] font-bold text-slate-900 bg-slate-50/50">
+                    </div>
+                    <div class="sm:col-span-4">
+                        <label class="block text-[9px] uppercase font-bold text-slate-400 mb-0.5">Short Description</label>
+                        <input type="text" value="${p.desc || ''}" oninput="AdminAnnouncementModule.updatePerk(${idx}, 'desc', this.value)" placeholder="Short info (e.g. Daily service)" class="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-xl outline-none focus:border-[#D4AF37] text-slate-600 bg-slate-50/50">
+                    </div>
+                    <div class="sm:col-span-3">
+                        <label class="block text-[9px] uppercase font-bold text-slate-400 mb-0.5">Highlight Tag</label>
+                        <input type="text" value="${tag}" oninput="AdminAnnouncementModule.updatePerk(${idx}, 'tag', this.value.toUpperCase())" placeholder="e.g. FREE, VIP" class="w-full px-2.5 py-1.5 text-xs font-bold uppercase border border-slate-200 rounded-xl outline-none focus:border-[#D4AF37] text-amber-700 bg-amber-50/40">
+                    </div>
+                </div>
+
+                <!-- Color Theme & Ordering Controls -->
+                <div class="flex items-center justify-between sm:justify-end gap-1.5 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
+                    <select onchange="AdminAnnouncementModule.updatePerk(${idx}, 'color', this.value)" class="text-[11px] font-bold py-1.5 px-2 rounded-xl border border-slate-200 bg-slate-50 text-slate-700 outline-none focus:border-[#D4AF37]" title="Accent Theme">
+                        <option value="gold" ${color === 'gold' ? 'selected' : ''}>👑 Gold</option>
+                        <option value="emerald" ${color === 'emerald' ? 'selected' : ''}>🌲 Emerald</option>
+                        <option value="sapphire" ${color === 'sapphire' ? 'selected' : ''}>🌌 Sapphire</option>
+                        <option value="amber" ${color === 'amber' ? 'selected' : ''}>☀️ Amber</option>
+                        <option value="purple" ${color === 'purple' ? 'selected' : ''}>💜 Purple</option>
+                    </select>
+
+                    <div class="flex items-center gap-0.5 bg-slate-100 p-0.5 rounded-xl border border-slate-200">
+                        <button type="button" onclick="AdminAnnouncementModule.movePerk(${idx}, -1)" class="w-7 h-7 rounded-lg flex items-center justify-center text-slate-500 hover:text-slate-950 hover:bg-white transition-all disabled:opacity-30" ${idx === 0 ? 'disabled' : ''} title="Move Up">
+                            <i class="fa-solid fa-chevron-up text-[10px]"></i>
+                        </button>
+                        <button type="button" onclick="AdminAnnouncementModule.movePerk(${idx}, 1)" class="w-7 h-7 rounded-lg flex items-center justify-center text-slate-500 hover:text-slate-950 hover:bg-white transition-all disabled:opacity-30" ${idx === perks.length - 1 ? 'disabled' : ''} title="Move Down">
+                            <i class="fa-solid fa-chevron-down text-[10px]"></i>
+                        </button>
+                    </div>
+
+                    <button type="button" onclick="AdminAnnouncementModule.removePerk(${idx})" class="w-8 h-8 rounded-xl flex items-center justify-center text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors" title="Delete Perk">
+                        <i class="fa-solid fa-trash-can text-xs"></i>
+                    </button>
+                </div>
+            </div>
+            `;
+        }).join('');
+    },
+
+    addPerk: function(customPerk = null) {
+        const cur = this.getCurrentPopup();
+        if (!Array.isArray(cur.perks)) cur.perks = [];
+        
+        let newPerk = {
+            id: 'perk-' + Date.now(),
+            icon: 'fa-wand-magic-sparkles',
+            title: 'New VIP Privilege',
+            desc: 'Exclusive perk for direct booking',
+            tag: 'VIP',
+            color: 'gold'
+        };
+
+        if (customPerk) {
+            newPerk = { ...newPerk, ...customPerk, id: 'perk-' + Date.now() };
+        }
+
+        cur.perks.push(newPerk);
+        this.renderPerksEditor();
+        this.updateLivePreview();
+
+        if (window.KaghanUI && window.KaghanUI.showToast) {
+            window.KaghanUI.showToast(`Added perk: "${newPerk.title}"`, "success");
+        }
+    },
+
+    addCuratedPerk: function(categoryKey, perkIdx) {
+        const cat = this.curatedPerkLibrary[categoryKey];
+        if (!cat || !cat[perkIdx]) return;
+        this.addPerk(cat[perkIdx]);
+    },
+
+    updatePerk: function(idx, key, val) {
+        const cur = this.getCurrentPopup();
+        if (!cur.perks || !cur.perks[idx]) return;
+        cur.perks[idx][key] = val;
+        this.updateLivePreview();
+    },
+
+    movePerk: function(idx, direction) {
+        const cur = this.getCurrentPopup();
+        const perks = cur.perks;
+        if (!perks) return;
+        const targetIdx = idx + direction;
+        if (targetIdx < 0 || targetIdx >= perks.length) return;
+
+        const temp = perks[idx];
+        perks[idx] = perks[targetIdx];
+        perks[targetIdx] = temp;
+
+        this.renderPerksEditor();
+        this.updateLivePreview();
+    },
+
+    removePerk: function(idx) {
+        const cur = this.getCurrentPopup();
+        if (!cur.perks) return;
+        cur.perks.splice(idx, 1);
+        this.renderPerksEditor();
+        this.updateLivePreview();
+    },
+
+    // ============================================================
+    // === INTERACTIVE ICON PICKER MODAL ===
+    // ============================================================
+    renderIconPickerModal: function() {
+        let modal = document.getElementById('kaghan-icon-picker-modal');
+        if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'kaghan-icon-picker-modal';
+            modal.className = 'fixed inset-0 z-[999999] hidden items-center justify-center p-4';
+            document.body.appendChild(modal);
+        }
+
+        modal.innerHTML = `
+            <div class="fixed inset-0 bg-black/80 backdrop-blur-sm" onclick="AdminAnnouncementModule.closeIconPicker()"></div>
+            <div class="relative w-full max-w-2xl bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-200 max-h-[90vh] flex flex-col z-10 animate-fade-in">
+                
+                <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-10 h-10 rounded-2xl bg-amber-400/10 border border-amber-400/20 text-[#D4AF37] flex items-center justify-center text-lg">
+                            <i class="fa-solid fa-icons"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-base font-extrabold outfit text-slate-900 leading-tight">Pick a Perk Icon</h3>
+                            <p class="text-xs text-slate-400 font-light">Select from travel, dining, luxury, discount, and suite amenities.</p>
+                        </div>
+                    </div>
+                    <button type="button" onclick="AdminAnnouncementModule.closeIconPicker()" class="w-9 h-9 rounded-full flex items-center justify-center bg-slate-100 hover:bg-slate-200 text-slate-600 transition-colors">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <div class="my-4 relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-xs"></i>
+                    <input type="text" id="icon-picker-search" oninput="AdminAnnouncementModule.filterIcons(this.value)" placeholder="Search icons (e.g., breakfast, car, wifi, crown, clock, discount)..." class="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs text-slate-800 outline-none focus:border-[#D4AF37] focus:bg-white transition-all font-medium">
+                </div>
+
+                <div id="icon-picker-grid" class="overflow-y-auto space-y-5 pr-1 flex-grow">
+                    ${this.renderIconCategoriesHTML()}
+                </div>
+
+                <div class="pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
+                    <span>Click any icon to instantly select and apply.</span>
+                    <button type="button" onclick="AdminAnnouncementModule.closeIconPicker()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-xl transition-all">Cancel</button>
+                </div>
+            </div>
+        `;
+    },
+
+    renderIconCategoriesHTML: function(searchQuery = '') {
+        const query = searchQuery.trim().toLowerCase();
+        
+        return this.iconLibrary.map(cat => {
+            const filteredIcons = cat.icons.filter(icon => {
+                if (!query) return true;
+                return icon.id.toLowerCase().includes(query) || icon.name.toLowerCase().includes(query);
+            });
+
+            if (filteredIcons.length === 0) return '';
+
+            return `
+            <div>
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2.5 flex items-center gap-2">
+                    ${cat.category} <span class="text-[10px] text-slate-400 font-normal">(${filteredIcons.length})</span>
+                </h4>
+                <div class="grid grid-cols-3 sm:grid-cols-5 gap-2.5">
+                    ${filteredIcons.map(icon => `
+                        <button type="button" onclick="AdminAnnouncementModule.selectIcon('${icon.id}')" class="flex flex-col items-center justify-center p-3 rounded-2xl border border-slate-100 hover:border-amber-400/50 hover:bg-amber-50/40 transition-all text-center group cursor-pointer active:scale-95">
+                            <div class="w-9 h-9 rounded-xl bg-slate-50 group-hover:bg-amber-400/20 text-slate-700 group-hover:text-amber-600 flex items-center justify-center text-lg mb-1.5 transition-colors">
+                                <i class="fa-solid ${icon.id}"></i>
+                            </div>
+                            <span class="text-[10px] font-semibold text-slate-600 group-hover:text-slate-900 truncate w-full leading-tight">${icon.name}</span>
+                            <span class="text-[8px] font-mono text-slate-400 truncate w-full mt-0.5">${icon.id}</span>
+                        </button>
+                    `).join('')}
+                </div>
+            </div>
+            `;
+        }).join('');
+    },
+
+    openIconPicker: function(perkIdx) {
+        this.activePerkIconTargetIdx = perkIdx;
+        const modal = document.getElementById('kaghan-icon-picker-modal');
+        if (modal) {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            const search = document.getElementById('icon-picker-search');
+            if (search) {
+                search.value = '';
+                this.filterIcons('');
+                setTimeout(() => search.focus(), 100);
+            }
+        }
+    },
+
+    closeIconPicker: function() {
+        const modal = document.getElementById('kaghan-icon-picker-modal');
+        if (modal) {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+        this.activePerkIconTargetIdx = null;
+    },
+
+    filterIcons: function(query) {
+        const grid = document.getElementById('icon-picker-grid');
+        if (grid) {
+            grid.innerHTML = this.renderIconCategoriesHTML(query);
+        }
+    },
+
+    selectIcon: function(iconClass) {
+        const cur = this.getCurrentPopup();
+        if (this.activePerkIconTargetIdx !== null && cur.perks && cur.perks[this.activePerkIconTargetIdx]) {
+            cur.perks[this.activePerkIconTargetIdx].icon = iconClass;
+            this.renderPerksEditor();
+            this.updateLivePreview();
+
+            if (window.KaghanUI && window.KaghanUI.showToast) {
+                window.KaghanUI.showToast(`Updated icon to "${iconClass}"!`, "success");
+            }
+        }
+        this.closeIconPicker();
+    },
+
+    // Countdown Presets
+    setCountdownPreset: function(hours) {
+        const cur = this.getCurrentPopup();
+        const d = new Date(Date.now() + hours * 60 * 60 * 1000);
+        cur.countdownExpiry = d.toISOString().slice(0, 16);
+        cur.countdownEnabled = true;
+        this.populateFormFields();
+        this.updateLivePreview();
+    },
+
+    setCountdownEndOfMonth: function() {
+        const cur = this.getCurrentPopup();
+        const d = new Date();
+        const nextMonth = new Date(d.getFullYear(), d.getMonth() + 1, 0, 23, 59, 59);
+        cur.countdownExpiry = nextMonth.toISOString().slice(0, 16);
+        cur.countdownEnabled = true;
+        this.populateFormFields();
+        this.updateLivePreview();
+    },
+
+    // ============================================================
+    // === REAL-TIME LIVE SIMULATOR ===
+    // ============================================================
+    updateLivePreview: function() {
+        const previewWrap = document.getElementById('promo-simulator-content');
+        if (!previewWrap) return;
+
+        const d = this.getCurrentPopup();
+        const bg = d.bgColor || '#0B0F19';
+        const textColor = d.textColor || '#FFFFFF';
+        const accentColor = d.accentColor || '#D4AF37';
+        const badgeBg = d.badgeBg || accentColor;
+        const badgeTextColor = d.badgeTextColor || '#0B0F19';
+        const badgeText = d.badgeText || '✨ EXCLUSIVE PRIVILEGE';
+        const title = d.title || 'Unlock Direct Booking Privilege';
+        const subtitle = d.subtitle || 'Book directly on our official portal to enjoy guaranteed lowest rates, VIP amenities, and signature hospitality.';
+        const promoCode = d.promoCode || 'DIRECT15';
+        const primaryCtaText = d.primaryCtaText || (promoCode ? `Claim ${promoCode} & Book` : 'Explore Luxury Suites');
+        const secondaryCtaText = d.secondaryCtaText || 'No thanks, I will pay full price';
+        const perks = d.perks || [];
+
+        // Perks HTML in Simulator
+        const perksHtml = (d.perksEnabled !== false && perks.length > 0) ? `
+            <div class="grid grid-cols-2 gap-2 my-4 text-left">
+                ${perks.map(p => {
+                    const tagHtml = p.tag ? `<span class="inline-block text-[8px] font-black uppercase tracking-wider px-1.5 py-0.2 rounded-md bg-amber-400/20 text-amber-300 border border-amber-400/30 ml-1">${p.tag}</span>` : '';
+                    return `
+                    <div class="flex items-start gap-2 p-2 rounded-xl bg-white/[0.04] border border-white/[0.08] hover:border-amber-400/30 transition-all">
+                        <div class="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-amber-400/10 border border-amber-400/20 text-amber-400 text-xs">
+                            <i class="fa-solid ${p.icon || 'fa-gift'}"></i>
+                        </div>
+                        <div class="min-w-0 flex-grow">
+                            <div class="text-[11px] font-bold text-white truncate leading-tight flex items-center justify-between">
+                                <span class="truncate">${p.title || ''}</span>
+                                ${tagHtml}
+                            </div>
+                            <div class="text-[9px] text-slate-400 truncate font-light mt-0.5">${p.desc || ''}</div>
+                        </div>
+                    </div>
+                    `;
+                }).join('')}
+            </div>
+        ` : '';
+
+        // Countdown HTML in Simulator
+        const countdownHtml = (d.countdownEnabled && d.countdownExpiry) ? `
+            <div class="my-3 p-2.5 rounded-2xl bg-black/40 border border-amber-400/20 flex flex-col items-center gap-1.5">
+                <span class="text-[9px] uppercase font-bold tracking-wider text-amber-300/90 flex items-center gap-1">
+                    <i class="fa-solid fa-fire text-amber-400 animate-pulse"></i> ${d.countdownLabel || '⚡ Flash Offer Ends In:'}
+                </span>
+                <div class="flex items-center gap-1.5 font-mono text-xs">
+                    <div class="bg-white/10 px-2 py-0.5 rounded text-white font-black"><span id="sim-days">06</span><span class="text-[7px] text-slate-400 block -mt-0.5">DAYS</span></div>
+                    <span class="text-amber-400 font-bold">:</span>
+                    <div class="bg-white/10 px-2 py-0.5 rounded text-white font-black"><span id="sim-hours">23</span><span class="text-[7px] text-slate-400 block -mt-0.5">HOURS</span></div>
+                    <span class="text-amber-400 font-bold">:</span>
+                    <div class="bg-white/10 px-2 py-0.5 rounded text-white font-black"><span id="sim-mins">59</span><span class="text-[7px] text-slate-400 block -mt-0.5">MINS</span></div>
+                    <span class="text-amber-400 font-bold">:</span>
+                    <div class="bg-white/10 px-2 py-0.5 rounded text-amber-400 font-black"><span id="sim-secs">45</span><span class="text-[7px] text-slate-400 block -mt-0.5">SECS</span></div>
+                </div>
+            </div>
+        ` : '';
+
+        // Promo Code Box in Simulator
+        const couponBoxHtml = promoCode ? `
+            <div class="flex items-center justify-between gap-2 p-2 rounded-2xl bg-amber-400/10 border border-dashed border-amber-400/40 my-2">
+                <div class="flex items-center gap-2 min-w-0 pl-1 text-left">
+                    <i class="fa-solid fa-tag text-amber-400 text-xs shrink-0"></i>
+                    <div class="min-w-0">
+                        <span class="text-[8px] uppercase font-bold text-amber-300/80 block leading-tight">Discount Code</span>
+                        <span class="font-mono text-xs font-black text-white tracking-widest truncate block">${promoCode}</span>
+                    </div>
+                </div>
+                <button type="button" onclick="AdminAnnouncementModule.testCopyPromo('${promoCode}')" class="px-2.5 py-1 rounded-lg bg-amber-400 text-slate-950 text-[10px] font-black uppercase tracking-wider shadow-xs shrink-0 flex items-center gap-1">
+                    <i class="fa-solid fa-copy text-[9px]"></i> Copy
+                </button>
+            </div>
+        ` : '';
+
+        if (d.layout === 'corner-floater') {
+            previewWrap.innerHTML = `
+                <div class="flex items-end justify-end w-full h-full p-4">
+                    <div class="w-full max-w-sm rounded-3xl p-5 shadow-2xl border border-white/10 text-left relative" style="background: ${bg}; color: ${textColor};">
+                        <div class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider mb-2" style="background: ${badgeBg}; color: ${badgeTextColor};">
+                            <i class="fa-solid fa-crown text-[8px]"></i> <span>${badgeText}</span>
+                        </div>
+                        <h4 class="text-sm font-bold outfit text-white mb-1">${title}</h4>
+                        <p class="text-[11px] text-slate-300 font-light mb-3">${subtitle}</p>
+                        ${couponBoxHtml}
+                        <button type="button" class="w-full py-2.5 px-4 rounded-xl font-bold text-xs uppercase tracking-wider text-slate-950 text-center shadow-md" style="background: ${accentColor};">
+                            ${primaryCtaText}
+                        </button>
+                    </div>
+                </div>
+            `;
+        } else if (d.layout === 'slide-drawer') {
+            previewWrap.innerHTML = `
+                <div class="flex items-end justify-center w-full h-full p-4">
+                    <div class="w-full max-w-lg rounded-3xl p-4 shadow-2xl border border-white/10 flex items-center justify-between gap-3 text-left" style="background: ${bg}; color: ${textColor};">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-amber-400/20 text-amber-400 text-base border border-amber-400/30">
+                                <i class="fa-solid fa-crown"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <h4 class="text-xs font-bold outfit text-white truncate">${title}</h4>
+                                <span class="text-[10px] text-slate-300 truncate block">${subtitle}</span>
+                            </div>
+                        </div>
+                        <button type="button" class="py-2 px-4 rounded-xl font-bold text-xs uppercase tracking-wider text-slate-950 shrink-0 shadow-md" style="background: ${accentColor};">
+                            Claim Deal
+                        </button>
+                    </div>
+                </div>
+            `;
+        } else {
+            // Center Modal
+            previewWrap.innerHTML = `
+                <div class="flex items-center justify-center w-full h-full p-4">
+                    <div class="w-full max-w-md rounded-3xl p-6 text-center shadow-2xl border border-white/10 relative overflow-hidden" style="background: ${bg}; color: ${textColor};">
+                        
+                        <div class="absolute -top-16 -left-16 w-32 h-32 rounded-full blur-2xl opacity-30 pointer-events-none" style="background: ${accentColor};"></div>
+                        <div class="absolute -bottom-16 -right-16 w-32 h-32 rounded-full blur-2xl opacity-20 pointer-events-none" style="background: ${accentColor};"></div>
+
+                        <div class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest shadow-md mb-2" style="background: ${badgeBg}; color: ${badgeTextColor};">
+                            <i class="fa-solid fa-crown text-[8px]"></i> <span>${badgeText}</span>
+                        </div>
+
+                        <h3 class="text-lg sm:text-xl font-black outfit text-white leading-snug mb-1.5">${title}</h3>
+                        <p class="text-xs text-slate-300 font-light leading-relaxed max-w-xs mx-auto">${subtitle}</p>
+
+                        ${perksHtml}
+                        ${countdownHtml}
+                        ${couponBoxHtml}
+
+                        <div class="mt-4 space-y-1.5">
+                            <button type="button" class="w-full py-3 px-5 rounded-2xl font-black text-xs uppercase tracking-wider text-slate-950 shadow-lg flex items-center justify-center gap-2" style="background: linear-gradient(135deg, ${accentColor} 0%, #F59E0B 100%);">
+                                <span>${primaryCtaText}</span> <i class="fa-solid fa-arrow-right text-xs"></i>
+                            </button>
+                            <span class="text-[10px] text-slate-400 block">${secondaryCtaText}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    },
+
+    startPreviewCountdown: function() {
+        clearInterval(this.previewCountdownTimer);
+        this.previewCountdownTimer = setInterval(() => {
+            const cur = this.getCurrentPopup();
+            if (!cur || !cur.countdownExpiry) return;
+            const diff = new Date(cur.countdownExpiry).getTime() - Date.now();
+            if (diff > 0) {
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                const minutes = Math.floor((diff / (1000 * 60)) % 60);
+                const seconds = Math.floor((diff / 1000) % 60);
+
+                const dEl = document.getElementById('sim-days');
+                const hEl = document.getElementById('sim-hours');
+                const mEl = document.getElementById('sim-mins');
+                const sEl = document.getElementById('sim-secs');
+
+                if (dEl) dEl.textContent = String(days).padStart(2, '0');
+                if (hEl) hEl.textContent = String(hours).padStart(2, '0');
+                if (mEl) mEl.textContent = String(minutes).padStart(2, '0');
+                if (sEl) sEl.textContent = String(seconds).padStart(2, '0');
+            }
+        }, 1000);
+    },
+
+    testCopyPromo: function(code) {
+        if (window.KaghanUI && window.KaghanUI.showToast) {
+            window.KaghanUI.showToast(`✨ Tested Promo Copy: "${code}"`, "info");
+        }
+    },
+
+    testTriggerLive: function() {
+        if (window.KaghanPromotions) {
+            window.KaghanPromotions.data = this.getCurrentPopup();
+            window.KaghanPromotions.show(true);
+        }
+    },
+
+    // Save & Publish to Firestore
     saveAnnouncementSettings: async function() {
-        const btn = document.getElementById('save-announcement-btn');
-        const originalHtml = btn ? btn.innerHTML : 'Save Settings';
+        const btn = document.getElementById('save-promo-btn');
+        const origHtml = btn ? btn.innerHTML : '';
         if (btn) {
-            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin mr-1.5"></i> Saving...';
             btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-sm"></i> Publishing...`;
         }
 
         try {
-            // Read core toggles
-            const toggle = document.getElementById('announcement-active-toggle');
-            if (toggle) this.currentData.active = toggle.checked;
-
-            const dismissToggle = document.getElementById('announcement-dismissible-toggle');
-            if (dismissToggle) this.currentData.dismissible = dismissToggle.checked;
-
-            const fontSelect = document.getElementById('announcement-font-select');
-            if (fontSelect) this.currentData.fontFamily = fontSelect.value;
-
-            const sizeSelect = document.getElementById('announcement-size-select');
-            if (sizeSelect) this.currentData.fontSize = sizeSelect.value;
-
-            const badgeInput = document.getElementById('announcement-badge-text');
-            if (badgeInput) this.currentData.badgeText = badgeInput.value.trim();
-
-            const intervalInput = document.getElementById('announcement-interval-input');
-            if (intervalInput) this.currentData.rotationInterval = parseInt(intervalInput.value) || 5;
-
-            // Special Perks fields
-            const perksToggle = document.getElementById('announcement-perks-toggle');
-            if (perksToggle) this.currentData.perksEnabled = perksToggle.checked;
-
-            const perkBadgeInput = document.getElementById('announcement-perk-badge');
-            if (perkBadgeInput) this.currentData.perkBadge = perkBadgeInput.value.trim();
-
-            const perkTextInput = document.getElementById('announcement-perk-text');
-            if (perkTextInput) this.currentData.perkText = perkTextInput.value.trim();
-
-            const perkIconInput = document.getElementById('announcement-perk-icon');
-            if (perkIconInput) this.currentData.perkIcon = perkIconInput.value.trim();
-
-            // Limited-Time Countdown Timer fields
-            const cdToggle = document.getElementById('announcement-countdown-toggle');
-            if (cdToggle) this.currentData.countdownEnabled = cdToggle.checked;
-
-            const cdExpiryInput = document.getElementById('announcement-countdown-expiry');
-            if (cdExpiryInput) this.currentData.countdownExpiry = cdExpiryInput.value;
-
-            const cdLabelInput = document.getElementById('announcement-countdown-label');
-            if (cdLabelInput) this.currentData.countdownLabel = cdLabelInput.value.trim();
-
-            // Promo Code fields
-            const promoInput = document.getElementById('announcement-promo-code');
-            if (promoInput) this.currentData.promoCode = promoInput.value.trim().toUpperCase();
-
-            const discInput = document.getElementById('announcement-discount-pct');
-            if (discInput) this.currentData.discountPercent = parseInt(discInput.value, 10) || 0;
-
-            const claimActionSelect = document.getElementById('announcement-claim-action');
-            if (claimActionSelect) this.currentData.claimAction = claimActionSelect.value;
-
-            // Colors
-            const bgInput = document.getElementById('announcement-bg-color');
-            const textInput = document.getElementById('announcement-text-color');
-            const accentInput = document.getElementById('announcement-accent-color');
-            const badgeBgInput = document.getElementById('announcement-badge-bg');
-            const badgeTextInput = document.getElementById('announcement-badge-text-color');
-
-            if (bgInput) this.currentData.bgColor = bgInput.value;
-            if (textInput) this.currentData.textColor = textInput.value;
-            if (accentInput) this.currentData.accentColor = accentInput.value;
-            if (badgeBgInput) this.currentData.badgeBg = badgeBgInput.value;
-            if (badgeTextInput) this.currentData.badgeTextColor = badgeTextInput.value;
-
-            // Ensure clean messages
-            if (!Array.isArray(this.currentData.messages) || this.currentData.messages.length === 0) {
-                this.currentData.messages = [
+            const cur = this.getCurrentPopup();
+            const payload = {
+                ...cur,
+                popups: this.popups,
+                activePopupId: this.activePopupId,
+                updatedAt: new Date().toISOString(),
+                messages: [
                     {
                         id: 'msg-1',
-                        emoji: '✨',
-                        icon: 'fa-sparkles',
-                        text: 'Welcome to KPH Stay - Luxury Living in Islamabad & Nathia Gali.',
-                        linkText: 'Explore',
-                        linkUrl: 'rooms.html',
-                        linkTarget: '_self',
-                        promoCode: this.currentData.promoCode || 'DIRECT15',
-                        perkBadge: this.currentData.perkBadge || 'VIP 15% OFF'
+                        text: `${cur.title}: ${cur.subtitle}`,
+                        linkText: cur.primaryCtaText,
+                        linkUrl: cur.primaryCtaUrl,
+                        promoCode: cur.promoCode
                     }
-                ];
-            }
+                ]
+            };
 
-            // Save to Firestore
-            await window.KaghanDB.saveAnnouncement(this.currentData);
+            await window.KaghanDB.saveAnnouncement(payload);
 
             if (window.KaghanUI && window.KaghanUI.showToast) {
-                window.KaghanUI.showToast("Announcement Bar perks & limited offers published live!", "success");
+                window.KaghanUI.showToast("🎉 All popup campaigns and page targeting rules published live!", "success");
             } else {
-                alert("Announcement Bar updated successfully!");
+                alert("Promotional popups published successfully!");
             }
-        } catch(e) {
-            console.error("Failed to save announcement bar:", e);
+        } catch (err) {
+            console.error("Save promo error:", err);
             if (window.KaghanUI && window.KaghanUI.showToast) {
-                window.KaghanUI.showToast("Error saving announcement bar: " + e.message, "error");
+                window.KaghanUI.showToast(`Failed to publish: ${err.message}`, "error");
             } else {
-                alert("Failed to save announcement bar: " + e.message);
+                alert(`Error saving: ${err.message}`);
             }
         } finally {
             if (btn) {
-                btn.innerHTML = originalHtml;
                 btn.disabled = false;
+                btn.innerHTML = origHtml;
             }
         }
     }
 };
 
-// Global helper bindings
-window.saveAnnouncementSettings = () => window.AdminAnnouncementModule.saveAnnouncementSettings();
+// Aliases for system integration
+window.AdminPromotionsModule = window.AdminAnnouncementModule;
+
+// Auto-run when tab opens or DOM is loaded
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        if (window.AdminAnnouncementModule) window.AdminAnnouncementModule.init();
+    });
+} else {
+    if (window.AdminAnnouncementModule) window.AdminAnnouncementModule.init();
+}
