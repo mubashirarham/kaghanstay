@@ -75,9 +75,15 @@ exports.handler = async (event) => {
         return { statusCode: 403, headers, body: JSON.stringify({ error: 'Unauthorized. Admin authorization required.' }) };
     }
 
+    let payload = {};
+    try {
+        payload = JSON.parse(event.body || '{}');
+    } catch (_) {}
+
     let deletedAuthCount = 0;
     let deletedFirestoreCount = 0;
 
+    // 1. Purge known spam list
     for (const uid of SPAM_UIDS) {
         try {
             await auth.deleteUser(uid);
@@ -94,6 +100,30 @@ exports.handler = async (event) => {
         }
     }
 
+    // 2. Optional: Purge all unverified spam accounts
+    if (payload.purgeUnverified === true) {
+        try {
+            const unverifiedSnap = await fdb.collection('users').where('verified', '==', false).get();
+            for (const doc of unverifiedSnap.docs) {
+                const uData = doc.data();
+                if (uData.role === 'admin' || uData.role === 'moderator' || uData.role === 'editor') {
+                    continue; // Do not touch staff accounts
+                }
+                try {
+                    await auth.deleteUser(doc.id);
+                    deletedAuthCount++;
+                } catch (_) {}
+
+                try {
+                    await doc.ref.delete();
+                    deletedFirestoreCount++;
+                } catch (_) {}
+            }
+        } catch (err) {
+            console.error("Purge unverified batch error:", err);
+        }
+    }
+
     return {
         statusCode: 200,
         headers,
@@ -103,3 +133,4 @@ exports.handler = async (event) => {
         })
     };
 };
+

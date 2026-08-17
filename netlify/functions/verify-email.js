@@ -56,41 +56,98 @@ exports.handler = async (event) => {
             tokenRef = fdb.collection('email_verifications').doc(`otp_${normalized}`);
             tokenSnap = await tokenRef.get();
         } else {
-            return { statusCode: 400, headers, body: JSON.stringify({ error: 'Please provide either a verification token or a 6-digit OTP code.' }) };
+            return { statusCode: 400, headers, body: JSON.stringify({ error: 'Please provide either a verification token or a 6-digit verification code.' }) };
         }
 
         if (!tokenSnap || !tokenSnap.exists) {
-            return { statusCode: 400, headers, body: JSON.stringify({ error: 'Invalid or expired verification code.' }) };
+            return { statusCode: 400, headers, body: JSON.stringify({ error: 'Invalid or expired verification code. Please register again.' }) };
         }
 
         const tokenData = tokenSnap.data();
         const now = new Date();
         const expiresAt = new Date(tokenData.expiresAt);
 
+        // 1. Check expiration
         if (now > expiresAt) {
-            await tokenRef.delete();
-            return { statusCode: 400, headers, body: JSON.stringify({ error: 'Verification code has expired. Please request a new code.' }) };
+            await tokenRef.delete().catch(() => {});
+            if (tokenData.token) await fdb.collection('email_verifications').doc(tokenData.token).delete().catch(() => {});
+            if (tokenData.email) await fdb.collection('email_verifications').doc(`otp_${tokenData.email}`).delete().catch(() => {});
+            return { statusCode: 400, headers, body: JSON.stringify({ error: 'Verification code has expired. Please register again.' }) };
         }
 
+        // 2. Check failed attempts / Brute-force protection
+        const currentAttempts = (tokenData.attempts || 0);
+        if (currentAttempts >= 5) {
+            await tokenRef.delete().catch(() => {});
+            if (tokenData.token) await fdb.collection('email_verifications').doc(tokenData.token).delete().catch(() => {});
+            if (tokenData.email) await fdb.collection('email_verifications').doc(`otp_${tokenData.email}`).delete().catch(() => {});
+            return { statusCode: 400, headers, body: JSON.stringify({ error: 'Too many incorrect attempts. For security reasons, please start registration again.' }) };
+        }
+
+        // 3. Verify OTP code match
         if (otp && tokenData.otp !== otp.trim()) {
-            return { statusCode: 400, headers, body: JSON.stringify({ error: 'Incorrect 6-digit verification code. Please check your email and try again.' }) };
+            await tokenRef.update({ attempts: currentAttempts + 1 }).catch(() => {});
+            const remaining = 5 - (currentAttempts + 1);
+            return {
+                statusCode: 400,
+                headers,
+                body: JSON.stringify({ error: `Incorrect 6-digit verification code. (${remaining} attempt${remaining === 1 ? '' : 's'} remaining)` })
+            };
         }
 
-        // 1. Mark Firebase Auth email as verified
-        await auth.updateUser(tokenData.uid, { emailVerified: true });
+        // 4. Verification Successful! NOW AND ONLY NOW create or activate user in Firebase Auth & Firestore
+        const userEmail = tokenData.email;
+        const userName = tokenData.name || userEmail.split('@')[0];
+        const userPhone = tokenData.phone || '';
+        const rawEmail = tokenData.rawEmail || userEmail;
 
-        // 2. Mark Firestore user doc as verified
-        await fdb.collection('users').doc(tokenData.uid).set({
+        let userRecord = null;
+        try {
+            // Check if user already exists in Firebase Auth
+            const existingUser = await auth.getUserByEmail(userEmail);
+            if (existingUser) {
+                if (tokenData.password) {
+                    await auth.updateUser(existingUser.uid, {
+                        password: tokenData.password,
+                        displayName: userName,
+                        emailVerified: true
+                    });
+                } else {
+                    await auth.updateUser(existingUser.uid, { emailVerified: true });
+                }
+                userRecord = existingUser;
+            }
+        } catch (_) {}
+
+        if (!userRecord) {
+            // Create the authenticated user in Firebase Auth
+            userRecord = await auth.createUser({
+                email: userEmail,
+                password: tokenData.password || undefined,
+                displayName: userName,
+                emailVerified: true
+            });
+        }
+
+        // 5. Create / update the permanent user document in Firestore 'users' collection
+        const finalUserData = {
+            id: userRecord.uid,
+            uid: userRecord.uid,
+            name: userName,
+            email: userEmail,
+            rawEmail: rawEmail,
+            phone: userPhone,
+            role: 'user',
             verified: true,
             emailVerified: true,
-            verifiedAt: now.toISOString()
-        }, { merge: true });
+            loyaltyPoints: 100,
+            verifiedAt: now.toISOString(),
+            createdAt: now.toISOString()
+        };
 
-        // Fetch full updated user document
-        const userDoc = await fdb.collection('users').doc(tokenData.uid).get();
-        const userData = userDoc.exists ? userDoc.data() : { id: tokenData.uid, uid: tokenData.uid, email: tokenData.email };
+        await fdb.collection('users').doc(userRecord.uid).set(finalUserData, { merge: true });
 
-        // 3. Clean up verification documents
+        // 6. Clean up temporary verification documents
         await tokenRef.delete().catch(() => {});
         if (tokenData.token) {
             await fdb.collection('email_verifications').doc(tokenData.token).delete().catch(() => {});
@@ -99,15 +156,15 @@ exports.handler = async (event) => {
             await fdb.collection('email_verifications').doc(`otp_${tokenData.email}`).delete().catch(() => {});
         }
 
-        console.log(`[Verify Email API] Account successfully verified for UID: ${tokenData.uid}`);
+        console.log(`[Verify Email API] User officially registered and verified: ${userEmail} (UID: ${userRecord.uid})`);
 
         return {
             statusCode: 200,
             headers,
             body: JSON.stringify({
                 success: true,
-                message: 'Your email address has been verified! Account activated.',
-                user: userData
+                message: 'Your email address has been verified! Your account is now active.',
+                user: finalUserData
             })
         };
 
@@ -120,3 +177,4 @@ exports.handler = async (event) => {
         };
     }
 };
+

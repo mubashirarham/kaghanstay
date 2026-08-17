@@ -1,0 +1,1909 @@
+{
+  "importedAt": "2026-08-17T10:41:53.641Z",
+  "properties": [
+    {
+      "siteUrl": "https://www.kphstay.com/",
+      "permissionLevel": "siteOwner",
+      "sitemaps": [
+        {
+          "path": "https://www.kphstay.com/sitemap.xml",
+          "lastSubmitted": "2026-08-09T10:31:14.181Z",
+          "isPending": false,
+          "isSitemapsIndex": false,
+          "type": "sitemap",
+          "lastDownloaded": "2026-08-16T20:57:42.150Z",
+          "warnings": "0",
+          "errors": "0",
+          "contents": [
+            {
+              "type": "web",
+              "submitted": "36",
+              "indexed": "0"
+            }
+          ]
+        }
+      ],
+      "performanceSummary": {
+        "totalPages": 0,
+        "totalQueries": 0,
+        "totalImpressions": 0,
+        "totalClicks": 0
+      }
+    },
+    {
+      "siteUrl": "https://kphstay.com/",
+      "permissionLevel": "siteOwner",
+      "sitemaps": [
+        {
+          "path": "https://kphstay.com/sitemap.xml",
+          "lastSubmitted": "2026-08-11T11:08:38.452Z",
+          "isPending": false,
+          "isSitemapsIndex": false,
+          "type": "sitemap",
+          "lastDownloaded": "2026-08-16T11:46:38.567Z",
+          "warnings": "0",
+          "errors": "0",
+          "contents": [
+            {
+              "type": "web",
+              "submitted": "36",
+              "indexed": "0"
+            }
+          ]
+        }
+      ],
+      "performanceSummary": {
+        "totalPages": 1,
+        "totalQueries": 1,
+        "totalImpressions": 34,
+        "totalClicks": 3
+      }
+    }
+  ],
+  "searchAnalytics": {
+    "https://www.kphstay.com/": {
+      "byPage": [],
+      "byQuery": [],
+      "byCountry": [],
+      "byDevice": [],
+      "byDate": [
+        {
+          "keys": [
+            "2026-08-07"
+          ],
+          "clicks": 0,
+          "impressions": 0,
+          "ctr": 0,
+          "position": 0
+        },
+        {
+          "keys": [
+            "2026-08-08"
+          ],
+          "clicks": 0,
+          "impressions": 0,
+          "ctr": 0,
+          "position": 0
+        },
+        {
+          "keys": [
+            "2026-08-09"
+          ],
+          "clicks": 0,
+          "impressions": 0,
+          "ctr": 0,
+          "position": 0
+        },
+        {
+          "keys": [
+            "2026-08-10"
+          ],
+          "clicks": 0,
+          "impressions": 0,
+          "ctr": 0,
+          "position": 0
+        },
+        {
+          "keys": [
+            "2026-08-11"
+          ],
+          "clicks": 0,
+          "impressions": 0,
+          "ctr": 0,
+          "position": 0
+        },
+        {
+          "keys": [
+            "2026-08-12"
+          ],
+          "clicks": 0,
+          "impressions": 0,
+          "ctr": 0,
+          "position": 0
+        },
+        {
+          "keys": [
+            "2026-08-13"
+          ],
+          "clicks": 0,
+          "impressions": 0,
+          "ctr": 0,
+          "position": 0
+        },
+        {
+          "keys": [
+            "2026-08-14"
+          ],
+          "clicks": 0,
+          "impressions": 0,
+          "ctr": 0,
+          "position": 0
+        },
+        {
+          "keys": [
+            "2026-08-15"
+          ],
+          "clicks": 0,
+          "impressions": 0,
+          "ctr": 0,
+          "position": 0
+        }
+      ]
+    },
+    "https://kphstay.com/": {
+      "byPage": [
+        {
+          "keys": [
+            "https://kphstay.com/"
+          ],
+          "clicks": 3,
+          "impressions": 34,
+          "ctr": 0.08823529411764706,
+          "position": 5.588235294117647
+        }
+      ],
+      "byQuery": [
+        {
+          "keys": [
+            "kings accomidation"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 69
+        }
+      ],
+      "byCountry": [
+        {
+          "keys": [
+            "pak"
+          ],
+          "clicks": 2,
+          "impressions": 31,
+          "ctr": 0.06451612903225806,
+          "position": 3.5483870967741935
+        },
+        {
+          "keys": [
+            "can"
+          ],
+          "clicks": 1,
+          "impressions": 1,
+          "ctr": 1,
+          "position": 1
+        },
+        {
+          "keys": [
+            "tur"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 68
+        },
+        {
+          "keys": [
+            "usa"
+          ],
+          "clicks": 0,
+          "impressions": 1,
+          "ctr": 0,
+          "position": 11
+        }
+      ],
+      "byDevice": [
+        {
+          "keys": [
+            "DESKTOP"
+          ],
+          "clicks": 3,
+          "impressions": 32,
+          "ctr": 0.09375,
+          "position": 5.40625
+        },
+        {
+          "keys": [
+            "MOBILE"
+          ],
+          "clicks": 0,
+          "impressions": 2,
+          "ctr": 0,
+          "position": 8.5
+        }
+      ],
+      "byDate": [
+        {
+          "keys": [
+            "2026-08-10"
+          ],
+          "clicks": 0,
+          "impressions": 5,
+          "ctr": 0,
+          "position": 1
+        },
+        {
+          "keys": [
+            "2026-08-11"
+          ],
+          "clicks": 1,
+          "impressions": 2,
+          "ctr": 0.5,
+          "position": 1
+        },
+        {
+          "keys": [
+            "2026-08-12"
+          ],
+          "clicks": 0,
+          "impressions": 3,
+          "ctr": 0,
+          "position": 1
+        },
+        {
+          "keys": [
+            "2026-08-13"
+          ],
+          "clicks": 0,
+          "impressions": 8,
+          "ctr": 0,
+          "position": 2.875
+        },
+        {
+          "keys": [
+            "2026-08-14"
+          ],
+          "clicks": 0,
+          "impressions": 4,
+          "ctr": 0,
+          "position": 18
+        },
+        {
+          "keys": [
+            "2026-08-15"
+          ],
+          "clicks": 2,
+          "impressions": 12,
+          "ctr": 0.16666666666666666,
+          "position": 7.083333333333333
+        }
+      ]
+    }
+  },
+  "indexingApiVerification": [
+    {
+      "url": "https://kphstay.com/",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/rooms",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/blog",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/contact",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/booking",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/pricing",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/privacy",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/terms",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/refund",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/cookies",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/room-details?slug=ground-floor-valley-view-room-islamabad",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/room-details?slug=the-vintage-cube-1bhk-islamabad",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/room-details?slug=one-bed-apartment-kph-bl-cube-710-islamabad",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/room-details?slug=virsa-1bhk-islamabad",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/room-details?slug=one-bed-apartment-kph-osma-cube-612-islamabad",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/room-details?slug=one-bed-apartment-kph-abd-cube-928-islamabad",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/room-details?slug=one-bed-apartment-kph-1bhkali-cube923-islamabad",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/room-details?slug=tulipano-by-nook-house-murree",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/room-details?slug=tulipano-by-nook-house-murree-2bhk-c1",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/room-details?slug=tulipano-by-nook-house-standard-2bhk-murree-islamabad",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/room-details?slug=tulipano-by-nook-house-premium-suite-a2-murree",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/room-details?slug=tulipano-by-nook-house-deluxe-suite-b2-murree",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/room-details?slug=tulipano-by-nook-house-classic-suite-c2-murree",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/room-details?slug=the-winds-way-lodges-murree",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/room-details?slug=luxury-2-bed-furnished-apartment-sector-c1-bahria-enclave-islamabad",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/room-details?slug=2-bed-furnished-apartment-cube-apartments-bahria-enclave-islamabad",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/room-details?slug=4-bedroom-lower-ground-valley-view-stay-nathia-gali",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/room-details?slug=4-bedroom-luxury-stay-nathia-gali",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/room-details?slug=valley-view-villa-murree",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/room-details?slug=the-subtle-nook-studio-islamabad",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/room-details?slug=studio-murree-view-6th-floor-kph-shm617-islamabad",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/room-details?slug=studio-by-nook-house-islamabad",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/blog/nathia-gali-travel-guide",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/blog/m3GDbmwwf32aYsTfIRlm",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/room/ground-floor-valley-view-room-islamabad",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/room/the-vintage-cube-1bhk-islamabad",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/room/one-bed-apartment-kph-bl-cube-710-islamabad",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/room/virsa-1bhk-islamabad",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/room/one-bed-apartment-kph-osma-cube-612-islamabad",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/room/one-bed-apartment-kph-abd-cube-928-islamabad",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/room/one-bed-apartment-kph-1bhkali-cube923-islamabad",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/room/tulipano-by-nook-house-murree",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/room/tulipano-by-nook-house-murree-2bhk-c1",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/room/tulipano-by-nook-house-standard-2bhk-murree-islamabad",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/room/tulipano-by-nook-house-premium-suite-a2-murree",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/room/tulipano-by-nook-house-deluxe-suite-b2-murree",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/room/tulipano-by-nook-house-classic-suite-c2-murree",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/room/the-winds-way-lodges-murree",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/room/luxury-2-bed-furnished-apartment-sector-c1-bahria-enclave-islamabad",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/room/2-bed-furnished-apartment-cube-apartments-bahria-enclave-islamabad",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/room/4-bedroom-lower-ground-valley-view-stay-nathia-gali",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/room/4-bedroom-luxury-stay-nathia-gali",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/room/valley-view-villa-murree",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/room/the-subtle-nook-studio-islamabad",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/room/studio-murree-view-6th-floor-kph-shm617-islamabad",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    },
+    {
+      "url": "https://kphstay.com/room/studio-by-nook-house-islamabad",
+      "status": 404,
+      "metadata": {
+        "error": {
+          "code": 404,
+          "message": "Requested entity was not found.",
+          "status": "NOT_FOUND"
+        }
+      }
+    }
+  ],
+  "urlInspections": [
+    {
+      "url": "https://kphstay.com/",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "PASS",
+      "coverageState": "Submitted and indexed",
+      "indexingState": "INDEXING_ALLOWED",
+      "pageFetchState": "SUCCESSFUL",
+      "robotsTxtState": "ALLOWED",
+      "crawledAs": "MOBILE",
+      "lastCrawlTime": "2026-08-11T11:59:58Z",
+      "googleCanonical": "https://kphstay.com/",
+      "userCanonical": "https://kphstay.com/",
+      "sitemap": [],
+      "referringUrls": [
+        "https://kphstay.com/booking.html?room=room-1bed-1784131430997",
+        "https://kphstay.com/privacy"
+      ],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": "PASS"
+    },
+    {
+      "url": "https://kphstay.com/rooms",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "Not found (404)",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "NOT_FOUND",
+      "robotsTxtState": "ALLOWED",
+      "crawledAs": "MOBILE",
+      "lastCrawlTime": "2026-08-14T07:08:37Z",
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [
+        "https://kphstay.com/booking.html?room=room-1bed-1784131430997"
+      ],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/blog",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "URL is unknown to Google",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "UNKNOWN",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/contact",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "Discovered - currently not indexed",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "CRAWLING_USER_AGENT_UNSPECIFIED",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [
+        "https://www.kphstay.com/sitemap.xml"
+      ],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/booking",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "URL is unknown to Google",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "UNKNOWN",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/pricing",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "URL is unknown to Google",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "UNKNOWN",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/privacy",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "Alternate page with proper canonical tag",
+      "indexingState": "INDEXING_ALLOWED",
+      "pageFetchState": "SUCCESSFUL",
+      "robotsTxtState": "ALLOWED",
+      "crawledAs": "MOBILE",
+      "lastCrawlTime": "2026-07-16T06:38:48Z",
+      "googleCanonical": "https://kphstay.com/",
+      "userCanonical": "https://kphstay.com/",
+      "sitemap": [],
+      "referringUrls": [
+        "https://kphstay.com/",
+        "https://kphstay.com/cookies.html"
+      ],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/terms",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "Alternate page with proper canonical tag",
+      "indexingState": "INDEXING_ALLOWED",
+      "pageFetchState": "SUCCESSFUL",
+      "robotsTxtState": "ALLOWED",
+      "crawledAs": "MOBILE",
+      "lastCrawlTime": "2026-07-16T09:04:37Z",
+      "googleCanonical": "https://kphstay.com/",
+      "userCanonical": "https://kphstay.com/",
+      "sitemap": [],
+      "referringUrls": [
+        "https://kphstay.com/",
+        "https://kphstay.com/cookies.html"
+      ],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/refund",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "Alternate page with proper canonical tag",
+      "indexingState": "INDEXING_ALLOWED",
+      "pageFetchState": "SUCCESSFUL",
+      "robotsTxtState": "ALLOWED",
+      "crawledAs": "MOBILE",
+      "lastCrawlTime": "2026-07-16T11:28:58Z",
+      "googleCanonical": "https://kphstay.com/",
+      "userCanonical": "https://kphstay.com/",
+      "sitemap": [],
+      "referringUrls": [
+        "https://kphstay.com/",
+        "https://kphstay.com/cookies.html"
+      ],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/cookies",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "Discovered - currently not indexed",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "CRAWLING_USER_AGENT_UNSPECIFIED",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [
+        "https://kphstay.com/cookies.html"
+      ],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/room-details?slug=ground-floor-valley-view-room-islamabad",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "URL is unknown to Google",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "UNKNOWN",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/room-details?slug=the-vintage-cube-1bhk-islamabad",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "Discovered - currently not indexed",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "CRAWLING_USER_AGENT_UNSPECIFIED",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/room-details?slug=one-bed-apartment-kph-bl-cube-710-islamabad",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "Discovered - currently not indexed",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "CRAWLING_USER_AGENT_UNSPECIFIED",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/room-details?slug=virsa-1bhk-islamabad",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "URL is unknown to Google",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "UNKNOWN",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/room-details?slug=one-bed-apartment-kph-osma-cube-612-islamabad",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "URL is unknown to Google",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "UNKNOWN",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/room-details?slug=one-bed-apartment-kph-abd-cube-928-islamabad",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "URL is unknown to Google",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "UNKNOWN",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/room-details?slug=one-bed-apartment-kph-1bhkali-cube923-islamabad",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "Discovered - currently not indexed",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "CRAWLING_USER_AGENT_UNSPECIFIED",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [
+        "https://www.kphstay.com/sitemap.xml"
+      ],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/room-details?slug=tulipano-by-nook-house-murree",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "Discovered - currently not indexed",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "CRAWLING_USER_AGENT_UNSPECIFIED",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/room-details?slug=tulipano-by-nook-house-murree-2bhk-c1",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "Discovered - currently not indexed",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "CRAWLING_USER_AGENT_UNSPECIFIED",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [
+        "https://www.kphstay.com/sitemap.xml"
+      ],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/room-details?slug=tulipano-by-nook-house-standard-2bhk-murree-islamabad",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "Discovered - currently not indexed",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "CRAWLING_USER_AGENT_UNSPECIFIED",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/room-details?slug=tulipano-by-nook-house-premium-suite-a2-murree",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "Discovered - currently not indexed",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "CRAWLING_USER_AGENT_UNSPECIFIED",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/room-details?slug=tulipano-by-nook-house-deluxe-suite-b2-murree",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "URL is unknown to Google",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "UNKNOWN",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/room-details?slug=tulipano-by-nook-house-classic-suite-c2-murree",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "Discovered - currently not indexed",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "CRAWLING_USER_AGENT_UNSPECIFIED",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/room-details?slug=the-winds-way-lodges-murree",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "Discovered - currently not indexed",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "CRAWLING_USER_AGENT_UNSPECIFIED",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/room-details?slug=luxury-2-bed-furnished-apartment-sector-c1-bahria-enclave-islamabad",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "Discovered - currently not indexed",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "CRAWLING_USER_AGENT_UNSPECIFIED",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [
+        "https://www.kphstay.com/sitemap.xml"
+      ],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/room-details?slug=2-bed-furnished-apartment-cube-apartments-bahria-enclave-islamabad",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "Discovered - currently not indexed",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "CRAWLING_USER_AGENT_UNSPECIFIED",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [
+        "https://www.kphstay.com/sitemap.xml"
+      ],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/room-details?slug=4-bedroom-lower-ground-valley-view-stay-nathia-gali",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "Discovered - currently not indexed",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "CRAWLING_USER_AGENT_UNSPECIFIED",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [
+        "https://www.kphstay.com/sitemap.xml"
+      ],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/room-details?slug=4-bedroom-luxury-stay-nathia-gali",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "URL is unknown to Google",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "UNKNOWN",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/room-details?slug=valley-view-villa-murree",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "Discovered - currently not indexed",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "CRAWLING_USER_AGENT_UNSPECIFIED",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/room-details?slug=the-subtle-nook-studio-islamabad",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "Discovered - currently not indexed",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "CRAWLING_USER_AGENT_UNSPECIFIED",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/room-details?slug=studio-murree-view-6th-floor-kph-shm617-islamabad",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "URL is unknown to Google",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "UNKNOWN",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/room-details?slug=studio-by-nook-house-islamabad",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "URL is unknown to Google",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "UNKNOWN",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/blog/nathia-gali-travel-guide",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "Discovered - currently not indexed",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "CRAWLING_USER_AGENT_UNSPECIFIED",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [
+        "https://kphstay.com/sitemap.xml"
+      ],
+      "referringUrls": [],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/blog/m3GDbmwwf32aYsTfIRlm",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "Discovered - currently not indexed",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "CRAWLING_USER_AGENT_UNSPECIFIED",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [
+        "https://www.kphstay.com/sitemap.xml"
+      ],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/room/ground-floor-valley-view-room-islamabad",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "URL is unknown to Google",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "UNKNOWN",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/room/the-vintage-cube-1bhk-islamabad",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "URL is unknown to Google",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "UNKNOWN",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/room/one-bed-apartment-kph-bl-cube-710-islamabad",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "URL is unknown to Google",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "UNKNOWN",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/room/virsa-1bhk-islamabad",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "URL is unknown to Google",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "UNKNOWN",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/room/one-bed-apartment-kph-osma-cube-612-islamabad",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "URL is unknown to Google",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "UNKNOWN",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/room/one-bed-apartment-kph-abd-cube-928-islamabad",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "URL is unknown to Google",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "UNKNOWN",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/room/one-bed-apartment-kph-1bhkali-cube923-islamabad",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "URL is unknown to Google",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "UNKNOWN",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/room/tulipano-by-nook-house-murree",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "URL is unknown to Google",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "UNKNOWN",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/room/tulipano-by-nook-house-murree-2bhk-c1",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "URL is unknown to Google",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "UNKNOWN",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/room/tulipano-by-nook-house-standard-2bhk-murree-islamabad",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "URL is unknown to Google",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "UNKNOWN",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/room/tulipano-by-nook-house-premium-suite-a2-murree",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "URL is unknown to Google",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "UNKNOWN",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/room/tulipano-by-nook-house-deluxe-suite-b2-murree",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "URL is unknown to Google",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "UNKNOWN",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/room/tulipano-by-nook-house-classic-suite-c2-murree",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "URL is unknown to Google",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "UNKNOWN",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/room/the-winds-way-lodges-murree",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "URL is unknown to Google",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "UNKNOWN",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/room/luxury-2-bed-furnished-apartment-sector-c1-bahria-enclave-islamabad",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "URL is unknown to Google",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "UNKNOWN",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/room/2-bed-furnished-apartment-cube-apartments-bahria-enclave-islamabad",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "URL is unknown to Google",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "UNKNOWN",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/room/4-bedroom-lower-ground-valley-view-stay-nathia-gali",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "URL is unknown to Google",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "UNKNOWN",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/room/4-bedroom-luxury-stay-nathia-gali",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "URL is unknown to Google",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "UNKNOWN",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/room/valley-view-villa-murree",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "URL is unknown to Google",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "UNKNOWN",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/room/the-subtle-nook-studio-islamabad",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "URL is unknown to Google",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "UNKNOWN",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/room/studio-murree-view-6th-floor-kph-shm617-islamabad",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "URL is unknown to Google",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "UNKNOWN",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    },
+    {
+      "url": "https://kphstay.com/room/studio-by-nook-house-islamabad",
+      "inspectedUnderProperty": "https://kphstay.com/",
+      "verdict": "NEUTRAL",
+      "coverageState": "URL is unknown to Google",
+      "indexingState": "INDEXING_STATE_UNSPECIFIED",
+      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+      "crawledAs": "UNKNOWN",
+      "lastCrawlTime": null,
+      "googleCanonical": null,
+      "userCanonical": null,
+      "sitemap": [],
+      "referringUrls": [],
+      "mobileUsabilityResult": "VERDICT_UNSPECIFIED",
+      "richResults": null
+    }
+  ],
+  "summary": {
+    "totalUrlsChecked": 56,
+    "indexedCount": 1,
+    "notIndexedCount": 55,
+    "coverageBreakdown": {
+      "Submitted and indexed": 1,
+      "Not found (404)": 1,
+      "URL is unknown to Google": 33,
+      "Discovered - currently not indexed": 18,
+      "Alternate page with proper canonical tag": 3
+    },
+    "propertiesCount": 2
+  }
+}

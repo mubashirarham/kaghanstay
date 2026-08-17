@@ -14,7 +14,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
     <title>Terms & Conditions | KPH Stay</title>
     <meta name="description" content="Read KPH Stay's reservation terms, PayFast payment authorization terms, cancellation policies, check-in rules, merchant business details, and guest guidelines for stays in Islamabad and Nathia Gali.">
-    <link rel="canonical" href="https://www.kphstay.com/terms">
+    <link rel="canonical" href="https://kphstay.com/terms">
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
     <link rel="apple-touch-icon" href="assets/images/logo.png">
@@ -88,22 +88,69 @@
         <a href="contact.html" class="hover:text-[#D4AF37]">Contact</a>
         <div id="auth-links-mobile" class="flex flex-col gap-4 w-64 text-center">
             <a href="login.html" class="border border-[#D4AF37] text-white py-3 rounded-full hover:bg-[#D4AF37] transition-all text-base">Login</a>
-            <a href="login.html?register=true" class="bg-[#D4AF37] text-white py-3 rounded-full hover:bg-white hover:text-slate-900 transition-all text-base shadow-lg">Register</a>
+<body class="bg-[#FAFAFA] text-slate-800 font-sans antialiased flex flex-col min-h-screen selection:bg-[#D4AF37] selection:text-white">
+
+    <!-- Top Notice Bar -->
+    <div class="bg-[#0F172A] text-slate-300 text-xs py-2 px-4 border-b border-white/5">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>Official KPH Stay Policy & Terms Documentation</span>
+            </div>
+            <div class="hidden sm:flex items-center gap-4 text-slate-400">
+                <span><i class="fa-solid fa-lock text-[#D4AF37] text-[10px] mr-1"></i> PayFast 3D Secure</span>
+                <span><i class="fa-solid fa-file-shield text-[#D4AF37] text-[10px] mr-1"></i> Transparent Pricing</span>
+            </div>
         </div>
     </div>
 
-    <!-- Main Content -->
-    <main class="flex-grow py-16 px-6 md:px-12 max-w-4xl mx-auto w-full text-left">
-        <span class="text-xs text-[#D4AF37] uppercase tracking-[0.3em] font-bold block text-center">Legal Terms & Policy</span>
-        <h1 class="text-3xl md:text-5xl font-extrabold outfit mt-3 mb-4 text-center tracking-tight text-slate-900">Terms & Conditions</h1>
-        <p class="text-center text-slate-400 text-xs font-semibold mb-10"><i class="fa-solid fa-clock mr-1"></i> Last Updated: August 2026 &nbsp;|&nbsp; <a href="contact.html" class="text-[#D4AF37] hover:underline">Questions? Contact Us</a></p>
-        
-        <div class="bg-white p-8 md:p-12 rounded-[2.5rem] border border-slate-200/60 shadow-sm space-y-8 text-sm text-slate-600 leading-relaxed font-light">
-            
-            <section>
-                <h3 class="text-lg font-bold outfit text-slate-800 mb-3">1. Merchant Identity & Agreement Overview</h3>
+    <!-- Main Header / Navbar -->
+    <nav class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-100 transition-all shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <a href="index.html" class="flex items-center gap-3">
+                    <img src="assets/images/logo.png" alt="KPH Stay Logo" class="h-10 w-auto">
+                    <div>
+                        <span class="font-extrabold text-xl tracking-tight outfit text-[#0F172A] block leading-none">KPH STAY</span>
+                        <span class="text-[9px] uppercase tracking-widest text-[#D4AF37] font-bold">Luxury Living</span>
+                    </div>
+                </a>
+                <div class="flex items-center gap-4">
+                    <a href="rooms.html" class="text-xs font-bold text-slate-600 hover:text-[#D4AF37] transition-all">Rooms</a>
+                    <a href="contact.html" class="text-xs font-bold text-slate-600 hover:text-[#D4AF37] transition-all">Contact</a>
+                    <a href="booking.html" class="bg-[#0F172A] text-white text-xs font-bold px-4 py-2 rounded-xl hover:bg-[#D4AF37] transition-all">Book Now</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Hero -->
+    <header class="bg-gradient-to-b from-slate-900 via-slate-900 to-slate-800 text-white py-16 px-4 border-b border-white/5 relative overflow-hidden">
+        <div class="max-w-4xl mx-auto text-center relative z-10">
+            <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-3.5 py-1.5 rounded-full text-xs font-bold text-[#D4AF37] border border-white/10 uppercase tracking-widest mb-4">
+                <i class="fa-solid fa-scale-balanced text-xs"></i> Legal & Guest Agreement
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-extrabold outfit mb-3 tracking-tight">Terms & Conditions</h1>
+            <p class="text-slate-400 text-sm max-w-xl mx-auto font-light leading-relaxed">
+                Clear rules, booking policies, check-in instructions, payment fulfillment terms, and liability limits for stays at KPH Stay properties in Islamabad and Nathia Gali.
+            </p>
+            <div class="mt-4 text-xs text-slate-400">
+                <span>Effective Date: <strong>January 1, 2026</strong></span> • <span>Last Updated: <strong>August 2026</strong></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 py-12 flex-1">
+        <div class="bg-white rounded-3xl p-6 sm:p-10 border border-slate-100 shadow-sm space-y-8 text-sm leading-relaxed text-slate-600">
+
+            <!-- Intro -->
+            <section class="border-b border-slate-100 pb-6">
+                <h2 class="text-lg font-bold text-slate-900 outfit mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-circle-info text-[#D4AF37]"></i> 1. Introduction & Acceptance
+                </h2>
                 <p>
-                    These Terms and Conditions govern your reservation, booking, website usage, and payment transactions on <strong>KPH Stay</strong> (https://www.kphstay.com). KPH Stay operates luxury serviced apartments, cabins, and suites in Islamabad and Nathia Gali, Pakistan.
+                    These Terms and Conditions govern your reservation, booking, website usage, and payment transactions on <strong>KPH Stay</strong> (https://kphstay.com). KPH Stay operates luxury serviced apartments, cabins, and suites in Islamabad and Nathia Gali, Pakistan.
                 </p>
                 <div class="mt-3 p-4 bg-slate-50 rounded-xl border border-slate-200/80 text-xs leading-relaxed text-slate-700">
                     <p><strong>Business Registered Address:</strong> Asian Arcade, Sector C, Bahria Enclave, Islamabad, Pakistan</p>

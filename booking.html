@@ -2630,6 +2630,19 @@
                 guestForm.addEventListener('input', updateStepper);
             }
             updateStepper();
+
+            // Auto-apply promo coupon from URL (e.g. ?coupon=DIRECT15)
+            const urlParams = new URLSearchParams(window.location.search);
+            const couponParam = urlParams.get('coupon') || urlParams.get('promo');
+            if (couponParam) {
+                const couponInput = document.getElementById('coupon-code-input');
+                if (couponInput) {
+                    couponInput.value = couponParam.toUpperCase().trim();
+                    if (typeof validateAndApplyCoupon === 'function') {
+                        setTimeout(() => validateAndApplyCoupon(), 100);
+                    }
+                }
+            }
         });
     </script>
 </body>

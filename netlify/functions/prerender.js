@@ -267,7 +267,7 @@ function prerenderRoomDetails(html, room) {
     const roomDesc = escapeHTML(rawDesc.slice(0, 160));
     
     const roomSlug = room.slug || slugify(room.name || 'room');
-    const roomUrl = `https://kphstay.com/room-details?slug=${escapeHTML(roomSlug)}`;
+    const roomUrl = `https://kphstay.com/room/${escapeHTML(roomSlug)}`;
     const roomImg = escapeHTML(room.image || (room.images && room.images.length ? room.images[0] : 'https://kphstay.com/assets/images/logo.png'));
     const pkrPrice = Number(room.price) || 0;
     const robotsTag = room.seoIndex || 'index, follow';

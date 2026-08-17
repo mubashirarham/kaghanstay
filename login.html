@@ -488,6 +488,7 @@
             }
 
             const email = activeRegistrationEmail || document.getElementById('reg-email')?.value.trim();
+            const pass = document.getElementById('reg-pass')?.value || '';
             const btn = document.getElementById('btn-verify-otp');
             const origHTML = btn ? btn.innerHTML : 'Verify Code';
 
@@ -500,6 +501,13 @@
                 const res = await KaghanDB.verifyEmailOTP(email, otp);
                 if (res.success) {
                     KaghanUI.showToast('Account verified successfully! Logging you in...', 'success');
+                    if (pass && typeof firebase !== 'undefined' && firebase.auth) {
+                        try {
+                            await firebase.auth().signInWithEmailAndPassword(email, pass);
+                        } catch (aErr) {
+                            console.warn("Client auto sign-in notice:", aErr.message);
+                        }
+                    }
                     setTimeout(() => {
                         const user = res.user || KaghanDB.getCurrentUser() || { role: 'user' };
                         redirectUser(user);
@@ -536,6 +544,7 @@
                 KaghanUI.showToast('A new 6-digit code has been sent to your email address!', 'success');
             } else {
                 KaghanUI.showToast(res.message || 'Failed to resend code.', 'error');
+                if (window.turnstile) { try { turnstile.reset(); } catch(_) {} }
             }
         }
 
@@ -633,10 +642,12 @@
                     }
                 } else {
                     KaghanUI.showToast(res.message, 'error');
+                    if (window.turnstile) { try { turnstile.reset(); } catch(_) {} }
                 }
             } catch (err) {
                 console.error("Registration error:", err);
                 KaghanUI.showToast(err.message || 'Registration failed.', 'error');
+                if (window.turnstile) { try { turnstile.reset(); } catch(_) {} }
             } finally {
                 if (btn) {
                     btn.innerHTML = origContent;

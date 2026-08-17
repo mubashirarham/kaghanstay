@@ -102,7 +102,7 @@ exports.handler = async (event, context) => {
             if (room.status === 'available' || !room.status) {
                 const roomModDate = room.updatedAt ? room.updatedAt.split('T')[0] : todayStr;
                 const roomSlug = (room.slug && room.slug.trim()) ? room.slug.trim().toLowerCase() : slugify(room.name || 'room');
-                const roomLoc = roomSlug ? `${baseUrl}/room-details?slug=${encodeURIComponent(roomSlug)}` : `${baseUrl}/room-details?id=${room.id}`;
+                const roomLoc = roomSlug ? `${baseUrl}/room/${encodeURIComponent(roomSlug)}` : `${baseUrl}/room-details?id=${room.id}`;
                 xml += `
     <url>
         <loc>${roomLoc}</loc>

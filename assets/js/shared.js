@@ -1500,33 +1500,68 @@ const db = {
             return { success: false, message: err.message || 'Login failed. Please try again.' };
         }
     },
-    register: async (name, email, password, phone = '') => {
+    register: async (name, email, password, phone = '', turnstileToken = '') => {
         try {
-            if (typeof firebase !== 'undefined' && firebase.auth) {
-                await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+            const resp = await fetch('/.netlify/functions/register-user', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, password, phone, turnstileToken })
+            });
+            const data = await resp.json();
+            if (!resp.ok || !data.success) {
+                return { success: false, message: data.error || data.message || 'Registration failed.' };
             }
-            const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
-            const firebaseUser = userCredential.user;
-            
-            await firebaseUser.updateProfile({ displayName: name }).catch(() => {});
-
-            const userData = {
-                id: firebaseUser.uid,
-                uid: firebaseUser.uid,
-                name: name,
-                email: email,
-                phone: phone || '',
-                role: 'user',
-                createdAt: new Date().toISOString()
+            return {
+                success: true,
+                requiresOtp: data.requiresOtp,
+                devOtp: data.devOtp,
+                email: data.email || email,
+                message: data.message || 'Verification code sent to your email address.',
+                requiresVerification: true
             };
-
-            await fdb.collection('users').doc(firebaseUser.uid).set(userData);
-            localStorage.setItem(DB_KEYS.SESSION, JSON.stringify(userData));
-            startActiveListeners();
-            return { success: true, user: userData };
         } catch (err) {
             console.error("Registration error:", err);
-            return { success: false, message: err.message };
+            return { success: false, message: err.message || 'Registration failed.' };
+        }
+    },
+    verifyEmailToken: async (token) => {
+        try {
+            const resp = await fetch('/.netlify/functions/verify-email', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token })
+            });
+            const data = await resp.json();
+            if (!resp.ok || !data.success) {
+                return { success: false, message: data.error || data.message || 'Email verification failed.' };
+            }
+            if (data.user) {
+                localStorage.setItem(DB_KEYS.SESSION, JSON.stringify(data.user));
+            }
+            return { success: true, message: data.message, user: data.user };
+        } catch (err) {
+            console.error("Verification error:", err);
+            return { success: false, message: err.message || 'Verification failed.' };
+        }
+    },
+    verifyEmailOTP: async (email, otp) => {
+        try {
+            const resp = await fetch('/.netlify/functions/verify-email', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, otp })
+            });
+            const data = await resp.json();
+            if (!resp.ok || !data.success) {
+                return { success: false, message: data.error || data.message || 'Verification failed.' };
+            }
+            if (data.user) {
+                localStorage.setItem(DB_KEYS.SESSION, JSON.stringify(data.user));
+            }
+            return { success: true, message: data.message, user: data.user };
+        } catch (err) {
+            console.error("OTP verification error:", err);
+            return { success: false, message: err.message || 'OTP verification failed.' };
         }
     },
     sendPasswordResetEmail: async (email) => {
@@ -2821,6 +2856,7 @@ window.addEventListener('load', ensureJournalNavLinks);
 // ============================================================
 window.KaghanAnnouncement = {
     timer: null,
+    countdownTimer: null,
     currentIndex: 0,
     data: null,
     isHovered: false,
@@ -2853,6 +2889,7 @@ window.KaghanAnnouncement = {
         this.data = announcement;
         this.currentIndex = 0;
         clearInterval(this.timer);
+        clearInterval(this.countdownTimer);
 
         // Ensure container element
         let bar = document.getElementById('kaghan-announcement-bar');
@@ -2892,6 +2929,9 @@ window.KaghanAnnouncement = {
         bar.onmouseenter = () => { this.isHovered = true; };
         bar.onmouseleave = () => { this.isHovered = false; };
 
+        // Start countdown timer ticking if enabled
+        this.startCountdownTicking();
+
         // Auto-rotation timer for multi-message feeds
         if (announcement.messages.length > 1) {
             const intervalSec = Math.max(2, parseInt(announcement.rotationInterval) || 5);
@@ -2901,6 +2941,44 @@ window.KaghanAnnouncement = {
                 }
             }, intervalSec * 1000);
         }
+    },
+
+    getCountdownData: function() {
+        if (!this.data) return null;
+        const msg = (this.data.messages && this.data.messages[this.currentIndex]) || {};
+        const expiry = msg.countdownExpiry || this.data.countdownExpiry;
+        const enabled = (msg.countdownEnabled !== undefined ? msg.countdownEnabled : this.data.countdownEnabled);
+        if (!enabled || !expiry) return null;
+
+        const diff = new Date(expiry).getTime() - Date.now();
+        if (diff <= 0) return { expired: true, text: '00:00:00' };
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((diff / (1000 * 60)) % 60);
+        const seconds = Math.floor((diff / 1000) % 60);
+
+        let timeStr = '';
+        if (days > 0) timeStr += `${days}d `;
+        timeStr += `${String(hours).padStart(2, '0')}h ${String(minutes).padStart(2, '0')}m ${String(seconds).padStart(2, '0')}s`;
+
+        const label = msg.countdownLabel || this.data.countdownLabel || 'Ends in:';
+        return { expired: false, days, hours, minutes, seconds, timeStr, label };
+    },
+
+    startCountdownTicking: function() {
+        clearInterval(this.countdownTimer);
+        this.countdownTimer = setInterval(() => {
+            const cdData = this.getCountdownData();
+            const cdEl = document.getElementById('kaghan-announcement-countdown');
+            if (cdEl && cdData) {
+                if (cdData.expired) {
+                    cdEl.innerHTML = `<span class="opacity-75">Offer Expired</span>`;
+                } else {
+                    cdEl.querySelector('.cd-timer-val').textContent = cdData.timeStr;
+                }
+            }
+        }, 1000);
     },
 
     updateContent: function(bar) {
@@ -2918,24 +2996,74 @@ window.KaghanAnnouncement = {
         const badgeText = announcement.badgeText || (msg.badge || '');
 
         const safeText = window.KaghanSafe ? window.KaghanSafe.escapeHTML(msg.text || '') : (msg.text || '');
-        const safeLinkText = msg.linkText ? (window.KaghanSafe ? window.KaghanSafe.escapeHTML(msg.linkText) : msg.linkText) : '';
-        const safeLinkUrl = msg.linkUrl ? (window.KaghanSafe ? window.KaghanSafe.escapeHTML(msg.linkUrl) : msg.linkUrl) : '';
-        const linkTarget = msg.linkTarget === '_blank' ? '_blank' : '_self';
         const emoji = msg.emoji ? `<span class="inline-block mr-1 text-sm">${window.KaghanSafe ? window.KaghanSafe.escapeHTML(msg.emoji) : msg.emoji}</span>` : '';
         const icon = msg.icon ? `<i class="fa-solid ${window.KaghanSafe ? window.KaghanSafe.escapeHTML(msg.icon) : msg.icon} mr-1.5" style="color:${accentColor}"></i>` : '';
 
+        // 1. Primary Highlight Badge
         const badgeHtml = badgeText ? `
             <span class="inline-flex items-center text-[9px] uppercase font-black tracking-widest px-2.5 py-0.5 rounded-full mr-2 shadow-xs shrink-0" style="background:${badgeBg}; color:${badgeTextColor}">
                 ${window.KaghanSafe ? window.KaghanSafe.escapeHTML(badgeText) : badgeText}
             </span>
         ` : '';
 
-        const ctaHtml = (safeLinkText && safeLinkUrl) ? `
-            <a href="${safeLinkUrl}" target="${linkTarget}" class="inline-flex items-center gap-1 font-bold ml-2 px-3 py-0.5 rounded-full text-[11px] transition-all duration-200 hover:scale-105 active:scale-95 shadow-xs shrink-0" style="background:${accentColor}; color:${badgeTextColor}">
-                <span>${safeLinkText}</span>
-                <i class="fa-solid fa-arrow-right text-[9px]"></i>
-            </a>
+        // 2. Special Perks Badge (e.g. Free Breakfast, VIP Valet, 15% Off)
+        const perkBadgeText = msg.perkBadge || (announcement.perksEnabled ? announcement.perkBadge || announcement.perkText : '');
+        const perkIcon = msg.perkIcon || announcement.perkIcon || 'fa-gift';
+        const perkHtml = perkBadgeText ? `
+            <span class="inline-flex items-center gap-1 text-[9px] uppercase font-black tracking-wider px-2.5 py-0.5 rounded-full mr-2 shadow-xs shrink-0 bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 border border-amber-300">
+                <i class="fa-solid ${window.KaghanSafe ? window.KaghanSafe.escapeHTML(perkIcon) : perkIcon} text-[9px]"></i>
+                <span>${window.KaghanSafe ? window.KaghanSafe.escapeHTML(perkBadgeText) : perkBadgeText}</span>
+            </span>
         ` : '';
+
+        // 3. Limited-Time Countdown Timer Pill
+        const cdData = this.getCountdownData();
+        const countdownHtml = (cdData && !cdData.expired) ? `
+            <span id="kaghan-announcement-countdown" class="inline-flex items-center gap-1.5 font-mono text-[10px] font-bold px-2.5 py-0.5 rounded-full mx-1.5 shadow-xs shrink-0 bg-black/40 border border-white/20" style="color:${accentColor}">
+                <i class="fa-solid fa-fire text-amber-400 text-[10px] animate-pulse"></i>
+                <span class="text-white/80 font-sans text-[9px] hidden sm:inline uppercase">${window.KaghanSafe ? window.KaghanSafe.escapeHTML(cdData.label) : cdData.label}</span>
+                <span class="cd-timer-val font-black tracking-wider">${cdData.timeStr}</span>
+            </span>
+        ` : '';
+
+        // 4. Promo Code & 1-Click Claim Button
+        const promoCode = msg.promoCode || announcement.promoCode || '';
+        const claimAction = msg.claimAction || announcement.claimAction || (promoCode ? 'auto-apply' : 'link');
+        let safeLinkText = msg.linkText ? (window.KaghanSafe ? window.KaghanSafe.escapeHTML(msg.linkText) : msg.linkText) : '';
+        let targetUrl = msg.linkUrl || 'rooms.html';
+
+        if (promoCode && !safeLinkText) {
+            safeLinkText = `Claim ${promoCode}`;
+        }
+
+        let ctaHtml = '';
+        if (safeLinkText) {
+            if (claimAction === 'copy-code' && promoCode) {
+                ctaHtml = `
+                    <button type="button" onclick="KaghanAnnouncement.claimPromo('${window.KaghanSafe.escapeHTML(promoCode)}', 'copy-code')" class="inline-flex items-center gap-1 font-bold ml-2 px-3 py-0.5 rounded-full text-[11px] transition-all duration-200 hover:scale-105 active:scale-95 shadow-xs shrink-0 cursor-pointer" style="background:${accentColor}; color:${badgeTextColor}">
+                        <i class="fa-solid fa-copy text-[9px]"></i>
+                        <span>${safeLinkText}</span>
+                    </button>
+                `;
+            } else if (claimAction === 'auto-apply' && promoCode) {
+                const autoApplyUrl = targetUrl.includes('?') ? `${targetUrl}&coupon=${encodeURIComponent(promoCode)}` : `${targetUrl}?coupon=${encodeURIComponent(promoCode)}`;
+                ctaHtml = `
+                    <a href="${autoApplyUrl}" class="inline-flex items-center gap-1 font-bold ml-2 px-3 py-0.5 rounded-full text-[11px] transition-all duration-200 hover:scale-105 active:scale-95 shadow-xs shrink-0 cursor-pointer" style="background:${accentColor}; color:${badgeTextColor}">
+                        <i class="fa-solid fa-tag text-[9px]"></i>
+                        <span>${safeLinkText}</span>
+                        <i class="fa-solid fa-arrow-right text-[9px]"></i>
+                    </a>
+                `;
+            } else {
+                const linkTarget = msg.linkTarget === '_blank' ? '_blank' : '_self';
+                ctaHtml = `
+                    <a href="${window.KaghanSafe ? window.KaghanSafe.escapeHTML(targetUrl) : targetUrl}" target="${linkTarget}" class="inline-flex items-center gap-1 font-bold ml-2 px-3 py-0.5 rounded-full text-[11px] transition-all duration-200 hover:scale-105 active:scale-95 shadow-xs shrink-0" style="background:${accentColor}; color:${badgeTextColor}">
+                        <span>${safeLinkText}</span>
+                        <i class="fa-solid fa-arrow-right text-[9px]"></i>
+                    </a>
+                `;
+            }
+        }
 
         const dotsHtml = announcement.messages.length > 1 ? `
             <div class="hidden sm:flex items-center gap-1.5 mx-2 shrink-0">
@@ -2967,7 +3095,9 @@ window.KaghanAnnouncement = {
                 <div class="flex items-center justify-center flex-grow text-center min-w-0 overflow-hidden text-xs sm:text-sm font-medium">
                     <div id="kaghan-announcement-msg" class="flex flex-wrap items-center justify-center gap-1.5 truncate transition-all duration-300 transform">
                         ${badgeHtml}
+                        ${perkHtml}
                         <span class="truncate leading-tight">${emoji}${icon}${safeText}</span>
+                        ${countdownHtml}
                         ${ctaHtml}
                     </div>
                 </div>
@@ -2978,6 +3108,20 @@ window.KaghanAnnouncement = {
                 </div>
             </div>
         `;
+    },
+
+    claimPromo: function(code, action) {
+        if (action === 'copy-code' && code) {
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(code).then(() => {
+                    if (window.KaghanUI && window.KaghanUI.showToast) {
+                        window.KaghanUI.showToast(`Promo Code "${code}" copied! Paste at checkout to save.`, "success");
+                    } else {
+                        alert(`Promo Code "${code}" copied!`);
+                    }
+                }).catch(() => {});
+            }
+        }
     },
 
     next: function() {
@@ -3032,6 +3176,7 @@ window.KaghanAnnouncement = {
             sessionStorage.setItem('kaghan_announcement_dismissed', 'true');
         }
         clearInterval(this.timer);
+        clearInterval(this.countdownTimer);
     },
 
     hide: function() {
@@ -3039,6 +3184,7 @@ window.KaghanAnnouncement = {
         if (bar) bar.remove();
         this.resetNavbarOffset();
         clearInterval(this.timer);
+        clearInterval(this.countdownTimer);
     },
 
     updateNavbarOffset: function() {

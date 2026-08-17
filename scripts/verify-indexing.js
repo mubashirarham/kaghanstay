@@ -71,21 +71,18 @@ async function getUrlIndexingMetadata(url, token) {
 }
 
 async function fetchListingsFromFirestore() {
-    const listingUrls = [];
+    const listingUrls = new Set();
     try {
         const roomsRes = await fetch('https://firestore.googleapis.com/v1/projects/kaghan-properties/databases/(default)/documents/rooms?pageSize=100').catch(() => null);
         if (roomsRes && roomsRes.ok) {
             const data = await roomsRes.json();
             if (data.documents) {
                 data.documents.forEach(doc => {
-                    const id = doc.name.split('/').pop();
                     const fields = doc.fields || {};
                     const slug = fields.slug ? fields.slug.stringValue : null;
                     if (slug) {
-                        listingUrls.push(`https://kphstay.com/room/${slug}`);
-                        listingUrls.push(`https://kphstay.com/room-details?slug=${slug}`);
+                        listingUrls.add(`https://kphstay.com/room/${slug}`);
                     }
-                    listingUrls.push(`https://kphstay.com/room-details?id=${id}`);
                 });
             }
         }
@@ -97,18 +94,17 @@ async function fetchListingsFromFirestore() {
             const data = await blogsRes.json();
             if (data.documents) {
                 data.documents.forEach(doc => {
-                    const id = doc.name.split('/').pop();
                     const fields = doc.fields || {};
                     const slug = fields.slug ? fields.slug.stringValue : null;
                     if (slug) {
-                        listingUrls.push(`https://kphstay.com/blog/${slug}`);
+                        listingUrls.add(`https://kphstay.com/blog/${slug}`);
                     }
                 });
             }
         }
     } catch (e) {}
 
-    return listingUrls;
+    return Array.from(listingUrls);
 }
 
 async function main() {

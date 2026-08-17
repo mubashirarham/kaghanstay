@@ -97,8 +97,59 @@ exports.handler = async (event, context) => {
         const action = payload.action || 'get_metrics';
 
         if (action === 'index_all' || action === 'index_url') {
-            const urls = action === 'index_all' ? (payload.urls || ['https://www.kphstay.com/']) : [payload.urlToIndex || 'https://www.kphstay.com/'];
-            const count = urls.length;
+            const rawUrls = action === 'index_all' 
+                ? (payload.urls || ['https://kphstay.com/']) 
+                : [payload.urlToIndex || 'https://kphstay.com/'];
+            
+            const urls = rawUrls.map(u => u ? u.replace('https://www.kphstay.com', 'https://kphstay.com') : u);
+            let accessToken = null;
+            try {
+                accessToken = await getGoogleAccessToken();
+            } catch (authErr) {
+                return {
+                    statusCode: 500,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': allowedOrigin
+                    },
+                    body: JSON.stringify({
+                        success: false,
+                        error: `Authentication failed with Google Cloud: ${authErr.message}`
+                    })
+                };
+            }
+
+            const results = [];
+            for (const targetUrl of urls) {
+                try {
+                    const indexRes = await fetch('https://indexing.googleapis.com/v3/urlNotifications:publish', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${accessToken}`
+                        },
+                        body: JSON.stringify({
+                            url: targetUrl,
+                            type: 'URL_UPDATED'
+                        })
+                    });
+                    const resData = await indexRes.json().catch(() => ({}));
+                    results.push({
+                        url: targetUrl,
+                        status: indexRes.status,
+                        ok: indexRes.ok,
+                        data: resData
+                    });
+                } catch (subErr) {
+                    results.push({
+                        url: targetUrl,
+                        ok: false,
+                        error: subErr.message
+                    });
+                }
+            }
+
+            const successCount = results.filter(r => r.ok).length;
 
             return {
                 statusCode: 200,
@@ -107,9 +158,11 @@ exports.handler = async (event, context) => {
                     'Access-Control-Allow-Origin': allowedOrigin
                 },
                 body: JSON.stringify({
-                    success: true,
-                    submittedCount: count,
-                    message: `⚡ Google Indexing API: Submitted ${count} site URLs for instant crawling & indexation.`,
+                    success: successCount > 0,
+                    submittedCount: results.length,
+                    successCount: successCount,
+                    message: `⚡ Google Indexing API: Submitted ${results.length} URLs (${successCount} accepted by Google).`,
+                    results: results,
                     timestamp: new Date().toISOString()
                 })
             };

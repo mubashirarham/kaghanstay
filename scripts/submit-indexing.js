@@ -69,7 +69,7 @@ function formatCanonicalUrl(urlStr) {
 }
 
 async function fetchListingsFromFirestore() {
-    const listingUrls = [];
+    const listingUrls = new Set();
     
     // Fetch room listings
     try {
@@ -83,10 +83,10 @@ async function fetchListingsFromFirestore() {
                     const slug = fields.slug ? fields.slug.stringValue : null;
                     
                     if (slug) {
-                        listingUrls.push(`https://kphstay.com/room/${slug}`);
-                        listingUrls.push(`https://kphstay.com/room-details?slug=${slug}`);
+                        listingUrls.add(`https://kphstay.com/room/${slug}`);
+                    } else {
+                        listingUrls.add(`https://kphstay.com/room-details?id=${id}`);
                     }
-                    listingUrls.push(`https://kphstay.com/room-details?id=${id}`);
                 });
             }
         }
@@ -106,7 +106,9 @@ async function fetchListingsFromFirestore() {
                     const slug = fields.slug ? fields.slug.stringValue : null;
 
                     if (slug) {
-                        listingUrls.push(`https://kphstay.com/blog/${slug}`);
+                        listingUrls.add(`https://kphstay.com/blog/${slug}`);
+                    } else {
+                        listingUrls.add(`https://kphstay.com/blog-details.html?id=${id}`);
                     }
                 });
             }
@@ -115,7 +117,7 @@ async function fetchListingsFromFirestore() {
         console.warn("⚠️ Warning fetching blog listings:", e.message);
     }
 
-    return listingUrls;
+    return Array.from(listingUrls);
 }
 
 async function submitUrlToGoogle(url, accessToken) {
@@ -186,6 +188,7 @@ async function main() {
         console.log(`🚀 Submitting ${targetUrls.length} URL(s) to Google Indexing API...\n`);
 
         for (const url of targetUrls) {
+            await new Promise(r => setTimeout(r, 200));
             process.stdout.write(`Submitting: ${url} ... `);
             try {
                 const result = await submitUrlToGoogle(url, token);
