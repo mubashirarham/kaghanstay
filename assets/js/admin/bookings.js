@@ -494,18 +494,34 @@
             };
         });
 
+        const isMobile = window.innerWidth < 768;
+
         if (calendarInstance) {
             calendarInstance.removeAllEvents();
             calendarInstance.addEventSource(events);
             calendarInstance.render();
+            setTimeout(() => {
+                try { calendarInstance.updateSize(); } catch(e){}
+            }, 60);
         } else {
             calendarInstance = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                headerToolbar: {
+                initialView: isMobile ? 'dayGridMonth' : 'dayGridMonth',
+                headerToolbar: isMobile ? {
                     left: 'prev,next today',
                     center: 'title',
-                    right: 'dayGridMonth,timeGridWeek'
+                    right: 'dayGridMonth,listMonth'
+                } : {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,listMonth'
                 },
+                buttonText: {
+                    today: 'Today',
+                    dayGridMonth: 'Month',
+                    timeGridWeek: 'Week',
+                    listMonth: 'List'
+                },
+                height: 'auto',
                 events: events,
                 eventClick: function(info) {
                     // Open the edit modal when an event is clicked
@@ -515,15 +531,35 @@
                 }
             });
             calendarInstance.render();
+            setTimeout(() => {
+                try { calendarInstance.updateSize(); } catch(e){}
+            }, 60);
         }
     }
+
+    // Auto-update calendar dimensions on window resize
+    window.addEventListener('resize', () => {
+        if (calendarInstance) {
+            try { calendarInstance.updateSize(); } catch(e){}
+        }
+    });
 
     // Export to window
     window.AdminBookingsModule = {
         render: async () => {
             await renderBookings();
-            await renderCalendar();
+            if (window.AirbnbCalendarSystem) {
+                await window.AirbnbCalendarSystem.render();
+            } else {
+                await renderCalendar();
+            }
         },
-        renderCalendar: renderCalendar
+        renderCalendar: async () => {
+            if (window.AirbnbCalendarSystem) {
+                await window.AirbnbCalendarSystem.render();
+            } else {
+                await renderCalendar();
+            }
+        }
     };
 })();

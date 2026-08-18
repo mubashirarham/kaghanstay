@@ -650,15 +650,15 @@
                             <i class="fa-solid fa-thumbtack text-[8px]"></i> Pinned
                         </div>
                         ` : ''}
-                        <div class="absolute top-3 right-3">
-                            <select onchange="changeRoomStatus('${room.id}', this.value)" class="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full border outline-none cursor-pointer shadow-sm ${
-                                room.status === 'available' ? 'bg-emerald-500 text-white border-transparent' : 'bg-amber-500 text-white border-transparent'
+                        <div class="absolute top-3 right-3 z-10">
+                            <select onchange="changeRoomStatus('${room.id}', this.value)" class="room-card-status-select text-[10px] font-extrabold uppercase tracking-wider px-2 py-1 rounded-full border border-white/30 outline-none cursor-pointer shadow-md ${
+                                room.status === 'available' ? 'bg-emerald-600/90 text-white' : 'bg-amber-600/90 text-white'
                             }">
                                 <option value="available" ${room.status === 'available' ? 'selected' : ''}>Available</option>
                                 <option value="maintenance" ${room.status === 'maintenance' ? 'selected' : ''}>Maintenance</option>
                             </select>
                         </div>
-                        ${room.images && room.images.length > 1 ? `<div class="absolute bottom-3 right-3 bg-black/60 backdrop-blur-sm text-white text-[9px] px-2 py-1 rounded-lg font-bold"><i class="fa-solid fa-images"></i> +${room.images.length - 1}</div>` : ''}
+                        ${room.images && room.images.length > 1 ? `<div class="absolute bottom-3 right-3 bg-black/60 backdrop-blur-sm text-white text-[9px] px-2 py-1 rounded-lg font-bold z-10"><i class="fa-solid fa-images"></i> +${room.images.length - 1}</div>` : ''}
                     </div>
                     <div class="flex justify-between items-start mb-2">
                         <h4 class="font-bold text-[#0F172A] outfit text-sm leading-tight">${KaghanSafe.escapeHTML(room.name)}</h4>
@@ -692,7 +692,7 @@
                         <span class="text-slate-400 text-[8px] uppercase tracking-wider block font-bold">Price per night</span>
                         <span class="text-sm font-black text-[#D4AF37]">${KaghanUI.formatPKR(room.price)}</span>
                     </div>
-                    <div class="flex gap-1.5">
+                    <div class="flex gap-1.5 flex-wrap sm:flex-nowrap">
                         <button onclick="togglePinRoom('${room.id}')" class="${room.isPinned ? 'bg-amber-500 text-white border-amber-600' : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'} border text-[10px] font-bold px-2.5 py-2 rounded-lg transition-all flex items-center gap-1" title="${room.isPinned ? 'Unpin Suite from Top' : 'Pin Suite to Top of Catalog Feeds'}">
                             <i class="fa-solid fa-thumbtack ${room.isPinned ? 'rotate-45' : ''}"></i> ${room.isPinned ? 'Pinned' : 'Pin'}
                         </button>
@@ -1352,6 +1352,12 @@
     let activeAdminBookedDatesMap = new Map(); // isoStr -> booking details
 
     window.openAdminRoomCalendar = async (roomId) => {
+        if (window.AirbnbCalendarSystem && window.switchTab) {
+            window.switchTab('calendar');
+            await window.AirbnbCalendarSystem.openListing(roomId);
+            return;
+        }
+
         activeAdminRoomId = roomId;
         const room = await KaghanDB.getRoomById(roomId);
         if (!room) return;

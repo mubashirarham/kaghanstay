@@ -320,6 +320,13 @@ window.switchTab = (tabName) => {
     if (tabName === 'inquiries' && window.KaghanInquiries) {
         window.KaghanInquiries.loadInquiries();
     }
+    if (tabName === 'calendar') {
+        if (window.AirbnbCalendarSystem) {
+            window.AirbnbCalendarSystem.render();
+        } else if (window.AdminBookingsModule) {
+            window.AdminBookingsModule.renderCalendar();
+        }
+    }
     if (tabName === 'coupons' && window.AdminCouponsModule) {
         window.AdminCouponsModule.init();
         window.AdminCouponsModule.render();

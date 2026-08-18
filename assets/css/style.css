@@ -357,7 +357,7 @@ a, button, select, input, textarea, .category-filter-btn {
     input[type="tel"],
     input[type="number"],
     input[type="search"],
-    select,
+    select:not(.room-card-status-select),
     textarea {
         font-size: 16px !important;
     }
@@ -1400,7 +1400,36 @@ main, .main-content {
     box-shadow: 0 0 14px rgba(197, 160, 89, 0.4);
 }
 
+/* ============================================================
+   AIRBNB-GRADE HOST CALENDAR STYLING
+   ============================================================ */
+.airbnb-day-tile {
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
 
+.airbnb-day-tile:active {
+    transform: scale(0.96);
+}
 
+.airbnb-month-block {
+    scroll-margin-top: 180px;
+}
 
+#airbnb-date-quick-sheet {
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+}
 
+#airbnb-date-quick-sheet.translate-y-full {
+    transform: translateY(120%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+#airbnb-date-quick-sheet.translate-y-0 {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+}
