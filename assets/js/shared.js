@@ -443,7 +443,7 @@ async function callAdminAction(action, data) {
             KaghanUI.showToast("Your session has expired. Redirecting to login...", "error");
         }
         setTimeout(() => {
-            window.location.href = '../login.html';
+            window.location.href = '/login.html';
         }, 1500);
         throw new Error("Session expired. Please log in again.");
     }
@@ -797,9 +797,14 @@ const db = {
         return db.generateSlug(room.name || room.title || room.id || '');
     },
     getRoomLink: (room) => {
-        if (!room) return 'room-details.html';
+        if (!room) return '/room-details.html';
         const slug = db.getRoomSlug(room);
-        return slug ? `room-details.html?slug=${encodeURIComponent(slug)}` : `room-details.html?id=${room.id}`;
+        return slug ? `/room/${encodeURIComponent(slug)}` : `/room-details.html?id=${room.id}`;
+    },
+    getBlogLink: (blog) => {
+        if (!blog) return '/blog.html';
+        const slug = blog.slug || blog.id;
+        return slug ? `/blog/${encodeURIComponent(slug)}` : `/blog-details.html?id=${blog.id}`;
     },
     getRoomById: async (idOrSlug, forceRefresh = false) => {
         if (!idOrSlug) return null;
@@ -1384,8 +1389,7 @@ const db = {
             UI.showToast("Please log in to save your favorite stays", "warning");
             setTimeout(() => {
                 const currentPath = encodeURIComponent(window.location.pathname + window.location.search);
-                const isDashboard = window.location.pathname.includes('/user/');
-                window.location.href = isDashboard ? '../login.html?redirect=' + currentPath : 'login.html?redirect=' + currentPath;
+                window.location.href = '/login.html?redirect=' + currentPath;
             }, 1200);
             return { success: false, reason: 'unauthenticated' };
         }
@@ -1708,34 +1712,24 @@ const db = {
         if (typeof firebase !== 'undefined' && firebase.auth) {
             firebase.auth().signOut().catch(console.error);
         }
-        const currentPath = window.location.pathname;
-        if (currentPath.includes('/admin/') || currentPath.includes('/user/')) {
-            window.location.href = '../login.html';
-        } else {
-            window.location.href = 'login.html';
-        }
+        window.location.href = '/login.html';
     },
 
     // Route Guard (Synchronous since it verifies Local Session)
     guardRoute: (requiredRole) => {
         const user = db.getCurrentUser();
         if (!user) {
-            const currentPath = window.location.pathname;
-            if (currentPath.includes('/admin/') || currentPath.includes('/user/')) {
-                window.location.href = '../login.html';
-            } else {
-                window.location.href = 'login.html';
-            }
+            window.location.href = '/login.html';
             return false;
         }
         const isAdminStaff = ['admin', 'moderator', 'editor'].includes(user.role);
 
         if (requiredRole === 'admin' && !isAdminStaff) {
-            window.location.href = '../user/index.html';
+            window.location.href = '/user/index.html';
             return false;
         }
         if (requiredRole === 'user' && isAdminStaff) {
-            window.location.href = '../admin/index.html';
+            window.location.href = '/admin/index.html';
             return false;
         }
         return true;
@@ -1836,14 +1830,14 @@ const UI = {
     openRoomDetailModal: async (idOrRoom) => {
         if (!idOrRoom) return;
         if (typeof idOrRoom === 'object') {
-            window.location.href = window.KaghanDB.getRoomLink ? window.KaghanDB.getRoomLink(idOrRoom) : `room-details.html?id=${idOrRoom.id}`;
+            window.location.href = window.KaghanDB.getRoomLink ? window.KaghanDB.getRoomLink(idOrRoom) : `/room-details.html?id=${idOrRoom.id}`;
             return;
         }
         const room = window.KaghanDB && window.KaghanDB.getRoomById ? await window.KaghanDB.getRoomById(idOrRoom) : null;
         if (room && window.KaghanDB.getRoomLink) {
             window.location.href = window.KaghanDB.getRoomLink(room);
         } else {
-            window.location.href = `room-details.html?id=${idOrRoom}`;
+            window.location.href = `/room-details.html?id=${idOrRoom}`;
         }
     },
     getStatusBadge: (status) => {
@@ -2316,13 +2310,9 @@ window.renderNavbar = () => {
     const authContainer = document.getElementById('auth-links');
     const authContainerMobile = document.getElementById('auth-links-mobile');
     
-    const isDashboard = window.location.pathname.includes('/user/') || window.location.pathname.includes('/admin/');
-    const prefix = isDashboard ? '../' : '';
-    const loginPrefix = isDashboard ? '../' : '';
-    
     if (user) {
         const isAdminStaff = ['admin', 'moderator', 'editor'].includes(user.role);
-        const dashboardUrl = isAdminStaff ? `${prefix}admin/index.html` : `${prefix}user/index.html`;
+        const dashboardUrl = isAdminStaff ? '/admin/index.html' : '/user/index.html';
         if (authContainer) {
             authContainer.innerHTML = `
                 <span class="text-slate-300 text-sm hidden lg:inline">Welcome, <strong>${user.name}</strong></span>
@@ -2340,14 +2330,14 @@ window.renderNavbar = () => {
     } else {
         if (authContainer) {
             authContainer.innerHTML = `
-                <a href="${loginPrefix}login.html" class="border border-[#D4AF37] text-white px-5 py-2 rounded-full hover:bg-[#D4AF37] hover:text-white transition-all text-sm font-semibold">Login</a>
-                <a href="${loginPrefix}login.html?register=true" class="bg-[#D4AF37] text-white px-5 py-2 rounded-full hover:bg-white hover:text-slate-900 transition-all text-sm font-semibold luxury-shadow">Register</a>
+                <a href="/login.html" class="border border-[#D4AF37] text-white px-5 py-2 rounded-full hover:bg-[#D4AF37] hover:text-white transition-all text-sm font-semibold">Login</a>
+                <a href="/login.html?register=true" class="bg-[#D4AF37] text-white px-5 py-2 rounded-full hover:bg-white hover:text-slate-900 transition-all text-sm font-semibold luxury-shadow">Register</a>
             `;
         }
         if (authContainerMobile) {
             authContainerMobile.innerHTML = `
-                <a href="${loginPrefix}login.html" class="border border-[#D4AF37] text-white py-3 rounded-full hover:bg-[#D4AF37] transition-all text-base" onclick="toggleDrawer()">Login</a>
-                <a href="${loginPrefix}login.html?register=true" class="bg-[#D4AF37] text-white py-3 rounded-full hover:bg-white hover:text-slate-900 transition-all text-base shadow-lg" onclick="toggleDrawer()">Register</a>
+                <a href="/login.html" class="border border-[#D4AF37] text-white py-3 rounded-full hover:bg-[#D4AF37] transition-all text-base" onclick="toggleDrawer()">Login</a>
+                <a href="/login.html?register=true" class="bg-[#D4AF37] text-white py-3 rounded-full hover:bg-white hover:text-slate-900 transition-all text-base shadow-lg" onclick="toggleDrawer()">Register</a>
             `;
         }
     }
@@ -2921,7 +2911,7 @@ function ensureJournalNavLinks() {
                 if (!hasBlogLink) {
                     const isCurrentBlog = window.location.pathname.includes('blog');
                     const blogLink = document.createElement('a');
-                    blogLink.href = 'blog.html';
+                    blogLink.href = '/blog.html';
                     blogLink.className = (isCurrentBlog ? 'text-[#D4AF37]' : 'hover:text-[#D4AF37]') + ' transition-colors';
                     blogLink.innerText = 'Journal';
 
@@ -2956,7 +2946,7 @@ function ensureJournalNavLinks() {
                     const firstLi = ul.querySelector('li');
                     if (firstLi) {
                         const blogLi = document.createElement('li');
-                        blogLi.innerHTML = `<a href="blog.html" class="hover:text-[#D4AF37] transition-colors">Resort Journal</a>`;
+                        blogLi.innerHTML = `<a href="/blog.html" class="hover:text-[#D4AF37] transition-colors">Resort Journal</a>`;
                         firstLi.insertAdjacentElement('afterend', blogLi);
                     }
                 }

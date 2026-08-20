@@ -16,9 +16,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
     <title>Page Not Found | KPH Stay</title>
     <meta name="robots" content="noindex, follow">
-    <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
-    <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.ico">
-    <link rel="apple-touch-icon" href="assets/images/logo.png">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/x-icon" href="/assets/images/favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/assets/images/logo.png">
     <!-- Tailwind CSS (Play CDN with JIT) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts -->
@@ -56,8 +57,8 @@
 
     <!-- Header Logo -->
     <div class="py-8 px-8 flex justify-center z-10">
-        <a href="index.html" class="flex items-center gap-3 hover:opacity-90 transition-opacity">
-            <img src="assets/images/logo.png" alt="KPH Stay Logo" class="h-10 w-auto object-contain" onerror="this.src='../assets/images/logo.png'">
+        <a href="/" class="flex items-center gap-3 hover:opacity-90 transition-opacity">
+            <img src="/assets/images/logo.png" alt="KPH Stay Logo" class="h-10 w-auto object-contain" onerror="this.src='/assets/images/logo.png'">
             <div class="flex flex-col text-left">
                 <span class="text-lg font-bold tracking-wider uppercase outfit leading-none">KPH</span>
                 <span class="text-xs text-[#D4AF37] tracking-[0.2em] uppercase font-semibold">Stay</span>
@@ -76,10 +77,10 @@
 
             <!-- Interactive Redirect Button -->
             <div class="flex flex-col gap-4">
-                <a href="index.html" class="bg-[#D4AF37] text-slate-950 text-xs font-bold uppercase tracking-wider py-4 rounded-xl hover:bg-white hover:text-slate-900 transition-all shadow-lg gold-glow flex items-center justify-center gap-2">
+                <a href="/" class="bg-[#D4AF37] text-slate-950 text-xs font-bold uppercase tracking-wider py-4 rounded-xl hover:bg-white hover:text-slate-900 transition-all shadow-lg gold-glow flex items-center justify-center gap-2">
                     <i class="fa-solid fa-hotel"></i> Return to Resort Lobby
                 </a>
-                <a href="rooms.html" class="border border-white/10 text-white text-xs font-bold uppercase tracking-wider py-4 rounded-xl hover:bg-white/5 transition-all">
+                <a href="/rooms" class="border border-white/10 text-white text-xs font-bold uppercase tracking-wider py-4 rounded-xl hover:bg-white/5 transition-all">
                     Explore Suites & Rooms
                 </a>
             </div>
@@ -107,7 +108,7 @@
             
             if (timeLeft <= 0) {
                 clearInterval(interval);
-                window.location.href = "index.html";
+                window.location.href = "/";
             }
         }, 1000);
     </script>

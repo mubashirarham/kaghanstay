@@ -4,17 +4,17 @@
   "description": "Premium luxury resort and serviced apartment rentals in Islamabad and Nathia Gali.",
   "icons": [
     {
-      "src": "assets/images/logo.png",
+      "src": "/assets/images/logo.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "assets/images/logo.png",
+      "src": "/assets/images/logo.png",
       "type": "image/png",
       "sizes": "512x512"
     }
   ],
-  "start_url": "/index.html",
+  "start_url": "/",
   "background_color": "#0B0F19",
   "theme_color": "#0B0F19",
   "display": "standalone",

@@ -15,9 +15,9 @@
     <title>Room Details | KPH Stay Luxury Service Apartments</title>
     <meta name="description" content="View detailed room information, luxury amenities, photo gallery, and pricing for KPH Stay service apartments in Islamabad & Nathia Gali.">
     <link rel="canonical" href="https://kphstay.com/room-details">
-    <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
-    <link rel="apple-touch-icon" href="assets/images/logo.png">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/x-icon" href="/assets/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/assets/images/logo.png">
     <meta name="theme-color" content="#0F172A">
     <!-- Local SEO Geo Meta Tags -->
     <meta name="geo.region" content="PK-IS">
@@ -73,16 +73,16 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
     <!-- Global CSS -->
-    <link rel="stylesheet" href="assets/css/style.css?v=5">
+    <link rel="stylesheet" href="/assets/css/style.css?v=5">
     <!-- Google Maps & Places Integration Module -->
-    <script src="assets/js/google-maps.js"></script>
+    <script src="/assets/js/google-maps.js"></script>
 </head>
 <body class="bg-[#F8FAFC] text-[#0F172A] overflow-x-clip font-sans pt-24 min-h-screen flex flex-col justify-between pb-24 md:pb-0">
 
     <!-- Header / Navigation -->
     <nav id="hotel-navbar" class="fixed top-0 left-0 right-0 z-50 py-5 px-6 md:px-12 flex justify-between items-center text-white bg-[#0B0F19] border-b border-white/10">
-        <a href="index.html" class="flex items-center gap-3 hover:opacity-90 transition-opacity shrink-0">
-            <img src="assets/images/logo.png" alt="KPH Stay Logo" class="h-10 w-auto object-contain">
+        <a href="/" class="flex items-center gap-3 hover:opacity-90 transition-opacity shrink-0">
+            <img src="/assets/images/logo.png" alt="KPH Stay Logo" class="h-10 w-auto object-contain">
             <div class="flex flex-col">
                 <span class="text-lg font-bold tracking-wider uppercase outfit leading-none">KPH</span>
                 <span class="text-xs text-[#C5A059] tracking-[0.2em] uppercase font-semibold">Stay</span>
@@ -90,13 +90,13 @@
         </a>
 
         <div class="hidden md:flex gap-8 items-center font-medium">
-            <a href="index.html" class="hover:text-[#C5A059] transition-colors">Home</a>
-            <a href="rooms.html" class="hover:text-[#C5A059] transition-colors">Rooms</a>
-            <a href="blog.html" class="hover:text-[#C5A059] transition-colors">Blog</a>
-            <a href="track.html" class="hover:text-[#C5A059] transition-colors">Track Stay</a>
+            <a href="/" class="hover:text-[#C5A059] transition-colors">Home</a>
+            <a href="/rooms" class="hover:text-[#C5A059] transition-colors">Rooms</a>
+            <a href="/blog" class="hover:text-[#C5A059] transition-colors">Blog</a>
+            <a href="/track" class="hover:text-[#C5A059] transition-colors">Track Stay</a>
             <div id="auth-links" class="flex gap-4 items-center">
-                <a href="login.html" class="border border-[#C5A059] text-white px-5 py-2 rounded-full hover:bg-[#C5A059] hover:text-white transition-all text-sm font-semibold">Login</a>
-                <a href="login.html?register=true" class="bg-[#C5A059] text-white px-5 py-2 rounded-full hover:bg-white hover:text-slate-900 transition-all text-sm font-semibold luxury-shadow">Register</a>
+                <a href="/login" class="border border-[#C5A059] text-white px-5 py-2 rounded-full hover:bg-[#C5A059] hover:text-white transition-all text-sm font-semibold">Login</a>
+                <a href="/login?register=true" class="bg-[#C5A059] text-white px-5 py-2 rounded-full hover:bg-white hover:text-slate-900 transition-all text-sm font-semibold luxury-shadow">Register</a>
             </div>
         </div>
 
@@ -110,22 +110,22 @@
         <button id="menu-close" class="absolute top-8 right-6 text-white text-3xl w-12 h-12 flex items-center justify-center focus:outline-none active:scale-90 transition-transform" aria-label="Close Menu">
             <i class="fa-solid fa-xmark"></i>
         </button>
-        <a href="index.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Home</a>
-        <a href="rooms.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Rooms</a>
-        <a href="blog.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Blog</a>
-        <a href="track.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Track Stay</a>
+        <a href="/" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Home</a>
+        <a href="/rooms" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Rooms</a>
+        <a href="/blog" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Blog</a>
+        <a href="/track" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Track Stay</a>
         <div id="auth-links-mobile" class="flex flex-col gap-4 w-64 text-center">
-            <a href="login.html" class="border border-[#C5A059] text-white py-3 rounded-full hover:bg-[#C5A059] transition-all text-base" onclick="toggleDrawer()">Login</a>
-            <a href="login.html?register=true" class="bg-[#C5A059] text-white py-3 rounded-full hover:bg-white hover:text-slate-900 transition-all text-base" onclick="toggleDrawer()">Register</a>
+            <a href="/login" class="border border-[#C5A059] text-white py-3 rounded-full hover:bg-[#C5A059] transition-all text-base" onclick="toggleDrawer()">Login</a>
+            <a href="/login?register=true" class="bg-[#C5A059] text-white py-3 rounded-full hover:bg-white hover:text-slate-900 transition-all text-base" onclick="toggleDrawer()">Register</a>
         </div>
     </div>
 
     <!-- Breadcrumb Bar -->
     <div class="bg-white border-b border-slate-200 py-3.5 px-6 md:px-12 text-xs">
         <div class="max-w-7xl mx-auto flex items-center gap-2 text-slate-500 font-medium">
-            <a href="index.html" class="hover:text-[#C5A059] transition-colors"><i class="fa-solid fa-house"></i> Home</a>
+            <a href="/" class="hover:text-[#C5A059] transition-colors"><i class="fa-solid fa-house"></i> Home</a>
             <span>/</span>
-            <a href="rooms.html" class="hover:text-[#C5A059] transition-colors">Apartments</a>
+            <a href="/rooms" class="hover:text-[#C5A059] transition-colors">Apartments</a>
             <span>/</span>
             <span id="breadcrumb-room-name" class="text-slate-900 font-bold">Room Details</span>
         </div>
@@ -143,7 +143,7 @@
                     
                     <!-- Main Display Image Container with Touch Swipe & Fullscreen Lightbox -->
                     <div id="pdp-gallery-main-container" class="relative h-72 md:h-[420px] rounded-2xl overflow-hidden bg-slate-900 group cursor-pointer" onclick="openPDPFullScreenLightbox()">
-                        <img id="gallery-main-img" src="assets/images/logo.png" alt="Suite View" class="w-full h-full object-cover transition-all duration-500">
+                        <img id="gallery-main-img" src="/assets/images/logo.png" alt="Suite View" class="w-full h-full object-cover transition-all duration-500">
                         
                         <!-- Floating Navigation Arrows -->
                         <button onclick="event.stopPropagation(); prevGalleryImage();" class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-slate-900/60 hover:bg-[#C5A059] text-white flex items-center justify-center backdrop-blur-md transition-all shadow-md z-10" aria-label="Previous Image">
@@ -564,7 +564,7 @@
                 <div class="bg-white/80 backdrop-blur-md rounded-[2.5rem] border border-[#C5A059]/10 shadow-[0_12px_40px_-15px_rgba(11,15,25,0.05)] hover:border-[#C5A059]/30 transition-all duration-500 p-6 md:p-8">
                     <h3 class="font-bold text-lg outfit text-[#0B0F19] mb-5 flex items-center justify-between">
                         <span>Explore More Listings</span>
-                        <a href="rooms.html" class="text-xs text-[#C5A059] font-bold hover:underline">View All</a>
+                        <a href="/rooms" class="text-xs text-[#C5A059] font-bold hover:underline">View All</a>
                     </h3>
 
                     <div id="more-listings-container" class="space-y-4">
@@ -594,7 +594,7 @@
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
             <div>
                 <div class="flex items-center gap-3 mb-6 text-white">
-                    <img src="assets/images/logo.png" alt="KPH Stay Logo" class="h-8 w-auto object-contain">
+                    <img src="/assets/images/logo.png" alt="KPH Stay Logo" class="h-8 w-auto object-contain">
                     <span class="text-base font-bold tracking-wider outfit font-semibold">KAGHAN PROPERTIES HOSPITALITY STAY</span>
                 </div>
                 <p class="text-xs leading-relaxed mb-6">
@@ -604,9 +604,9 @@
             <div>
                 <h4 class="text-white font-bold mb-4 uppercase tracking-wider text-xs outfit">Navigation</h4>
                 <ul class="space-y-2.5 text-xs">
-                    <li><a href="index.html" class="hover:text-[#C5A059]">Home</a></li>
-                    <li><a href="rooms.html" class="hover:text-[#C5A059]">All Apartments</a></li>
-                    <li><a href="contact.html" class="hover:text-[#C5A059]">Contact Front Desk</a></li>
+                    <li><a href="/" class="hover:text-[#C5A059]">Home</a></li>
+                    <li><a href="/rooms" class="hover:text-[#C5A059]">All Apartments</a></li>
+                    <li><a href="/contact" class="hover:text-[#C5A059]">Contact Front Desk</a></li>
                 </ul>
             </div>
             <div>
@@ -618,10 +618,10 @@
             <div>
                 <h4 class="text-white font-bold mb-4 uppercase tracking-wider text-xs outfit">Support</h4>
                 <div class="flex flex-col gap-2 text-xs">
-                    <a href="pricing.html" class="hover:text-[#C5A059]">Pricing Policy</a>
-                    <a href="terms.html" class="hover:text-[#C5A059]">Terms of Stay</a>
-                    <a href="privacy.html" class="hover:text-[#C5A059]">Privacy Policy</a>
-                    <a href="refund.html" class="hover:text-[#C5A059]">Cancellation Policy</a>
+                    <a href="/pricing" class="hover:text-[#C5A059]">Pricing Policy</a>
+                    <a href="/terms" class="hover:text-[#C5A059]">Terms of Stay</a>
+                    <a href="/privacy" class="hover:text-[#C5A059]">Privacy Policy</a>
+                    <a href="/refund" class="hover:text-[#C5A059]">Cancellation Policy</a>
                 </div>
             </div>
         </div>
@@ -659,9 +659,9 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.9/dist/purify.min.js"></script>
-    <script src="assets/js/shared.js?v=5"></script>
-    <script src="assets/js/search-widget.js"></script>
-    <script src="assets/js/messaging.js"></script>
+    <script src="/assets/js/shared.js?v=5"></script>
+    <script src="/assets/js/search-widget.js"></script>
+    <script src="/assets/js/messaging.js"></script>
 
     <!-- Room Details & Booking Module Script -->
     <script>
@@ -694,7 +694,7 @@
                 if (window.KaghanUI) KaghanUI.showToast("Please log in to chat with resort host", "warning");
                 setTimeout(() => {
                     const currentPath = encodeURIComponent(window.location.pathname + window.location.search);
-                    window.location.href = 'login.html?redirect=' + currentPath;
+                    window.location.href = '/login.html?redirect=' + currentPath;
                 }, 1200);
                 return;
             }
@@ -1027,7 +1027,7 @@
                 // Gallery setup from Firestore images array
                 roomImages = currentRoom.images && currentRoom.images.length > 0 
                     ? currentRoom.images 
-                    : [currentRoom.image || 'assets/images/logo.png'];
+                    : [currentRoom.image || '/assets/images/logo.png'];
                 
                 activeImgIdx = 0;
                 document.getElementById('gallery-count').innerText = roomImages.length;
@@ -1630,8 +1630,8 @@
                             </div>
                         </div>
                         <div class="flex items-center gap-2 shrink-0">
-                            <a href="login.html" class="bg-[#0B0F19] text-white px-4 py-2 rounded-xl font-bold hover:bg-[#C5A059] transition-all">Login</a>
-                            <a href="login.html?register=true" class="border border-slate-300 text-slate-700 px-4 py-2 rounded-xl font-bold hover:bg-slate-100 transition-all">Register</a>
+                            <a href="/login.html" class="bg-[#0B0F19] text-white px-4 py-2 rounded-xl font-bold hover:bg-[#C5A059] transition-all">Login</a>
+                            <a href="/login.html?register=true" class="border border-slate-300 text-slate-700 px-4 py-2 rounded-xl font-bold hover:bg-slate-100 transition-all">Register</a>
                         </div>
                     </div>
                 `;
@@ -1788,8 +1788,8 @@
 
                 container.innerHTML = otherRooms.slice(0, 4).map(r => {
                     const price = r.priceDaily || r.price || 0;
-                    const img = r.image || (r.images && r.images.length ? r.images[0] : 'assets/images/logo.png');
-                    const roomHref = KaghanDB.getRoomLink ? KaghanDB.getRoomLink(r) : `room-details.html?id=${r.id}`;
+                    const img = r.image || (r.images && r.images.length ? r.images[0] : '/assets/images/logo.png');
+                    const roomHref = KaghanDB.getRoomLink ? KaghanDB.getRoomLink(r) : `/room-details.html?id=${r.id}`;
                     return `
                         <a href="${roomHref}" class="flex items-center gap-3 p-3 rounded-2xl border border-slate-100 hover:border-[#C5A059]/40 bg-slate-50/60 hover:bg-white transition-all duration-300 group">
                             <div class="w-20 h-20 rounded-xl overflow-hidden shrink-0 bg-slate-200">

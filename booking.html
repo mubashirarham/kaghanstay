@@ -15,9 +15,9 @@
     <title>Book Your Stay | KPH Stay</title>
     <meta name="description" content="Secure your luxury accommodations at KPH Stay. Fast, secure online booking, custom dining upgrades, and instant booking confirmation.">
     <link rel="canonical" href="https://kphstay.com/booking">
-    <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
-    <link rel="apple-touch-icon" href="assets/images/logo.png">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/x-icon" href="/assets/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/assets/images/logo.png">
     <meta name="theme-color" content="#0F172A">
     <!-- DOMPurify for HTML Sanitization -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
@@ -56,14 +56,14 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Global CSS -->
-    <link rel="stylesheet" href="assets/css/style.css?v=4">
+    <link rel="stylesheet" href="/assets/css/style.css?v=5">
 </head>
 <body class="bg-[#F8FAFC] text-[#0F172A] overflow-x-clip font-sans pt-24">
 
     <!-- Header / Navigation -->
     <nav id="hotel-navbar" class="fixed top-0 left-0 right-0 z-50 py-5 px-6 md:px-12 flex justify-between items-center text-white bg-[#0B0F19] border-b border-white/10">
-        <a href="index.html" class="flex items-center gap-3 hover:opacity-90 transition-opacity shrink-0">
-            <img src="assets/images/logo.png" alt="KPH Stay Logo" class="h-10 w-auto object-contain">
+        <a href="/" class="flex items-center gap-3 hover:opacity-90 transition-opacity shrink-0">
+            <img src="/assets/images/logo.png" alt="KPH Stay Logo" class="h-10 w-auto object-contain">
             <div class="flex flex-col">
                 <span class="text-lg font-bold tracking-wider uppercase outfit leading-none">KPH</span>
                 <span class="text-xs text-[#C5A059] tracking-[0.2em] uppercase font-semibold">Stay</span>
@@ -310,7 +310,7 @@
                         <!-- Main Media Showcase (LG: 7 cols) -->
                         <div class="lg:col-span-7 space-y-3">
                             <div class="relative h-64 md:h-80 rounded-2xl overflow-hidden bg-slate-900 group shadow-lg border-2 border-slate-200">
-                                <img id="prop-main-img" src="assets/images/logo.png" alt="Property View" class="w-full h-full object-cover transition-all duration-500">
+                                <img id="prop-main-img" src="/assets/images/logo.png" alt="Property View" class="w-full h-full object-cover transition-all duration-500">
                                 
                                 <!-- Overlay Gallery Navigation Buttons -->
                                 <button type="button" onclick="navigatePropGallery(-1)" class="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-slate-900/60 hover:bg-[#C5A059] text-white flex items-center justify-center backdrop-blur-md transition-all shadow-md active:scale-95">
@@ -720,9 +720,9 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <script src="assets/js/shared.js?v=5"></script>
-    <script src="assets/js/users.js"></script>
-    <script src="assets/js/newsletter.js"></script>
+    <script src="/assets/js/shared.js?v=5"></script>
+    <script src="/assets/js/users.js"></script>
+    <script src="/assets/js/newsletter.js"></script>
     <script>
         let selectedRoom = null;
         let stayNights = 1;

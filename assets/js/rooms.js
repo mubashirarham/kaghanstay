@@ -132,7 +132,7 @@
                     </div>
                     <h4 class="font-bold text-sm text-slate-900 leading-tight mb-1">${KaghanSafe.escapeHTML(room.name)}</h4>
                     <p class="text-xs text-[#C5A059] font-bold">${priceText} <span class="text-slate-500 font-normal">/ Night</span></p>
-                    <a href="${window.KaghanDB && window.KaghanDB.getRoomLink ? window.KaghanDB.getRoomLink(room) : `room-details.html?id=${room.id}`}" class="block text-center bg-slate-900 text-white text-xs py-1.5 rounded-xl mt-2 font-bold hover:bg-[#C5A059] transition-colors">View Stay</a>
+                    <a href="${window.KaghanDB && window.KaghanDB.getRoomLink ? window.KaghanDB.getRoomLink(room) : `/room-details.html?id=${room.id}`}" class="block text-center bg-slate-900 text-white text-xs py-1.5 rounded-xl mt-2 font-bold hover:bg-[#C5A059] transition-colors">View Stay</a>
                 </div>
             `);
 
@@ -698,10 +698,10 @@
                                 <button onclick="event.stopPropagation(); window.shareRoomCard('${room.id}', '${KaghanSafe.escapeHTML(room.name)}');" class="bg-slate-100 hover:bg-[#C5A059] hover:text-white text-slate-700 w-8 h-8 rounded-full flex items-center justify-center text-xs transition-all shadow-sm" title="Share Listing">
                                     <i class="fa-solid fa-share-nodes"></i>
                                 </button>
-                                <button onclick="event.stopPropagation(); window.location.href='${window.KaghanDB && window.KaghanDB.getRoomLink ? window.KaghanDB.getRoomLink(room) : `room-details.html?id=${room.id}`}'" class="bg-[#0B0F19] text-white text-[10px] uppercase tracking-wider font-bold px-3 py-2 rounded-xl hover:bg-[#C5A059] transition-all shadow-sm">
+                                <button onclick="event.stopPropagation(); window.location.href='${window.KaghanDB && window.KaghanDB.getRoomLink ? window.KaghanDB.getRoomLink(room) : `/room-details.html?id=${room.id}`}'" class="bg-[#0B0F19] text-white text-[10px] uppercase tracking-wider font-bold px-3 py-2 rounded-xl hover:bg-[#C5A059] transition-all shadow-sm">
                                     View Details
                                 </button>
-                                <button onclick="event.stopPropagation(); window.location.href='booking.html?id=${room.id}'" class="bg-[#C5A059] text-white text-[10px] uppercase tracking-wider font-bold px-3 py-2 rounded-xl hover:bg-[#0B0F19] transition-all shadow-sm">
+                                <button onclick="event.stopPropagation(); window.location.href='/booking.html?id=${room.id}'" class="bg-[#C5A059] text-white text-[10px] uppercase tracking-wider font-bold px-3 py-2 rounded-xl hover:bg-[#0B0F19] transition-all shadow-sm">
                                     Book Now
                                 </button>
                             </div>

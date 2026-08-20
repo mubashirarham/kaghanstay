@@ -410,9 +410,9 @@ async function renderAllUserListings() {
                 <div class="border-t border-slate-100 pt-3 mt-4 flex items-center justify-between gap-2">
                     <span class="text-[10px] text-slate-500 font-semibold"><i class="fa-solid fa-user-group text-[#C5A059] mr-1"></i>Max ${room.maxGuests || 2} Guests</span>
                     <div class="flex gap-2 shrink-0 items-center">
-                        <a href="${window.KaghanDB && window.KaghanDB.getRoomLink ? window.KaghanDB.getRoomLink(room) : `room-details.html?id=${room.id}`}" class="border border-slate-200 text-slate-700 text-[10px] font-bold px-3 py-2 rounded-xl hover:bg-slate-100 transition-all">Details</a>
+                        <a href="${window.KaghanDB && window.KaghanDB.getRoomLink ? window.KaghanDB.getRoomLink(room) : `/room-details.html?id=${room.id}`}" class="border border-slate-200 text-slate-700 text-[10px] font-bold px-3 py-2 rounded-xl hover:bg-slate-100 transition-all">Details</a>
                         <!-- Circular Gold Action Arrow Button -->
-                        <a href="../booking.html?room=${room.id}" class="w-9 h-9 rounded-full bg-[#C5A059] hover:bg-[#0B0F19] hover:text-white text-slate-900 flex items-center justify-center transition-all shadow-md" title="Reserve">
+                        <a href="/booking.html?id=${room.id}" class="w-9 h-9 rounded-full bg-[#C5A059] hover:bg-[#0B0F19] hover:text-white text-slate-900 flex items-center justify-center transition-all shadow-md" title="Reserve">
                             <i class="fa-solid fa-arrow-right text-xs"></i>
                         </a>
                     </div>
@@ -472,8 +472,8 @@ async function renderGuestWishlists() {
                 <p class="text-xs text-[#C5A059] font-black">${KaghanUI.formatPKR(room.priceDaily || room.price || 0)} <span class="text-slate-400 font-normal">/night</span></p>
             </div>
             <div class="flex gap-2 mt-4">
-                <a href="${window.KaghanDB && window.KaghanDB.getRoomLink ? '../' + window.KaghanDB.getRoomLink(room) : `../room-details.html?id=${room.id}`}" class="w-1/2 text-center border border-slate-200 text-slate-700 text-xs font-bold py-2.5 rounded-xl hover:bg-slate-100 transition-all">Details</a>
-                <a href="../booking.html?id=${room.id}" class="w-1/2 text-center bg-[#C5A059] text-white text-xs font-bold py-2.5 rounded-xl hover:bg-[#0B0F19] transition-all shadow-sm">Reserve</a>
+                <a href="${window.KaghanDB && window.KaghanDB.getRoomLink ? window.KaghanDB.getRoomLink(room) : `/room-details.html?id=${room.id}`}" class="w-1/2 text-center border border-slate-200 text-slate-700 text-xs font-bold py-2.5 rounded-xl hover:bg-slate-100 transition-all">Details</a>
+                <a href="/booking.html?id=${room.id}" class="w-1/2 text-center bg-[#C5A059] text-white text-xs font-bold py-2.5 rounded-xl hover:bg-[#0B0F19] transition-all shadow-sm">Reserve</a>
             </div>
         </div>
     `).join('');
