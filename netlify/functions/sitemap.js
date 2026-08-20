@@ -75,7 +75,18 @@ exports.handler = async (event, context) => {
         ];
 
         let xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">`;
+
+        function escapeXml(str) {
+            if (!str) return '';
+            return str.toString()
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&apos;');
+        }
 
         staticRoutes.forEach(r => {
             xml += `
@@ -97,33 +108,58 @@ exports.handler = async (event, context) => {
                 .replace(/-+$/, '');
         }
 
-        // 2. Dynamic Room detail routes
+        // 2. Dynamic Room detail routes with Image SEO
         (rooms || []).forEach(room => {
             if (room.status === 'available' || !room.status) {
                 const roomModDate = room.updatedAt ? room.updatedAt.split('T')[0] : todayStr;
                 const roomSlug = (room.slug && room.slug.trim()) ? room.slug.trim().toLowerCase() : slugify(room.name || 'room');
                 const roomLoc = roomSlug ? `${baseUrl}/room/${encodeURIComponent(roomSlug)}` : `${baseUrl}/room-details?id=${room.id}`;
+                const roomImages = (room.images && Array.isArray(room.images) && room.images.length) ? room.images : (room.image ? [room.image] : []);
+                
+                let imageXml = '';
+                roomImages.slice(0, 5).forEach(imgUrl => {
+                    if (imgUrl && typeof imgUrl === 'string') {
+                        imageXml += `
+        <image:image>
+            <image:loc>${escapeXml(imgUrl)}</image:loc>
+            <image:title>${escapeXml(room.name || 'Luxury Suite')}</image:title>
+            <image:caption>${escapeXml(room.location ? `${room.name} in ${room.location}` : room.name)}</image:caption>
+        </image:image>`;
+                    }
+                });
+
                 xml += `
     <url>
         <loc>${roomLoc}</loc>
         <lastmod>${roomModDate}</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.8</priority>
+        <changefreq>daily</changefreq>
+        <priority>0.9</priority>${imageXml}
     </url>`;
             }
         });
 
-        // 3. Dynamic Journal/Blog clean routes
+        // 3. Dynamic Journal/Blog clean routes with Image SEO
         const stayBlogs = (blogs || []).filter(b => !b.portal || b.portal === 'stay');
         stayBlogs.forEach(blog => {
             const blogDate = blog.createdAt ? blog.createdAt.split('T')[0] : todayStr;
-            const blogUrl = `${baseUrl}/blog/${blog.slug || blog.id}`;
+            const blogSlug = blog.slug || slugify(blog.title) || blog.id;
+            const blogUrl = `${baseUrl}/blog/${encodeURIComponent(blogSlug)}`;
+            let blogImageXml = '';
+            if (blog.imageUrl) {
+                blogImageXml = `
+        <image:image>
+            <image:loc>${escapeXml(blog.imageUrl)}</image:loc>
+            <image:title>${escapeXml(blog.title || 'Resort Journal')}</image:title>
+            <image:caption>${escapeXml(blog.excerpt || blog.title)}</image:caption>
+        </image:image>`;
+            }
+
             xml += `
     <url>
         <loc>${blogUrl}</loc>
         <lastmod>${blogDate}</lastmod>
         <changefreq>weekly</changefreq>
-        <priority>0.7</priority>
+        <priority>0.8</priority>${blogImageXml}
     </url>`;
         });
 

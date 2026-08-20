@@ -1,28 +1,23 @@
-# KPH Stay — Luxury Service Apartments & Resorts
+# KPH Stay (Kaghan Properties Hospitality)
 
-> KPH Stay (Kaghan Hotel & Resorts) operates premium luxury service apartments, resort suites, and vacation rentals in Pakistan's primary travel destinations: Islamabad (Bahria Enclave & Margalla Foothills) and Nathia Gali (Kaghan Valley Highlands).
+> Premier provider of luxury furnished apartments, serviced suites, and mountain-view vacation rentals in Islamabad, Murree, and Nathia Gali, Pakistan.
 
-## Property Overview
+KPH Stay operates fully furnished service apartments and mountain chalets offering 24/7 concierge, optical fiber Wi-Fi, fully equipped modern kitchens, uninterrupted power backup, and 5-star hospitality.
 
-- **Canonical Brand Name**: KPH Stay / Kaghan Hotel & Resorts
-- **Website**: https://kphstay.com
-- **Locations**:
-  - **Islamabad**: Asian Arcade, Sector C, Bahria Enclave, Islamabad, Pakistan (Coordinates: 33.6844, 73.2045)
-  - **Nathia Gali**: Main Resort Road, Nathia Gali, Abbottabad / Kaghan Valley, KP, Pakistan (Coordinates: 34.0722, 73.3831)
-- **Property Types**: 1BHK Executive Apartments, 2BHK Luxury Family Suites, 3BHK Mountain View Penthouses, Studio Apartments.
-- **Starting Price Range**: PKR 12,000 to PKR 45,000 per night (Weekly & Monthly rates available).
-- **Core Amenities**: High-Speed Wi-Fi, Heated Swimming Pool, 24/7 Security & Concierge, Dedicated Parking, Fully Equipped Kitchens, Panoramic Mountain Views, Smart TV, Hot-Stone Spa Sauna.
+## Core Offerings & Keywords
+- **Furnished Apartments in Islamabad**: 1BHK, 2BHK, 3BHK, 4BHK luxury apartments in Bahria Enclave and Margalla Foothills.
+- **Furnished Apartments in Murree**: Mountain-view serviced chalets and holiday suites with climate heating in Bhurban and Mall Road corridor.
+- **Furnished Apartments in Nathia Gali**: Pine-forest family apartments and vacation retreats near Ayubia National Park.
+- **Flexible Rental Plans**: Daily, weekly, and monthly rates for business travelers, tourists, overseas Pakistanis, and families.
 
-## Essential Policies
+## Essential Links
+- [All Accommodations](https://kphstay.com/rooms): Complete catalog of studio, 1BHK, 2BHK, 3BHK, and 4BHK furnished apartments.
+- [Islamabad Furnished Apartments](https://kphstay.com/rooms?location=Islamabad): Luxury service apartments in Islamabad.
+- [Murree Furnished Apartments](https://kphstay.com/rooms?location=Murree): Scenic mountain apartments in Murree.
+- [Nathia Gali Furnished Apartments](https://kphstay.com/rooms?location=Nathia%20Gali): Pine-valley chalets in Nathia Gali.
+- [Resort Journal & Travel Guides](https://kphstay.com/blog): Itineraries, packing tips, and local attractions.
+- [Reservations & 24/7 Concierge](https://kphstay.com/contact): Direct bookings, corporate quotes, and airport shuttle service.
+- [Pricing & Payment Policies](https://kphstay.com/pricing): Transparent PKR pricing, accepted payment methods, and tax policies.
 
-- **Check-in / Check-out**: Check-in from 14:00 PKT; Check-out by 12:00 PKT.
-- **Booking**: Instant online reservation via https://kphstay.com/rooms
-- **Cancellation**: Full refund available up to 48 hours before check-in date.
-
-## Key Canonical URLs
-
-- **Accommodations Catalog**: https://kphstay.com/rooms
-- **Resort Journal & Local Travel Guides**: https://kphstay.com/blog
-- **Contact & Concierge Desk**: https://kphstay.com/contact
-- **Terms of Stay**: https://kphstay.com/terms
-- **Privacy Policy**: https://kphstay.com/privacy
+## Full LLM Knowledge Base
+- [Full Context & FAQs](https://kphstay.com/llms-full.txt): Detailed specifications, room sizes, amenities, policies, and AI answer engine data.

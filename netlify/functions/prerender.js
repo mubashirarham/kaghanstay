@@ -314,14 +314,39 @@ function prerenderRoomDetails(html, room) {
   <meta property="og:type" content="website">`;
     modified = modified.replace(/<\/head>/i, `${ogTags}\n</head>`);
 
-    // 5. JSON-LD Product & LodgingBusiness Schema
+    // 5. JSON-LD VacationRental, HotelRoom & Product Schema
     const jsonLd = {
         "@context": "https://schema.org",
-        "@type": "Product",
-        "name": room.name,
+        "@type": ["VacationRental", "HotelRoom", "Product"],
+        "@id": roomUrl,
+        "name": roomTitle,
         "description": rawDesc,
-        "image": [roomImg],
+        "image": room.images && room.images.length ? room.images : [roomImg],
         "category": room.type || "Apartment",
+        "url": roomUrl,
+        "occupancy": {
+            "@type": "QuantitativeValue",
+            "value": room.maxGuests || 2,
+            "unitText": "guests"
+        },
+        "numberOfRooms": room.bedrooms || 1,
+        "numberOfBathroomsTotal": room.bathrooms || 1,
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": room.address || "Sector C, Bahria Enclave",
+            "addressLocality": room.location || "Islamabad",
+            "addressCountry": "PK"
+        },
+        "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": room.lat || 33.6844,
+            "longitude": room.lng || 73.2045
+        },
+        "amenityFeature": (room.amenities || []).map(a => ({
+            "@type": "LocationFeatureSpecification",
+            "name": a,
+            "value": true
+        })),
         "offers": {
             "@type": "Offer",
             "price": pkrPrice,

@@ -1,23 +1,41 @@
-# User-Agent rules for Kaghan Stay (https://kphstay.com)
+# User-Agent & AI Crawler Permissions for KPH Stay (https://kphstay.com)
 User-agent: *
 Allow: /
 
-# Restricted Private & Internal Directories
+# Restricted Private & Dynamic Account Directories
 Disallow: /admin/
 Disallow: /user/
 Disallow: /.netlify/
 Disallow: /*.json$
 Disallow: /404.html
 
-# Search Engine & Social Crawlers
+# Major Search Engine Crawlers
 User-agent: Googlebot
 Allow: /
 
 User-agent: Bingbot
 Allow: /
 
-# AI Answer Engines & Generative Search Crawlers
+User-agent: YandexBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+# Generative AI, Answer Engines & LLM Search Agents (AIEO)
 User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
 Allow: /
 
 User-agent: Google-Extended
@@ -29,8 +47,32 @@ Allow: /
 User-agent: ClaudeBot
 Allow: /
 
+User-agent: Claude-Web
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Meta-ExternalAgent
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: Cohere-AI
+Allow: /
+
+User-agent: Diffbot
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
 User-agent: CCBot
 Allow: /
 
-# Sitemap Index Location
+# Sitemap & LLM Knowledge Base Locations
 Sitemap: https://kphstay.com/sitemap.xml
