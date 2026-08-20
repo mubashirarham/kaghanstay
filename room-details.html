@@ -864,6 +864,17 @@
                 let metaDesc = document.querySelector('meta[name="description"]');
                 if (metaDesc) metaDesc.setAttribute('content', roomDescText);
 
+                // Dynamic Canonical URL per unique room
+                let canonicalEl = document.querySelector('link[rel="canonical"]');
+                const roomCanonicalSlug = currentRoom.slug || (currentRoom.name ? currentRoom.name.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^\w\-]+/g, '') : currentRoom.id);
+                const canonicalUrl = `https://kphstay.com/room/${encodeURIComponent(roomCanonicalSlug)}`;
+                if (!canonicalEl) {
+                    canonicalEl = document.createElement('link');
+                    canonicalEl.setAttribute('rel', 'canonical');
+                    document.head.appendChild(canonicalEl);
+                }
+                canonicalEl.setAttribute('href', canonicalUrl);
+
                 // Update OpenGraph & Twitter Meta Tags dynamically
                 const setMetaTag = (property, value, isName = false) => {
                     const selector = isName ? `meta[name="${property}"]` : `meta[property="${property}"]`;

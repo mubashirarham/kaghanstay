@@ -479,6 +479,8 @@ exports.handler = async (event, context) => {
         templateFile = 'room-details.html';
     } else if (pagePath.startsWith('/rooms')) {
         templateFile = 'rooms.html';
+    } else if (pagePath.startsWith('/blog-details') || (pagePath.startsWith('/blog/') && pagePath !== '/blog.html' && pagePath !== '/blog')) {
+        templateFile = 'blog-details.html';
     } else if (pagePath.startsWith('/blog')) {
         templateFile = 'blog.html';
     } else if (pagePath.startsWith('/booking')) {
@@ -563,21 +565,28 @@ exports.handler = async (event, context) => {
             html = prerenderIndex(html, rooms, blogs);
         } else if (templateFile === 'rooms.html') {
             html = prerenderRooms(html, rooms);
-        } else if (templateFile === 'blog.html') {
+        } else if (templateFile === 'blog-details.html') {
             let blogSlug = parsedUrl.searchParams.get('slug') || (event.queryStringParameters && event.queryStringParameters.slug);
             if (!blogSlug && pagePath.startsWith('/blog/') && pagePath !== '/blog.html' && pagePath !== '/blog') {
                 blogSlug = pagePath.replace('/blog/', '').replace('.html', '');
             }
+            let targetPost = null;
             if (blogSlug) {
-                const targetPost = blogs.find(b => b.slug === blogSlug || b.id === blogSlug);
-                if (targetPost) {
-                    html = prerenderBlogPost(html, targetPost);
-                } else {
-                    html = prerenderBlog(html, blogs);
-                }
-            } else {
-                html = prerenderBlog(html, blogs);
+                const cleanSlug = blogSlug.toLowerCase().trim();
+                targetPost = blogs.find(b => 
+                    (b.slug && b.slug.toLowerCase() === cleanSlug) || 
+                    slugify(b.title) === cleanSlug || 
+                    String(b.id).toLowerCase() === cleanSlug
+                );
             }
+            if (!targetPost && blogs.length > 0) {
+                targetPost = blogs[0];
+            }
+            if (targetPost) {
+                html = prerenderBlogPost(html, targetPost);
+            }
+        } else if (templateFile === 'blog.html') {
+            html = prerenderBlog(html, blogs);
         }
 
         // Add additional general crawler tags ONLY if not already present

@@ -796,15 +796,37 @@ const db = {
         if (room.slug && room.slug.trim()) return room.slug.trim().toLowerCase();
         return db.generateSlug(room.name || room.title || room.id || '');
     },
+    isLocalEnv: () => {
+        try {
+            const host = window.location.hostname || '';
+            const proto = window.location.protocol || '';
+            if (proto === 'file:') return true;
+            if (!host || host === 'localhost' || host === '127.0.0.1') return true;
+            if (/^192\.|^10\.|^172\.(1[6-9]|2[0-9]|3[0-1])\./.test(host)) return true;
+            if (host.endsWith('.local') || host.endsWith('.test')) return true;
+            if (window.location.port && !host.includes('kphstay.com') && !host.includes('netlify.app')) return true;
+            return false;
+        } catch (e) {
+            return false;
+        }
+    },
     getRoomLink: (room) => {
         if (!room) return '/room-details.html';
         const slug = db.getRoomSlug(room);
-        return slug ? `/room/${encodeURIComponent(slug)}` : `/room-details.html?id=${room.id}`;
+        const roomId = room.id ? encodeURIComponent(room.id) : '';
+        if (db.isLocalEnv()) {
+            return slug ? `/room-details.html?slug=${encodeURIComponent(slug)}${roomId ? `&id=${roomId}` : ''}` : `/room-details.html?id=${roomId}`;
+        }
+        return slug ? `/room/${encodeURIComponent(slug)}` : `/room-details.html?id=${roomId}`;
     },
     getBlogLink: (blog) => {
         if (!blog) return '/blog.html';
         const slug = blog.slug || blog.id;
-        return slug ? `/blog/${encodeURIComponent(slug)}` : `/blog-details.html?id=${blog.id}`;
+        const blogId = blog.id ? encodeURIComponent(blog.id) : '';
+        if (db.isLocalEnv()) {
+            return slug ? `/blog-details.html?slug=${encodeURIComponent(slug)}${blogId ? `&id=${blogId}` : ''}` : `/blog-details.html?id=${blogId}`;
+        }
+        return slug ? `/blog/${encodeURIComponent(slug)}` : `/blog-details.html?id=${blogId}`;
     },
     getRoomById: async (idOrSlug, forceRefresh = false) => {
         if (!idOrSlug) return null;

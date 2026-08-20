@@ -260,9 +260,19 @@
                 const wordCountEl = document.getElementById('article-word-count');
                 if (wordCountEl) wordCountEl.innerText = `${wordCount} words`;
 
-                // Inject SEO Tags
+                // Inject SEO Tags & Dynamic Canonical
                 let metaDesc = document.querySelector('meta[name="description"]');
                 if (metaDesc) metaDesc.setAttribute('content', postDesc);
+
+                let canonicalEl = document.querySelector('link[rel="canonical"]');
+                const blogCanonicalSlug = currentPost.slug || (currentPost.title ? currentPost.title.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^\w\-]+/g, '') : currentPost.id);
+                const canonicalUrl = `https://kphstay.com/blog/${encodeURIComponent(blogCanonicalSlug)}`;
+                if (!canonicalEl) {
+                    canonicalEl = document.createElement('link');
+                    canonicalEl.setAttribute('rel', 'canonical');
+                    document.head.appendChild(canonicalEl);
+                }
+                canonicalEl.setAttribute('href', canonicalUrl);
 
                 // Inject Extreme Structured JSON-LD Schema
                 let jsonLd = document.getElementById('dynamic-blog-schema');
