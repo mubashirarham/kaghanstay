@@ -1235,72 +1235,86 @@
                     breakdownBox.classList.add('hidden');
                 }
 
-                // Load upcoming reserved dates
-                const allBookings = await KaghanDB.getBookings();
-                const activeBookings = allBookings.filter(b => b.roomId === selectedRoom.id && b.status !== 'cancelled');
-                
-                const reservedBox = document.getElementById('reserved-dates-box');
-                const reservedList = document.getElementById('reserved-dates-list');
+                // Load upcoming reserved dates safely
+                try {
+                    const allBookings = (await KaghanDB.getBookings()) || [];
+                    const activeBookings = Array.isArray(allBookings) ? allBookings.filter(b => b && b.roomId === selectedRoom.id && b.status !== 'cancelled') : [];
+                    
+                    const reservedBox = document.getElementById('reserved-dates-box');
+                    const reservedList = document.getElementById('reserved-dates-list');
 
-                if (activeBookings.length > 0) {
-                    reservedBox.classList.remove('hidden');
-                    reservedList.innerHTML = activeBookings.map(b => `
-                        <span class="bg-rose-50 border border-rose-100 text-rose-700 font-bold px-2 py-0.5 rounded">
-                            ${KaghanUI.formatDate(b.checkIn)} - ${KaghanUI.formatDate(b.checkOut)}
-                        </span>
-                    `).join('');
-                } else {
-                    reservedBox.classList.remove('hidden');
-                    reservedList.innerHTML = `<span class="text-emerald-650 font-semibold bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded">Suite is wide open - no reservations!</span>`;
+                    if (reservedBox && reservedList) {
+                        if (activeBookings.length > 0) {
+                            reservedBox.classList.remove('hidden');
+                            reservedList.innerHTML = activeBookings.map(b => `
+                                <span class="bg-rose-50 border border-rose-100 text-rose-700 font-bold px-2 py-0.5 rounded">
+                                    ${KaghanUI.formatDate(b.checkIn)} - ${KaghanUI.formatDate(b.checkOut)}
+                                </span>
+                            `).join('');
+                        } else {
+                            reservedBox.classList.remove('hidden');
+                            reservedList.innerHTML = `<span class="text-emerald-650 font-semibold bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded">Suite is wide open - no reservations!</span>`;
+                        }
+                    }
+                } catch(e) {
+                    console.warn("Reserved dates notice:", e);
                 }
 
-                // Load Reviews
-                const reviewsSection = document.getElementById('booking-reviews-section');
-                const reviewsList = document.getElementById('room-reviews-list');
-                const avgRatingDisplay = document.getElementById('avg-rating-display');
-                
-                const reviews = await KaghanDB.getReviewsByRoomId(selectedRoom.id);
-                
-                if (reviews && reviews.length > 0) {
-                    reviewsSection.classList.remove('hidden');
+                // Load Reviews safely
+                try {
+                    const reviewsSection = document.getElementById('booking-reviews-section');
+                    const reviewsList = document.getElementById('room-reviews-list');
+                    const avgRatingDisplay = document.getElementById('avg-rating-display');
                     
-                    let totalRating = 0;
-                    reviewsList.innerHTML = reviews.map(r => {
-                        totalRating += r.rating;
-                        const dateStr = KaghanUI.formatDate(r.createdAt || new Date().toISOString());
+                    const reviews = await KaghanDB.getReviewsByRoomId(selectedRoom.id);
+                    
+                    if (reviews && reviews.length > 0) {
+                        if (reviewsSection) reviewsSection.classList.remove('hidden');
                         
-                        let starsHtml = '';
-                        for(let i=1; i<=5; i++) {
-                            starsHtml += `<i class="fa-solid fa-star ${i <= r.rating ? 'text-amber-400' : 'text-slate-200'}"></i>`;
+                        let totalRating = 0;
+                        if (reviewsList) {
+                            reviewsList.innerHTML = reviews.map(r => {
+                                totalRating += (r.rating || 5);
+                                const dateStr = KaghanUI.formatDate(r.createdAt || new Date().toISOString());
+                                
+                                let starsHtml = '';
+                                for(let i=1; i<=5; i++) {
+                                    starsHtml += `<i class="fa-solid fa-star ${i <= (r.rating || 5) ? 'text-amber-400' : 'text-slate-200'}"></i>`;
+                                }
+
+                                return `
+                                    <div class="border-b border-slate-100 pb-4 last:border-0 last:pb-0">
+                                        <div class="flex justify-between items-start mb-2">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-bold text-xs uppercase">
+                                                    ${(r.userName || 'G').charAt(0)}
+                                                </div>
+                                                <div>
+                                                    <div class="font-bold text-slate-800 text-xs">${r.userName || 'Guest'}</div>
+                                                    <div class="text-[9px] text-slate-400">${dateStr}</div>
+                                                </div>
+                                            </div>
+                                            <div class="text-[10px] flex gap-0.5">${starsHtml}</div>
+                                        </div>
+                                        <p class="text-slate-600 text-xs leading-relaxed italic pl-11">"${r.comment || ''}"</p>
+                                    </div>
+                                `;
+                            }).join('');
                         }
 
-                        return `
-                            <div class="border-b border-slate-100 pb-4 last:border-0 last:pb-0">
-                                <div class="flex justify-between items-start mb-2">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-bold text-xs uppercase">
-                                            ${(r.userName || 'G').charAt(0)}
-                                        </div>
-                                        <div>
-                                            <div class="font-bold text-slate-800 text-xs">${r.userName || 'Guest'}</div>
-                                            <div class="text-[9px] text-slate-400">${dateStr}</div>
-                                        </div>
-                                    </div>
-                                    <div class="text-[10px] flex gap-0.5">${starsHtml}</div>
-                                </div>
-                                <p class="text-slate-600 text-xs leading-relaxed italic pl-11">"${r.comment}"</p>
-                            </div>
-                        `;
-                    }).join('');
-
-                    const avg = (totalRating / reviews.length).toFixed(1);
-                    avgRatingDisplay.innerText = avg;
-                } else {
-                    reviewsSection.classList.add('hidden');
+                        if (avgRatingDisplay) {
+                            const avg = (totalRating / reviews.length).toFixed(1);
+                            avgRatingDisplay.innerText = avg;
+                        }
+                    } else {
+                        if (reviewsSection) reviewsSection.classList.add('hidden');
+                    }
+                } catch(e) {
+                    console.warn("Reviews notice:", e);
                 }
 
-                await updateBookedDates();
-                await calculatePrice();
+                try { await updateBookedDates(); } catch(e) { console.warn("updateBookedDates notice:", e); }
+                try { await calculatePrice(); } catch(e) { console.warn("calculatePrice notice:", e); }
             }
         }
 

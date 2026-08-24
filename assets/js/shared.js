@@ -559,6 +559,43 @@ const db = {
         return true;
     },
 
+    // Upgrades CRUD
+    getUpgrades: async () => {
+        if (window.KaghanDB_Cache.upgrades && window.KaghanDB_Cache.upgrades.length) return window.KaghanDB_Cache.upgrades;
+        try {
+            const swr = localStorage.getItem('kaghan_swr_upgrades');
+            if (swr) {
+                const list = JSON.parse(swr);
+                if (list && list.length) {
+                    window.KaghanDB_Cache.upgrades = list;
+                    return list;
+                }
+            }
+        } catch(e) {}
+        try {
+            const snap = await fdb.collection('upgrades').get();
+            const list = [];
+            snap.forEach(doc => {
+                const data = doc.data();
+                list.push({ ...data, id: data.id || doc.id });
+            });
+            window.KaghanDB_Cache.upgrades = list;
+            try { localStorage.setItem('kaghan_swr_upgrades', JSON.stringify(list)); } catch(e) {}
+            return list;
+        } catch(err) {
+            console.warn("getUpgrades fetch error:", err);
+            return window.KaghanDB_Cache.upgrades || [];
+        }
+    },
+    saveUpgrade: async (upgrade) => {
+        await fdb.collection('upgrades').doc(upgrade.id).set(upgrade);
+        return true;
+    },
+    deleteUpgrade: async (id) => {
+        await fdb.collection('upgrades').doc(id).delete();
+        return true;
+    },
+
     // Coupons CRUD
     getCoupons: async () => {
         if (window.KaghanDB_Cache.coupons) return window.KaghanDB_Cache.coupons;
@@ -767,20 +804,25 @@ const db = {
             window.KaghanDB_Cache.rooms = deduped;
             return deduped;
         }
-        const snap = await fdb.collection('rooms').get();
-        const list = [];
-        const seen = new Set();
-        snap.forEach(doc => {
-            const data = doc.data();
-            const id = data.id || doc.id;
-            if (!seen.has(id)) {
-                seen.add(id);
-                list.push({ ...data, id });
-            }
-        });
-        window.KaghanDB_Cache.rooms = list;
-        try { localStorage.setItem('kaghan_swr_rooms', JSON.stringify(list)); } catch(e) {}
-        return list;
+        try {
+            const snap = await fdb.collection('rooms').get();
+            const list = [];
+            const seen = new Set();
+            snap.forEach(doc => {
+                const data = doc.data();
+                const id = data.id || doc.id;
+                if (!seen.has(id)) {
+                    seen.add(id);
+                    list.push({ ...data, id });
+                }
+            });
+            window.KaghanDB_Cache.rooms = list;
+            try { localStorage.setItem('kaghan_swr_rooms', JSON.stringify(list)); } catch(e) {}
+            return list;
+        } catch (err) {
+            console.warn("getRooms Firestore fetch error:", err);
+            return window.KaghanDB_Cache.rooms || [];
+        }
     },
     generateSlug: (text) => {
         if (!text) return '';
