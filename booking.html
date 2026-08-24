@@ -905,27 +905,38 @@
 
         let allAvailableRooms = [];
 
-        // Load Selected Listing Specified via URL (?id=... or ?room=... or ?roomId=...) or fallback to first available room
+        // Load Selected Listing Specified via URL (?id=... or ?room=... or ?roomId=... or ?slug=...) or fallback to first available room
         async function loadRoomSelector() {
             const urlParams = new URLSearchParams(window.location.search);
-            const queryRoomId = urlParams.get('id') || urlParams.get('room') || urlParams.get('roomId');
+            const queryRoomId = urlParams.get('id') || urlParams.get('room') || urlParams.get('roomId') || urlParams.get('slug');
 
             const contentWrapper = document.getElementById('booking-content-wrapper');
             const noRoomCard = document.getElementById('no-room-selected-card');
 
             let room = null;
-            if (queryRoomId) {
-                room = await KaghanDB.getRoomById(queryRoomId);
+            if (queryRoomId && window.KaghanDB && window.KaghanDB.getRoomById) {
+                try {
+                    room = await KaghanDB.getRoomById(queryRoomId);
+                } catch (err) {
+                    console.warn("loadRoomSelector getRoomById error:", err);
+                }
+            }
+
+            if (!room && window.KaghanDB && window.KaghanDB.getRooms) {
+                try {
+                    const allRooms = await KaghanDB.getRooms();
+                    if (Array.isArray(allRooms) && allRooms.length > 0) {
+                        room = allRooms.find(r => r && (!r.status || r.status.toLowerCase() !== 'maintenance')) || allRooms[0];
+                    }
+                } catch (err) {
+                    console.warn("loadRoomSelector getRooms error:", err);
+                }
             }
 
             if (!room) {
-                const allRooms = await KaghanDB.getRooms();
-                room = (allRooms || []).find(r => r && (!r.status || r.status.toLowerCase() !== 'maintenance'));
-            }
-
-            if (!room) {
-                if (contentWrapper) contentWrapper.classList.add('hidden');
-                if (noRoomCard) noRoomCard.classList.remove('hidden');
+                // If rooms are still initializing from Firestore, keep wrapper visible so UI is never blank
+                if (contentWrapper) contentWrapper.classList.remove('hidden');
+                if (noRoomCard) noRoomCard.classList.add('hidden');
                 selectedRoom = null;
                 return;
             }
@@ -940,6 +951,15 @@
 
             await onRoomChange();
         }
+
+        // Real-time listener: re-populate room details automatically when Firestore snapshot emits
+        window.addEventListener('kaghan-db-rooms', async () => {
+            if (!selectedRoom) {
+                await loadRoomSelector();
+            } else {
+                await onRoomChange();
+            }
+        });
 
         let propGalleryImages = [];
         let propGalleryCurrentIdx = 0;
@@ -2716,19 +2736,19 @@
 
         // Initialize Page
         window.addEventListener('DOMContentLoaded', async () => {
-            setupDates();
-            await loadRoomSelector();
-            await loadUpgrades();
-            renderBookingNavbar();
-            setupPaymentInputs();
+            try { setupDates(); } catch(e) { console.warn("setupDates warning:", e); }
+            try { await loadRoomSelector(); } catch(e) { console.warn("loadRoomSelector warning:", e); }
+            try { await loadUpgrades(); } catch(e) { console.warn("loadUpgrades warning:", e); }
+            try { renderBookingNavbar(); } catch(e) { console.warn("renderBookingNavbar warning:", e); }
+            try { setupPaymentInputs(); } catch(e) { console.warn("setupPaymentInputs warning:", e); }
 
             const guestForm = document.getElementById('booking-form');
             if (guestForm) {
                 guestForm.addEventListener('input', updateStepper);
             }
-            updateStepper();
+            try { updateStepper(); } catch(e) {}
 
-            // Auto-apply promo coupon from URL (e.g. ?coupon=DIRECT15)
+            // Auto-apply promo coupon from URL (e.g. ?coupon=DIRECT15 or ?coupon=KPHSTAY1)
             const urlParams = new URLSearchParams(window.location.search);
             const couponParam = urlParams.get('coupon') || urlParams.get('promo');
             if (couponParam) {
@@ -2736,7 +2756,7 @@
                 if (couponInput) {
                     couponInput.value = couponParam.toUpperCase().trim();
                     if (typeof validateAndApplyCoupon === 'function') {
-                        setTimeout(() => validateAndApplyCoupon(), 100);
+                        setTimeout(() => validateAndApplyCoupon(), 150);
                     }
                 }
             }
