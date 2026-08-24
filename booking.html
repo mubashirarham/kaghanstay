@@ -644,14 +644,35 @@
                             <span>Upgrades & Add-ons</span>
                             <span id="calc-addons-total">PKR 0</span>
                         </div>
+
+                        <!-- Golootlo Partner Promo Banner -->
+                        <div class="bg-gradient-to-r from-amber-500/10 via-emerald-500/10 to-amber-500/10 border border-[#C5A059]/40 rounded-2xl p-3.5 mt-2 mb-1 shadow-xs">
+                            <div class="flex items-center justify-between gap-2">
+                                <div class="flex items-center gap-2.5 min-w-0">
+                                    <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-[#0B0F19] to-slate-800 text-[#C5A059] flex items-center justify-center font-black text-xs shrink-0 shadow-xs">
+                                        <i class="fa-solid fa-gift"></i>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <div class="text-[11px] font-black text-slate-900 flex items-center gap-1.5 flex-wrap">
+                                            <span>Golootlo Partner Deal</span>
+                                            <span class="bg-emerald-100 text-emerald-800 text-[9px] px-1.5 py-0.2 rounded font-black tracking-wide">15% OFF</span>
+                                        </div>
+                                        <p class="text-[10px] text-slate-500 font-medium truncate">Code <span class="font-bold text-slate-800 font-mono">KPHSTAY1</span> or bank voucher</p>
+                                    </div>
+                                </div>
+                                <button type="button" id="golootlo-auto-apply-btn" onclick="applyGolootloDefaultCoupon()" class="bg-[#0B0F19] hover:bg-[#C5A059] text-white text-[11px] font-bold px-3 py-1.5 rounded-xl transition-all shadow-xs shrink-0 cursor-pointer">
+                                    Apply
+                                </button>
+                            </div>
+                        </div>
                         
                         <!-- Coupon Input Box -->
-                        <div class="border-t border-slate-100/80 pt-4 pb-1 mt-2">
-                            <label class="block text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 ml-1">Have a Coupon Code?</label>
+                        <div class="border-t border-slate-100/80 pt-3 pb-1">
+                            <label class="block text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 ml-1">Have a Voucher / Promo Code?</label>
                             <div class="flex gap-2">
                                 <div class="relative flex-grow">
                                     <i class="fa-solid fa-ticket absolute left-3 top-3 text-slate-400 text-xs"></i>
-                                    <input type="text" id="coupon-code-input" placeholder="Enter code" class="w-full border border-slate-200 rounded-xl pl-8 pr-3 py-2 outline-none focus:border-[#C5A059] focus:ring-2 focus:ring-[#C5A059]/10 text-xs bg-slate-50 focus:bg-white text-slate-800 transition-all font-medium uppercase">
+                                    <input type="text" id="coupon-code-input" placeholder="Enter code (e.g. KPHSTAY1)" class="w-full border border-slate-200 rounded-xl pl-8 pr-3 py-2 outline-none focus:border-[#C5A059] focus:ring-2 focus:ring-[#C5A059]/10 text-xs bg-slate-50 focus:bg-white text-slate-800 transition-all font-medium uppercase">
                                 </div>
                                 <button id="coupon-apply-btn" onclick="validateAndApplyCoupon()" class="bg-[#0B0F19] text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-[#C5A059] transition-all shadow-md">Apply</button>
                             </div>
@@ -659,8 +680,8 @@
                         </div>
 
                         <!-- Coupon Discount Row -->
-                        <div id="coupon-discount-row" class="hidden justify-between text-emerald-500 font-bold">
-                            <span id="coupon-discount-lbl">Coupon</span>
+                        <div id="coupon-discount-row" class="hidden justify-between text-emerald-600 font-bold items-center">
+                            <span id="coupon-discount-lbl" class="flex items-center gap-1">Coupon</span>
                             <span id="calc-coupon-discount">-PKR 0</span>
                         </div>
 
@@ -1807,7 +1828,11 @@
                 if (couponRow) {
                     couponRow.classList.remove('hidden');
                     couponRow.classList.add('flex');
-                    couponLbl.innerText = `Coupon (${appliedCoupon.code})`;
+                    if (appliedCoupon.provider === 'golootlo' || appliedCoupon.code === 'KPHSTAY1') {
+                        couponLbl.innerHTML = `<span class="inline-flex items-center gap-1.5 text-emerald-700 font-extrabold"><i class="fa-solid fa-gift text-emerald-600"></i> Golootlo (${KaghanSafe.escapeHTML(appliedCoupon.code)})</span>`;
+                    } else {
+                        couponLbl.innerText = `Coupon (${appliedCoupon.code})`;
+                    }
                     couponVal.innerText = `-${KaghanUI.formatPKR(couponDiscount)}`;
                 }
             } else {
@@ -1963,11 +1988,21 @@
         // Global variables
         let appliedCoupon = null;
 
-        // Coupon Logic (Queries Firestore via KaghanDB Client SDK)
+        // 1-Click Golootlo Auto Apply Handler
+        window.applyGolootloDefaultCoupon = function() {
+            const input = document.getElementById('coupon-code-input');
+            if (input) {
+                input.value = 'KPHSTAY1';
+                window.validateAndApplyCoupon();
+            }
+        };
+
+        // Coupon Logic (Validates via Netlify serverless function with Golootlo API integration)
         window.validateAndApplyCoupon = async () => {
             const input = document.getElementById('coupon-code-input');
             const msg = document.getElementById('coupon-message');
             const btn = document.getElementById('coupon-apply-btn');
+            const golootloBtn = document.getElementById('golootlo-auto-apply-btn');
             if (!input || !msg) return;
             const code = input.value.trim().toUpperCase();
 
@@ -1975,14 +2010,21 @@
                 appliedCoupon = null;
                 calculatePrice();
                 msg.classList.add('hidden');
+                if (golootloBtn) { golootloBtn.innerText = 'Apply'; golootloBtn.className = 'bg-[#0B0F19] hover:bg-[#C5A059] text-white text-[11px] font-bold px-3 py-1.5 rounded-xl transition-all shadow-xs shrink-0 cursor-pointer'; }
                 return;
             }
 
-            // C2: Show loading state during fetch
+            // Show loading state during fetch
             if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>'; }
+            if (golootloBtn && code === 'KPHSTAY1') { golootloBtn.disabled = true; golootloBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-xs"></i>'; }
 
             try {
-                const res = await window.safeFetch('/.netlify/functions/validate-coupon', {
+                // Route to Golootlo validation service or general coupon endpoint
+                const endpoint = (code === 'KPHSTAY1' || code.startsWith('GOL') || code.length >= 5) 
+                    ? '/.netlify/functions/golootlo-validate'
+                    : '/.netlify/functions/validate-coupon';
+
+                const res = await window.safeFetch(endpoint, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ code })
@@ -1990,12 +2032,30 @@
                 const data = await res.json();
                 
                 if (data.valid) {
-                    appliedCoupon = { code: data.code, discountPercentage: data.discountPercentage, discountPercent: data.discountPercentage };
-                    msg.innerText = `Coupon ${data.code} applied! (${data.discountPercentage}% OFF)`;
+                    appliedCoupon = {
+                        code: data.code,
+                        discountPercentage: data.discountPercentage,
+                        discountPercent: data.discountPercentage,
+                        provider: data.provider || (data.code === 'KPHSTAY1' ? 'golootlo' : 'kaghan'),
+                        message: data.message
+                    };
+                    
+                    if (appliedCoupon.provider === 'golootlo' || data.code === 'KPHSTAY1') {
+                        msg.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i> Golootlo Deal ${data.code} applied! (<strong>${data.discountPercentage}% OFF</strong>)`;
+                        if (golootloBtn) {
+                            golootloBtn.disabled = false;
+                            golootloBtn.innerHTML = 'Applied ✓';
+                            golootloBtn.className = 'bg-emerald-600 text-white text-[11px] font-black px-3 py-1.5 rounded-xl shadow-xs shrink-0';
+                        }
+                    } else {
+                        msg.innerText = `Coupon ${data.code} applied! (${data.discountPercentage}% OFF)`;
+                    }
+
                     msg.classList.remove('hidden', 'text-rose-500');
                     msg.classList.add('text-emerald-600', 'font-bold');
                     calculatePrice();
                     if (btn) { btn.disabled = false; btn.innerHTML = 'Applied ✓'; }
+                    if (window.KaghanUI) KaghanUI.showToast(`Coupon ${data.code} (${data.discountPercentage}% OFF) applied!`, 'success');
                     return;
                 }
                 
@@ -2003,6 +2063,7 @@
                 msg.innerText = data.error || "Invalid or expired coupon code.";
                 msg.classList.remove('hidden', 'text-emerald-600');
                 msg.classList.add('text-rose-500', 'font-bold');
+                if (golootloBtn) { golootloBtn.disabled = false; golootloBtn.innerText = 'Apply'; }
                 calculatePrice();
             } catch (err) {
                 console.error("Coupon validation error:", err);
@@ -2010,9 +2071,9 @@
                 msg.innerText = "Error validating coupon.";
                 msg.classList.remove('hidden', 'text-emerald-600');
                 msg.classList.add('text-rose-500', 'font-bold');
+                if (golootloBtn) { golootloBtn.disabled = false; golootloBtn.innerText = 'Apply'; }
                 calculatePrice();
             } finally {
-                // C2: Always restore button
                 if (btn && btn.innerHTML !== 'Applied ✓') { btn.disabled = false; btn.innerHTML = 'Apply'; }
             }
         };
@@ -2108,7 +2169,9 @@
                 checkOut: checkOut,
                 totalNights: stayNights,
                 totalPrice: finalPrice,
+                discount: appliedCoupon ? couponDiscount : 0,
                 couponUsed: appliedCoupon ? appliedCoupon.code : null,
+                couponProvider: appliedCoupon ? (appliedCoupon.provider || (appliedCoupon.code === 'KPHSTAY1' ? 'golootlo' : 'kaghan')) : null,
                 upgrades: selectedUpgradesList,
                 status: 'confirmed',
                 billingCycle: selectedRoom.isApartment ? billingCycle : 'daily',
@@ -2126,6 +2189,27 @@
             try {
                 // Save directly to Firestore via KaghanDB.addBooking
                 const confirmedBooking = await KaghanDB.addBooking(booking);
+
+                // If Golootlo coupon was applied, trigger background redemption service
+                if (appliedCoupon && (appliedCoupon.provider === 'golootlo' || appliedCoupon.code === 'KPHSTAY1')) {
+                    try {
+                        window.safeFetch('/.netlify/functions/golootlo-redeem', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                code: appliedCoupon.code,
+                                bookingId: confirmedBooking.id,
+                                guestName: name,
+                                guestMobile: phone,
+                                guestEmail: email,
+                                totalAmount: Number(rawSubtotal + tax + addonsTotal),
+                                discountedAmount: Number(couponDiscount)
+                            })
+                        }).catch(gErr => console.warn('Golootlo background redemption notice:', gErr));
+                    } catch (err) {
+                        console.warn('Golootlo redemption trigger non-fatal notice:', err);
+                    }
+                }
 
                 // Populate invoice modal HTML immediately
                 const invoiceContainer = document.getElementById('invoice-modal-content');
@@ -2237,14 +2321,17 @@
             const otherCharges = Number(b.otherCharges || 0);
 
             const subtotal = Number(b.subtotal || (accomCharges + cleaningFee + extraGuestCharges + extraMattress + kitchenUsageCharges + securityDeposit + laundryService + otherCharges));
-            const discount = Number(b.discount || b.discountAmount || 0);
+            const discount = Number(b.discount || b.discountAmount || (appliedCoupon ? (finalPrice ? (subtotal + Math.round(subtotal * 0.15) + otherCharges - grandTotal) : 0) : 0));
             const tax = Number(b.tax || Math.round(subtotal * 0.15));
             const advancePaid = Number(b.advancePaid !== undefined ? b.advancePaid : grandTotal);
             const balanceDue = Math.max(0, grandTotal - advancePaid);
 
-            const paymentMethod = b.paymentMethod || 'Credit/Debit Card';
+            const isGolootlo = b.couponProvider === 'golootlo' || b.couponUsed === 'KPHSTAY1' || (appliedCoupon && appliedCoupon.provider === 'golootlo');
+            const couponName = b.couponUsed || (appliedCoupon ? appliedCoupon.code : 'PROMO');
+
+            const paymentMethod = b.paymentMethod || 'Pay at Hotel';
             const transactionNo = b.transactionNo || bookingId;
-            const paymentStatus = (b.paymentStatus || 'PAID').toUpperCase();
+            const paymentStatus = (b.paymentStatus || 'RESERVED').toUpperCase();
 
             const renderCheckbox = (label, isChecked, isBold = false) => {
                 const box = isChecked ? '&#9745;' : '&#9633;';
@@ -2400,12 +2487,13 @@
                             <span>Subtotal:</span>
                             <span>PKR ${formatPKRVal(subtotal)}</span>
                         </div>
+                        ${discount > 0 ? `
+                        <div style="display: flex; justify-content: space-between; padding: 3px 0; color: #16a34a; font-weight: 700;">
+                            <span>${isGolootlo ? `Golootlo Voucher (${couponName})` : `Discount (${couponName})`}:</span>
+                            <span>-PKR ${formatPKRVal(discount)}</span>
+                        </div>` : ''}
                         <div style="display: flex; justify-content: space-between; padding: 3px 0; color: #475569;">
-                            <span>Discount:</span>
-                            <span>PKR ${formatPKRVal(discount)}</span>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; padding: 3px 0; color: #475569;">
-                            <span>Tax (if applicable):</span>
+                            <span>Tax (15% GST):</span>
                             <span>PKR ${formatPKRVal(tax)}</span>
                         </div>
                         <div style="display: flex; justify-content: space-between; border-top: 2px solid #CBD5E1; margin-top: 6px; padding-top: 6px; font-weight: 800; font-size: 15px; color: #0F172A;">

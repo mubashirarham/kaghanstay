@@ -63,6 +63,12 @@
                 ? `<span class="bg-slate-200 text-slate-700 border border-slate-300 rounded-full px-2.5 py-0.5 text-[9px] font-bold tracking-wide uppercase inline-block mt-1">Walk-in Guest</span>`
                 : `<span class="bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-full px-2.5 py-0.5 text-[9px] font-bold tracking-wide uppercase inline-block mt-1">Kaghan Member</span>`;
 
+            const couponBadge = booking.couponUsed
+                ? (booking.couponProvider === 'golootlo' || booking.couponUsed === 'KPHSTAY1'
+                    ? `<span class="bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-md px-1.5 py-0.5 text-[9px] font-black tracking-wide inline-flex items-center gap-1 mt-1"><i class="fa-solid fa-gift text-emerald-600"></i> Golootlo (${KaghanSafe.escapeHTML(booking.couponUsed)})</span>`
+                    : `<span class="bg-amber-50 text-amber-700 border border-amber-200 rounded-md px-1.5 py-0.5 text-[9px] font-bold tracking-wide inline-flex items-center gap-1 mt-1"><i class="fa-solid fa-tag"></i> ${KaghanSafe.escapeHTML(booking.couponUsed)}</span>`)
+                : '';
+
             return `
                 <tr class="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
                     <td class="px-4 py-4"><input type="checkbox" value="${booking.id}" onclick="updateBulkActionBar()" class="booking-row-checkbox rounded border-slate-300 text-[#D4AF37] focus:ring-[#D4AF37] cursor-pointer"></td>
@@ -70,7 +76,10 @@
                     <td class="px-6 py-4">
                         <span class="font-bold text-slate-800 text-sm block">${KaghanSafe.escapeHTML(booking.guestName)}</span>
                         <span class="text-slate-400 text-[10px] block mt-0.5">${KaghanSafe.escapeHTML(booking.guestEmail)} | ${KaghanSafe.escapeHTML(booking.guestPhone || '')}</span>
-                        ${guestBadge}
+                        <div class="flex flex-wrap gap-1 items-center mt-1">
+                            ${guestBadge}
+                            ${couponBadge}
+                        </div>
                     </td>
                     <td class="px-6 py-4 text-xs font-semibold text-slate-600">${KaghanSafe.escapeHTML(room.name)}</td>
                     <td class="px-6 py-4 text-xs text-slate-600">

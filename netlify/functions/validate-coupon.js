@@ -75,9 +75,73 @@ exports.handler = async (event, context) => {
                 body: JSON.stringify({
                     valid: true,
                     code: data.code || code,
-                    discountPercentage: data.discountPercentage || 0
+                    discountPercentage: data.discountPercentage || 0,
+                    provider: 'kaghan'
                 })
             };
+        }
+
+        // Golootlo Coupon Validation Fallback (5-12 chars)
+        if (code.length >= 5 && code.length <= 12) {
+            const defaultCoupon = (process.env.GOLOOTLO_DEFAULT_COUPON || 'KPHSTAY1').toUpperCase();
+            const discountPercentage = parseInt(process.env.GOLOOTLO_DISCOUNT_PERCENT || '15', 10);
+            
+            const username = process.env.GOLOOTLO_USERNAME || 'kph@stay';
+            const password = process.env.GOLOOTLO_PASSWORD || '5@qeRoA9Tx6PIw2)';
+            const merchantCode = process.env.GOLOOTLO_MERCHANT_CODE || '1268';
+            const baseUrl = (process.env.GOLOOTLO_API_BASE_URL || 'https://api-toolkit-staging.golootlo.pk').replace(/\/$/, '');
+            const channelId = process.env.GOLOOTLO_CHANNEL_ID || '01';
+
+            const authStr = `${username}:${password}`;
+            const authB64 = Buffer.from(authStr, 'utf8').toString('base64');
+            const apiUrl = `${baseUrl}/api/merchants/${merchantCode}/coupons/validate`;
+
+            try {
+                const apiRes = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Basic ${authB64}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        ChannelId: channelId,
+                        GolootloCouponCode: code
+                    }),
+                    signal: AbortSignal.timeout(7000)
+                });
+
+                const data = await apiRes.json();
+                if (data && data.Error === false && data.Data && data.Data.Status === '00') {
+                    return {
+                        statusCode: 200,
+                        headers: { 'Access-Control-Allow-Origin': allowedOrigin },
+                        body: JSON.stringify({
+                            valid: true,
+                            code: code,
+                            discountPercentage: discountPercentage,
+                            provider: 'golootlo',
+                            message: data.Data.Message || `Golootlo ${discountPercentage}% discount verified!`
+                        })
+                    };
+                }
+            } catch (gErr) {
+                console.warn('[validate-coupon] Golootlo fallback check warning:', gErr.message);
+            }
+
+            // If it matches partner code directly
+            if (code === defaultCoupon) {
+                return {
+                    statusCode: 200,
+                    headers: { 'Access-Control-Allow-Origin': allowedOrigin },
+                    body: JSON.stringify({
+                        valid: true,
+                        code: code,
+                        discountPercentage: discountPercentage,
+                        provider: 'golootlo',
+                        message: `Golootlo Partner Deal (${discountPercentage}% OFF)`
+                    })
+                };
+            }
         }
 
         return {
