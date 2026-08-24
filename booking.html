@@ -748,6 +748,10 @@
         let selectedRoom = null;
         let stayNights = 1;
         let finalPrice = 0;
+        let currentCouponDiscount = 0;
+        let currentSubtotal = 0;
+        let currentTax = 0;
+        let currentAddonsTotal = 0;
         let slideshowInterval = null;
         let currentImageIdx = 0;
         let availableUpgrades = [];
@@ -1842,6 +1846,11 @@
                 }
             }
             
+            currentCouponDiscount = couponDiscount;
+            currentSubtotal = subtotal;
+            currentTax = tax;
+            currentAddonsTotal = addonsTotal;
+            
             finalPrice = (subtotal + tax + addonsTotal) - couponDiscount;
             
             document.getElementById('calc-rate').innerText = `${KaghanUI.formatPKR(effectiveRatePerNight)} / night`;
@@ -2169,7 +2178,7 @@
                 checkOut: checkOut,
                 totalNights: stayNights,
                 totalPrice: finalPrice,
-                discount: appliedCoupon ? couponDiscount : 0,
+                discount: appliedCoupon ? currentCouponDiscount : 0,
                 couponUsed: appliedCoupon ? appliedCoupon.code : null,
                 couponProvider: appliedCoupon ? (appliedCoupon.provider || (appliedCoupon.code === 'KPHSTAY1' ? 'golootlo' : 'kaghan')) : null,
                 upgrades: selectedUpgradesList,
@@ -2202,8 +2211,8 @@
                                 guestName: name,
                                 guestMobile: phone,
                                 guestEmail: email,
-                                totalAmount: Number(rawSubtotal + tax + addonsTotal),
-                                discountedAmount: Number(couponDiscount)
+                                totalAmount: Number(currentSubtotal + currentTax + currentAddonsTotal),
+                                discountedAmount: Number(currentCouponDiscount)
                             })
                         }).catch(gErr => console.warn('Golootlo background redemption notice:', gErr));
                     } catch (err) {
