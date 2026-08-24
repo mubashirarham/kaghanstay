@@ -1108,9 +1108,14 @@
         }
 
         async function onRoomChange() {
-            const roomId = document.getElementById('book-room-id').value;
-            if (!roomId) return;
-            selectedRoom = await KaghanDB.getRoomById(roomId);
+            const roomId = document.getElementById('book-room-id')?.value;
+            if (!roomId && !selectedRoom) return;
+
+            if (!selectedRoom || (roomId && selectedRoom.id !== roomId)) {
+                if (window.KaghanDB && window.KaghanDB.getRoomById && roomId) {
+                    selectedRoom = await KaghanDB.getRoomById(roomId);
+                }
+            }
             
             if (selectedRoom) {
                 renderSelectedPropertyDetails(selectedRoom);
@@ -1119,22 +1124,34 @@
                 allCards.forEach(c => {
                     c.className = "rounded-2xl p-4 flex gap-4 cursor-pointer transition-all border-2 border-slate-200 bg-white hover:border-[#C5A059]/60 hover:shadow-md";
                 });
-                const activeCard = document.getElementById(`room-card-${roomId}`);
+                const activeCard = document.getElementById(`room-card-${selectedRoom.id}`);
                 if (activeCard) {
                     activeCard.className = "rounded-2xl p-4 flex gap-4 cursor-pointer transition-all border-2 border-[#C5A059] bg-[#C5A059]/10 ring-2 ring-[#C5A059]/20 shadow-md";
                 }
 
-                const galleryImages = selectedRoom.images && selectedRoom.images.length > 0 ? selectedRoom.images : [selectedRoom.image];
+                const galleryImages = (selectedRoom.images && selectedRoom.images.length > 0) ? selectedRoom.images : [selectedRoom.image || '/assets/images/logo.png'];
                 startImageSlideshow(galleryImages);
-                document.getElementById('preview-room-name').innerText = selectedRoom.name;
-                document.getElementById('preview-room-location').innerHTML = `<i class="fa-solid fa-location-dot text-[#D4AF37] text-[9px] mr-1"></i> ${selectedRoom.location || 'Islamabad'}`;
-                document.getElementById('preview-room-guests').innerText = `Capacity: Max ${selectedRoom.maxGuests} guests`;
+
+                const prevImg = document.getElementById('preview-room-img');
+                if (prevImg && galleryImages.length > 0) {
+                    prevImg.src = galleryImages[0];
+                }
+
+                const prevName = document.getElementById('preview-room-name');
+                if (prevName) prevName.innerText = selectedRoom.name || 'Luxury Suite';
+
+                const prevLoc = document.getElementById('preview-room-location');
+                if (prevLoc) prevLoc.innerHTML = `<i class="fa-solid fa-location-dot text-[#D4AF37] text-[9px] mr-1"></i> ${selectedRoom.location || 'Islamabad'}`;
+
+                const prevGuests = document.getElementById('preview-room-guests');
+                if (prevGuests) prevGuests.innerText = `Capacity: Max ${selectedRoom.maxGuests || 2} guests`;
 
                 const billingBox = document.getElementById('billing-cycle-box');
                 const billingCycleSelect = document.getElementById('book-billing-cycle');
+                const prevPrice = document.getElementById('preview-room-price');
                 
                 if (selectedRoom.isApartment || selectedRoom.priceWeekly || selectedRoom.priceMonthly) {
-                    billingBox.classList.remove('hidden');
+                    if (billingBox) billingBox.classList.remove('hidden');
                     
                     // Build clean rate chips that wrap inside card
                     let pText = `<div class="flex flex-wrap gap-1 items-center font-bold text-xs mt-1">`;
@@ -1149,28 +1166,32 @@
                         pText += `<span class="bg-indigo-50 border border-indigo-200 text-indigo-800 px-2 py-0.5 rounded-md text-[11px] font-black">${KaghanUI.formatPKR(selectedRoom.priceMonthly)}/M</span>`;
                     }
                     pText += `</div>`;
-                    document.getElementById('preview-room-price').innerHTML = pText;
+                    if (prevPrice) prevPrice.innerHTML = pText;
 
                     // Update dropdown options
-                    billingCycleSelect.innerHTML = `<option value="daily">Daily Basis</option>`;
-                    if (selectedRoom.priceWeekly) {
-                        billingCycleSelect.innerHTML += `<option value="weekly">Weekly Basis</option>`;
+                    if (billingCycleSelect) {
+                        billingCycleSelect.innerHTML = `<option value="daily">Daily Basis</option>`;
+                        if (selectedRoom.priceWeekly) {
+                            billingCycleSelect.innerHTML += `<option value="weekly">Weekly Basis</option>`;
+                        }
+                        if (selectedRoom.priceMonthly) {
+                            billingCycleSelect.innerHTML += `<option value="monthly">Monthly Basis</option>`;
+                        }
+                        billingCycleSelect.value = 'daily';
                     }
-                    if (selectedRoom.priceMonthly) {
-                        billingCycleSelect.innerHTML += `<option value="monthly">Monthly Basis</option>`;
-                    }
-                    billingCycleSelect.value = 'daily';
                 } else {
-                    billingBox.classList.add('hidden');
-                    billingCycleSelect.innerHTML = `<option value="daily">Daily Basis</option>`;
-                    billingCycleSelect.value = 'daily';
+                    if (billingBox) billingBox.classList.add('hidden');
+                    if (billingCycleSelect) {
+                        billingCycleSelect.innerHTML = `<option value="daily">Daily Basis</option>`;
+                        billingCycleSelect.value = 'daily';
+                    }
                     
                     let basePriceText = `<div class="flex flex-wrap gap-1 items-center font-bold text-xs mt-1">`;
                     if (selectedRoom.originalPrice) {
                         basePriceText += `<span class="line-through text-slate-400 text-[10px] font-semibold">${KaghanUI.formatPKR(selectedRoom.originalPrice)}</span>`;
                     }
-                    basePriceText += `<span class="bg-[#C5A059]/10 border border-[#C5A059]/30 text-[#C5A059] px-2.5 py-0.5 rounded-md text-[11px] font-black">${KaghanUI.formatPKR(selectedRoom.price)} / Night</span></div>`;
-                    document.getElementById('preview-room-price').innerHTML = basePriceText;
+                    basePriceText += `<span class="bg-[#C5A059]/10 border border-[#C5A059]/30 text-[#C5A059] px-2.5 py-0.5 rounded-md text-[11px] font-black">${KaghanUI.formatPKR(selectedRoom.priceDaily || selectedRoom.price)} / Night</span></div>`;
+                    if (prevPrice) prevPrice.innerHTML = basePriceText;
                 }
 
                 // Populate Noticeable Graphics Breakdown
@@ -1873,14 +1894,31 @@
             
             finalPrice = (subtotal + tax + addonsTotal) - couponDiscount;
             
-            document.getElementById('calc-rate').innerText = `${KaghanUI.formatPKR(effectiveRatePerNight)} / night`;
-            document.getElementById('calc-nights').innerText = `${stayNights} Night${stayNights > 1 ? 's' : ''}`;
-            document.getElementById('calc-subtotal').innerText = KaghanUI.formatPKR(subtotal);
-            document.getElementById('calc-tax').innerText = KaghanUI.formatPKR(tax);
-            document.getElementById('calc-total').innerText = KaghanUI.formatPKR(finalPrice);
+            const calcRateEl = document.getElementById('calc-rate');
+            if (calcRateEl) calcRateEl.innerText = `${KaghanUI.formatPKR(effectiveRatePerNight)} / night`;
+
+            const calcNightsEl = document.getElementById('calc-nights');
+            if (calcNightsEl) calcNightsEl.innerText = `${stayNights} Night${stayNights > 1 ? 's' : ''}`;
+
+            const calcSubtotalEl = document.getElementById('calc-subtotal');
+            if (calcSubtotalEl) calcSubtotalEl.innerText = KaghanUI.formatPKR(subtotal);
+
+            const calcTaxEl = document.getElementById('calc-tax');
+            if (calcTaxEl) calcTaxEl.innerText = KaghanUI.formatPKR(tax);
+
+            const calcTotalEl = document.getElementById('calc-total');
+            if (calcTotalEl) calcTotalEl.innerText = KaghanUI.formatPKR(finalPrice);
 
             // Double Booking checking
-            const isAvailable = await KaghanDB.isRoomAvailable(selectedRoom.id, checkInVal, checkOutVal);
+            let isAvailable = true;
+            try {
+                if (window.KaghanDB && window.KaghanDB.isRoomAvailable) {
+                    isAvailable = await KaghanDB.isRoomAvailable(selectedRoom.id, checkInVal, checkOutVal);
+                }
+            } catch(e) {
+                console.warn("isRoomAvailable warning:", e);
+            }
+
             const submitBtn = document.querySelector('button[onclick="submitBooking()"]');
             
             const prevWarning = document.getElementById('booking-availability-warning');
@@ -1890,22 +1928,24 @@
                 ? `Monthly Deal -35% (${stayNights} Nights)` 
                 : (billingCycle === 'weekly' || stayNights >= 7 ? `Weekly Deal -15% (${stayNights} Nights)` : 'Daily Rate');
 
-            if (!isAvailable) {
-                submitBtn.disabled = true;
-                submitBtn.classList.remove('hover:bg-[#0B0F19]', 'bg-[#C5A059]');
-                submitBtn.classList.add('bg-slate-400', 'cursor-not-allowed');
-                submitBtn.innerHTML = `<i class="fa-solid fa-lock text-xs"></i> Dates Unavailable`;
+            if (submitBtn) {
+                if (!isAvailable) {
+                    submitBtn.disabled = true;
+                    submitBtn.classList.remove('hover:bg-[#0B0F19]', 'bg-[#C5A059]');
+                    submitBtn.classList.add('bg-slate-400', 'cursor-not-allowed');
+                    submitBtn.innerHTML = `<i class="fa-solid fa-lock text-xs"></i> Dates Unavailable`;
 
-                const warningDiv = document.createElement('div');
-                warningDiv.id = 'booking-availability-warning';
-                warningDiv.className = 'bg-rose-50 border border-rose-200 text-rose-700 text-xs px-4 py-3 rounded-2xl mt-4 font-semibold text-center animate-bounce';
-                warningDiv.innerHTML = '<i class="fa-solid fa-triangle-exclamation mr-1"></i> Suite is already reserved for the selected dates.';
-                submitBtn.parentNode.insertBefore(warningDiv, submitBtn.nextSibling);
-            } else {
-                submitBtn.disabled = false;
-                submitBtn.classList.remove('bg-slate-400', 'cursor-not-allowed');
-                submitBtn.classList.add('bg-[#C5A059]', 'hover:bg-[#0B0F19]');
-                submitBtn.innerHTML = `<i class="fa-solid fa-lock text-xs"></i> Confirm Stay — ${KaghanUI.formatPKR(finalPrice)} (${cycleTag})`;
+                    const warningDiv = document.createElement('div');
+                    warningDiv.id = 'booking-availability-warning';
+                    warningDiv.className = 'bg-rose-50 border border-rose-200 text-rose-700 text-xs px-4 py-3 rounded-2xl mt-4 font-semibold text-center animate-bounce';
+                    warningDiv.innerHTML = '<i class="fa-solid fa-triangle-exclamation mr-1"></i> Suite is already reserved for the selected dates.';
+                    submitBtn.parentNode.insertBefore(warningDiv, submitBtn.nextSibling);
+                } else {
+                    submitBtn.disabled = false;
+                    submitBtn.classList.remove('bg-slate-400', 'cursor-not-allowed');
+                    submitBtn.classList.add('bg-[#C5A059]', 'hover:bg-[#0B0F19]');
+                    submitBtn.innerHTML = `<i class="fa-solid fa-lock text-xs"></i> Confirm Stay — ${KaghanUI.formatPKR(finalPrice)} (${cycleTag})`;
+                }
             }
 
             // Trigger progress stepper state updates

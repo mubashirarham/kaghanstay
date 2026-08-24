@@ -862,7 +862,7 @@ const db = {
 
         // 3. Fetch all rooms and match by ID or slug
         try {
-            const rooms = await window.KaghanDB.getRooms();
+            const rooms = await db.getRooms();
             return rooms.find(r => 
                 String(r.id).toLowerCase() === targetStr ||
                 (r.slug && r.slug.toLowerCase() === targetStr) ||
@@ -985,7 +985,7 @@ const db = {
 
     addBooking: async (booking, pdfBase64 = null) => {
         await window.ensureAuthReady();
-        const user = KaghanDB.getCurrentUser();
+        const user = db.getCurrentUser ? db.getCurrentUser() : null;
         const userId = user ? user.id : (booking.userId || 'usr-guest-walkin');
 
         // Generate clean client-side booking ID if not provided
@@ -1002,7 +1002,7 @@ const db = {
         let rate = 15000;
         if (booking.roomId) {
             try {
-                const rooms = await KaghanDB.getRooms();
+                const rooms = await db.getRooms();
                 const matchedRoom = rooms.find(r => r.id === booking.roomId);
                 if (matchedRoom) {
                     roomName = matchedRoom.name || matchedRoom.title || roomName;
@@ -1244,7 +1244,7 @@ const db = {
         }
 
         const cleanId = id.trim();
-        const currentUser = KaghanDB.getCurrentUser ? KaghanDB.getCurrentUser() : null;
+        const currentUser = db.getCurrentUser ? db.getCurrentUser() : null;
 
         if (!currentUser || !['admin', 'moderator'].includes(currentUser.role)) {
             console.warn('deleteUser safety abort: caller does not have administrative permission.');
