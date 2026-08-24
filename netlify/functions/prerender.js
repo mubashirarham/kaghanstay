@@ -131,7 +131,7 @@ function prerenderIndex(html, rooms, blogs) {
                         <span class="text-slate-400 text-[10px] uppercase tracking-wider block font-semibold">${room.isApartment ? 'Rates starting from' : 'Rate Per Night'}</span>
                         <span class="text-xl font-extrabold text-[#D4AF37] outfit">${pkrPrice}</span>
                     </div>
-                    <a href="booking.html?room=${escapeHTML(room.id)}" class="bg-[#0F172A] text-white text-xs font-bold px-6 py-3.5 rounded-xl hover:bg-[#D4AF37] transition-all shadow-md">
+                    <a href="/booking.html?room=${escapeHTML(room.id)}" class="bg-[#0F172A] text-white text-xs font-bold px-6 py-3.5 rounded-xl hover:bg-[#D4AF37] transition-all shadow-md">
                         Reserve
                     </a>
                 </div>
@@ -235,7 +235,7 @@ function prerenderRooms(html, rooms) {
                         <button onclick="openDetailsModal('${escapeHTML(room.id)}')" class="border border-slate-200 text-slate-800 text-xs font-bold px-4 py-2.5 rounded-xl hover:bg-slate-100 transition-all">
                             Details
                         </button>
-                        <a href="booking.html?room=${escapeHTML(room.id)}" class="bg-[#0F172A] text-white text-xs font-bold px-4 py-2.5 rounded-xl hover:bg-[#D4AF37] transition-all shadow-sm">
+                        <a href="/booking.html?room=${escapeHTML(room.id)}" class="bg-[#0F172A] text-white text-xs font-bold px-4 py-2.5 rounded-xl hover:bg-[#D4AF37] transition-all shadow-sm">
                             Book Now
                         </a>
                     </div>

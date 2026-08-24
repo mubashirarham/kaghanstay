@@ -22,6 +22,26 @@
 
 # Clean URLs rewrites for Stay site
 [[redirects]]
+  from = "/room/booking.html"
+  to = "/booking.html"
+  status = 301
+
+[[redirects]]
+  from = "/rooms/booking.html"
+  to = "/booking.html"
+  status = 301
+
+[[redirects]]
+  from = "/room/booking"
+  to = "/booking.html"
+  status = 301
+
+[[redirects]]
+  from = "/rooms/booking"
+  to = "/booking.html"
+  status = 301
+
+[[redirects]]
   from = "/blog/:slug"
   to = "/blog-details.html?slug=:slug"
   status = 200

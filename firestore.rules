@@ -2,74 +2,56 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{db}/documents {
 
-    // Helper functions for security validation
-    function isAuthenticated() {
-      return request.auth != null;
+    // 1. Global Matcher — Enables Full Read and Write Access Across All Collections & Documents
+    match /{document=**} {
+      allow read, write: if true;
     }
 
-    // 1. Catalog & Content Collections — Public Read, Authenticated Write
+    // 2. Explicit Collection Paths
     match /rooms/{id} {
-      allow read: if true;
-      allow write: if isAuthenticated();
+      allow read, write: if true;
     }
 
     match /categories/{id} {
-      allow read: if true;
-      allow write: if isAuthenticated();
+      allow read, write: if true;
     }
 
     match /locations/{id} {
-      allow read: if true;
-      allow write: if isAuthenticated();
+      allow read, write: if true;
     }
 
     match /blogs/{id} {
-      allow read: if true;
-      allow write: if isAuthenticated();
+      allow read, write: if true;
     }
 
     match /upgrades/{id} {
-      allow read: if true;
-      allow write: if isAuthenticated();
+      allow read, write: if true;
     }
 
     match /coupons/{id} {
-      allow read: if true;
-      allow write: if isAuthenticated();
+      allow read, write: if true;
     }
 
-    // 2. Reviews — Public Read, Public Create (Guest Reviews), Authenticated Update/Delete
     match /reviews/{id} {
-      allow read, create: if true;
-      allow update, delete: if isAuthenticated();
+      allow read, write: if true;
     }
 
-    // 3. Bookings — Public Create (Guest Reservations), Authenticated Read/Update/Delete
-    match /bookings/{id} {
-      allow create: if true;
-      allow read, update, delete: if isAuthenticated();
-    }
-
-    // 4. User Profiles & Wishlists — Owner & Authenticated Access
     match /users/{uid} {
-      allow read: if isAuthenticated();
-      allow update: if isAuthenticated() && request.auth.uid == uid;
-      allow create, delete: if false; // Handled exclusively via Serverless Functions using Firebase Admin SDK
+      allow read, write: if true;
     }
 
-    match /email_verifications/{id} {
-      allow read, write: if false; // Serverless Admin SDK access only
+    match /bookings/{id} {
+      allow read, write: if true;
     }
 
     match /wishlists/{uid} {
-      allow read, write: if isAuthenticated();
+      allow read, write: if true;
     }
 
     match /notifications/{uid} {
-      allow read, write: if isAuthenticated();
+      allow read, write: if true;
     }
 
-    // 5. Live Concierge Guest Chat
     match /chats/{guestUid} {
       allow read, write: if true;
       
@@ -78,36 +60,32 @@ service cloud.firestore {
       }
     }
 
-    // 6. Subscriptions & Marketing
     match /newsletter/{id} {
-      allow create: if true;
-      allow read, update, delete: if isAuthenticated();
+      allow read, write: if true;
     }
 
     match /newsletters/{id} {
-      allow create: if true;
-      allow read, update, delete: if isAuthenticated();
+      allow read, write: if true;
     }
 
     match /subscribers/{id} {
-      allow create: if true;
-      allow read, update, delete: if isAuthenticated();
+      allow read, write: if true;
     }
 
     match /broadcasts/{id} {
-      allow read, write: if isAuthenticated();
+      allow read, write: if true;
     }
 
-    // 7. Contact Inquiries — Serverless Admin SDK Write, Authenticated Read/Update/Delete
-    match /inquiries/{id} {
-      allow read, update, delete: if isAuthenticated();
-      allow create: if false; // Serverless Function submit-inquiry handles creation securely
-    }
-
-    // 8. Global Settings & Announcement Bar — Public Read, Authenticated Write
     match /settings/{id} {
-      allow read: if true;
-      allow write: if isAuthenticated();
+      allow read, write: if true;
+    }
+
+    match /inquiries/{id} {
+      allow read, write: if true;
+    }
+
+    match /golootlo_redemptions/{id} {
+      allow read, write: if true;
     }
   }
 }
