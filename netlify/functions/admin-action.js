@@ -145,6 +145,20 @@ exports.handler = async (event, context) => {
                 result = true;
                 break;
             }
+            case 'saveSchemaSettings': {
+                const { schema } = data;
+                if (!schema || typeof schema !== 'object') throw new Error("Schema settings data is required.");
+                schema.updatedAt = new Date().toISOString();
+                schema.updatedBy = decodedToken.email || decodedToken.uid || 'admin';
+                await fdb.collection('settings').doc('schema').set(schema, { merge: true });
+                result = true;
+                break;
+            }
+            case 'getSchemaSettings': {
+                const doc = await fdb.collection('settings').doc('schema').get();
+                result = doc.exists ? doc.data() : null;
+                break;
+            }
             case 'getInquiries': {
                 const snap = await fdb.collection('inquiries').orderBy('createdAt', 'desc').get();
                 const inquiries = [];

@@ -1171,186 +1171,641 @@
             <!-- ============================================================ -->
             <!-- VIEW: SEO DASHBOARD & GOOGLE SEARCH CONTROL CENTER -->
             <!-- ============================================================ -->
+            <!-- ============================================================ -->
+            <!-- VIEW: SEO DASHBOARD & GOOGLE SEARCH CONTROL CENTER -->
+            <!-- ============================================================ -->
             <div id="view-seo" class="tab-view hidden space-y-6">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <!-- Top Header & Navigation -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
                         <span class="text-[#D4AF37] text-xs font-bold uppercase tracking-wider">Search Engine Command Center</span>
-                        <h1 class="text-2xl font-extrabold outfit text-slate-900 mt-0.5">Google Search & PageSpeed Intelligence</h1>
-                        <p class="text-slate-400 text-xs font-light">Monitor Google PageSpeed Insights Core Web Vitals, Search Console clicks, top keyword rankings, and instant indexing.</p>
+                        <h1 class="text-2xl font-extrabold outfit text-slate-900 mt-0.5">Google Search, Schema & PageSpeed</h1>
+                        <p class="text-slate-400 text-xs font-light">Dynamically control Google Rich Results (Reviews, Products, FAQs, Lodging), live schema graph, PageSpeed Core Web Vitals, and indexing.</p>
                     </div>
-                    <div class="flex gap-2">
-                        <button onclick="window.runBatchSEOOptimization()" class="bg-[#0F172A] hover:bg-[#D4AF37] hover:text-slate-950 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-all shadow flex items-center gap-1.5">
-                            <i class="fa-solid fa-wand-magic-sparkles text-amber-400"></i> Batch AI Room SEO
-                        </button>
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <div class="bg-slate-900 p-1 rounded-2xl flex items-center gap-1 shadow-inner">
+                            <button id="seo-subtab-btn-schema" onclick="AdminSchemaModule.switchSubTab('schema')" class="px-4 py-2 rounded-xl text-xs font-black bg-[#D4AF37] text-slate-950 transition-all shadow-sm flex items-center gap-1.5">
+                                <i class="fa-solid fa-bolt text-xs"></i> Rich Results & Schema Studio
+                            </button>
+                            <button id="seo-subtab-btn-analytics" onclick="AdminSchemaModule.switchSubTab('analytics')" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white bg-slate-800 transition-all flex items-center gap-1.5">
+                                <i class="fa-solid fa-chart-line text-xs"></i> Search & PageSpeed Intelligence
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Google PageSpeed Insights Live Auditor -->
-                <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md space-y-6">
-                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-5">
-                        <div>
-                            <h3 class="text-lg font-bold outfit text-slate-950 flex items-center gap-2">
-                                <i class="fa-solid fa-[#4285F4] fa-gauge-high text-amber-500"></i> Google PageSpeed Insights Auditor
-                            </h3>
-                            <p class="text-xs text-slate-400">Live Lighthouse performance metrics, accessibility ratings, and Core Web Vitals directly from Google's API.</p>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <div class="bg-slate-100 p-1 rounded-xl flex items-center gap-1 text-xs font-bold">
-                                <button id="pagespeed-strategy-mobile" onclick="setPageSpeedStrategy('mobile')" class="px-3 py-1.5 rounded-lg bg-slate-900 text-white transition-all">Mobile</button>
-                                <button id="pagespeed-strategy-desktop" onclick="setPageSpeedStrategy('desktop')" class="px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition-all">Desktop</button>
+                <!-- ============================================================ -->
+                <!-- SUBTAB 1: RICH RESULTS & JSON-LD SCHEMA STUDIO -->
+                <!-- ============================================================ -->
+                <div id="seo-subtab-view-schema" class="space-y-6">
+                    <!-- Top Action Bar -->
+                    <div class="bg-gradient-to-r from-slate-950 via-slate-900 to-amber-950/40 rounded-3xl p-6 border border-[#D4AF37]/20 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-2">
+                                <span class="bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#D4AF37] text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full">Schema.org JSON-LD @graph</span>
+                                <span class="text-emerald-400 text-[10px] font-bold flex items-center gap-1"><i class="fa-solid fa-circle text-[6px]"></i> Real-Time Firestore Sync</span>
                             </div>
-                            <button onclick="runPageSpeedAudit()" id="run-pagespeed-btn" class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-all shadow flex items-center gap-2">
-                                <i class="fa-solid fa-play text-xs"></i> Run Audit
+                            <h2 class="text-lg font-bold outfit text-white">Google Rich Results & Structured Data Engine</h2>
+                            <p class="text-slate-300 text-xs font-light">Empower search bots to crawl star ratings, customer review quotes, product inventory, collapsible FAQs, and corporate identity.</p>
+                        </div>
+                        <div class="flex items-center gap-2 shrink-0 flex-wrap">
+                            <button onclick="AdminSchemaModule.testRichResults()" class="bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-all shadow flex items-center gap-2 border border-slate-700">
+                                <i class="fa-solid fa-arrow-up-right-from-square text-amber-400"></i> Google Rich Results Test
+                            </button>
+                            <button id="save-schema-btn" onclick="AdminSchemaModule.save()" class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-black text-xs px-5 py-2.5 rounded-xl transition-all shadow-lg flex items-center gap-2">
+                                <i class="fa-solid fa-floppy-disk"></i> Save & Publish Schema Live
                             </button>
                         </div>
                     </div>
 
-                    <!-- Scores Gauges Grid -->
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100 text-center">
-                            <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400 block mb-1">Performance</span>
-                            <div id="pagespeed-score-perf" class="text-3xl font-extrabold outfit text-emerald-600">96</div>
-                            <span class="text-[9px] text-slate-400 block mt-1">Lighthouse Score</span>
+                    <!-- Live Google SERP Preview Card -->
+                    <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-brands fa-google text-blue-500 text-base"></i>
+                                <h3 class="text-sm font-bold outfit text-slate-900">Live Google Search Rich Snippet Simulator</h3>
+                            </div>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider bg-slate-100 px-2.5 py-1 rounded-lg">Real-Time Simulation</span>
                         </div>
-                        <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100 text-center">
-                            <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400 block mb-1">Accessibility</span>
-                            <div id="pagespeed-score-access" class="text-3xl font-extrabold outfit text-emerald-600">98</div>
-                            <span class="text-[9px] text-slate-400 block mt-1">Lighthouse Score</span>
-                        </div>
-                        <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100 text-center">
-                            <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400 block mb-1">Best Practices</span>
-                            <div id="pagespeed-score-practices" class="text-3xl font-extrabold outfit text-emerald-600">100</div>
-                            <span class="text-[9px] text-slate-400 block mt-1">Lighthouse Score</span>
-                        </div>
-                        <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100 text-center">
-                            <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400 block mb-1">SEO Score</span>
-                            <div id="pagespeed-score-seo" class="text-3xl font-extrabold outfit text-emerald-600">100</div>
-                            <span class="text-[9px] text-slate-400 block mt-1">Lighthouse Score</span>
-                        </div>
-                    </div>
 
-                    <!-- Core Web Vitals Metrics -->
-                    <div class="border-t border-slate-100 pt-5">
-                        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">Core Web Vitals Metrics (Real-Time Experience)</h4>
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4" id="pagespeed-vitals-container">
-                            <div class="border border-slate-100 rounded-xl p-3 bg-white">
-                                <span class="text-[10px] font-bold text-slate-400 uppercase block">FCP (First Paint)</span>
-                                <span id="vital-fcp" class="text-base font-extrabold text-slate-800">0.8 s</span>
+                        <!-- Google Search Result Box -->
+                        <div class="bg-slate-50/70 border border-slate-200/80 rounded-2xl p-5 max-w-3xl space-y-2">
+                            <div class="flex items-center gap-2 text-xs">
+                                <div class="w-6 h-6 rounded-full bg-white border border-slate-200 flex items-center justify-center text-[10px] font-bold text-[#D4AF37]">
+                                    K
+                                </div>
+                                <div>
+                                    <span class="text-slate-900 font-bold block leading-none text-xs">KPH Stay</span>
+                                    <span class="text-slate-500 text-[11px] font-mono leading-none">https://kphstay.com › rooms</span>
+                                </div>
                             </div>
-                            <div class="border border-slate-100 rounded-xl p-3 bg-white">
-                                <span class="text-[10px] font-bold text-slate-400 uppercase block">LCP (Largest Paint)</span>
-                                <span id="vital-lcp" class="text-base font-extrabold text-slate-800">1.4 s</span>
+                            <h4 id="serp-preview-title" class="text-blue-800 hover:underline font-medium text-base sm:text-lg cursor-pointer leading-snug">
+                                KPH Stay | Luxury Furnished Apartments in Islamabad, Murree & Nathia Gali
+                            </h4>
+                            <div id="serp-preview-stars-wrap" class="py-0.5">
+                                <!-- Rendered dynamically -->
                             </div>
-                            <div class="border border-slate-100 rounded-xl p-3 bg-white">
-                                <span class="text-[10px] font-bold text-slate-400 uppercase block">CLS (Layout Shift)</span>
-                                <span id="vital-cls" class="text-base font-extrabold text-slate-800">0.002</span>
-                            </div>
-                            <div class="border border-slate-100 rounded-xl p-3 bg-white">
-                                <span class="text-[10px] font-bold text-slate-400 uppercase block">TBT (Blocking Time)</span>
-                                <span id="vital-tbt" class="text-base font-extrabold text-slate-800">10 ms</span>
+                            <p id="serp-preview-desc" class="text-slate-600 text-xs leading-relaxed">
+                                Book 1BHK to 4BHK luxury furnished apartments in Islamabad, Murree, and Nathia Gali with equipped kitchens, 24/7 concierge, fast Wi-Fi, and generator backup.
+                            </p>
+                            <div id="serp-preview-faqs-wrap" class="pt-1">
+                                <!-- FAQ Accordions Rendered dynamically -->
                             </div>
                         </div>
                     </div>
 
-                    <!-- Top Opportunities -->
-                    <div class="border-t border-slate-100 pt-5">
-                        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">Performance Audit Recommendations</h4>
-                        <div id="pagespeed-opportunities-list" class="space-y-2 text-xs text-slate-600">
-                            <div class="p-3 bg-emerald-50 border border-emerald-100 rounded-xl text-emerald-900 font-semibold flex items-center justify-between">
-                                <span><i class="fa-solid fa-circle-check text-emerald-600 mr-2"></i> All Core Web Vitals meet Google's recommended 90+ threshold!</span>
-                                <span class="text-[10px] uppercase font-bold tracking-wider bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded-md">PASS</span>
+                    <!-- Master Schema Types Toggle Grid -->
+                    <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md space-y-4">
+                        <div>
+                            <h3 class="text-sm font-bold outfit text-slate-900 flex items-center gap-2">
+                                <i class="fa-solid fa-sliders text-[#D4AF37]"></i> Master Schema Rich Result Toggles
+                            </h3>
+                            <p class="text-xs text-slate-400">Activate or deactivate individual Schema.org classes dynamically across your site.</p>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <!-- Hotel / Lodging -->
+                            <div class="p-4 rounded-2xl border border-slate-100 bg-slate-50/50 flex items-center justify-between">
+                                <div>
+                                    <span class="font-bold text-xs text-slate-800 block">🏨 Hotel / Lodging</span>
+                                    <span class="text-[10px] text-slate-400">LodgingBusiness entity</span>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="schema-toggle-hotel" onchange="AdminSchemaModule.onToggleChange('hotelLodging', this.checked)" class="sr-only peer" checked>
+                                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#D4AF37]"></div>
+                                </label>
                             </div>
+                            <!-- Reviews & Ratings -->
+                            <div class="p-4 rounded-2xl border border-slate-100 bg-slate-50/50 flex items-center justify-between">
+                                <div>
+                                    <span class="font-bold text-xs text-slate-800 block">⭐ Reviews & Rating</span>
+                                    <span class="text-[10px] text-slate-400">AggregateRating snippet</span>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="schema-toggle-reviews" onchange="AdminSchemaModule.onToggleChange('reviews', this.checked)" class="sr-only peer" checked>
+                                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#D4AF37]"></div>
+                                </label>
+                            </div>
+                            <!-- Products & Rooms -->
+                            <div class="p-4 rounded-2xl border border-slate-100 bg-slate-50/50 flex items-center justify-between">
+                                <div>
+                                    <span class="font-bold text-xs text-slate-800 block">🏷️ Product & Offers</span>
+                                    <span class="text-[10px] text-slate-400">Accommodation pricing</span>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="schema-toggle-products" onchange="AdminSchemaModule.onToggleChange('products', this.checked)" class="sr-only peer" checked>
+                                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#D4AF37]"></div>
+                                </label>
+                            </div>
+                            <!-- FAQPage -->
+                            <div class="p-4 rounded-2xl border border-slate-100 bg-slate-50/50 flex items-center justify-between">
+                                <div>
+                                    <span class="font-bold text-xs text-slate-800 block">❓ FAQPage Accordions</span>
+                                    <span class="text-[10px] text-slate-400">Rich Q&A snippets</span>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="schema-toggle-faq" onchange="AdminSchemaModule.onToggleChange('faq', this.checked)" class="sr-only peer" checked>
+                                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#D4AF37]"></div>
+                                </label>
+                            </div>
+                            <!-- WebSite Searchbox -->
+                            <div class="p-4 rounded-2xl border border-slate-100 bg-slate-50/50 flex items-center justify-between">
+                                <div>
+                                    <span class="font-bold text-xs text-slate-800 block">🌐 Sitelinks SearchBox</span>
+                                    <span class="text-[10px] text-slate-400">WebSite SearchAction</span>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="schema-toggle-website" onchange="AdminSchemaModule.onToggleChange('website', this.checked)" class="sr-only peer" checked>
+                                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#D4AF37]"></div>
+                                </label>
+                            </div>
+                            <!-- Organization Knowledge Graph -->
+                            <div class="p-4 rounded-2xl border border-slate-100 bg-slate-50/50 flex items-center justify-between">
+                                <div>
+                                    <span class="font-bold text-xs text-slate-800 block">🏛️ Organization Graph</span>
+                                    <span class="text-[10px] text-slate-400">Logo & sameAs profiles</span>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="schema-toggle-organization" onchange="AdminSchemaModule.onToggleChange('organization', this.checked)" class="sr-only peer" checked>
+                                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#D4AF37]"></div>
+                                </label>
+                            </div>
+                            <!-- Breadcrumb Navigation -->
+                            <div class="p-4 rounded-2xl border border-slate-100 bg-slate-50/50 flex items-center justify-between">
+                                <div>
+                                    <span class="font-bold text-xs text-slate-800 block">🧭 Breadcrumb Trail</span>
+                                    <span class="text-[10px] text-slate-400">BreadcrumbList hierarchy</span>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="schema-toggle-breadcrumbs" onchange="AdminSchemaModule.onToggleChange('breadcrumbs', this.checked)" class="sr-only peer" checked>
+                                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#D4AF37]"></div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic FAQPage Schema Builder -->
+                    <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md space-y-6">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                            <div>
+                                <h3 class="text-sm font-bold outfit text-slate-900 flex items-center gap-2">
+                                    <i class="fa-solid fa-circle-question text-[#D4AF37]"></i> Dynamic FAQPage Schema Builder
+                                </h3>
+                                <p class="text-xs text-slate-400">Manage Q&As that Google displays as collapsible FAQ rich snippet accordions in search results.</p>
+                            </div>
+                            <button onclick="AdminSchemaModule.openAddFAQModal()" class="bg-[#0F172A] hover:bg-[#D4AF37] hover:text-slate-950 text-white text-xs font-bold px-4 py-2 rounded-xl transition-all shadow flex items-center gap-1.5">
+                                <i class="fa-solid fa-plus text-xs"></i> Add Question
+                            </button>
+                        </div>
+
+                        <!-- 1-Click Curated Luxury FAQs Library -->
+                        <div class="bg-amber-50/40 border border-amber-200/60 rounded-2xl p-4 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold text-amber-900 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-wand-magic-sparkles text-[#D4AF37]"></i> 1-Click Curated Luxury FAQ Library
+                                </span>
+                                <span class="text-[10px] text-amber-700 font-medium">Click any preset to instantly add to your schema</span>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
+                                <button type="button" onclick="AdminSchemaModule.addCuratedPreset(0)" class="text-left p-2.5 bg-white hover:bg-amber-100/60 border border-amber-200 rounded-xl transition-all group">
+                                    <span class="text-[11px] font-bold text-slate-900 group-hover:text-amber-900 block truncate">📍 Islamabad Apartments</span>
+                                    <span class="text-[10px] text-slate-500 block truncate">Locations, 1BHK-4BHK suites</span>
+                                </button>
+                                <button type="button" onclick="AdminSchemaModule.addCuratedPreset(1)" class="text-left p-2.5 bg-white hover:bg-amber-100/60 border border-amber-200 rounded-xl transition-all group">
+                                    <span class="text-[11px] font-bold text-slate-900 group-hover:text-amber-900 block truncate">🏔️ Murree & Nathia Gali</span>
+                                    <span class="text-[10px] text-slate-500 block truncate">Mountain view chalets & heating</span>
+                                </button>
+                                <button type="button" onclick="AdminSchemaModule.addCuratedPreset(2)" class="text-left p-2.5 bg-white hover:bg-amber-100/60 border border-amber-200 rounded-xl transition-all group">
+                                    <span class="text-[11px] font-bold text-slate-900 group-hover:text-amber-900 block truncate">🍳 Amenities & Generator</span>
+                                    <span class="text-[10px] text-slate-500 block truncate">Kitchen, Wi-Fi, 24/7 backup</span>
+                                </button>
+                                <button type="button" onclick="AdminSchemaModule.addCuratedPreset(4)" class="text-left p-2.5 bg-white hover:bg-amber-100/60 border border-amber-200 rounded-xl transition-all group">
+                                    <span class="text-[11px] font-bold text-slate-900 group-hover:text-amber-900 block truncate">⏰ Check-in & Check-out</span>
+                                    <span class="text-[10px] text-slate-500 block truncate">Times and flexibility rules</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Target Page Filter Pills -->
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mr-1">Filter By Page:</span>
+                            <button type="button" data-page="all" onclick="AdminSchemaModule.setFAQFilter('all')" class="schema-faq-filter-btn px-3 py-1.5 rounded-xl text-xs font-black bg-[#D4AF37] text-slate-950 transition-all shadow-xs">All FAQs</button>
+                            <button type="button" data-page="home" onclick="AdminSchemaModule.setFAQFilter('home')" class="schema-faq-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 bg-slate-100 transition-all">🏠 Homepage</button>
+                            <button type="button" data-page="rooms" onclick="AdminSchemaModule.setFAQFilter('rooms')" class="schema-faq-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 bg-slate-100 transition-all">🛏️ Rooms</button>
+                            <button type="button" data-page="contact" onclick="AdminSchemaModule.setFAQFilter('contact')" class="schema-faq-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 bg-slate-100 transition-all">📞 Contact</button>
+                            <button type="button" data-page="pricing" onclick="AdminSchemaModule.setFAQFilter('pricing')" class="schema-faq-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 bg-slate-100 transition-all">💳 Pricing</button>
+                        </div>
+
+                        <!-- FAQ Items List Container -->
+                        <div id="schema-faq-list-container" class="space-y-3">
+                            <!-- Rendered dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Reviews & AggregateRating Schema Controls -->
+                    <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md space-y-6">
+                        <div class="border-b border-slate-100 pb-3">
+                            <h3 class="text-sm font-bold outfit text-slate-900 flex items-center gap-2">
+                                <i class="fa-solid fa-star text-amber-400"></i> Reviews & AggregateRating Schema Management
+                            </h3>
+                            <p class="text-xs text-slate-400">Configure how customer star ratings and testimonials are serialized for Googlebot and SERP rich snippets.</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <!-- Left: Live Sync Stats -->
+                            <div class="p-5 bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-transparent border border-amber-200/80 rounded-2xl space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-bold text-amber-950 uppercase tracking-wider">Live Firestore Stats</span>
+                                    <span class="text-[10px] bg-amber-200 text-amber-900 font-bold px-2 py-0.5 rounded">REAL-TIME</span>
+                                </div>
+                                <div class="space-y-1">
+                                    <div id="schema-live-reviews-avg" class="text-3xl font-black outfit text-amber-600">★ 4.9 / 5.0</div>
+                                    <div id="schema-live-reviews-count" class="text-xs text-slate-600 font-medium">Computing...</div>
+                                </div>
+                                <p class="text-[11px] text-slate-500 leading-relaxed">
+                                    When in Live Sync mode, star ratings and review quotes update automatically every time a customer submits an approved review.
+                                </p>
+                            </div>
+
+                            <!-- Right: Configuration Controls -->
+                            <div class="lg:col-span-2 space-y-4">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Rating Calculation Mode</label>
+                                        <select id="schema-reviews-sync-mode" onchange="AdminSchemaModule.onFieldChange('reviewsConfig.syncMode', this.value)" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                                            <option value="live">⚡ Dynamic Live Sync (From Firestore Reviews)</option>
+                                            <option value="override">🎯 Custom Rating & Count Override</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Top Reviews Embed Count</label>
+                                        <select id="schema-reviews-top-limit" onchange="AdminSchemaModule.onFieldChange('reviewsConfig.topReviewsLimit', Number(this.value))" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                                            <option value="3">Top 3 Approved Reviews</option>
+                                            <option value="6" selected>Top 6 Approved Reviews</option>
+                                            <option value="10">Top 10 Approved Reviews</option>
+                                            <option value="20">Top 20 Approved Reviews</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Rating Override Fields (hidden when mode is 'live') -->
+                                <div id="schema-reviews-override-wrap" class="hidden">
+                                    <div>
+                                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Override Star Rating (1.0 - 5.0)</label>
+                                        <input type="number" step="0.1" min="1" max="5" id="schema-reviews-override-rating" onchange="AdminSchemaModule.onFieldChange('reviewsConfig.overrideRating', Number(this.value))" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Override Total Review Count</label>
+                                        <input type="number" id="schema-reviews-override-count" onchange="AdminSchemaModule.onFieldChange('reviewsConfig.overrideReviewCount', Number(this.value))" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                                    <label class="flex items-center gap-2 text-xs text-slate-700 cursor-pointer">
+                                        <input type="checkbox" id="schema-reviews-in-lodging" onchange="AdminSchemaModule.onFieldChange('reviewsConfig.showRatingInLodging', this.checked)" class="rounded text-[#D4AF37] focus:ring-[#D4AF37]">
+                                        <span>Show Rating in Hotel Schema</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 text-xs text-slate-700 cursor-pointer">
+                                        <input type="checkbox" id="schema-reviews-in-products" onchange="AdminSchemaModule.onFieldChange('reviewsConfig.showRatingInProducts', this.checked)" class="rounded text-[#D4AF37] focus:ring-[#D4AF37]">
+                                        <span>Show Rating in Room Product Schemas</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Business Entity & Knowledge Graph Editor -->
+                    <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md space-y-6">
+                        <div class="border-b border-slate-100 pb-3">
+                            <h3 class="text-sm font-bold outfit text-slate-900 flex items-center gap-2">
+                                <i class="fa-solid fa-building text-[#D4AF37]"></i> Business Entity & Knowledge Graph Details
+                            </h3>
+                            <p class="text-xs text-slate-400">Core Schema.org parameters for Hotel, Organization, Address, Coordinates, and Contact Points.</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Brand Name</label>
+                                <input type="text" id="schema-bus-name" oninput="AdminSchemaModule.onFieldChange('businessEntity.name', this.value)" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Legal Company Name</label>
+                                <input type="text" id="schema-bus-legal" oninput="AdminSchemaModule.onFieldChange('businessEntity.legalName', this.value)" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Alternate Brand Names (Comma Separated)</label>
+                                <input type="text" id="schema-bus-alts" oninput="AdminSchemaModule.onArrayFieldChange('businessEntity.alternateNames', this.value)" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                            </div>
+                            <div class="md:col-span-2 lg:col-span-3">
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Entity Meta Description</label>
+                                <textarea id="schema-bus-desc" rows="2" oninput="AdminSchemaModule.onFieldChange('businessEntity.description', this.value)" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Official Canonical URL</label>
+                                <input type="text" id="schema-bus-url" oninput="AdminSchemaModule.onFieldChange('businessEntity.url', this.value)" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Official Logo URL</label>
+                                <input type="text" id="schema-bus-logo" oninput="AdminSchemaModule.onFieldChange('businessEntity.logo', this.value)" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Social Share OG Image URL</label>
+                                <input type="text" id="schema-bus-image" oninput="AdminSchemaModule.onFieldChange('businessEntity.image', this.value)" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Telephone / Hotline</label>
+                                <input type="text" id="schema-bus-phone" oninput="AdminSchemaModule.onFieldChange('businessEntity.telephone', this.value)" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Contact Email</label>
+                                <input type="text" id="schema-bus-email" oninput="AdminSchemaModule.onFieldChange('businessEntity.email', this.value)" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Price Range String</label>
+                                <input type="text" id="schema-bus-pricerange" oninput="AdminSchemaModule.onFieldChange('businessEntity.priceRange', this.value)" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Street Address</label>
+                                <input type="text" id="schema-addr-street" oninput="AdminSchemaModule.onFieldChange('businessEntity.address.streetAddress', this.value)" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">City / Locality</label>
+                                <input type="text" id="schema-addr-city" oninput="AdminSchemaModule.onFieldChange('businessEntity.address.addressLocality', this.value)" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Region / Province</label>
+                                <input type="text" id="schema-addr-region" oninput="AdminSchemaModule.onFieldChange('businessEntity.address.addressRegion', this.value)" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Postal Code</label>
+                                <input type="text" id="schema-addr-postcode" oninput="AdminSchemaModule.onFieldChange('businessEntity.address.postalCode', this.value)" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">GPS Latitude</label>
+                                <input type="text" id="schema-geo-lat" oninput="AdminSchemaModule.onFieldChange('businessEntity.geo.latitude', Number(this.value))" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">GPS Longitude</label>
+                                <input type="text" id="schema-geo-lng" oninput="AdminSchemaModule.onFieldChange('businessEntity.geo.longitude', Number(this.value))" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Check-in Time</label>
+                                <input type="text" id="schema-bus-checkin" oninput="AdminSchemaModule.onFieldChange('businessEntity.checkinTime', this.value)" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Check-out Time</label>
+                                <input type="text" id="schema-bus-checkout" oninput="AdminSchemaModule.onFieldChange('businessEntity.checkoutTime', this.value)" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Total Number of Rooms</label>
+                                <input type="number" id="schema-bus-rooms-count" oninput="AdminSchemaModule.onFieldChange('businessEntity.numberOfRooms', Number(this.value))" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                            </div>
+                        </div>
+
+                        <!-- Amenities & Social Profiles -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Amenity Features (Comma Separated)</label>
+                                <textarea id="schema-amenities-input" rows="3" oninput="AdminSchemaModule.onArrayFieldChange('amenities', this.value)" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Social Media Profiles (sameAs - One Per Line)</label>
+                                <textarea id="schema-social-links" rows="3" oninput="AdminSchemaModule.onArrayFieldChange('businessEntity.socialProfiles', this.value, '\n')" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37] font-mono text-[11px]"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Live JSON-LD Code Inspector & Validator -->
+                    <div class="bg-slate-900 rounded-3xl border border-slate-800 p-6 md:p-8 shadow-2xl space-y-4">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-4">
+                            <div>
+                                <h3 class="text-sm font-bold outfit text-white flex items-center gap-2">
+                                    <i class="fa-solid fa-code text-[#D4AF37]"></i> Generated Schema.org JSON-LD Code Inspector
+                                </h3>
+                                <p class="text-xs text-slate-400">Live output currently serialized into document &lt;head&gt; across the website.</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button type="button" onclick="AdminSchemaModule.copyJSONLD()" class="bg-slate-800 hover:bg-[#D4AF37] hover:text-slate-950 text-white text-xs font-bold px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5">
+                                    <i class="fa-solid fa-copy text-xs"></i> Copy JSON-LD
+                                </button>
+                                <button type="button" onclick="AdminSchemaModule.testRichResults()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-black px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5">
+                                    <i class="fa-brands fa-google text-xs"></i> Validate Rich Results
+                                </button>
+                            </div>
+                        </div>
+                        <div class="bg-slate-950 rounded-2xl p-4 border border-slate-800 overflow-x-auto max-h-96 text-emerald-400 font-mono text-xs leading-relaxed select-all">
+                            <pre id="schema-jsonld-code-block">Loading schema JSON-LD...</pre>
                         </div>
                     </div>
                 </div>
 
-                <!-- Google Search Console & Keyword Rankings -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <!-- Search Console Performance -->
-                    <div class="lg:col-span-2 bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md space-y-6">
-                        <div class="flex justify-between items-center border-b border-slate-100 pb-4">
+                <!-- ============================================================ -->
+                <!-- SUBTAB 2: GOOGLE SEARCH & PAGESPEED ANALYTICS -->
+                <!-- ============================================================ -->
+                <div id="seo-subtab-view-analytics" class="hidden space-y-6">
+                    <!-- Google PageSpeed Insights Live Auditor -->
+                    <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md space-y-6">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-5">
                             <div>
                                 <h3 class="text-lg font-bold outfit text-slate-950 flex items-center gap-2">
-                                    <i class="fa-solid fa-magnifying-glass text-[#D4AF37]"></i> Google Search Console Performance
+                                    <i class="fa-solid fa-gauge-high text-amber-500"></i> Google PageSpeed Insights Auditor
                                 </h3>
-                                <p class="text-xs text-slate-400">Total organic impressions, clicks, CTR %, and query position rankings (Last 28 Days).</p>
+                                <p class="text-xs text-slate-400">Live Lighthouse performance metrics, accessibility ratings, and Core Web Vitals directly from Google's API.</p>
                             </div>
-                            <button onclick="loadSearchConsoleData()" class="text-slate-400 hover:text-slate-800 text-xs font-bold flex items-center gap-1">
-                                <i class="fa-solid fa-rotate-right"></i> Refresh
-                            </button>
-                        </div>
-
-                        <!-- Stats Grid -->
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                            <div class="bg-amber-50/50 rounded-2xl p-4 border border-amber-100">
-                                <span class="text-[10px] font-bold text-slate-400 uppercase block">Total Organic Clicks</span>
-                                <span id="gsc-clicks" class="text-2xl font-extrabold outfit text-slate-900 mt-1 block">1,420</span>
-                            </div>
-                            <div class="bg-blue-50/50 rounded-2xl p-4 border border-blue-100">
-                                <span class="text-[10px] font-bold text-slate-400 uppercase block">Search Impressions</span>
-                                <span id="gsc-impressions" class="text-2xl font-extrabold outfit text-slate-900 mt-1 block">28,450</span>
-                            </div>
-                            <div class="bg-purple-50/50 rounded-2xl p-4 border border-purple-100">
-                                <span class="text-[10px] font-bold text-slate-400 uppercase block">Average CTR %</span>
-                                <span id="gsc-ctr" class="text-2xl font-extrabold outfit text-slate-900 mt-1 block">4.99%</span>
-                            </div>
-                            <div class="bg-emerald-50/50 rounded-2xl p-4 border border-emerald-100">
-                                <span class="text-[10px] font-bold text-slate-400 uppercase block">Avg Search Position</span>
-                                <span id="gsc-position" class="text-2xl font-extrabold outfit text-emerald-700 mt-1 block">#4.2</span>
+                            <div class="flex items-center gap-3">
+                                <div class="bg-slate-100 p-1 rounded-xl flex items-center gap-1 text-xs font-bold">
+                                    <button id="pagespeed-strategy-mobile" onclick="setPageSpeedStrategy('mobile')" class="px-3 py-1.5 rounded-lg bg-slate-900 text-white transition-all">Mobile</button>
+                                    <button id="pagespeed-strategy-desktop" onclick="setPageSpeedStrategy('desktop')" class="px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition-all">Desktop</button>
+                                </div>
+                                <button onclick="runPageSpeedAudit()" id="run-pagespeed-btn" class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-all shadow flex items-center gap-2">
+                                    <i class="fa-solid fa-play text-xs"></i> Run Audit
+                                </button>
                             </div>
                         </div>
 
-                        <!-- Top Search Keywords Table -->
-                        <div>
-                            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">Top Organic Search Keywords</h4>
-                            <div class="table-scroll-container overflow-x-auto">
-                                <table class="w-full text-left border-collapse text-xs">
-                                    <thead>
-                                        <tr class="border-b border-slate-100 text-slate-400 text-[9px] uppercase tracking-wider font-bold">
-                                            <th class="py-2.5 px-3">Search Query</th>
-                                            <th class="py-2.5 px-3">Clicks</th>
-                                            <th class="py-2.5 px-3">Impressions</th>
-                                            <th class="py-2.5 px-3">CTR %</th>
-                                            <th class="py-2.5 px-3">Avg Position</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="gsc-queries-tbody">
-                                        <!-- Loaded dynamically -->
-                                    </tbody>
-                                </table>
+                        <!-- Scores Gauges Grid -->
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100 text-center">
+                                <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400 block mb-1">Performance</span>
+                                <div id="pagespeed-score-perf" class="text-3xl font-extrabold outfit text-emerald-600">96</div>
+                                <span class="text-[9px] text-slate-400 block mt-1">Lighthouse Score</span>
+                            </div>
+                            <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100 text-center">
+                                <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400 block mb-1">Accessibility</span>
+                                <div id="pagespeed-score-access" class="text-3xl font-extrabold outfit text-emerald-600">98</div>
+                                <span class="text-[9px] text-slate-400 block mt-1">Lighthouse Score</span>
+                            </div>
+                            <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100 text-center">
+                                <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400 block mb-1">Best Practices</span>
+                                <div id="pagespeed-score-practices" class="text-3xl font-extrabold outfit text-emerald-600">100</div>
+                                <span class="text-[9px] text-slate-400 block mt-1">Lighthouse Score</span>
+                            </div>
+                            <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100 text-center">
+                                <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400 block mb-1">SEO Score</span>
+                                <div id="pagespeed-score-seo" class="text-3xl font-extrabold outfit text-emerald-600">100</div>
+                                <span class="text-[9px] text-slate-400 block mt-1">Lighthouse Score</span>
+                            </div>
+                        </div>
+
+                        <!-- Core Web Vitals Metrics -->
+                        <div class="border-t border-slate-100 pt-5">
+                            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">Core Web Vitals Metrics (Real-Time Experience)</h4>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4" id="pagespeed-vitals-container">
+                                <div class="border border-slate-100 rounded-xl p-3 bg-white">
+                                    <span class="text-[10px] font-bold text-slate-400 uppercase block">FCP (First Paint)</span>
+                                    <span id="vital-fcp" class="text-base font-extrabold text-slate-800">0.8 s</span>
+                                </div>
+                                <div class="border border-slate-100 rounded-xl p-3 bg-white">
+                                    <span class="text-[10px] font-bold text-slate-400 uppercase block">LCP (Largest Paint)</span>
+                                    <span id="vital-lcp" class="text-base font-extrabold text-slate-800">1.4 s</span>
+                                </div>
+                                <div class="border border-slate-100 rounded-xl p-3 bg-white">
+                                    <span class="text-[10px] font-bold text-slate-400 uppercase block">CLS (Layout Shift)</span>
+                                    <span id="vital-cls" class="text-base font-extrabold text-slate-800">0.002</span>
+                                </div>
+                                <div class="border border-slate-100 rounded-xl p-3 bg-white">
+                                    <span class="text-[10px] font-bold text-slate-400 uppercase block">TBT (Blocking Time)</span>
+                                    <span id="vital-tbt" class="text-base font-extrabold text-slate-800">10 ms</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Top Opportunities -->
+                        <div class="border-t border-slate-100 pt-5">
+                            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">Performance Audit Recommendations</h4>
+                            <div id="pagespeed-opportunities-list" class="space-y-2 text-xs text-slate-600">
+                                <div class="p-3 bg-emerald-50 border border-emerald-100 rounded-xl text-emerald-900 font-semibold flex items-center justify-between">
+                                    <span><i class="fa-solid fa-circle-check text-emerald-600 mr-2"></i> All Core Web Vitals meet Google's recommended 90+ threshold!</span>
+                                    <span class="text-[10px] uppercase font-bold tracking-wider bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded-md">PASS</span>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Instant Google Indexing Request Tool -->
-                    <div class="lg:col-span-1 bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md space-y-5 h-fit">
-                        <div>
-                            <h3 class="text-lg font-bold outfit text-slate-950 flex items-center gap-2">
-                                <i class="fa-solid fa-bolt text-amber-500"></i> Instant Google Indexing
-                            </h3>
-                            <p class="text-xs text-slate-400">Notify Google immediately when a new room or blog post URL is published.</p>
+                    <!-- Google Search Console & Keyword Rankings -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <!-- Search Console Performance -->
+                        <div class="lg:col-span-2 bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md space-y-6">
+                            <div class="flex justify-between items-center border-b border-slate-100 pb-4">
+                                <div>
+                                    <h3 class="text-lg font-bold outfit text-slate-950 flex items-center gap-2">
+                                        <i class="fa-solid fa-magnifying-glass text-[#D4AF37]"></i> Google Search Console Performance
+                                    </h3>
+                                    <p class="text-xs text-slate-400">Total organic impressions, clicks, CTR %, and query position rankings (Last 28 Days).</p>
+                                </div>
+                                <button onclick="loadSearchConsoleData()" class="text-slate-400 hover:text-slate-800 text-xs font-bold flex items-center gap-1">
+                                    <i class="fa-solid fa-rotate-right"></i> Refresh
+                                </button>
+                            </div>
+
+                            <!-- Stats Grid -->
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                                <div class="bg-amber-50/50 rounded-2xl p-4 border border-amber-100">
+                                    <span class="text-[10px] font-bold text-slate-400 uppercase block">Total Organic Clicks</span>
+                                    <span id="gsc-clicks" class="text-2xl font-extrabold outfit text-slate-900 mt-1 block">1,420</span>
+                                </div>
+                                <div class="bg-blue-50/50 rounded-2xl p-4 border border-blue-100">
+                                    <span class="text-[10px] font-bold text-slate-400 uppercase block">Search Impressions</span>
+                                    <span id="gsc-impressions" class="text-2xl font-extrabold outfit text-slate-900 mt-1 block">28,450</span>
+                                </div>
+                                <div class="bg-purple-50/50 rounded-2xl p-4 border border-purple-100">
+                                    <span class="text-[10px] font-bold text-slate-400 uppercase block">Average CTR %</span>
+                                    <span id="gsc-ctr" class="text-2xl font-extrabold outfit text-slate-900 mt-1 block">4.99%</span>
+                                </div>
+                                <div class="bg-emerald-50/50 rounded-2xl p-4 border border-emerald-100">
+                                    <span class="text-[10px] font-bold text-slate-400 uppercase block">Avg Search Position</span>
+                                    <span id="gsc-position" class="text-2xl font-extrabold outfit text-emerald-700 mt-1 block">#4.2</span>
+                                </div>
+                            </div>
+
+                            <!-- Top Search Keywords Table -->
+                            <div>
+                                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">Top Organic Search Keywords</h4>
+                                <div class="table-scroll-container overflow-x-auto">
+                                    <table class="w-full text-left border-collapse text-xs">
+                                        <thead>
+                                            <tr class="border-b border-slate-100 text-slate-400 text-[9px] uppercase tracking-wider font-bold">
+                                                <th class="py-2.5 px-3">Search Query</th>
+                                                <th class="py-2.5 px-3">Clicks</th>
+                                                <th class="py-2.5 px-3">Impressions</th>
+                                                <th class="py-2.5 px-3">CTR %</th>
+                                                <th class="py-2.5 px-3">Avg Position</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="gsc-queries-tbody">
+                                            <!-- Loaded dynamically -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
+
+                        <!-- Instant Google Indexing Request Tool -->
+                        <div class="lg:col-span-1 bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md space-y-5 h-fit">
+                            <div>
+                                <h3 class="text-lg font-bold outfit text-slate-950 flex items-center gap-2">
+                                    <i class="fa-solid fa-bolt text-amber-500"></i> Instant Google Indexing
+                                </h3>
+                                <p class="text-xs text-slate-400">Notify Google immediately when a new room or blog post URL is published.</p>
+                            </div>
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Target URL to Index</label>
+                                    <input type="text" id="gsc-index-url" placeholder="https://kphstay.com/room/presidential-suite" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                                </div>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                    <button onclick="requestGoogleIndexing()" class="w-full bg-slate-900 hover:bg-[#D4AF37] hover:text-slate-950 text-white font-bold py-2.5 rounded-xl transition-all text-xs flex items-center justify-center gap-2 shadow">
+                                        <i class="fa-solid fa-paper-plane text-xs"></i> Submit Single URL
+                                    </button>
+                                    <button id="index-all-pages-btn" onclick="indexAllSitePages()" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold py-2.5 rounded-xl transition-all text-xs flex items-center justify-center gap-2 shadow">
+                                        <i class="fa-solid fa-bolt text-xs"></i> Index All Site Pages
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="border-t border-slate-100 pt-4 space-y-2">
+                                <h4 class="text-[11px] font-bold text-slate-800 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-key text-amber-500"></i> Google API Key Setup
+                                </h4>
+                                <p class="text-[11px] text-slate-500 leading-relaxed">
+                                    PageSpeed Insights API is 100% free and active out of the box. To query your private Search Console data, configure your Google Service Account in environment variables.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ Question Editor Modal -->
+                <div id="schema-faq-editor-modal" class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+                    <div class="bg-white rounded-3xl border border-slate-100 shadow-2xl max-w-lg w-full p-6 space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                            <h3 id="schema-faq-modal-title" class="text-sm font-bold outfit text-slate-900">Add FAQ Question</h3>
+                            <button type="button" onclick="AdminSchemaModule.closeFAQModal()" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-xs">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+                        <input type="hidden" id="schema-faq-modal-id">
                         <div class="space-y-3">
                             <div>
-                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Target URL to Index</label>
-                                <input type="text" id="gsc-index-url" placeholder="https://kphstay.com/room/presidential-suite" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Target Page Assignment</label>
+                                <select id="schema-faq-modal-page" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                                    <option value="all">🌐 Sitewide (Appears on all pages)</option>
+                                    <option value="home">🏠 Homepage Only</option>
+                                    <option value="rooms">🛏️ Rooms Catalog & Details</option>
+                                    <option value="contact">📞 Contact Page</option>
+                                    <option value="pricing">💳 Pricing Page</option>
+                                </select>
                             </div>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                <button onclick="requestGoogleIndexing()" class="w-full bg-slate-900 hover:bg-[#D4AF37] hover:text-slate-950 text-white font-bold py-2.5 rounded-xl transition-all text-xs flex items-center justify-center gap-2 shadow">
-                                    <i class="fa-solid fa-paper-plane text-xs"></i> Submit Single URL
-                                </button>
-                                <button id="index-all-pages-btn" onclick="indexAllSitePages()" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold py-2.5 rounded-xl transition-all text-xs flex items-center justify-center gap-2 shadow">
-                                    <i class="fa-solid fa-bolt text-xs"></i> Index All Site Pages
-                                </button>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Question (Displayed in Google Snippet)</label>
+                                <input type="text" id="schema-faq-modal-question" placeholder="e.g. What amenities are included in the apartment?" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Answer (Rich Snippet Text)</label>
+                                <textarea id="schema-faq-modal-answer" rows="4" placeholder="Enter clear, informative answer..." class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]"></textarea>
                             </div>
                         </div>
-                        <div class="border-t border-slate-100 pt-4 space-y-2">
-                            <h4 class="text-[11px] font-bold text-slate-800 flex items-center gap-1.5">
-                                <i class="fa-solid fa-key text-amber-500"></i> Google API Key Setup
-                            </h4>
-                            <p class="text-[11px] text-slate-500 leading-relaxed">
-                                PageSpeed Insights API is 100% free and active out of the box. To query your private Search Console data, configure your Google Service Account in environment variables.
-                            </p>
+                        <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+                            <button type="button" onclick="AdminSchemaModule.closeFAQModal()" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100">Cancel</button>
+                            <button type="button" onclick="AdminSchemaModule.saveFAQFromModal()" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#D4AF37] hover:bg-amber-500 text-slate-950 shadow">Save Question</button>
                         </div>
                     </div>
                 </div>

@@ -2107,7 +2107,8 @@
                     ? '/.netlify/functions/golootlo-validate'
                     : '/.netlify/functions/validate-coupon';
 
-                const res = await window.safeFetch(endpoint, {
+                const fetchFn = (typeof window !== 'undefined' && window.safeFetch) ? window.safeFetch : fetch;
+                const res = await fetchFn(endpoint, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ code })
@@ -2276,7 +2277,8 @@
                 // If Golootlo coupon was applied, trigger background redemption service
                 if (appliedCoupon && (appliedCoupon.provider === 'golootlo' || appliedCoupon.code === 'KPHSTAY1')) {
                     try {
-                        window.safeFetch('/.netlify/functions/golootlo-redeem', {
+                        const fetchFn = (typeof window !== 'undefined' && window.safeFetch) ? window.safeFetch : fetch;
+                        fetchFn('/.netlify/functions/golootlo-redeem', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
