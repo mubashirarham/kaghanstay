@@ -28,6 +28,11 @@ export default async (request, context) => {
   const url = new URL(request.url);
   const path = url.pathname;
 
+  // Instant bypass on local development
+  if (url.hostname === "localhost" || url.hostname === "127.0.0.1" || clientIp === "127.0.0.1" || clientIp === "unknown-ip") {
+    return await context.next();
+  }
+
   const now = Date.now();
   // Sanitize key for Netlify Blobs compatibility
   const key = `ip-${clientIp}-${path}`.replace(/[^a-zA-Z0-9_.-]/g, "_");

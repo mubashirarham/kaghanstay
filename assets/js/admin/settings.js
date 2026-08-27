@@ -377,4 +377,206 @@ window.deleteUpgrade = async (id) => {
     }
 };
 
+// ==========================================
+// PayFast Payment Gateway Admin Controller
+// ==========================================
+window.AdminSettingsPaymentModule = {
+    settings: {
+        enabled: true,
+        environment: 'sandbox',
+        merchantId: '14833',
+        securedKey: 'rPcy4T7GQkSCFsHBLdn26s',
+        merchantName: 'KPH Stay',
+        currency: 'PKR',
+        sandboxBaseUrl: 'https://ipguat.apps.net.pk/Ecommerce/api',
+        productionBaseUrl: 'https://ipg.apps.net.pk/Ecommerce/api'
+    },
+
+    init: async function() {
+        try {
+            if (window.KaghanDB && KaghanDB.getPaymentSettings) {
+                const dbSettings = await KaghanDB.getPaymentSettings();
+                if (dbSettings) {
+                    this.settings = { ...this.settings, ...dbSettings };
+                }
+            }
+        } catch(e) {
+            console.warn("AdminSettingsPaymentModule init notice:", e);
+        }
+        this.render();
+    },
+
+    render: function() {
+        const toggle = document.getElementById('payfast-enabled-toggle');
+        const envSelect = document.getElementById('payfast-env-select');
+        const merchantInput = document.getElementById('payfast-merchant-id');
+        const keyInput = document.getElementById('payfast-secured-key');
+        const sandboxUrlInput = document.getElementById('payfast-sandbox-url');
+        const prodUrlInput = document.getElementById('payfast-prod-url');
+        const statusPill = document.getElementById('payfast-status-pill');
+        const envPill = document.getElementById('payfast-env-pill');
+        const toggleLabel = document.getElementById('payfast-toggle-label');
+
+        if (toggle) toggle.checked = this.settings.enabled !== false;
+        if (envSelect) envSelect.value = this.settings.environment || 'sandbox';
+        if (merchantInput) merchantInput.value = this.settings.merchantId || '14833';
+        if (keyInput) keyInput.value = this.settings.securedKey || 'rPcy4T7GQkSCFsHBLdn26s';
+        if (sandboxUrlInput) sandboxUrlInput.value = this.settings.sandboxBaseUrl || 'https://ipguat.apps.net.pk/Ecommerce/api';
+        if (prodUrlInput) prodUrlInput.value = this.settings.productionBaseUrl || 'https://ipg.apps.net.pk/Ecommerce/api';
+
+        if (statusPill) {
+            if (this.settings.enabled !== false) {
+                statusPill.className = 'text-[9px] bg-emerald-100 text-emerald-800 font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider';
+                statusPill.textContent = 'ACTIVE';
+            } else {
+                statusPill.className = 'text-[9px] bg-slate-100 text-slate-600 font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider';
+                statusPill.textContent = 'DISABLED';
+            }
+        }
+
+        if (envPill) {
+            if (this.settings.environment === 'production') {
+                envPill.className = 'text-[9px] bg-emerald-100 text-emerald-800 font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider';
+                envPill.textContent = 'PRODUCTION LIVE';
+            } else {
+                envPill.className = 'text-[9px] bg-amber-100 text-amber-800 font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider';
+                envPill.textContent = 'SANDBOX MODE';
+            }
+        }
+
+        if (toggleLabel) {
+            toggleLabel.textContent = this.settings.enabled !== false ? 'Gateway ON' : 'Gateway OFF';
+        }
+    },
+
+    toggleGateway: async function(enabled) {
+        this.settings.enabled = enabled;
+        this.render();
+        try {
+            await KaghanDB.savePaymentSettings(this.settings);
+            if (window.KaghanUI) KaghanUI.showToast(`PayFast Gateway ${enabled ? 'Enabled' : 'Disabled'}`, 'success');
+        } catch(e) {
+            console.error("toggleGateway error:", e);
+        }
+    },
+
+    onEnvChange: function(env) {
+        this.settings.environment = env;
+        this.render();
+    },
+
+    toggleKeyVisibility: function() {
+        const keyInput = document.getElementById('payfast-secured-key');
+        const eyeIcon = document.getElementById('payfast-key-eye');
+        if (!keyInput) return;
+        if (keyInput.type === 'password') {
+            keyInput.type = 'text';
+            if (eyeIcon) eyeIcon.className = 'fa-solid fa-eye-slash';
+        } else {
+            keyInput.type = 'password';
+            if (eyeIcon) eyeIcon.className = 'fa-solid fa-eye';
+        }
+    },
+
+    saveSettings: async function(e) {
+        if (e) e.preventDefault();
+        const btn = document.getElementById('payfast-save-btn');
+        const origHtml = btn ? btn.innerHTML : '';
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Saving...';
+        }
+
+        try {
+            this.settings.environment = document.getElementById('payfast-env-select')?.value || 'sandbox';
+            this.settings.merchantId = document.getElementById('payfast-merchant-id')?.value.trim() || '14833';
+            this.settings.securedKey = document.getElementById('payfast-secured-key')?.value.trim() || 'rPcy4T7GQkSCFsHBLdn26s';
+            this.settings.sandboxBaseUrl = document.getElementById('payfast-sandbox-url')?.value.trim() || 'https://ipguat.apps.net.pk/Ecommerce/api';
+            this.settings.productionBaseUrl = document.getElementById('payfast-prod-url')?.value.trim() || 'https://ipg.apps.net.pk/Ecommerce/api';
+            this.settings.enabled = document.getElementById('payfast-enabled-toggle')?.checked !== false;
+
+            await KaghanDB.savePaymentSettings(this.settings);
+            this.render();
+            if (window.KaghanUI) KaghanUI.showToast("PayFast payment settings saved successfully!", "success");
+        } catch(err) {
+            console.error("saveSettings error:", err);
+            if (window.KaghanUI) KaghanUI.showToast(err.message || "Failed to save payment settings.", "error");
+        } finally {
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = origHtml;
+            }
+        }
+    },
+
+    testConnection: async function() {
+        const btn = document.getElementById('payfast-test-btn');
+        const origHtml = btn ? btn.innerHTML : '';
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Testing Gateway Connection...';
+        }
+
+        try {
+            const user = firebase.auth().currentUser;
+            if (!user) throw new Error("Please log in as admin to run diagnostics.");
+
+            const idToken = await user.getIdToken();
+            const res = await fetch('/.netlify/functions/admin-action', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'testPayFast',
+                    data: {
+                        config: {
+                            environment: document.getElementById('payfast-env-select')?.value || 'sandbox',
+                            merchantId: document.getElementById('payfast-merchant-id')?.value.trim() || '14833',
+                            securedKey: document.getElementById('payfast-secured-key')?.value.trim() || 'rPcy4T7GQkSCFsHBLdn26s',
+                            sandboxBaseUrl: document.getElementById('payfast-sandbox-url')?.value.trim() || 'https://ipguat.apps.net.pk/Ecommerce/api',
+                            productionBaseUrl: document.getElementById('payfast-prod-url')?.value.trim() || 'https://ipg.apps.net.pk/Ecommerce/api'
+                        }
+                    },
+                    idToken
+                })
+            });
+
+            const data = await res.json();
+            if (!res.ok || !data.success) {
+                throw new Error(data.error || 'Connection failed.');
+            }
+
+            if (window.KaghanUI) {
+                KaghanUI.showToast(`✅ PayFast Connection Verified! Access token acquired: ${data.tokenPreview}`, "success");
+            }
+        } catch (err) {
+            console.error("PayFast test connection error:", err);
+            if (window.KaghanUI) {
+                KaghanUI.showToast(`❌ Connection Test Failed: ${err.message}`, "error");
+            }
+        } finally {
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = origHtml;
+            }
+        }
+    }
+};
+
+window.addEventListener('kaghan-db-payment', (e) => {
+    if (window.AdminSettingsPaymentModule) {
+        if (e.detail) window.AdminSettingsPaymentModule.settings = { ...window.AdminSettingsPaymentModule.settings, ...e.detail };
+        window.AdminSettingsPaymentModule.render();
+    }
+});
+
+// Auto-init on page load
+if (typeof document !== 'undefined') {
+    document.addEventListener('DOMContentLoaded', () => {
+        if (window.AdminSettingsPaymentModule) {
+            window.AdminSettingsPaymentModule.init();
+        }
+    });
+}
+
+
 

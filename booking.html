@@ -538,20 +538,76 @@
                 </div>
 
                 <!-- Payment Selection Card -->
-                <div class="bg-white rounded-[2.25rem] border-2 border-slate-200/90 p-6 md:p-8 shadow-2xl shadow-slate-200/60 relative overflow-hidden">
-                    <h2 class="text-xl font-bold outfit text-slate-900 mb-6 flex items-center gap-3">
-                        <span class="w-10 h-10 bg-slate-900 text-[#C5A059] rounded-full flex items-center justify-center text-sm font-black shadow-lg">4</span>
-                        Payment Selection
-                    </h2>
+                <div class="bg-white rounded-[2.25rem] border-2 border-slate-200/90 p-6 md:p-8 shadow-2xl shadow-slate-200/60 relative overflow-hidden" id="payment-selection-section">
+                    <div class="absolute top-0 right-0 w-36 h-36 bg-gradient-to-br from-[#C5A059]/10 to-transparent rounded-bl-full pointer-events-none"></div>
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-xl font-bold outfit text-slate-900 flex items-center gap-3">
+                            <span class="w-10 h-10 bg-slate-900 text-[#C5A059] rounded-full flex items-center justify-center text-sm font-black shadow-lg">4</span>
+                            Payment Method
+                        </h2>
+                        <span class="text-[10px] uppercase tracking-wider font-extrabold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1">
+                            <i class="fa-solid fa-shield-halved text-xs"></i> SSL 256-Bit Encrypted
+                        </span>
+                    </div>
+                    <p class="text-slate-400 text-xs mb-6 font-light">
+                        Select how you would like to complete your reservation. Online payments are processed instantaneously through the official PayFast gateway.
+                    </p>
 
-                    <div class="bg-gradient-to-r from-slate-50 to-white border-2 border-slate-200 hover:border-[#C5A059] rounded-2xl p-5 md:p-6 flex items-start gap-5 group cursor-pointer shadow-sm hover:shadow-md transition-all">
-                        <div class="w-12 h-12 rounded-full bg-[#D4AF37]/10 text-[#D4AF37] flex items-center justify-center text-xl shrink-0 mt-0.5 group-hover:scale-110 transition-transform">
-                            <i class="fa-solid fa-hotel"></i>
+                    <!-- Payment Options Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        
+                        <!-- Option 1: Pay on Check-in (Active Default) -->
+                        <div onclick="selectPaymentMethod('pay_on_checkin')" id="pay-opt-checkin" role="radio" aria-checked="true" class="p-5 rounded-2xl border-2 border-[#C5A059] bg-amber-50/20 hover:bg-amber-50/40 cursor-pointer transition-all shadow-md relative group flex flex-col justify-between space-y-3">
+                            <div class="flex justify-between items-start">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-[#0B0F19] text-[#D4AF37] flex items-center justify-center text-lg font-black shadow-sm group-hover:scale-105 transition-transform">
+                                        <i class="fa-solid fa-hotel"></i>
+                                    </div>
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <h4 class="font-bold text-slate-900 text-sm">Pay on Check-in</h4>
+                                            <span class="text-[8px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">NO PREPAYMENT</span>
+                                        </div>
+                                        <p class="text-[11px] text-slate-500 font-medium">Cash / Card / Bank Transfer at reception</p>
+                                    </div>
+                                </div>
+                                <span class="w-4 h-4 rounded-full border-2 border-[#C5A059] bg-[#C5A059] flex items-center justify-center shrink-0 mt-1" id="pay-dot-checkin">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-white"></span>
+                                </span>
+                            </div>
                         </div>
-                        <div>
-                            <h4 class="font-bold text-slate-900 text-base mb-1">Pay on Check-in (Cash / Card)</h4>
-                            <p class="text-slate-500 text-xs leading-relaxed font-medium">Secure reservation today. No prepayment or credit card required. You will complete your full payment directly at the reception counter during check-in.</p>
+
+                        <!-- Option 2: Pay Online (Disabled in Sandbox Mode) -->
+                        <div id="pay-opt-payfast" role="radio" aria-checked="false" class="p-5 rounded-2xl border-2 border-slate-200 bg-slate-50/80 opacity-60 cursor-not-allowed transition-all shadow-xs relative group flex flex-col justify-between space-y-3" title="Online card payment gateway is currently in sandbox testing mode and will be enabled soon.">
+                            <div class="flex justify-between items-start">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-slate-200 text-slate-500 flex items-center justify-center text-lg font-black shadow-sm">
+                                        <i class="fa-solid fa-credit-card"></i>
+                                    </div>
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <h4 class="font-bold text-slate-600 text-sm">Pay Online (Cards / Wallets)</h4>
+                                            <span class="text-[8px] bg-amber-100 text-amber-800 font-black px-2 py-0.5 rounded-full uppercase tracking-wider">COMING SOON</span>
+                                        </div>
+                                        <p class="text-[11px] text-slate-400 font-medium">Temporarily disabled during gateway sandbox review</p>
+                                    </div>
+                                </div>
+                                <span class="w-4 h-4 rounded-full border-2 border-slate-300 bg-white flex items-center justify-center shrink-0 mt-1" id="pay-dot-payfast"></span>
+                            </div>
+
+                            <!-- Accepted logos strip -->
+                            <div class="pt-2 border-t border-slate-200/70 flex items-center justify-between flex-wrap gap-2 text-[10px] text-slate-400">
+                                <div class="flex items-center gap-1.5 font-bold text-slate-400">
+                                    <span class="px-1.5 py-0.5 bg-white border border-slate-200 rounded font-mono text-[9px]">VISA</span>
+                                    <span class="px-1.5 py-0.5 bg-white border border-slate-200 rounded font-mono text-[9px]">Mastercard</span>
+                                    <span class="px-1.5 py-0.5 bg-white border border-slate-200 rounded font-mono text-[9px]">PayPak</span>
+                                    <span class="px-1.5 py-0.5 bg-white border border-slate-200 rounded font-mono text-[9px]">JazzCash</span>
+                                    <span class="px-1.5 py-0.5 bg-white border border-slate-200 rounded font-mono text-[9px]">EasyPaisa</span>
+                                </div>
+                                <span class="text-[9px] text-slate-400 font-bold flex items-center gap-1"><i class="fa-solid fa-clock"></i> Live Soon</span>
+                            </div>
                         </div>
+
                     </div>
                 </div>
 
@@ -657,7 +713,7 @@
                                             <span>Golootlo Partner Deal</span>
                                             <span class="bg-emerald-100 text-emerald-800 text-[9px] px-1.5 py-0.2 rounded font-black tracking-wide">15% OFF</span>
                                         </div>
-                                        <p class="text-[10px] text-slate-500 font-medium truncate">Code <span class="font-bold text-slate-800 font-mono">KPHSTAY1</span> or bank voucher</p>
+                                        <p class="text-[10px] text-slate-500 font-medium truncate">Code <span class="font-bold text-slate-800 font-mono">KPHSTAY</span> or bank voucher</p>
                                     </div>
                                 </div>
                                 <button type="button" id="golootlo-auto-apply-btn" onclick="applyGolootloDefaultCoupon()" class="bg-[#0B0F19] hover:bg-[#C5A059] text-white text-[11px] font-bold px-3 py-1.5 rounded-xl transition-all shadow-xs shrink-0 cursor-pointer">
@@ -672,7 +728,7 @@
                             <div class="flex gap-2">
                                 <div class="relative flex-grow">
                                     <i class="fa-solid fa-ticket absolute left-3 top-3 text-slate-400 text-xs"></i>
-                                    <input type="text" id="coupon-code-input" placeholder="Enter code (e.g. KPHSTAY1)" class="w-full border border-slate-200 rounded-xl pl-8 pr-3 py-2 outline-none focus:border-[#C5A059] focus:ring-2 focus:ring-[#C5A059]/10 text-xs bg-slate-50 focus:bg-white text-slate-800 transition-all font-medium uppercase">
+                                    <input type="text" id="coupon-code-input" placeholder="Enter code (e.g. KPHSTAY)" class="w-full border border-slate-200 rounded-xl pl-8 pr-3 py-2 outline-none focus:border-[#C5A059] focus:ring-2 focus:ring-[#C5A059]/10 text-xs bg-slate-50 focus:bg-white text-slate-800 transition-all font-medium uppercase">
                                 </div>
                                 <button id="coupon-apply-btn" onclick="validateAndApplyCoupon()" class="bg-[#0B0F19] text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-[#C5A059] transition-all shadow-md">Apply</button>
                             </div>
@@ -691,12 +747,12 @@
                         </div>
                     </div>
 
-                    <button onclick="submitBooking()" class="w-full bg-[#C5A059] text-white py-4 rounded-2xl font-bold hover:bg-[#0B0F19] transition-all shadow-lg flex items-center justify-center gap-2 btn-shimmer">
+                    <button onclick="submitBooking()" id="main-booking-submit-btn" class="w-full bg-[#C5A059] text-white py-4 rounded-2xl font-bold hover:bg-[#0B0F19] transition-all shadow-lg flex items-center justify-center gap-2 btn-shimmer">
                         <i class="fa-solid fa-lock text-xs"></i>
-                        Confirm Stay
+                        <span id="submit-btn-text">Confirm Reservation (Pay on Check-in)</span>
                     </button>
                     <p class="text-[10px] text-center text-slate-400">
-                        Secured SSL checkout powered by KPH Stay & PayFast. <br><span class="font-bold text-[#C5A059]">48-Hour Refund Policy:</span> Cancellations made 48h before check-in receive a 100% full refund in 5-7 business days. See our <a href="pricing.html" target="_blank" class="underline hover:text-[#C5A059]">Pricing Policy</a>, <a href="terms.html" target="_blank" class="underline hover:text-[#C5A059]">Terms of Stay</a> & <a href="refund.html" target="_blank" class="underline hover:text-[#C5A059]">Refund Policy</a>.
+                        Secured SSL checkout powered by KPH Stay & PayFast Gateway. <br><span class="font-bold text-[#C5A059]">48-Hour Refund Policy:</span> Cancellations made 48h before check-in receive a 100% full refund in 5-7 business days. See our <a href="pricing.html" target="_blank" class="underline hover:text-[#C5A059]">Pricing Policy</a>, <a href="terms.html" target="_blank" class="underline hover:text-[#C5A059]">Terms of Stay</a> & <a href="refund.html" target="_blank" class="underline hover:text-[#C5A059]">Refund Policy</a>.
                     </p>
                 </div>
             </div>
@@ -755,6 +811,110 @@
         let slideshowInterval = null;
         let currentImageIdx = 0;
         let availableUpgrades = [];
+        let selectedPaymentMethod = 'pay_on_checkin';
+
+        function selectPaymentMethod(method) {
+            selectedPaymentMethod = method;
+            const cardPayfast = document.getElementById('pay-opt-payfast');
+            const cardCheckin = document.getElementById('pay-opt-checkin');
+            const dotPayfast = document.getElementById('pay-dot-payfast');
+            const dotCheckin = document.getElementById('pay-dot-checkin');
+            const submitBtnTxt = document.getElementById('submit-btn-text');
+
+            if (method === 'payfast') {
+                if (cardPayfast) {
+                    cardPayfast.className = 'p-5 rounded-2xl border-2 border-[#C5A059] bg-amber-50/20 hover:bg-amber-50/40 cursor-pointer transition-all shadow-md relative group flex flex-col justify-between space-y-3';
+                }
+                if (cardCheckin) {
+                    cardCheckin.className = 'p-5 rounded-2xl border-2 border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/50 cursor-pointer transition-all shadow-sm relative group flex flex-col justify-between space-y-3';
+                }
+                if (dotPayfast) {
+                    dotPayfast.className = 'w-4 h-4 rounded-full border-2 border-[#C5A059] bg-[#C5A059] flex items-center justify-center shrink-0 mt-1';
+                    dotPayfast.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-white"></span>';
+                }
+                if (dotCheckin) {
+                    dotCheckin.className = 'w-4 h-4 rounded-full border-2 border-slate-300 bg-white flex items-center justify-center shrink-0 mt-1';
+                    dotCheckin.innerHTML = '';
+                }
+                if (submitBtnTxt) submitBtnTxt.textContent = 'Proceed to PayFast Online Payment';
+            } else {
+                if (cardCheckin) {
+                    cardCheckin.className = 'p-5 rounded-2xl border-2 border-[#C5A059] bg-amber-50/20 hover:bg-amber-50/40 cursor-pointer transition-all shadow-md relative group flex flex-col justify-between space-y-3';
+                }
+                if (cardPayfast) {
+                    cardPayfast.className = 'p-5 rounded-2xl border-2 border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/50 cursor-pointer transition-all shadow-sm relative group flex flex-col justify-between space-y-3';
+                }
+                if (dotCheckin) {
+                    dotCheckin.className = 'w-4 h-4 rounded-full border-2 border-[#C5A059] bg-[#C5A059] flex items-center justify-center shrink-0 mt-1';
+                    dotCheckin.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-white"></span>';
+                }
+                if (dotPayfast) {
+                    dotPayfast.className = 'w-4 h-4 rounded-full border-2 border-slate-300 bg-white flex items-center justify-center shrink-0 mt-1';
+                    dotPayfast.innerHTML = '';
+                }
+                if (submitBtnTxt) submitBtnTxt.textContent = 'Confirm Reservation (Pay on Check-in)';
+            }
+        }
+
+        async function checkPayFastReturnStatus() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const paymentStatus = urlParams.get('payment');
+            const bookingId = urlParams.get('bookingId') || urlParams.get('basket_id');
+            const txId = urlParams.get('txId') || urlParams.get('transaction_id');
+
+            if (!paymentStatus || !bookingId) return;
+
+            if (paymentStatus === 'success') {
+                try {
+                    let confirmedBooking = null;
+                    if (window.KaghanDB && KaghanDB.getBookings) {
+                        const all = await KaghanDB.getBookings();
+                        confirmedBooking = all.find(b => b.id === bookingId);
+                    }
+                    if (!confirmedBooking && window.KaghanDB_Cache?.bookings) {
+                        confirmedBooking = window.KaghanDB_Cache.bookings.find(b => b.id === bookingId);
+                    }
+                    if (!confirmedBooking) {
+                        const doc = await firebase.firestore().collection('bookings').doc(bookingId).get();
+                        if (doc.exists) confirmedBooking = { id: doc.id, ...doc.data() };
+                    }
+
+                    if (confirmedBooking) {
+                        const invoiceContainer = document.getElementById('invoice-modal-content');
+                        if (invoiceContainer) {
+                            invoiceContainer.innerHTML = getInvoiceHTML(confirmedBooking);
+                        }
+                        window._lastConfirmedBooking = confirmedBooking;
+
+                        const modal = document.getElementById('confirmation-modal');
+                        if (modal) {
+                            modal.classList.remove('hidden');
+                            setTimeout(() => {
+                                modal.classList.remove('opacity-0');
+                                if (modal.firstElementChild) modal.firstElementChild.classList.remove('scale-95');
+                            }, 50);
+                        }
+
+                        const waBtn = document.getElementById('whatsapp-share-btn');
+                        if (waBtn) {
+                            const roomTitle = confirmedBooking.roomName || 'Luxury Suite';
+                            const text = `*Booking & Payment Confirmed at KPH Stay!*\n\nInvoice ID: ${confirmedBooking.id}\nRoom: ${roomTitle}\nPayment: Paid Online via PayFast (Tx: ${txId || confirmedBooking.transactionId || 'Confirmed'})\nTotal Amount: ${KaghanUI.formatPKR(confirmedBooking.totalPrice)}\n\nThank you for choosing KPH Stay! www.kphstay.com`;
+                            waBtn.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+                        }
+
+                        if (window.KaghanUI) {
+                            KaghanUI.showToast('🎉 Payment Successful! Your stay has been confirmed.', 'success');
+                        }
+                    }
+                } catch (e) {
+                    console.warn("Could not load returned booking details:", e);
+                }
+            } else if (paymentStatus === 'failed') {
+                if (window.KaghanUI) {
+                    KaghanUI.showToast('⚠️ Payment was not completed or was cancelled at PayFast gateway. You can retry or choose Pay on Check-in.', 'warning');
+                }
+            }
+        }
 
         function startImageSlideshow(images) {
             if (slideshowInterval) {
@@ -1887,7 +2047,7 @@
                 if (couponRow) {
                     couponRow.classList.remove('hidden');
                     couponRow.classList.add('flex');
-                    if (appliedCoupon.provider === 'golootlo' || appliedCoupon.code === 'KPHSTAY1') {
+                    if (appliedCoupon.provider === 'golootlo' || appliedCoupon.code === 'KPHSTAY' || (appliedCoupon.code && appliedCoupon.code.startsWith('GOL'))) {
                         couponLbl.innerHTML = `<span class="inline-flex items-center gap-1.5 text-emerald-700 font-extrabold"><i class="fa-solid fa-gift text-emerald-600"></i> Golootlo (${KaghanSafe.escapeHTML(appliedCoupon.code)})</span>`;
                     } else {
                         couponLbl.innerText = `Coupon (${appliedCoupon.code})`;
@@ -2075,7 +2235,7 @@
         window.applyGolootloDefaultCoupon = function() {
             const input = document.getElementById('coupon-code-input');
             if (input) {
-                input.value = 'KPHSTAY1';
+                input.value = 'KPHSTAY';
                 window.validateAndApplyCoupon();
             }
         };
@@ -2099,11 +2259,11 @@
 
             // Show loading state during fetch
             if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>'; }
-            if (golootloBtn && code === 'KPHSTAY1') { golootloBtn.disabled = true; golootloBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-xs"></i>'; }
+            if (golootloBtn && (code === 'KPHSTAY' || code.startsWith('GOL'))) { golootloBtn.disabled = true; golootloBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-xs"></i>'; }
 
             try {
-                // Route to Golootlo validation service or general coupon endpoint
-                const endpoint = (code === 'KPHSTAY1' || code.startsWith('GOL') || code.length >= 5) 
+                // Route to Golootlo validation service if dedicated code, or validate-coupon (checks Firestore + Golootlo fallback)
+                const endpoint = (code === 'KPHSTAY' || code.startsWith('GOL')) 
                     ? '/.netlify/functions/golootlo-validate'
                     : '/.netlify/functions/validate-coupon';
 
@@ -2120,11 +2280,11 @@
                         code: data.code,
                         discountPercentage: data.discountPercentage,
                         discountPercent: data.discountPercentage,
-                        provider: data.provider || (data.code === 'KPHSTAY1' ? 'golootlo' : 'kaghan'),
+                        provider: data.provider || (data.code === 'KPHSTAY' ? 'golootlo' : 'kaghan'),
                         message: data.message
                     };
                     
-                    if (appliedCoupon.provider === 'golootlo' || data.code === 'KPHSTAY1') {
+                    if (appliedCoupon.provider === 'golootlo' || data.code === 'KPHSTAY') {
                         msg.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i> Golootlo Deal ${data.code} applied! (<strong>${data.discountPercentage}% OFF</strong>)`;
                         if (golootloBtn) {
                             golootloBtn.disabled = false;
@@ -2255,16 +2415,81 @@
                 totalPrice: finalPrice,
                 discount: appliedCoupon ? currentCouponDiscount : 0,
                 couponUsed: appliedCoupon ? appliedCoupon.code : null,
-                couponProvider: appliedCoupon ? (appliedCoupon.provider || (appliedCoupon.code === 'KPHSTAY1' ? 'golootlo' : 'kaghan')) : null,
+                couponProvider: appliedCoupon ? (appliedCoupon.provider || (appliedCoupon.code === 'KPHSTAY' || (appliedCoupon.code && appliedCoupon.code.startsWith('GOL')) ? 'golootlo' : 'kaghan')) : null,
                 upgrades: selectedUpgradesList,
-                status: 'confirmed',
+                status: selectedPaymentMethod === 'payfast' ? 'pending_payment' : 'confirmed',
+                paymentStatus: selectedPaymentMethod === 'payfast' ? 'unpaid' : 'pending_checkin',
+                paymentMethod: selectedPaymentMethod,
                 billingCycle: selectedRoom.isApartment ? billingCycle : 'daily',
                 createdAt: new Date().toISOString()
             };
 
-            // Direct instant frontend reservation write to Firestore & local cache
-            const submitBtn = document.querySelector('button[onclick="submitBooking()"]');
+            const submitBtn = document.getElementById('main-booking-submit-btn') || document.querySelector('button[onclick="submitBooking()"]');
             const originalBtnHtml = submitBtn ? submitBtn.innerHTML : '';
+
+            // Flow 1: Online Payment via PayFast
+            if (selectedPaymentMethod === 'payfast') {
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Connecting to PayFast Gateway...';
+                }
+
+                try {
+                    const fetchFn = (typeof window !== 'undefined' && window.safeFetch) ? window.safeFetch : fetch;
+                    const res = await fetchFn('/.netlify/functions/payfast-checkout', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(booking)
+                    });
+
+                    let data = null;
+                    const rawText = await res.text();
+                    try {
+                        data = JSON.parse(rawText);
+                    } catch (parseErr) {
+                        throw new Error(rawText || `Gateway server responded with status ${res.status}`);
+                    }
+
+                    if (!res.ok || !data || !data.success) {
+                        throw new Error((data && data.error) || 'Failed to initiate PayFast checkout session.');
+                    }
+
+                    // Create auto-submitting POST form to PayFast official portal
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = data.postUrl;
+                    form.style.display = 'none';
+
+                    for (const [key, val] of Object.entries(data.formFields)) {
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = key;
+                        input.value = val;
+                        form.appendChild(input);
+                    }
+
+                    document.body.appendChild(form);
+
+                    if (window.KaghanUI) {
+                        KaghanUI.showToast('🚀 Redirecting to PayFast Secure Gateway...', 'info');
+                    }
+
+                    setTimeout(() => {
+                        form.submit();
+                    }, 400);
+                    return;
+                } catch (pfErr) {
+                    console.error("PayFast checkout initiation error:", pfErr);
+                    if (window.KaghanUI) KaghanUI.showToast(pfErr.message || 'PayFast connection failed. You can choose Pay on Check-in.', 'error');
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalBtnHtml;
+                    }
+                    return;
+                }
+            }
+
+            // Flow 2: Pay on Check-in (Instant direct reservation)
             if (submitBtn) {
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch animate-spin mr-1"></i> Reserving...';
@@ -2275,7 +2500,7 @@
                 const confirmedBooking = await KaghanDB.addBooking(booking);
 
                 // If Golootlo coupon was applied, trigger background redemption service
-                if (appliedCoupon && (appliedCoupon.provider === 'golootlo' || appliedCoupon.code === 'KPHSTAY1')) {
+                if (appliedCoupon && (appliedCoupon.provider === 'golootlo' || appliedCoupon.code === 'KPHSTAY' || (appliedCoupon.code && appliedCoupon.code.startsWith('GOL')))) {
                     try {
                         const fetchFn = (typeof window !== 'undefined' && window.safeFetch) ? window.safeFetch : fetch;
                         fetchFn('/.netlify/functions/golootlo-redeem', {
@@ -2411,7 +2636,7 @@
             const advancePaid = Number(b.advancePaid !== undefined ? b.advancePaid : grandTotal);
             const balanceDue = Math.max(0, grandTotal - advancePaid);
 
-            const isGolootlo = b.couponProvider === 'golootlo' || b.couponUsed === 'KPHSTAY1' || (appliedCoupon && appliedCoupon.provider === 'golootlo');
+            const isGolootlo = b.couponProvider === 'golootlo' || b.couponUsed === 'KPHSTAY' || (b.couponUsed && b.couponUsed.startsWith('GOL')) || (appliedCoupon && appliedCoupon.provider === 'golootlo');
             const couponName = b.couponUsed || (appliedCoupon ? appliedCoupon.code : 'PROMO');
 
             const paymentMethod = b.paymentMethod || 'Pay at Hotel';
@@ -2804,7 +3029,10 @@
             }
             try { updateStepper(); } catch(e) {}
 
-            // Auto-apply promo coupon from URL (e.g. ?coupon=DIRECT15 or ?coupon=KPHSTAY1)
+            // Check for PayFast Callback URL status (?payment=success&bookingId=...)
+            try { await checkPayFastReturnStatus(); } catch(e) { console.warn("checkPayFastReturnStatus notice:", e); }
+
+            // Auto-apply promo coupon from URL (e.g. ?coupon=DIRECT15 or ?coupon=KPHSTAY)
             const urlParams = new URLSearchParams(window.location.search);
             const couponParam = urlParams.get('coupon') || urlParams.get('promo');
             if (couponParam) {

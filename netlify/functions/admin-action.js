@@ -159,6 +159,28 @@ exports.handler = async (event, context) => {
                 result = doc.exists ? doc.data() : null;
                 break;
             }
+            case 'savePaymentSettings': {
+                const { payment } = data;
+                if (!payment || typeof payment !== 'object') throw new Error("Payment settings data is required.");
+                payment.updatedAt = new Date().toISOString();
+                payment.updatedBy = decodedToken.email || decodedToken.uid || 'admin';
+                await fdb.collection('settings').doc('payment').set(payment, { merge: true });
+                result = true;
+                break;
+            }
+            case 'getPaymentSettings': {
+                const doc = await fdb.collection('settings').doc('payment').get();
+                result = doc.exists ? doc.data() : null;
+                break;
+            }
+            case 'testPayFast': {
+                const { config } = data || {};
+                const { getAccessToken, getPayFastConfig } = require('./_payfast-helper');
+                const targetConfig = config || await getPayFastConfig();
+                const token = await getAccessToken(targetConfig, true);
+                result = { success: true, tokenPreview: token.substring(0, 8) + '...' + token.substring(token.length - 4) };
+                break;
+            }
             case 'getInquiries': {
                 const snap = await fdb.collection('inquiries').orderBy('createdAt', 'desc').get();
                 const inquiries = [];

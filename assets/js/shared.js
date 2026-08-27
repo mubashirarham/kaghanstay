@@ -47,7 +47,8 @@ window.KaghanDB_Cache = {
     coupons: null,
     upgrades: null,
     announcement: null,
-    schema: null
+    schema: null,
+    payment: null
 };
 
 // ⚡ SWR (Stale-While-Revalidate) Instant 0ms LocalStorage Warmup
@@ -72,6 +73,9 @@ try {
 
     const swrSchema = localStorage.getItem('kaghan_swr_schema');
     if (swrSchema) window.KaghanDB_Cache.schema = JSON.parse(swrSchema);
+
+    const swrPayment = localStorage.getItem('kaghan_swr_payment');
+    if (swrPayment) window.KaghanDB_Cache.payment = JSON.parse(swrPayment);
 } catch (e) {
     console.warn("SWR cache load warning:", e);
 }
@@ -230,6 +234,19 @@ function startActiveListeners() {
             window.dispatchEvent(new CustomEvent('kaghan-db-schema', { detail: null }));
         }
     }, err => console.warn("Schema listener notice:", err));
+
+    // 3.7 Payment Gateway Settings Listener (Public)
+    window.KaghanDB_Listeners.payment = fdb.collection('settings').doc('payment').onSnapshot(doc => {
+        if (doc.exists) {
+            const data = doc.data();
+            window.KaghanDB_Cache.payment = data;
+            try { localStorage.setItem('kaghan_swr_payment', JSON.stringify(data)); } catch(e) {}
+            window.dispatchEvent(new CustomEvent('kaghan-db-payment', { detail: data }));
+        } else {
+            window.KaghanDB_Cache.payment = null;
+            window.dispatchEvent(new CustomEvent('kaghan-db-payment', { detail: null }));
+        }
+    }, err => console.warn("Payment settings listener notice:", err));
 
     // 4. Authenticated User Listeners (Subscribed only when Firebase Auth is ready)
     firebase.auth().onAuthStateChanged(authUser => {
@@ -764,13 +781,79 @@ const db = {
         if (!savedViaAdmin) {
             await fdb.collection('settings').doc('schema').set(schema, { merge: true });
         }
-
         window.KaghanDB_Cache.schema = schema;
         try { localStorage.setItem('kaghan_swr_schema', JSON.stringify(schema)); } catch(e) {}
         window.dispatchEvent(new CustomEvent('kaghan-db-schema', { detail: schema }));
+        
         if (window.KaghanSchema && window.KaghanSchema.update) {
             window.KaghanSchema.update(schema);
         }
+        return true;
+    },
+
+    // Payment Gateway Settings (PayFast)
+    getPaymentSettings: async () => {
+        if (window.KaghanDB_Cache.payment) return window.KaghanDB_Cache.payment;
+        try {
+            const swr = localStorage.getItem('kaghan_swr_payment');
+            if (swr) {
+                const data = JSON.parse(swr);
+                if (data) {
+                    window.KaghanDB_Cache.payment = data;
+                    return data;
+                }
+            }
+        } catch(e) {}
+        try {
+            const doc = await fdb.collection('settings').doc('payment').get();
+            if (doc.exists) {
+                const data = doc.data();
+                window.KaghanDB_Cache.payment = data;
+                try { localStorage.setItem('kaghan_swr_payment', JSON.stringify(data)); } catch(e) {}
+                return data;
+            }
+        } catch(e) {
+            console.warn("getPaymentSettings notice:", e.message);
+        }
+        return window.KaghanDB_Cache.payment || {
+            enabled: true,
+            environment: 'sandbox',
+            merchantId: '14833',
+            securedKey: 'rPcy4T7GQkSCFsHBLdn26s',
+            merchantName: 'KPH Stay',
+            currency: 'PKR'
+        };
+    },
+    savePaymentSettings: async (payment) => {
+        let savedViaAdmin = false;
+        try {
+            const user = firebase.auth().currentUser;
+            if (user) {
+                const idToken = await user.getIdToken();
+                const res = await fetch('/.netlify/functions/admin-action', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'savePaymentSettings',
+                        data: { payment },
+                        idToken
+                    })
+                });
+                if (res.ok) {
+                    savedViaAdmin = true;
+                }
+            }
+        } catch(e) {
+            console.warn("Serverless savePaymentSettings fallback:", e);
+        }
+
+        if (!savedViaAdmin) {
+            await fdb.collection('settings').doc('payment').set(payment, { merge: true });
+        }
+
+        window.KaghanDB_Cache.payment = payment;
+        try { localStorage.setItem('kaghan_swr_payment', JSON.stringify(payment)); } catch(e) {}
+        window.dispatchEvent(new CustomEvent('kaghan-db-payment', { detail: payment }));
         return true;
     },
 

@@ -230,29 +230,39 @@ window.AdminAnnouncementModule = {
         return found || this.popups[0] || {};
     },
 
-    init: async function() {
-        if (this.initialized) return;
+    init: async function(force = false) {
+        if (this.initialized && !force) return;
         this.initialized = true;
 
         try {
             const saved = await window.KaghanDB.getAnnouncement();
             if (saved && typeof saved === 'object') {
                 if (Array.isArray(saved.popups) && saved.popups.length > 0) {
-                    this.popups = saved.popups;
+                    this.popups = saved.popups.map(p => ({
+                        ...p,
+                        active: p.active !== false && p.enabled !== false
+                    }));
                     this.activePopupId = saved.activePopupId || this.popups[0].id;
-                } else if (saved.title || saved.layout) {
-                    // Migrate single popup schema
-                    const migrated = { ...this.popups[0], ...saved, id: 'popup-1' };
+                } else if (saved.title || saved.layout || saved.active !== undefined || saved.enabled !== undefined) {
+                    // Single popup or legacy object
+                    const isActive = saved.active !== false && saved.enabled !== false;
+                    const migrated = { 
+                        ...this.popups[0], 
+                        ...saved, 
+                        id: saved.id || 'popup-1',
+                        active: isActive 
+                    };
                     this.popups = [migrated];
-                    this.activePopupId = 'popup-1';
+                    this.activePopupId = migrated.id;
                 }
             }
         } catch (e) {
             console.warn("Could not load promo settings, using defaults:", e);
         }
 
-        // Set default expiry date for popups if missing
+        // Set default expiry date and properties for popups if missing
         this.popups.forEach(p => {
+            if (p.active === undefined) p.active = true;
             if (!p.countdownExpiry) {
                 const d = new Date();
                 d.setDate(d.getDate() + 7);
@@ -270,6 +280,10 @@ window.AdminAnnouncementModule = {
         this.renderIconPickerModal();
         this.updateLivePreview();
         this.startPreviewCountdown();
+    },
+
+    render: function() {
+        this.init(true);
     },
 
     // ============================================================
@@ -458,13 +472,26 @@ window.AdminAnnouncementModule = {
         }
     },
 
-    togglePopupStatus: function(id, activeState) {
+    togglePopupStatus: async function(id, activeState) {
         const p = this.popups.find(item => item.id === id);
         if (!p) return;
         p.active = activeState;
+
+        const cur = this.getCurrentPopup();
+        if (cur.id === id) {
+            cur.active = activeState;
+            const activeToggle = document.getElementById('promo-active-toggle');
+            const statusTxt = document.getElementById('promo-active-status-text');
+            if (activeToggle) activeToggle.checked = activeState;
+            if (statusTxt) statusTxt.textContent = activeState ? 'Active (ON)' : 'Paused (OFF)';
+        }
+
         this.renderCampaignList();
         this.populateFormFields();
         this.updateLivePreview();
+
+        // Persist toggle state immediately so reloading never resets it
+        await this.saveAnnouncementSettings(true);
 
         if (window.KaghanUI && window.KaghanUI.showToast) {
             window.KaghanUI.showToast(`Popup "${p.name}" turned ${activeState ? 'ON (Active)' : 'OFF (Paused)'}.`, activeState ? "success" : "info");
@@ -528,7 +555,10 @@ window.AdminAnnouncementModule = {
 
         // Master toggle
         const activeToggle = document.getElementById('promo-active-toggle');
-        if (activeToggle) activeToggle.checked = d.active !== false;
+        const statusTxt = document.getElementById('promo-active-status-text');
+        const isAct = d.active !== false;
+        if (activeToggle) activeToggle.checked = isAct;
+        if (statusTxt) statusTxt.textContent = isAct ? 'Active (ON)' : 'Paused (OFF)';
 
         // Layout Selector
         const layoutSelect = document.getElementById('promo-layout-select');
@@ -664,8 +694,22 @@ window.AdminAnnouncementModule = {
         const cur = this.getCurrentPopup();
         cur[field] = value;
 
+        // Also update matching item in this.popups array
+        const found = this.popups.find(p => p.id === cur.id);
+        if (found) {
+            found[field] = value;
+        }
+
         if (field === 'name') {
             this.renderCampaignList();
+        }
+
+        if (field === 'active') {
+            const statusTxt = document.getElementById('promo-active-status-text');
+            if (statusTxt) statusTxt.textContent = value ? 'Active (ON)' : 'Paused (OFF)';
+            this.renderCampaignList();
+            // Automatically persist active toggle state
+            this.saveAnnouncementSettings(true);
         }
 
         if (field === 'delaySeconds') {
@@ -1206,48 +1250,63 @@ window.AdminAnnouncementModule = {
     },
 
     // Save & Publish to Firestore
-    saveAnnouncementSettings: async function() {
+    saveAnnouncementSettings: async function(isSilent = false) {
         const btn = document.getElementById('save-promo-btn');
         const origHtml = btn ? btn.innerHTML : '';
-        if (btn) {
+        if (btn && !isSilent) {
             btn.disabled = true;
             btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-sm"></i> Publishing...`;
         }
 
         try {
             const cur = this.getCurrentPopup();
+            
+            // Sync current popup into this.popups array
+            const targetIdx = this.popups.findIndex(p => p.id === cur.id);
+            if (targetIdx !== -1) {
+                this.popups[targetIdx] = { ...this.popups[targetIdx], ...cur };
+            }
+
+            const anyActive = this.popups.some(p => p.active !== false);
+
             const payload = {
                 ...cur,
+                active: cur.active !== false,
+                enabled: anyActive,
                 popups: this.popups,
                 activePopupId: this.activePopupId,
                 updatedAt: new Date().toISOString(),
                 messages: [
                     {
                         id: 'msg-1',
-                        text: `${cur.title}: ${cur.subtitle}`,
-                        linkText: cur.primaryCtaText,
-                        linkUrl: cur.primaryCtaUrl,
-                        promoCode: cur.promoCode
+                        text: `${cur.title || ''}: ${cur.subtitle || ''}`,
+                        linkText: cur.primaryCtaText || '',
+                        linkUrl: cur.primaryCtaUrl || '',
+                        promoCode: cur.promoCode || ''
                     }
                 ]
             };
 
             await window.KaghanDB.saveAnnouncement(payload);
 
-            if (window.KaghanUI && window.KaghanUI.showToast) {
-                window.KaghanUI.showToast("🎉 All popup campaigns and page targeting rules published live!", "success");
-            } else {
-                alert("Promotional popups published successfully!");
+            if (!isSilent) {
+                if (window.KaghanUI && window.KaghanUI.showToast) {
+                    window.KaghanUI.showToast("🎉 All popup campaigns and page targeting rules published live!", "success");
+                } else {
+                    alert("Promotional popups published successfully!");
+                }
             }
         } catch (err) {
             console.error("Save promo error:", err);
-            if (window.KaghanUI && window.KaghanUI.showToast) {
-                window.KaghanUI.showToast(`Failed to publish: ${err.message}`, "error");
-            } else {
-                alert(`Error saving: ${err.message}`);
+            if (!isSilent) {
+                if (window.KaghanUI && window.KaghanUI.showToast) {
+                    window.KaghanUI.showToast(`Failed to publish: ${err.message}`, "error");
+                } else {
+                    alert(`Error saving: ${err.message}`);
+                }
             }
         } finally {
-            if (btn) {
+            if (btn && !isSilent) {
                 btn.disabled = false;
                 btn.innerHTML = origHtml;
             }

@@ -3,6 +3,7 @@ const { fdb } = require('../netlify/functions/_admin-init');
 const golootloValidate = require('../netlify/functions/golootlo-validate');
 const golootloRedeem = require('../netlify/functions/golootlo-redeem');
 const validateCoupon = require('../netlify/functions/validate-coupon');
+const { getGolootloConfig } = require('../netlify/functions/_golootlo-helper');
 
 const results = {
     envChecks: [],
@@ -30,6 +31,7 @@ async function runSuite() {
 
     // --- 1. ENVIRONMENT CONFIGURATION CHECKS ---
     console.log('--- 1. ENVIRONMENT CONFIGURATION CHECKS ---');
+    const config = getGolootloConfig();
     const u = process.env.GOLOOTLO_USERNAME;
     const p = process.env.GOLOOTLO_PASSWORD;
     const m = process.env.GOLOOTLO_MERCHANT_CODE;
@@ -40,7 +42,7 @@ async function runSuite() {
     recordTest('envChecks', 'GOLOOTLO_USERNAME is set', !!u && u === 'kph@stay', `Value: ${u || 'missing'}`);
     recordTest('envChecks', 'GOLOOTLO_PASSWORD is set', !!p, `Length: ${p ? p.length : 0} chars`);
     recordTest('envChecks', 'GOLOOTLO_MERCHANT_CODE is set', !!m && m === '1268', `Value: ${m || 'missing'}`);
-    recordTest('envChecks', 'GOLOOTLO_DEFAULT_COUPON is set', !!c && c === 'KPHSTAY1', `Value: ${c || 'missing'}`);
+    recordTest('envChecks', 'GOLOOTLO_DEFAULT_COUPON is set to KPHSTAY', !!c && c === 'KPHSTAY', `Value: ${c || 'missing'}`);
     recordTest('envChecks', 'GOLOOTLO_DISCOUNT_PERCENT is set', !!pct && pct === '15', `Value: ${pct || 'missing'}%`);
     recordTest('envChecks', 'GOLOOTLO_API_BASE_URL is set', !!url, `Value: ${url || 'missing'}`);
 
@@ -48,27 +50,19 @@ async function runSuite() {
 
     // --- 2. DIRECT GOLOOTLO STAGING API CONNECTIVITY ---
     console.log('--- 2. DIRECT GOLOOTLO STAGING API CONNECTIVITY ---');
-    const username = u || 'kph@stay';
-    const password = p || '5@qeRoA9Tx6PIw2)';
-    const merchantCode = m || '1268';
-    const baseUrl = (url || 'https://api-toolkit-staging.golootlo.pk').replace(/\/$/, '');
-    const authStr = `${username}:${password}`;
-    const authB64 = Buffer.from(authStr, 'utf8').toString('base64');
-
-    const validateApiUrl = `${baseUrl}/api/merchants/${merchantCode}/coupons/validate`;
-    console.log(`Pinging: ${validateApiUrl}`);
+    console.log(`Pinging: ${config.validateUrl}`);
 
     try {
         const startTime = Date.now();
-        const apiRes = await fetch(validateApiUrl, {
+        const apiRes = await fetch(config.validateUrl, {
             method: 'POST',
             headers: {
-                'Authorization': `Basic ${authB64}`,
+                'Authorization': config.authHeader,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
                 ChannelId: '01',
-                GolootloCouponCode: 'KPHSTAY1'
+                GolootloCouponCode: 'KPHSTAY'
             }),
             signal: AbortSignal.timeout(10000)
         });
@@ -78,7 +72,7 @@ async function runSuite() {
         try { parsed = JSON.parse(rawText); } catch(e) {}
 
         recordTest('directApiChecks', 'Golootlo Staging API HTTP Reachability', apiRes.status < 500, `HTTP Status: ${apiRes.status} (${elapsed}ms)`);
-        recordTest('directApiChecks', 'Golootlo API Auth / Response Format', !!parsed, `Response: ${JSON.stringify(parsed || rawText).substring(0, 120)}...`);
+        recordTest('directApiChecks', 'Golootlo API Auth / Response Format', !!parsed && parsed.Error === false, `Response: ${JSON.stringify(parsed || rawText).substring(0, 120)}...`);
     } catch (apiErr) {
         recordTest('directApiChecks', 'Golootlo Staging API HTTP Reachability', false, `Connection Error: ${apiErr.message}`);
     }
@@ -88,18 +82,18 @@ async function runSuite() {
     // --- 3. SERVERLESS FUNCTION HANDLERS ---
     console.log('--- 3. SERVERLESS FUNCTION HANDLERS ---');
 
-    // Test 3.1: golootlo-validate handler with default partner code
+    // Test 3.1: golootlo-validate handler with default partner code KPHSTAY
     try {
         const event = {
             httpMethod: 'POST',
             headers: { 'origin': 'http://localhost:3000', 'client-ip': '127.0.0.1' },
-            body: JSON.stringify({ code: 'KPHSTAY1' })
+            body: JSON.stringify({ code: 'KPHSTAY' })
         };
         const res = await golootloValidate.handler(event, {});
         const body = JSON.parse(res.body);
-        recordTest('functionChecks', 'golootlo-validate handler with KPHSTAY1', res.statusCode === 200 && body.valid === true && body.discountPercentage === 15, `Status: ${res.statusCode}, Valid: ${body.valid}, Discount: ${body.discountPercentage}%, Msg: ${body.message}`);
+        recordTest('functionChecks', 'golootlo-validate handler with KPHSTAY', res.statusCode === 200 && body.valid === true && body.discountPercentage === 15, `Status: ${res.statusCode}, Valid: ${body.valid}, Discount: ${body.discountPercentage}%, Msg: ${body.message}`);
     } catch (e) {
-        recordTest('functionChecks', 'golootlo-validate handler with KPHSTAY1', false, e.message);
+        recordTest('functionChecks', 'golootlo-validate handler with KPHSTAY', false, e.message);
     }
 
     // Test 3.2: golootlo-validate schema error on too short code
@@ -116,12 +110,12 @@ async function runSuite() {
         recordTest('functionChecks', 'golootlo-validate input schema rejection (<5 chars)', false, e.message);
     }
 
-    // Test 3.3: validate-coupon handler with KPHSTAY1 fallback routing
+    // Test 3.3: validate-coupon universal handler resolves Golootlo code KPHSTAY
     try {
         const event = {
             httpMethod: 'POST',
             headers: { 'origin': 'http://localhost:3000', 'client-ip': '127.0.0.1' },
-            body: JSON.stringify({ code: 'KPHSTAY1' })
+            body: JSON.stringify({ code: 'KPHSTAY' })
         };
         const res = await validateCoupon.handler(event, {});
         const body = JSON.parse(res.body);
@@ -137,7 +131,7 @@ async function runSuite() {
             httpMethod: 'POST',
             headers: { 'origin': 'http://localhost:3000', 'client-ip': '127.0.0.1' },
             body: JSON.stringify({
-                code: 'KPHSTAY1',
+                code: 'KPHSTAY',
                 bookingId: testBookingId,
                 guestName: 'Golootlo Test Guest',
                 guestMobile: '03001234567',
@@ -153,21 +147,43 @@ async function runSuite() {
         recordTest('functionChecks', 'golootlo-redeem handler processes redemption', false, e.message);
     }
 
+    // Test 3.5: golootlo-redeem idempotency test (second call for same booking)
+    try {
+        const event = {
+            httpMethod: 'POST',
+            headers: { 'origin': 'http://localhost:3000', 'client-ip': '127.0.0.1' },
+            body: JSON.stringify({
+                code: 'KPHSTAY',
+                bookingId: testBookingId,
+                guestName: 'Golootlo Test Guest',
+                guestMobile: '03001234567',
+                guestEmail: 'test@kphstay.com',
+                totalAmount: 25000,
+                discountedAmount: 3750
+            })
+        };
+        const res = await golootloRedeem.handler(event, {});
+        const body = JSON.parse(res.body);
+        recordTest('functionChecks', 'golootlo-redeem idempotency check', res.statusCode === 200 && body.success === true, `Status: ${res.statusCode}, Message: ${body.message}`);
+    } catch (e) {
+        recordTest('functionChecks', 'golootlo-redeem idempotency check', false, e.message);
+    }
+
     console.log('');
 
     // --- 4. FIRESTORE DATABASE AUDIT ---
     console.log('--- 4. FIRESTORE DATABASE AUDIT ---');
     if (fdb) {
         try {
-            const snap = await fdb.collection('golootlo_redemptions').doc(`${testBookingId}_KPHSTAY1`).get();
+            const snap = await fdb.collection('golootlo_redemptions').doc(`${testBookingId}_KPHSTAY`).get();
             const exists = snap.exists;
             const data = exists ? snap.data() : null;
             recordTest('dbChecks', 'Firestore Audit Log written in golootlo_redemptions', exists && data.bookingId === testBookingId, exists ? `Doc ID: ${snap.id}, Guest: ${data.guestName}, Amount: PKR ${data.totalAmount}, Discount: PKR ${data.discountedAmount}` : 'Document not found');
 
             // Cleanup test document
             if (exists) {
-                await fdb.collection('golootlo_redemptions').doc(`${testBookingId}_KPHSTAY1`).delete();
-                console.log(`Cleaned test record: ${testBookingId}_KPHSTAY1`);
+                await fdb.collection('golootlo_redemptions').doc(`${testBookingId}_KPHSTAY`).delete();
+                console.log(`Cleaned test record: ${testBookingId}_KPHSTAY`);
             }
         } catch (dbErr) {
             recordTest('dbChecks', 'Firestore Audit Log written in golootlo_redemptions', false, dbErr.message);

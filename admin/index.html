@@ -1840,6 +1840,97 @@
                     </button>
                 </div>
 
+                <!-- PayFast Payment Gateway Settings -->
+                <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md relative overflow-hidden mb-8">
+                    <div class="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-[#D4AF37]/10 to-transparent rounded-bl-full pointer-events-none"></div>
+                    
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5 mb-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-2xl bg-[#0B0F19] text-[#D4AF37] flex items-center justify-center text-xl shrink-0 shadow-sm border border-[#D4AF37]/30">
+                                <i class="fa-solid fa-credit-card"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold outfit text-slate-900 flex items-center gap-2 flex-wrap">
+                                    <span>PayFast Payment Gateway</span>
+                                    <span id="payfast-status-pill" class="text-[9px] bg-emerald-100 text-emerald-800 font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">ACTIVE</span>
+                                    <span id="payfast-env-pill" class="text-[9px] bg-amber-100 text-amber-800 font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">SANDBOX MODE</span>
+                                </h3>
+                                <p class="text-xs text-slate-400 font-light">Configure PayFast Pakistan credentials, switch between Sandbox (Testing) and Production (Live), and test gateway API connectivity.</p>
+                            </div>
+                        </div>
+
+                        <!-- Status Toggle Switch -->
+                        <div class="flex items-center gap-3 self-start sm:self-auto">
+                            <span class="text-xs font-bold text-slate-700" id="payfast-toggle-label">Gateway ON</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="payfast-enabled-toggle" onchange="AdminSettingsPaymentModule.toggleGateway(this.checked)" class="sr-only peer" checked>
+                                <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#D4AF37]"></div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <form id="payfast-settings-form" onsubmit="AdminSettingsPaymentModule.saveSettings(event)" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            
+                            <!-- Environment Mode -->
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-2">Environment Mode</label>
+                                <select id="payfast-env-select" onchange="AdminSettingsPaymentModule.onEnvChange(this.value)" class="w-full border border-slate-200 rounded-2xl px-4 py-3 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37] font-semibold">
+                                    <option value="sandbox">🧪 Sandbox / UAT (Testing Mode)</option>
+                                    <option value="production">🚀 Production (Live Payments)</option>
+                                </select>
+                                <span class="text-[10px] text-slate-400 mt-1 block">In Sandbox mode, simulated test transactions are executed without debiting live accounts.</span>
+                            </div>
+
+                            <!-- Currency -->
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-2">Transaction Currency</label>
+                                <input type="text" id="payfast-currency" value="PKR" readonly class="w-full border border-slate-200 rounded-2xl px-4 py-3 text-xs bg-slate-100 text-slate-500 outline-none font-bold cursor-not-allowed">
+                            </div>
+
+                            <!-- Merchant ID -->
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-2">Merchant ID</label>
+                                <input type="text" id="payfast-merchant-id" placeholder="14833" required class="w-full border border-slate-200 rounded-2xl px-4 py-3 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37] font-mono font-bold">
+                            </div>
+
+                            <!-- Secured Key -->
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-2">Secured Key</label>
+                                <div class="relative">
+                                    <input type="password" id="payfast-secured-key" placeholder="rPcy4T7GQkSCFsHBLdn26s" required class="w-full border border-slate-200 rounded-2xl pl-4 pr-10 py-3 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37] font-mono">
+                                    <button type="button" onclick="AdminSettingsPaymentModule.toggleKeyVisibility()" class="absolute right-3 top-3 text-slate-400 hover:text-slate-700">
+                                        <i class="fa-solid fa-eye" id="payfast-key-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Sandbox Base URL -->
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-2">Sandbox Base URL</label>
+                                <input type="url" id="payfast-sandbox-url" value="https://ipguat.apps.net.pk/Ecommerce/api" class="w-full border border-slate-200 rounded-2xl px-4 py-3 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37] font-mono text-[11px]">
+                            </div>
+
+                            <!-- Production Base URL -->
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-2">Production Base URL</label>
+                                <input type="url" id="payfast-prod-url" value="https://ipg.apps.net.pk/Ecommerce/api" class="w-full border border-slate-200 rounded-2xl px-4 py-3 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37] font-mono text-[11px]">
+                            </div>
+                        </div>
+
+                        <!-- Buttons & Test Connection Bar -->
+                        <div class="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+                            <button type="button" onclick="AdminSettingsPaymentModule.testConnection()" id="payfast-test-btn" class="w-full sm:w-auto border-2 border-slate-200 hover:border-[#D4AF37] hover:bg-amber-50/40 text-slate-800 font-bold px-6 py-3 rounded-2xl text-xs transition-all flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-plug text-[#D4AF37]"></i> Test PayFast Gateway Connection
+                            </button>
+
+                            <button type="submit" id="payfast-save-btn" class="w-full sm:w-auto bg-gradient-to-r from-[#D4AF37] to-amber-500 hover:from-amber-500 hover:to-amber-600 text-slate-950 font-black px-8 py-3 rounded-2xl text-xs uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-floppy-disk text-xs"></i> Save Payment Settings
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     <!-- Categories -->
                     <div class="bg-white rounded-3xl border border-slate-100 p-6 shadow-md">
@@ -2027,7 +2118,7 @@
                             <div class="sm:col-span-4 flex items-center justify-between p-2.5 bg-slate-50 rounded-xl border border-slate-200/80">
                                 <div>
                                     <label for="promo-active-toggle" class="text-xs font-bold text-slate-800 cursor-pointer block">Status</label>
-                                    <span class="text-[10px] text-slate-400">Campaign ON</span>
+                                    <span id="promo-active-status-text" class="text-[10px] text-slate-400 font-semibold">Active (ON)</span>
                                 </div>
                                 <label class="relative inline-flex items-center cursor-pointer">
                                     <input type="checkbox" id="promo-active-toggle" onchange="AdminAnnouncementModule.onFieldChange('active', this.checked)" class="sr-only peer" checked>

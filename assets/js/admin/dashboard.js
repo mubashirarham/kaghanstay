@@ -331,6 +331,9 @@ window.switchTab = (tabName) => {
         window.AdminCouponsModule.init();
         window.AdminCouponsModule.render();
     }
+    if (tabName === 'settings' && window.AdminSettingsPaymentModule) {
+        window.AdminSettingsPaymentModule.render();
+    }
 
     const buttons = document.querySelectorAll('#sidebar-nav button');
     buttons.forEach(btn => {
