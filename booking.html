@@ -716,9 +716,10 @@
                                         <p class="text-[10px] text-slate-500 font-medium truncate">Download Golootlo app for exclusive booking discounts</p>
                                     </div>
                                 </div>
-                                <button type="button" id="golootlo-auto-apply-btn" onclick="applyGolootloDefaultCoupon()" class="bg-[#0B0F19] hover:bg-[#C5A059] text-white text-[11px] font-bold px-3 py-1.5 rounded-xl transition-all shadow-xs shrink-0 cursor-pointer">
-                                    Apply
-                                </button>
+                                <a href="https://play.google.com/store/apps/details?id=com.golootlo.golootlo" target="_blank" rel="noopener noreferrer" id="golootlo-get-app-btn" class="bg-[#0B0F19] hover:bg-[#C5A059] text-white text-[11px] font-bold px-3 py-1.5 rounded-xl transition-all shadow-xs shrink-0 inline-flex items-center gap-1.5 cursor-pointer" title="Download Golootlo app from Google Play Store">
+                                    <i class="fa-brands fa-google-play text-[#C5A059] text-xs"></i>
+                                    <span>Get App</span>
+                                </a>
                             </div>
                         </div>
                         
@@ -2245,7 +2246,6 @@
             const input = document.getElementById('coupon-code-input');
             const msg = document.getElementById('coupon-message');
             const btn = document.getElementById('coupon-apply-btn');
-            const golootloBtn = document.getElementById('golootlo-auto-apply-btn');
             if (!input || !msg) return;
             const code = input.value.trim().toUpperCase();
 
@@ -2253,13 +2253,11 @@
                 appliedCoupon = null;
                 calculatePrice();
                 msg.classList.add('hidden');
-                if (golootloBtn) { golootloBtn.innerText = 'Apply'; golootloBtn.className = 'bg-[#0B0F19] hover:bg-[#C5A059] text-white text-[11px] font-bold px-3 py-1.5 rounded-xl transition-all shadow-xs shrink-0 cursor-pointer'; }
                 return;
             }
 
             // Show loading state during fetch
             if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>'; }
-            if (golootloBtn && (code === 'KPHSTAY' || code.startsWith('GOL'))) { golootloBtn.disabled = true; golootloBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-xs"></i>'; }
 
             try {
                 // Route to Golootlo validation service if dedicated code, or validate-coupon (checks Firestore + Golootlo fallback)
@@ -2286,11 +2284,6 @@
                     
                     if (appliedCoupon.provider === 'golootlo' || data.code === 'KPHSTAY') {
                         msg.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i> Golootlo Deal applied! (<strong>${data.discountPercentage}% OFF</strong>)`;
-                        if (golootloBtn) {
-                            golootloBtn.disabled = false;
-                            golootloBtn.innerHTML = 'Applied ✓';
-                            golootloBtn.className = 'bg-emerald-600 text-white text-[11px] font-black px-3 py-1.5 rounded-xl shadow-xs shrink-0';
-                        }
                     } else {
                         msg.innerText = `Coupon ${data.code} applied! (${data.discountPercentage}% OFF)`;
                     }
@@ -2307,7 +2300,6 @@
                 msg.innerText = data.error || "Invalid or expired coupon code.";
                 msg.classList.remove('hidden', 'text-emerald-600');
                 msg.classList.add('text-rose-500', 'font-bold');
-                if (golootloBtn) { golootloBtn.disabled = false; golootloBtn.innerText = 'Apply'; }
                 calculatePrice();
             } catch (err) {
                 console.error("Coupon validation error:", err);
@@ -2315,7 +2307,6 @@
                 msg.innerText = "Error validating coupon.";
                 msg.classList.remove('hidden', 'text-emerald-600');
                 msg.classList.add('text-rose-500', 'font-bold');
-                if (golootloBtn) { golootloBtn.disabled = false; golootloBtn.innerText = 'Apply'; }
                 calculatePrice();
             } finally {
                 if (btn && btn.innerHTML !== 'Applied ✓') { btn.disabled = false; btn.innerHTML = 'Apply'; }
