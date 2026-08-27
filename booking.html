@@ -713,7 +713,7 @@
                                             <span>Golootlo Partner Deal</span>
                                             <span class="bg-emerald-100 text-emerald-800 text-[9px] px-1.5 py-0.2 rounded font-black tracking-wide">15% OFF</span>
                                         </div>
-                                        <p class="text-[10px] text-slate-500 font-medium truncate">Code <span class="font-bold text-slate-800 font-mono">KPHSTAY</span> or bank voucher</p>
+                                        <p class="text-[10px] text-slate-500 font-medium truncate">Download Golootlo app for exclusive booking discounts</p>
                                     </div>
                                 </div>
                                 <button type="button" id="golootlo-auto-apply-btn" onclick="applyGolootloDefaultCoupon()" class="bg-[#0B0F19] hover:bg-[#C5A059] text-white text-[11px] font-bold px-3 py-1.5 rounded-xl transition-all shadow-xs shrink-0 cursor-pointer">
@@ -728,7 +728,7 @@
                             <div class="flex gap-2">
                                 <div class="relative flex-grow">
                                     <i class="fa-solid fa-ticket absolute left-3 top-3 text-slate-400 text-xs"></i>
-                                    <input type="text" id="coupon-code-input" placeholder="Enter code (e.g. KPHSTAY)" class="w-full border border-slate-200 rounded-xl pl-8 pr-3 py-2 outline-none focus:border-[#C5A059] focus:ring-2 focus:ring-[#C5A059]/10 text-xs bg-slate-50 focus:bg-white text-slate-800 transition-all font-medium uppercase">
+                                    <input type="text" id="coupon-code-input" placeholder="Enter promo or voucher code" class="w-full border border-slate-200 rounded-xl pl-8 pr-3 py-2 outline-none focus:border-[#C5A059] focus:ring-2 focus:ring-[#C5A059]/10 text-xs bg-slate-50 focus:bg-white text-slate-800 transition-all font-medium uppercase">
                                 </div>
                                 <button id="coupon-apply-btn" onclick="validateAndApplyCoupon()" class="bg-[#0B0F19] text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-[#C5A059] transition-all shadow-md">Apply</button>
                             </div>
@@ -2048,7 +2048,7 @@
                     couponRow.classList.remove('hidden');
                     couponRow.classList.add('flex');
                     if (appliedCoupon.provider === 'golootlo' || appliedCoupon.code === 'KPHSTAY' || (appliedCoupon.code && appliedCoupon.code.startsWith('GOL'))) {
-                        couponLbl.innerHTML = `<span class="inline-flex items-center gap-1.5 text-emerald-700 font-extrabold"><i class="fa-solid fa-gift text-emerald-600"></i> Golootlo (${KaghanSafe.escapeHTML(appliedCoupon.code)})</span>`;
+                        couponLbl.innerHTML = `<span class="inline-flex items-center gap-1.5 text-emerald-700 font-extrabold"><i class="fa-solid fa-gift text-emerald-600"></i> Golootlo Discount</span>`;
                     } else {
                         couponLbl.innerText = `Coupon (${appliedCoupon.code})`;
                     }
@@ -2285,7 +2285,7 @@
                     };
                     
                     if (appliedCoupon.provider === 'golootlo' || data.code === 'KPHSTAY') {
-                        msg.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i> Golootlo Deal ${data.code} applied! (<strong>${data.discountPercentage}% OFF</strong>)`;
+                        msg.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i> Golootlo Deal applied! (<strong>${data.discountPercentage}% OFF</strong>)`;
                         if (golootloBtn) {
                             golootloBtn.disabled = false;
                             golootloBtn.innerHTML = 'Applied ✓';
@@ -2799,7 +2799,7 @@
                         </div>
                         ${discount > 0 ? `
                         <div style="display: flex; justify-content: space-between; padding: 3px 0; color: #16a34a; font-weight: 700;">
-                            <span>${isGolootlo ? `Golootlo Voucher (${couponName})` : `Discount (${couponName})`}:</span>
+                            <span>${isGolootlo ? `Golootlo Discount Voucher` : (couponName ? `Discount (${couponName})` : `Discount`)}:</span>
                             <span>-PKR ${formatPKRVal(discount)}</span>
                         </div>` : ''}
                         <div style="display: flex; justify-content: space-between; padding: 3px 0; color: #475569;">
