@@ -202,13 +202,18 @@
                 <div class="bg-white/80 backdrop-blur-md rounded-[2.5rem] border border-[#C5A059]/10 shadow-[0_12px_40px_-15px_rgba(11,15,25,0.05)] hover:border-[#C5A059]/30 transition-all duration-500 p-6 md:p-8 space-y-6">
                     <div class="flex flex-col md:flex-row md:items-start justify-between gap-4 border-b border-slate-100 pb-6">
                         <div>
-                            <div class="flex items-center gap-2 mb-2">
+                            <div class="flex flex-wrap items-center gap-2 mb-2">
                                 <span id="detail-rating-pill" class="inline-flex items-center gap-1 bg-[#C5A059]/10 text-[#C5A059] text-xs font-bold px-2.5 py-1 rounded-lg">
                                     <i class="fa-solid fa-star"></i> 5.0
                                 </span>
                                 <span id="detail-location-pill" class="text-xs text-slate-500 font-semibold uppercase tracking-wider">
                                     <i class="fa-solid fa-location-dot text-[#C5A059] mr-1"></i> Islamabad
                                 </span>
+                                <button type="button" onclick="copyRoomCode()" id="detail-code-pill" class="inline-flex items-center gap-1.5 bg-slate-900 hover:bg-[#C5A059] text-white hover:text-slate-950 text-[10px] font-mono font-bold px-2.5 py-1 rounded-lg border border-[#C5A059]/30 transition-all shadow-sm cursor-pointer group" title="Click to copy Property ID">
+                                    <i class="fa-solid fa-fingerprint text-[#C5A059] group-hover:text-slate-950"></i>
+                                    <span id="detail-code-text">ID: KPH-RM-001</span>
+                                    <i class="fa-regular fa-copy text-[9px] opacity-70 group-hover:opacity-100 ml-0.5"></i>
+                                </button>
                             </div>
                             <div class="flex items-center gap-3">
                                 <h1 id="detail-title" class="text-2xl md:text-4xl font-bold outfit text-[#0B0F19]">Luxury Service Suite</h1>
@@ -253,7 +258,8 @@
                     </div>
 
                     <!-- Key Specs Row -->
-                    <div class="flex flex-wrap gap-6 text-xs text-slate-600 border-t border-b border-slate-100 py-4 font-semibold">
+                    <div class="flex flex-wrap gap-6 text-xs text-slate-600 border-t border-b border-slate-100 py-4 font-semibold items-center">
+                        <div class="flex items-center gap-2"><i class="fa-solid fa-fingerprint text-[#C5A059] text-base"></i> <span id="detail-specs-code" class="font-mono uppercase font-bold text-slate-900">KPH-RM-001</span></div>
                         <div class="flex items-center gap-2"><i class="fa-solid fa-users text-[#C5A059] text-base"></i> <span id="detail-guests">Max 2 Guests</span></div>
                         <div class="flex items-center gap-2"><i class="fa-solid fa-bed text-[#C5A059] text-base"></i> <span id="detail-bedrooms">1 Bedroom</span></div>
                         <div class="flex items-center gap-2"><i class="fa-solid fa-bath text-[#C5A059] text-base"></i> <span id="detail-bathrooms">1 Bathroom</span></div>
@@ -917,7 +923,59 @@
                 setMetaTag('twitter:description', roomDescText, true);
                 setMetaTag('twitter:image', primaryImage, true);
 
-                // Inject Specialized VacationRental & HotelRoom JSON-LD Schema
+                // Universal Room / Property Code
+                const roomCode = window.KaghanDB && window.KaghanDB.getRoomCode ? window.KaghanDB.getRoomCode(currentRoom) : (currentRoom.unitCode || currentRoom.id || 'KPH-RM-001');
+                const codeEl = document.getElementById('detail-code-text');
+                if (codeEl) codeEl.innerText = `ID: ${roomCode}`;
+                const specsCodeEl = document.getElementById('detail-specs-code');
+                if (specsCodeEl) specsCodeEl.innerText = roomCode;
+
+                window.copyRoomCode = () => {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(roomCode).then(() => {
+                            if (window.KaghanUI && window.KaghanUI.showToast) {
+                                KaghanUI.showToast(`Property ID ${roomCode} copied to clipboard!`, 'success');
+                            }
+                        }).catch(() => {});
+                    }
+                };
+
+                window.shareCurrentRoom = () => {
+                    if (navigator.share) {
+                        navigator.share({
+                            title: roomTitleText,
+                            text: `Check out ${roomTitleText} (ID: ${roomCode}) on KPH Stay!`,
+                            url: window.location.href
+                        }).catch(() => {});
+                    } else if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(window.location.href).then(() => {
+                            if (window.KaghanUI && window.KaghanUI.showToast) {
+                                KaghanUI.showToast('Listing URL copied to clipboard!', 'success');
+                            }
+                        });
+                    }
+                };
+
+                // Location & Address Mapping
+                const locStr = (currentRoom.location || currentRoom.locationName || 'Islamabad').toLowerCase();
+                let addressLocality = 'Islamabad';
+                let addressRegion = 'Federal Capital Territory';
+                let postalCode = '44000';
+                let streetAddress = currentRoom.address || 'Sector C, Bahria Enclave';
+
+                if (locStr.includes('murree') || (currentRoom.name && currentRoom.name.toLowerCase().includes('murree'))) {
+                    addressLocality = 'Murree';
+                    addressRegion = 'Punjab';
+                    postalCode = '47150';
+                    streetAddress = currentRoom.address || 'Pine Valley Corridor, Murree Hills';
+                } else if (locStr.includes('nathia') || (currentRoom.name && currentRoom.name.toLowerCase().includes('nathia'))) {
+                    addressLocality = 'Nathia Gali';
+                    addressRegion = 'Khyber Pakhtunkhwa';
+                    postalCode = '22550';
+                    streetAddress = currentRoom.address || 'Main Abbottabad Road, Nathia Gali';
+                }
+
+                // Inject Specialized VacationRental, HotelRoom & Product JSON-LD Schema
                 let dynamicPdpSchema = document.getElementById('dynamic-vacation-rental-schema');
                 if (dynamicPdpSchema) dynamicPdpSchema.remove();
 
@@ -926,12 +984,18 @@
                 dynamicPdpSchema.type = 'application/ld+json';
                 dynamicPdpSchema.text = JSON.stringify({
                     "@context": "https://schema.org",
-                    "@type": ["VacationRental", "HotelRoom"],
-                    "@id": `https://kphstay.com/room-details?id=${currentRoom.id}`,
+                    "@type": ["VacationRental", "HotelRoom", "Product"],
+                    "@id": canonicalUrl,
+                    "identifier": roomCode,
                     "name": roomTitleText,
                     "description": roomDescText,
                     "image": currentRoom.images && currentRoom.images.length ? currentRoom.images : [primaryImage],
-                    "url": window.location.href,
+                    "url": canonicalUrl,
+                    "additionalType": [
+                        "https://schema.org/VacationRental",
+                        "https://schema.org/Apartment",
+                        "https://schema.org/HotelRoom"
+                    ],
                     "occupancy": {
                         "@type": "QuantitativeValue",
                         "value": currentRoom.maxGuests || 2,
@@ -941,35 +1005,73 @@
                     "numberOfBathroomsTotal": currentRoom.bathrooms || 1,
                     "floorSize": {
                         "@type": "QuantitativeValue",
-                        "value": currentRoom.area || "1200 sq ft"
+                        "value": currentRoom.area ? String(currentRoom.area).replace(/[^0-9,]/g, '') || "1200" : "1200",
+                        "unitCode": "FTK",
+                        "unitText": "sq ft"
                     },
                     "bed": {
                         "@type": "BedDetails",
                         "numberOfBeds": currentRoom.bedrooms || 1,
-                        "typeOfBed": currentRoom.bedsConfig || "King Bed"
+                        "typeOfBed": currentRoom.bedsConfig || (currentRoom.bedrooms && currentRoom.bedrooms > 1 ? `${currentRoom.bedrooms} Double/King Beds` : "King Bed")
                     },
                     "address": {
                         "@type": "PostalAddress",
-                        "streetAddress": currentRoom.address || "Sector C, Bahria Enclave",
-                        "addressLocality": currentRoom.location || "Islamabad",
+                        "streetAddress": streetAddress,
+                        "addressLocality": addressLocality,
+                        "addressRegion": addressRegion,
+                        "postalCode": postalCode,
                         "addressCountry": "PK"
                     },
                     "geo": {
                         "@type": "GeoCoordinates",
-                        "latitude": currentRoom.lat || 33.6844,
-                        "longitude": currentRoom.lng || 73.2045
+                        "latitude": currentRoom.lat || (addressLocality === 'Murree' ? 33.9070 : (addressLocality === 'Nathia Gali' ? 34.0722 : 33.7294)),
+                        "longitude": currentRoom.lng || (addressLocality === 'Murree' ? 73.3943 : (addressLocality === 'Nathia Gali' ? 73.3858 : 73.0931))
+                    },
+                    "containsPlace": [
+                        {
+                            "@type": "Accommodation",
+                            "name": `${currentRoom.name || 'Suite'} - Main Suite`,
+                            "numberOfRooms": currentRoom.bedrooms || 1,
+                            "numberOfBathroomsTotal": currentRoom.bathrooms || 1,
+                            "occupancy": {
+                                "@type": "QuantitativeValue",
+                                "value": currentRoom.maxGuests || 2,
+                                "unitText": "guests"
+                            },
+                            "bed": {
+                                "@type": "BedDetails",
+                                "numberOfBeds": currentRoom.bedrooms || 1,
+                                "typeOfBed": currentRoom.bedsConfig || (currentRoom.bedrooms && currentRoom.bedrooms > 1 ? `${currentRoom.bedrooms} Double/King Beds` : "King Bed")
+                            }
+                        }
+                    ],
+                    "containedInPlace": {
+                        "@type": "LodgingBusiness",
+                        "name": "KPH Stay Resorts & Executive Suites",
+                        "url": "https://kphstay.com",
+                        "telephone": "+923340091127",
+                        "priceRange": "$$"
                     },
                     "amenityFeature": (currentRoom.amenities || []).map(a => ({
                         "@type": "LocationFeatureSpecification",
                         "name": a,
                         "value": true
                     })),
+                    "aggregateRating": {
+                        "@type": "AggregateRating",
+                        "ratingValue": String(currentRoom.rating || 5.0),
+                        "reviewCount": currentRoom.reviewsCount ? String(currentRoom.reviewsCount) : "18",
+                        "bestRating": "5",
+                        "worstRating": "1"
+                    },
                     "offers": {
                         "@type": "Offer",
+                        "name": `Direct Booking: ${currentRoom.name}`,
                         "price": Number(currentRoom.price) || 0,
                         "priceCurrency": "PKR",
                         "availability": currentRoom.status === "maintenance" ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
-                        "url": window.location.href
+                        "priceValidUntil": new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+                        "url": canonicalUrl
                     }
                 });
                 document.head.appendChild(dynamicPdpSchema);

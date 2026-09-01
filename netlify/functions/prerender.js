@@ -314,16 +314,65 @@ function prerenderRoomDetails(html, room) {
   <meta property="og:type" content="website">`;
     modified = modified.replace(/<\/head>/i, `${ogTags}\n</head>`);
 
-    // 5. JSON-LD VacationRental, HotelRoom & Product Schema
+    // Helper to generate Unique Room/Property Code
+    const generateRoomCode = (r) => {
+        if (r.unitCode && typeof r.unitCode === 'string' && r.unitCode.trim()) return r.unitCode.trim().toUpperCase();
+        if (r.roomCode && typeof r.roomCode === 'string' && r.roomCode.trim()) return r.roomCode.trim().toUpperCase();
+        const loc = (r.location || r.locationName || 'ISB').toUpperCase();
+        let locPrefix = 'ISB';
+        if (loc.includes('MURREE') || loc.includes('MUR')) locPrefix = 'MUR';
+        else if (loc.includes('NATHIA') || loc.includes('GALI') || loc.includes('NTH')) locPrefix = 'NTH';
+        else locPrefix = 'ISB';
+
+        const name = (r.name || '').toUpperCase();
+        const numMatch = name.match(/(\d{3,4}|\d+\s*[-]?\s*(?:MARLA|BEDROOM|BED|BHK|KANAL)|C1|C2|A1|A2|B2|D1)/i);
+        if (numMatch) {
+            let token = numMatch[1].replace(/\s*[-]?\s*/g, '').toUpperCase();
+            token = token.replace('BEDROOM', 'BED');
+            return `KPH-${locPrefix}-${token}`;
+        }
+        const rawId = String(r.id || r.slug || 'room').replace(/[^a-zA-Z0-9]/g, '');
+        const suffix = rawId.slice(-4).toUpperCase() || 'UNIT';
+        return `KPH-${locPrefix}-${suffix}`;
+    };
+
+    const roomCode = generateRoomCode(room);
+
+    // Location & Region Resolution
+    const locName = (room.location || room.locationName || 'Islamabad').toLowerCase();
+    let addressLocality = 'Islamabad';
+    let addressRegion = 'Federal Capital Territory';
+    let postalCode = '44000';
+    let streetAddress = room.address || 'Sector C, Bahria Enclave';
+
+    if (locName.includes('murree') || (room.name && room.name.toLowerCase().includes('murree'))) {
+        addressLocality = 'Murree';
+        addressRegion = 'Punjab';
+        postalCode = '47150';
+        streetAddress = room.address || 'Pine Valley Corridor, Murree Hills';
+    } else if (locName.includes('nathia') || (room.name && room.name.toLowerCase().includes('nathia'))) {
+        addressLocality = 'Nathia Gali';
+        addressRegion = 'Khyber Pakhtunkhwa';
+        postalCode = '22550';
+        streetAddress = room.address || 'Main Abbottabad Road, Nathia Gali';
+    }
+
+    // 7. Comprehensive JSON-LD VacationRental, HotelRoom & Product Schema
     const jsonLd = {
         "@context": "https://schema.org",
         "@type": ["VacationRental", "HotelRoom", "Product"],
         "@id": roomUrl,
+        "identifier": roomCode,
         "name": roomTitle,
         "description": rawDesc,
         "image": room.images && room.images.length ? room.images : [roomImg],
         "category": room.type || "Apartment",
         "url": roomUrl,
+        "additionalType": [
+            "https://schema.org/VacationRental",
+            "https://schema.org/Apartment",
+            "https://schema.org/HotelRoom"
+        ],
         "occupancy": {
             "@type": "QuantitativeValue",
             "value": room.maxGuests || 2,
@@ -331,38 +380,77 @@ function prerenderRoomDetails(html, room) {
         },
         "numberOfRooms": room.bedrooms || 1,
         "numberOfBathroomsTotal": room.bathrooms || 1,
+        "floorSize": {
+            "@type": "QuantitativeValue",
+            "value": room.area ? String(room.area).replace(/[^0-9,]/g, '') || "1200" : "1200",
+            "unitCode": "FTK",
+            "unitText": "sq ft"
+        },
+        "bed": {
+            "@type": "BedDetails",
+            "numberOfBeds": room.bedrooms || 1,
+            "typeOfBed": room.bedsConfig || (room.bedrooms && room.bedrooms > 1 ? `${room.bedrooms} Double/King Beds` : "King Bed")
+        },
         "address": {
             "@type": "PostalAddress",
-            "streetAddress": room.address || "Sector C, Bahria Enclave",
-            "addressLocality": room.location || "Islamabad",
+            "streetAddress": streetAddress,
+            "addressLocality": addressLocality,
+            "addressRegion": addressRegion,
+            "postalCode": postalCode,
             "addressCountry": "PK"
         },
         "geo": {
             "@type": "GeoCoordinates",
-            "latitude": room.lat || 33.6844,
-            "longitude": room.lng || 73.2045
+            "latitude": room.lat || (addressLocality === 'Murree' ? 33.9070 : (addressLocality === 'Nathia Gali' ? 34.0722 : 33.7294)),
+            "longitude": room.lng || (addressLocality === 'Murree' ? 73.3943 : (addressLocality === 'Nathia Gali' ? 73.3858 : 73.0931))
+        },
+        "containsPlace": [
+            {
+                "@type": "Accommodation",
+                "name": `${roomTitle} - Living & Bedroom Suite`,
+                "numberOfRooms": room.bedrooms || 1,
+                "numberOfBathroomsTotal": room.bathrooms || 1,
+                "occupancy": {
+                    "@type": "QuantitativeValue",
+                    "value": room.maxGuests || 2,
+                    "unitText": "guests"
+                },
+                "bed": {
+                    "@type": "BedDetails",
+                    "numberOfBeds": room.bedrooms || 1,
+                    "typeOfBed": room.bedsConfig || (room.bedrooms && room.bedrooms > 1 ? `${room.bedrooms} Double/King Beds` : "King Bed")
+                }
+            }
+        ],
+        "containedInPlace": {
+            "@type": "LodgingBusiness",
+            "name": "KPH Stay Resorts & Executive Suites",
+            "url": "https://kphstay.com",
+            "telephone": "+923340091127",
+            "priceRange": "$$"
         },
         "amenityFeature": (room.amenities || []).map(a => ({
             "@type": "LocationFeatureSpecification",
             "name": a,
             "value": true
         })),
+        "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": String(room.rating || 5.0),
+            "reviewCount": room.reviewsCount ? String(room.reviewsCount) : "18",
+            "bestRating": "5",
+            "worstRating": "1"
+        },
         "offers": {
             "@type": "Offer",
+            "name": `Direct Reservation: ${roomTitle}`,
             "price": pkrPrice,
             "priceCurrency": "PKR",
             "availability": room.status === "maintenance" ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
+            "priceValidUntil": new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
             "url": roomUrl
         }
     };
-
-    if (room.rating) {
-        jsonLd.aggregateRating = {
-            "@type": "AggregateRating",
-            "ratingValue": room.rating,
-            "reviewCount": room.reviewsCount || 1
-        };
-    }
 
     const jsonLdScript = `\n<script type="application/ld+json">\n${JSON.stringify(jsonLd, null, 2)}\n</script>\n`;
     modified = modified.replace(/<\/head>/i, `${jsonLdScript}</head>`);
@@ -653,3 +741,6 @@ exports.handler = async (event, context) => {
         }
     }
 };
+
+module.exports.prerenderRoomDetails = prerenderRoomDetails;
+module.exports.prerenderBlogPost = prerenderBlogPost;

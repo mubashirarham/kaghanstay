@@ -2756,6 +2756,16 @@
                             <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Room Name</label>
                             <input type="text" id="edit-room-name" required class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
                         </div>
+
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Unique Property ID / Unit Code</label>
+                            <div class="flex gap-2">
+                                <input type="text" id="edit-room-unit-code" placeholder="e.g. KPH-MUR-6M" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 font-mono font-bold uppercase outline-none focus:border-[#D4AF37]">
+                                <button type="button" onclick="window.autoGenerateUnitCode('edit')" class="px-3 py-2 bg-slate-100 hover:bg-[#D4AF37] hover:text-slate-900 text-slate-700 text-[10px] font-bold rounded-xl transition-all shrink-0" title="Auto-Generate Unit Code">
+                                    <i class="fa-solid fa-wand-magic-sparkles"></i> Auto
+                                </button>
+                            </div>
+                        </div>
                         
                         <div class="grid grid-cols-2 gap-4">
                             <div>
@@ -3045,6 +3055,16 @@
                         <div>
                             <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Room Name</label>
                             <input type="text" id="add-room-name" required placeholder="e.g. Alpine Suite" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                        </div>
+
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Unique Property ID / Unit Code (Optional)</label>
+                            <div class="flex gap-2">
+                                <input type="text" id="add-room-unit-code" placeholder="e.g. KPH-MUR-6M (Leave blank to auto-generate)" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 font-mono font-bold uppercase outline-none focus:border-[#D4AF37]">
+                                <button type="button" onclick="window.autoGenerateUnitCode('add')" class="px-3 py-2 bg-slate-100 hover:bg-[#D4AF37] hover:text-slate-900 text-slate-700 text-[10px] font-bold rounded-xl transition-all shrink-0" title="Auto-Generate Unit Code">
+                                    <i class="fa-solid fa-wand-magic-sparkles"></i> Auto
+                                </button>
+                            </div>
                         </div>
                         
                         <div class="grid grid-cols-2 gap-4">

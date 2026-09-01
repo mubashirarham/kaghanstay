@@ -660,8 +660,9 @@
                         </div>
                         ${room.images && room.images.length > 1 ? `<div class="absolute bottom-3 right-3 bg-black/60 backdrop-blur-sm text-white text-[9px] px-2 py-1 rounded-lg font-bold z-10"><i class="fa-solid fa-images"></i> +${room.images.length - 1}</div>` : ''}
                     </div>
-                    <div class="flex justify-between items-start mb-2">
+                    <div class="flex justify-between items-start mb-2 gap-2">
                         <h4 class="font-bold text-[#0F172A] outfit text-sm leading-tight">${KaghanSafe.escapeHTML(room.name)}</h4>
+                        <span class="bg-slate-900 text-[#D4AF37] font-mono text-[9px] font-bold px-2 py-0.5 rounded-md shrink-0 border border-[#D4AF37]/30">${KaghanSafe.escapeHTML(room.unitCode || (window.KaghanDB && window.KaghanDB.getRoomCode ? window.KaghanDB.getRoomCode(room) : 'ID'))}</span>
                     </div>
                     <div class="text-[10px] text-[#D4AF37] font-bold mb-3 flex items-center gap-1">
                         <i class="fa-solid fa-location-dot text-[9px]"></i>
@@ -922,6 +923,9 @@
 
         document.getElementById('edit-room-name-lbl').innerText = room.name;
         document.getElementById('edit-room-name').value = room.name;
+        if (document.getElementById('edit-room-unit-code')) {
+            document.getElementById('edit-room-unit-code').value = room.unitCode || (window.KaghanDB && window.KaghanDB.getRoomCode ? window.KaghanDB.getRoomCode(room) : '');
+        }
         
         setTimeout(() => {
             document.getElementById('edit-room-type').value = room.type;
@@ -1073,10 +1077,12 @@
                 const seoIndex = document.getElementById('edit-room-seo-index')?.value || 'index, follow';
                 const isPinned = document.getElementById('edit-room-pinned')?.checked || false;
 
-                const airbnbIcalUrl = document.getElementById('edit-room-airbnb-ical')?.value.trim() || '';
+                const unitCodeRaw = document.getElementById('edit-room-unit-code')?.value.trim().toUpperCase() || '';
+                const unitCode = unitCodeRaw || (window.KaghanDB && window.KaghanDB.getRoomCode ? window.KaghanDB.getRoomCode({ name, location, type, id: activeEditRoomId }) : '');
 
                 const updatedData = {
                     name,
+                    unitCode,
                     type,
                     price,
                     originalPrice: isNaN(originalPrice) ? null : originalPrice,
@@ -1281,9 +1287,13 @@
 
                 const airbnbIcalUrl = document.getElementById('add-room-airbnb-ical')?.value.trim() || '';
 
+                const unitCodeRaw = document.getElementById('add-room-unit-code')?.value.trim().toUpperCase() || '';
+                const unitCode = unitCodeRaw || (window.KaghanDB && window.KaghanDB.getRoomCode ? window.KaghanDB.getRoomCode({ name, location, type, id: 'temp' }) : '');
+
                 const newRoom = {
                     id: 'room-' + type + '-' + Date.now(),
                     name,
+                    unitCode,
                     type,
                     price,
                     originalPrice: isNaN(originalPrice) ? null : originalPrice,
@@ -1318,7 +1328,7 @@
                 };
 
                 await KaghanDB.addRoom(newRoom);
-                KaghanUI.showToast(`Suite "${name}" added to resort inventory!`, 'success');
+                KaghanUI.showToast(`Suite "${name}" (ID: ${unitCode}) added to resort inventory!`, 'success');
                 
                 if (window.AdminDashboardModule) {
                     await window.AdminDashboardModule.refreshAll();
@@ -1330,6 +1340,22 @@
             }
         });
     }
+
+    window.autoGenerateUnitCode = (modalType = 'edit') => {
+        const name = document.getElementById(`${modalType}-room-name`)?.value || '';
+        const location = document.getElementById(`${modalType}-room-location`)?.value || 'Islamabad';
+        const type = document.getElementById(`${modalType}-room-type`)?.value || 'suite';
+        const generated = window.KaghanDB && window.KaghanDB.getRoomCode 
+            ? window.KaghanDB.getRoomCode({ name, location, type, id: 'temp' })
+            : 'KPH-RM-001';
+        const input = document.getElementById(`${modalType}-room-unit-code`);
+        if (input) {
+            input.value = generated;
+            if (window.KaghanUI && window.KaghanUI.showToast) {
+                KaghanUI.showToast(`Generated Property ID: ${generated}`, 'success');
+            }
+        }
+    };
 
     window.deleteRoomRecord = async (roomId) => {
         if (!confirm(`Are you sure you want to permanently delete room/suite style "${roomId}"?`)) return;

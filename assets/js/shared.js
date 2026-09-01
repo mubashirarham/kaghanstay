@@ -1004,6 +1004,31 @@ const db = {
         if (room.slug && room.slug.trim()) return room.slug.trim().toLowerCase();
         return db.generateSlug(room.name || room.title || room.id || '');
     },
+    getRoomCode: (room) => {
+        if (!room) return 'KPH-RM-001';
+        if (room.unitCode && typeof room.unitCode === 'string' && room.unitCode.trim()) {
+            return room.unitCode.trim().toUpperCase();
+        }
+        if (room.roomCode && typeof room.roomCode === 'string' && room.roomCode.trim()) {
+            return room.roomCode.trim().toUpperCase();
+        }
+        const loc = (room.location || room.locationName || 'ISB').toUpperCase();
+        let locPrefix = 'ISB';
+        if (loc.includes('MURREE') || loc.includes('MUR')) locPrefix = 'MUR';
+        else if (loc.includes('NATHIA') || loc.includes('GALI') || loc.includes('NTH')) locPrefix = 'NTH';
+        else if (loc.includes('ISLAMABAD') || loc.includes('BAHRIA') || loc.includes('ISB')) locPrefix = 'ISB';
+
+        const name = (room.name || '').toUpperCase();
+        const numMatch = name.match(/(\d{3,4}|\d+\s*[-]?\s*(?:MARLA|BEDROOM|BED|BHK|KANAL)|C1|C2|A1|A2|B2|D1)/i);
+        if (numMatch) {
+            let token = numMatch[1].replace(/\s*[-]?\s*/g, '').toUpperCase();
+            token = token.replace('BEDROOM', 'BED');
+            return `KPH-${locPrefix}-${token}`;
+        }
+        const rawId = String(room.id || room.slug || 'room').replace(/[^a-zA-Z0-9]/g, '');
+        const suffix = rawId.slice(-4).toUpperCase() || 'UNIT';
+        return `KPH-${locPrefix}-${suffix}`;
+    },
     isLocalEnv: () => {
         try {
             const host = window.location.hostname || '';
