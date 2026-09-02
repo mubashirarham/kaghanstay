@@ -8,11 +8,11 @@ const { fdb } = require('./_admin-init');
 
 function getGolootloConfig() {
     const username = process.env.GOLOOTLO_USERNAME || 'kph@stay';
-    const password = process.env.GOLOOTLO_PASSWORD || '5@qeRoA9Tx6PIw2)';
+    const password = process.env.GOLOOTLO_PASSWORD || 'Ar&hWMYK540JA999';
     const merchantCode = process.env.GOLOOTLO_MERCHANT_CODE || '1268';
-    const baseUrl = (process.env.GOLOOTLO_API_BASE_URL || 'https://api-toolkit-staging.golootlo.pk').replace(/\/+$/, '');
+    const baseUrl = (process.env.GOLOOTLO_API_BASE_URL || 'https://api-toolkit.golootlo.pk').replace(/\/+$/, '');
     const channelId = process.env.GOLOOTLO_CHANNEL_ID || '01';
-    const defaultCoupon = (process.env.GOLOOTLO_DEFAULT_COUPON || 'KPHSTAY').toUpperCase();
+    const defaultCoupon = (process.env.GOLOOTLO_DEFAULT_COUPON || 'KPHSGL12').toUpperCase();
     const discountPercentage = parseInt(process.env.GOLOOTLO_DISCOUNT_PERCENT || '15', 10);
 
     const authStr = `${username}:${password}`;

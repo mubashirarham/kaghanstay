@@ -4220,7 +4220,49 @@ window.KaghanSchema = {
                             "price": price,
                             "priceValidUntil": `${new Date().getFullYear() + 1}-12-31`,
                             "itemCondition": prodCfg.itemCondition || "https://schema.org/NewCondition",
-                            "availability": room.status === 'maintenance' ? "https://schema.org/OutOfStock" : "https://schema.org/InStock"
+                            "availability": room.status === 'maintenance' ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
+                            "seller": {
+                                "@type": "LodgingBusiness",
+                                "name": "KPH Stay Resorts & Executive Suites",
+                                "url": "https://kphstay.com"
+                            },
+                            "hasMerchantReturnPolicy": {
+                                "@type": "MerchantReturnPolicy",
+                                "applicableCountry": "PK",
+                                "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+                                "merchantReturnDays": 7,
+                                "returnMethod": "https://schema.org/ReturnOnline",
+                                "returnFees": "https://schema.org/FreeReturn",
+                                "refundType": "https://schema.org/FullRefund",
+                                "url": "https://kphstay.com/refund"
+                            },
+                            "shippingDetails": {
+                                "@type": "OfferShippingDetails",
+                                "shippingRate": {
+                                    "@type": "MonetaryAmount",
+                                    "value": "0",
+                                    "currency": "PKR"
+                                },
+                                "shippingDestination": {
+                                    "@type": "DefinedRegion",
+                                    "addressCountry": "PK"
+                                },
+                                "deliveryTime": {
+                                    "@type": "ShippingDeliveryTime",
+                                    "handlingTime": {
+                                        "@type": "QuantitativeValue",
+                                        "minValue": 0,
+                                        "maxValue": 0,
+                                        "unitCode": "DAY"
+                                    },
+                                    "transitTime": {
+                                        "@type": "QuantitativeValue",
+                                        "minValue": 0,
+                                        "maxValue": 0,
+                                        "unitCode": "DAY"
+                                    }
+                                }
+                            }
                         }
                     };
 
@@ -4251,6 +4293,7 @@ window.KaghanSchema = {
                         "description": room.description || `${room.name} luxury apartment stay in ${room.location || 'Islamabad'}.`,
                         "image": roomImg,
                         "sku": `KPH-${room.id}`,
+                        "mpn": `KPH-ROOM-${room.id}`,
                         "brand": {
                             "@type": "Brand",
                             "name": prodCfg.defaultBrand || "KPH Stay"
@@ -4262,7 +4305,49 @@ window.KaghanSchema = {
                             "price": price,
                             "priceValidUntil": `${new Date().getFullYear() + 1}-12-31`,
                             "itemCondition": prodCfg.itemCondition || "https://schema.org/NewCondition",
-                            "availability": room.status === 'maintenance' ? "https://schema.org/OutOfStock" : "https://schema.org/InStock"
+                            "availability": room.status === 'maintenance' ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
+                            "seller": {
+                                "@type": "LodgingBusiness",
+                                "name": "KPH Stay Resorts & Executive Suites",
+                                "url": "https://kphstay.com"
+                            },
+                            "hasMerchantReturnPolicy": {
+                                "@type": "MerchantReturnPolicy",
+                                "applicableCountry": "PK",
+                                "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+                                "merchantReturnDays": 7,
+                                "returnMethod": "https://schema.org/ReturnOnline",
+                                "returnFees": "https://schema.org/FreeReturn",
+                                "refundType": "https://schema.org/FullRefund",
+                                "url": "https://kphstay.com/refund"
+                            },
+                            "shippingDetails": {
+                                "@type": "OfferShippingDetails",
+                                "shippingRate": {
+                                    "@type": "MonetaryAmount",
+                                    "value": "0",
+                                    "currency": "PKR"
+                                },
+                                "shippingDestination": {
+                                    "@type": "DefinedRegion",
+                                    "addressCountry": "PK"
+                                },
+                                "deliveryTime": {
+                                    "@type": "ShippingDeliveryTime",
+                                    "handlingTime": {
+                                        "@type": "QuantitativeValue",
+                                        "minValue": 0,
+                                        "maxValue": 0,
+                                        "unitCode": "DAY"
+                                    },
+                                    "transitTime": {
+                                        "@type": "QuantitativeValue",
+                                        "minValue": 0,
+                                        "maxValue": 0,
+                                        "unitCode": "DAY"
+                                    }
+                                }
+                            }
                         }
                     };
 

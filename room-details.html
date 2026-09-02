@@ -1064,14 +1064,63 @@
                         "bestRating": "5",
                         "worstRating": "1"
                     },
+                    "brand": {
+                        "@type": "Brand",
+                        "name": "KPH Stay"
+                    },
+                    "sku": roomCode,
+                    "mpn": roomCode,
                     "offers": {
                         "@type": "Offer",
                         "name": `Direct Booking: ${currentRoom.name}`,
                         "price": Number(currentRoom.price) || 0,
                         "priceCurrency": "PKR",
+                        "itemCondition": "https://schema.org/NewCondition",
                         "availability": currentRoom.status === "maintenance" ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
                         "priceValidUntil": new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-                        "url": canonicalUrl
+                        "url": canonicalUrl,
+                        "seller": {
+                            "@type": "LodgingBusiness",
+                            "name": "KPH Stay Resorts & Executive Suites",
+                            "url": "https://kphstay.com"
+                        },
+                        "hasMerchantReturnPolicy": {
+                            "@type": "MerchantReturnPolicy",
+                            "applicableCountry": "PK",
+                            "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+                            "merchantReturnDays": 7,
+                            "returnMethod": "https://schema.org/ReturnOnline",
+                            "returnFees": "https://schema.org/FreeReturn",
+                            "refundType": "https://schema.org/FullRefund",
+                            "url": "https://kphstay.com/refund"
+                        },
+                        "shippingDetails": {
+                            "@type": "OfferShippingDetails",
+                            "shippingRate": {
+                                "@type": "MonetaryAmount",
+                                "value": "0",
+                                "currency": "PKR"
+                            },
+                            "shippingDestination": {
+                                "@type": "DefinedRegion",
+                                "addressCountry": "PK"
+                            },
+                            "deliveryTime": {
+                                "@type": "ShippingDeliveryTime",
+                                "handlingTime": {
+                                    "@type": "QuantitativeValue",
+                                    "minValue": 0,
+                                    "maxValue": 0,
+                                    "unitCode": "DAY"
+                                },
+                                "transitTime": {
+                                    "@type": "QuantitativeValue",
+                                    "minValue": 0,
+                                    "maxValue": 0,
+                                    "unitCode": "DAY"
+                                }
+                            }
+                        }
                     }
                 });
                 document.head.appendChild(dynamicPdpSchema);

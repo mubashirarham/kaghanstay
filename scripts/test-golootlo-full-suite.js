@@ -42,7 +42,7 @@ async function runSuite() {
     recordTest('envChecks', 'GOLOOTLO_USERNAME is set', !!u && u === 'kph@stay', `Value: ${u || 'missing'}`);
     recordTest('envChecks', 'GOLOOTLO_PASSWORD is set', !!p, `Length: ${p ? p.length : 0} chars`);
     recordTest('envChecks', 'GOLOOTLO_MERCHANT_CODE is set', !!m && m === '1268', `Value: ${m || 'missing'}`);
-    recordTest('envChecks', 'GOLOOTLO_DEFAULT_COUPON is set to KPHSTAY', !!c && c === 'KPHSTAY', `Value: ${c || 'missing'}`);
+    recordTest('envChecks', 'GOLOOTLO_DEFAULT_COUPON is set to KPHSGL12', !!c && c === 'KPHSGL12', `Value: ${c || 'missing'}`);
     recordTest('envChecks', 'GOLOOTLO_DISCOUNT_PERCENT is set', !!pct && pct === '15', `Value: ${pct || 'missing'}%`);
     recordTest('envChecks', 'GOLOOTLO_API_BASE_URL is set', !!url, `Value: ${url || 'missing'}`);
 
@@ -62,7 +62,7 @@ async function runSuite() {
             },
             body: JSON.stringify({
                 ChannelId: '01',
-                GolootloCouponCode: 'KPHSTAY'
+                GolootloCouponCode: 'KPHSGL12'
             }),
             signal: AbortSignal.timeout(10000)
         });
@@ -82,18 +82,18 @@ async function runSuite() {
     // --- 3. SERVERLESS FUNCTION HANDLERS ---
     console.log('--- 3. SERVERLESS FUNCTION HANDLERS ---');
 
-    // Test 3.1: golootlo-validate handler with default partner code KPHSTAY
+    // Test 3.1: golootlo-validate handler with default partner code KPHSGL12
     try {
         const event = {
             httpMethod: 'POST',
             headers: { 'origin': 'http://localhost:3000', 'client-ip': '127.0.0.1' },
-            body: JSON.stringify({ code: 'KPHSTAY' })
+            body: JSON.stringify({ code: 'KPHSGL12' })
         };
         const res = await golootloValidate.handler(event, {});
         const body = JSON.parse(res.body);
-        recordTest('functionChecks', 'golootlo-validate handler with KPHSTAY', res.statusCode === 200 && body.valid === true && body.discountPercentage === 15, `Status: ${res.statusCode}, Valid: ${body.valid}, Discount: ${body.discountPercentage}%, Msg: ${body.message}`);
+        recordTest('functionChecks', 'golootlo-validate handler with KPHSGL12', res.statusCode === 200 && body.valid === true && body.discountPercentage === 15, `Status: ${res.statusCode}, Valid: ${body.valid}, Discount: ${body.discountPercentage}%, Msg: ${body.message}`);
     } catch (e) {
-        recordTest('functionChecks', 'golootlo-validate handler with KPHSTAY', false, e.message);
+        recordTest('functionChecks', 'golootlo-validate handler with KPHSGL12', false, e.message);
     }
 
     // Test 3.2: golootlo-validate schema error on too short code
@@ -110,12 +110,12 @@ async function runSuite() {
         recordTest('functionChecks', 'golootlo-validate input schema rejection (<5 chars)', false, e.message);
     }
 
-    // Test 3.3: validate-coupon universal handler resolves Golootlo code KPHSTAY
+    // Test 3.3: validate-coupon universal handler resolves Golootlo code KPHSGL12
     try {
         const event = {
             httpMethod: 'POST',
             headers: { 'origin': 'http://localhost:3000', 'client-ip': '127.0.0.1' },
-            body: JSON.stringify({ code: 'KPHSTAY' })
+            body: JSON.stringify({ code: 'KPHSGL12' })
         };
         const res = await validateCoupon.handler(event, {});
         const body = JSON.parse(res.body);
@@ -131,7 +131,7 @@ async function runSuite() {
             httpMethod: 'POST',
             headers: { 'origin': 'http://localhost:3000', 'client-ip': '127.0.0.1' },
             body: JSON.stringify({
-                code: 'KPHSTAY',
+                code: 'KPHSGL12',
                 bookingId: testBookingId,
                 guestName: 'Golootlo Test Guest',
                 guestMobile: '03001234567',
@@ -153,7 +153,7 @@ async function runSuite() {
             httpMethod: 'POST',
             headers: { 'origin': 'http://localhost:3000', 'client-ip': '127.0.0.1' },
             body: JSON.stringify({
-                code: 'KPHSTAY',
+                code: 'KPHSGL12',
                 bookingId: testBookingId,
                 guestName: 'Golootlo Test Guest',
                 guestMobile: '03001234567',
@@ -175,15 +175,15 @@ async function runSuite() {
     console.log('--- 4. FIRESTORE DATABASE AUDIT ---');
     if (fdb) {
         try {
-            const snap = await fdb.collection('golootlo_redemptions').doc(`${testBookingId}_KPHSTAY`).get();
+            const snap = await fdb.collection('golootlo_redemptions').doc(`${testBookingId}_KPHSGL12`).get();
             const exists = snap.exists;
             const data = exists ? snap.data() : null;
             recordTest('dbChecks', 'Firestore Audit Log written in golootlo_redemptions', exists && data.bookingId === testBookingId, exists ? `Doc ID: ${snap.id}, Guest: ${data.guestName}, Amount: PKR ${data.totalAmount}, Discount: PKR ${data.discountedAmount}` : 'Document not found');
 
             // Cleanup test document
             if (exists) {
-                await fdb.collection('golootlo_redemptions').doc(`${testBookingId}_KPHSTAY`).delete();
-                console.log(`Cleaned test record: ${testBookingId}_KPHSTAY`);
+                await fdb.collection('golootlo_redemptions').doc(`${testBookingId}_KPHSGL12`).delete();
+                console.log(`Cleaned test record: ${testBookingId}_KPHSGL12`);
             }
         } catch (dbErr) {
             recordTest('dbChecks', 'Firestore Audit Log written in golootlo_redemptions', false, dbErr.message);

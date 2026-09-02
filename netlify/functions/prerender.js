@@ -441,14 +441,63 @@ function prerenderRoomDetails(html, room) {
             "bestRating": "5",
             "worstRating": "1"
         },
+        "brand": {
+            "@type": "Brand",
+            "name": "KPH Stay"
+        },
+        "sku": roomCode,
+        "mpn": roomCode,
         "offers": {
             "@type": "Offer",
             "name": `Direct Reservation: ${roomTitle}`,
             "price": pkrPrice,
             "priceCurrency": "PKR",
+            "itemCondition": "https://schema.org/NewCondition",
             "availability": room.status === "maintenance" ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
             "priceValidUntil": new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-            "url": roomUrl
+            "url": roomUrl,
+            "seller": {
+                "@type": "LodgingBusiness",
+                "name": "KPH Stay Resorts & Executive Suites",
+                "url": "https://kphstay.com"
+            },
+            "hasMerchantReturnPolicy": {
+                "@type": "MerchantReturnPolicy",
+                "applicableCountry": "PK",
+                "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+                "merchantReturnDays": 7,
+                "returnMethod": "https://schema.org/ReturnOnline",
+                "returnFees": "https://schema.org/FreeReturn",
+                "refundType": "https://schema.org/FullRefund",
+                "url": "https://kphstay.com/refund"
+            },
+            "shippingDetails": {
+                "@type": "OfferShippingDetails",
+                "shippingRate": {
+                    "@type": "MonetaryAmount",
+                    "value": "0",
+                    "currency": "PKR"
+                },
+                "shippingDestination": {
+                    "@type": "DefinedRegion",
+                    "addressCountry": "PK"
+                },
+                "deliveryTime": {
+                    "@type": "ShippingDeliveryTime",
+                    "handlingTime": {
+                        "@type": "QuantitativeValue",
+                        "minValue": 0,
+                        "maxValue": 0,
+                        "unitCode": "DAY"
+                    },
+                    "transitTime": {
+                        "@type": "QuantitativeValue",
+                        "minValue": 0,
+                        "maxValue": 0,
+                        "unitCode": "DAY"
+                    }
+                }
+            }
         }
     };
 
@@ -574,7 +623,7 @@ function prerenderBlog(html, blogs) {
 }
 
 exports.handler = async (event, context) => {
-    const rawPage = (event.queryStringParameters && event.queryStringParameters.page) || '/';
+    const rawPage = (event.queryStringParameters && event.queryStringParameters.page) || event.rawUrl || event.path || '/';
     console.log(`[SEO Prerenderer] Generating static rendering for path: ${rawPage}`);
     
     // Parse URL path and query parameters cleanly
