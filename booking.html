@@ -2048,7 +2048,7 @@
                 if (couponRow) {
                     couponRow.classList.remove('hidden');
                     couponRow.classList.add('flex');
-                    if (appliedCoupon.provider === 'golootlo' || appliedCoupon.code === 'KPHSTAY' || (appliedCoupon.code && appliedCoupon.code.startsWith('GOL'))) {
+                    if (appliedCoupon.provider === 'golootlo' || appliedCoupon.code === 'KPHSTAY' || appliedCoupon.code === 'KPHSGL12' || (appliedCoupon.code && appliedCoupon.code.startsWith('GOL'))) {
                         couponLbl.innerHTML = `<span class="inline-flex items-center gap-1.5 text-emerald-700 font-extrabold"><i class="fa-solid fa-gift text-emerald-600"></i> Golootlo Discount</span>`;
                     } else {
                         couponLbl.innerText = `Coupon (${appliedCoupon.code})`;
@@ -2236,7 +2236,7 @@
         window.applyGolootloDefaultCoupon = function() {
             const input = document.getElementById('coupon-code-input');
             if (input) {
-                input.value = 'KPHSTAY';
+                input.value = 'KPHSGL12';
                 window.validateAndApplyCoupon();
             }
         };
@@ -2261,7 +2261,7 @@
 
             try {
                 // Route to Golootlo validation service if dedicated code, or validate-coupon (checks Firestore + Golootlo fallback)
-                const endpoint = (code === 'KPHSTAY' || code.startsWith('GOL')) 
+                const endpoint = (code === 'KPHSTAY' || code === 'KPHSGL12' || code.startsWith('GOL')) 
                     ? '/.netlify/functions/golootlo-validate'
                     : '/.netlify/functions/validate-coupon';
 
@@ -2278,11 +2278,11 @@
                         code: data.code,
                         discountPercentage: data.discountPercentage,
                         discountPercent: data.discountPercentage,
-                        provider: data.provider || (data.code === 'KPHSTAY' ? 'golootlo' : 'kaghan'),
+                        provider: data.provider || (data.code === 'KPHSTAY' || data.code === 'KPHSGL12' ? 'golootlo' : 'kaghan'),
                         message: data.message
                     };
                     
-                    if (appliedCoupon.provider === 'golootlo' || data.code === 'KPHSTAY') {
+                    if (appliedCoupon.provider === 'golootlo' || data.code === 'KPHSTAY' || data.code === 'KPHSGL12') {
                         msg.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i> Golootlo Deal applied! (<strong>${data.discountPercentage}% OFF</strong>)`;
                     } else {
                         msg.innerText = `Coupon ${data.code} applied! (${data.discountPercentage}% OFF)`;
@@ -2406,7 +2406,7 @@
                 totalPrice: finalPrice,
                 discount: appliedCoupon ? currentCouponDiscount : 0,
                 couponUsed: appliedCoupon ? appliedCoupon.code : null,
-                couponProvider: appliedCoupon ? (appliedCoupon.provider || (appliedCoupon.code === 'KPHSTAY' || (appliedCoupon.code && appliedCoupon.code.startsWith('GOL')) ? 'golootlo' : 'kaghan')) : null,
+                couponProvider: appliedCoupon ? (appliedCoupon.provider || (appliedCoupon.code === 'KPHSTAY' || appliedCoupon.code === 'KPHSGL12' || (appliedCoupon.code && appliedCoupon.code.startsWith('GOL')) ? 'golootlo' : 'kaghan')) : null,
                 upgrades: selectedUpgradesList,
                 status: selectedPaymentMethod === 'payfast' ? 'pending_payment' : 'confirmed',
                 paymentStatus: selectedPaymentMethod === 'payfast' ? 'unpaid' : 'pending_checkin',
@@ -2491,7 +2491,7 @@
                 const confirmedBooking = await KaghanDB.addBooking(booking);
 
                 // If Golootlo coupon was applied, trigger background redemption service
-                if (appliedCoupon && (appliedCoupon.provider === 'golootlo' || appliedCoupon.code === 'KPHSTAY' || (appliedCoupon.code && appliedCoupon.code.startsWith('GOL')))) {
+                if (appliedCoupon && (appliedCoupon.provider === 'golootlo' || appliedCoupon.code === 'KPHSTAY' || appliedCoupon.code === 'KPHSGL12' || (appliedCoupon.code && appliedCoupon.code.startsWith('GOL')))) {
                     try {
                         const fetchFn = (typeof window !== 'undefined' && window.safeFetch) ? window.safeFetch : fetch;
                         fetchFn('/.netlify/functions/golootlo-redeem', {
@@ -2627,7 +2627,7 @@
             const advancePaid = Number(b.advancePaid !== undefined ? b.advancePaid : grandTotal);
             const balanceDue = Math.max(0, grandTotal - advancePaid);
 
-            const isGolootlo = b.couponProvider === 'golootlo' || b.couponUsed === 'KPHSTAY' || (b.couponUsed && b.couponUsed.startsWith('GOL')) || (appliedCoupon && appliedCoupon.provider === 'golootlo');
+            const isGolootlo = b.couponProvider === 'golootlo' || b.couponUsed === 'KPHSTAY' || b.couponUsed === 'KPHSGL12' || (b.couponUsed && b.couponUsed.startsWith('GOL')) || (appliedCoupon && appliedCoupon.provider === 'golootlo');
             const couponName = b.couponUsed || (appliedCoupon ? appliedCoupon.code : 'PROMO');
 
             const paymentMethod = b.paymentMethod || 'Pay at Hotel';

@@ -64,7 +64,7 @@
                 : `<span class="bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-full px-2.5 py-0.5 text-[9px] font-bold tracking-wide uppercase inline-block mt-1">Kaghan Member</span>`;
 
             const couponBadge = booking.couponUsed
-                ? (booking.couponProvider === 'golootlo' || booking.couponUsed === 'KPHSTAY' || (booking.couponUsed && booking.couponUsed.startsWith('GOL'))
+                ? (booking.couponProvider === 'golootlo' || booking.couponUsed === 'KPHSTAY' || booking.couponUsed === 'KPHSGL12' || (booking.couponUsed && booking.couponUsed.startsWith('GOL'))
                     ? `<span class="bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-md px-1.5 py-0.5 text-[9px] font-black tracking-wide inline-flex items-center gap-1 mt-1"><i class="fa-solid fa-gift text-emerald-600"></i> Golootlo (${KaghanSafe.escapeHTML(booking.couponUsed)})</span>`
                     : `<span class="bg-amber-50 text-amber-700 border border-amber-200 rounded-md px-1.5 py-0.5 text-[9px] font-bold tracking-wide inline-flex items-center gap-1 mt-1"><i class="fa-solid fa-tag"></i> ${KaghanSafe.escapeHTML(booking.couponUsed)}</span>`)
                 : '';
