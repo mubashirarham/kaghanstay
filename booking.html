@@ -465,12 +465,87 @@
                                 </div>
                             </div>
                         </div>
-                        <div>
-                            <label for="guest-email" class="block text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 ml-1">Email Address</label>
-                            <div class="relative">
-                                <i class="fa-solid fa-envelope absolute left-4 top-4 text-slate-400"></i>
-                                <input type="email" id="guest-email" required placeholder="john@example.com" class="w-full border-2 border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 text-sm bg-slate-50/50 focus:bg-white text-slate-800 transition-all font-medium shadow-2xs">
-                                <p id="err-guest-email" class="hidden text-rose-500 text-[10px] font-semibold mt-1 ml-1">Please enter a valid email address.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="guest-email" class="block text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 ml-1">Email Address</label>
+                                <div class="relative">
+                                    <i class="fa-solid fa-envelope absolute left-4 top-4 text-slate-400"></i>
+                                    <input type="email" id="guest-email" required placeholder="john@example.com" class="w-full border-2 border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 text-sm bg-slate-50/50 focus:bg-white text-slate-800 transition-all font-medium shadow-2xs">
+                                    <p id="err-guest-email" class="hidden text-rose-500 text-[10px] font-semibold mt-1 ml-1">Please enter a valid email address.</p>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="guest-cnic" class="block text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 ml-1 flex items-center justify-between">
+                                    <span>CNIC / National ID / Passport</span>
+                                    <span class="text-[9px] text-[#C5A059] font-bold">Mandatory for check-in</span>
+                                </label>
+                                <div class="relative">
+                                    <i class="fa-solid fa-id-card absolute left-4 top-4 text-slate-400"></i>
+                                    <input type="text" id="guest-cnic" placeholder="35201-1234567-1 or Passport No." maxlength="25" class="w-full border-2 border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 text-sm bg-slate-50/50 focus:bg-white text-slate-800 transition-all font-medium font-mono shadow-2xs">
+                                    <p id="err-guest-cnic" class="hidden text-rose-500 text-[10px] font-semibold mt-1 ml-1">Please enter your CNIC or Passport number.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Optional CNIC Front & Back Image Upload -->
+                        <div class="bg-slate-50/80 rounded-2xl p-4 sm:p-5 border border-slate-200/90 shadow-inner">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-3.5">
+                                <label class="text-[11px] uppercase tracking-wider font-extrabold text-slate-800 flex items-center gap-2">
+                                    <i class="fa-solid fa-camera text-[#C5A059]"></i>
+                                    Attach CNIC / ID Photos
+                                    <span class="text-[9px] bg-slate-200/80 text-slate-700 font-bold px-2 py-0.5 rounded-full lowercase">optional</span>
+                                </label>
+                                <span class="text-[10px] text-slate-400 font-medium">Upload front &amp; back for express reception check-in</span>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                                <!-- Front Side Upload -->
+                                <div id="cnic-front-card" class="relative border-2 border-dashed border-slate-300 hover:border-[#C5A059] bg-white rounded-xl p-3.5 transition-all flex flex-col items-center justify-center text-center group cursor-pointer min-h-[110px]" onclick="document.getElementById('cnic-front-file').click()">
+                                    <input type="file" id="cnic-front-file" accept="image/*" class="hidden" onchange="handleCnicFileSelect('front', this.files[0])">
+                                    <div id="cnic-front-placeholder" class="flex flex-col items-center gap-1.5 py-1">
+                                        <div class="w-8 h-8 rounded-lg bg-amber-50 text-[#C5A059] flex items-center justify-center text-sm group-hover:scale-110 transition-transform">
+                                            <i class="fa-solid fa-address-card"></i>
+                                        </div>
+                                        <span class="text-xs font-bold text-slate-700">CNIC Front Side</span>
+                                        <span class="text-[9px] text-slate-400 font-medium">Click to upload photo</span>
+                                    </div>
+                                    <div id="cnic-front-preview-wrap" class="hidden w-full flex items-center justify-between gap-2">
+                                        <div class="flex items-center gap-2.5 overflow-hidden">
+                                            <img id="cnic-front-thumb" class="w-12 h-9 object-cover rounded-lg border border-slate-200 shadow-xs" src="" alt="CNIC Front">
+                                            <div class="text-left overflow-hidden">
+                                                <div class="text-[11px] font-bold text-slate-800 truncate">CNIC Front</div>
+                                                <div id="cnic-front-status" class="text-[9px] text-emerald-600 font-semibold flex items-center gap-1"><i class="fa-solid fa-check"></i> Attached</div>
+                                            </div>
+                                        </div>
+                                        <button type="button" onclick="event.stopPropagation(); removeCnicPhoto('front')" class="w-7 h-7 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center text-xs transition-colors shrink-0" title="Remove photo">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Back Side Upload -->
+                                <div id="cnic-back-card" class="relative border-2 border-dashed border-slate-300 hover:border-[#C5A059] bg-white rounded-xl p-3.5 transition-all flex flex-col items-center justify-center text-center group cursor-pointer min-h-[110px]" onclick="document.getElementById('cnic-back-file').click()">
+                                    <input type="file" id="cnic-back-file" accept="image/*" class="hidden" onchange="handleCnicFileSelect('back', this.files[0])">
+                                    <div id="cnic-back-placeholder" class="flex flex-col items-center gap-1.5 py-1">
+                                        <div class="w-8 h-8 rounded-lg bg-amber-50 text-[#C5A059] flex items-center justify-center text-sm group-hover:scale-110 transition-transform">
+                                            <i class="fa-solid fa-id-card-clip"></i>
+                                        </div>
+                                        <span class="text-xs font-bold text-slate-700">CNIC Back Side</span>
+                                        <span class="text-[9px] text-slate-400 font-medium">Click to upload photo</span>
+                                    </div>
+                                    <div id="cnic-back-preview-wrap" class="hidden w-full flex items-center justify-between gap-2">
+                                        <div class="flex items-center gap-2.5 overflow-hidden">
+                                            <img id="cnic-back-thumb" class="w-12 h-9 object-cover rounded-lg border border-slate-200 shadow-xs" src="" alt="CNIC Back">
+                                            <div class="text-left overflow-hidden">
+                                                <div class="text-[11px] font-bold text-slate-800 truncate">CNIC Back</div>
+                                                <div id="cnic-back-status" class="text-[9px] text-emerald-600 font-semibold flex items-center gap-1"><i class="fa-solid fa-check"></i> Attached</div>
+                                            </div>
+                                        </div>
+                                        <button type="button" onclick="event.stopPropagation(); removeCnicPhoto('back')" class="w-7 h-7 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center text-xs transition-colors shrink-0" title="Remove photo">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <!-- Guest Count (Adults, Children, Infants) -->
@@ -2329,11 +2404,93 @@
             return (nSum % 10 == 0);
         }
 
+        // CNIC Front/Back Photo State & Handlers
+        window._cnicFrontUrl = '';
+        window._cnicBackUrl = '';
+
+        window.handleCnicFileSelect = async function(side, file) {
+            if (!file) return;
+            if (!file.type.startsWith('image/')) {
+                if (window.KaghanUI) KaghanUI.showToast('Please select a valid image file (JPG, PNG, WEBP)', 'warning');
+                return;
+            }
+            if (file.size > 10 * 1024 * 1024) {
+                if (window.KaghanUI) KaghanUI.showToast('Image size should be less than 10MB', 'warning');
+                return;
+            }
+
+            const placeholder = document.getElementById(`cnic-${side}-placeholder`);
+            const previewWrap = document.getElementById(`cnic-${side}-preview-wrap`);
+            const thumb = document.getElementById(`cnic-${side}-thumb`);
+            const statusEl = document.getElementById(`cnic-${side}-status`);
+
+            // Instant local preview
+            const localUrl = URL.createObjectURL(file);
+            if (thumb) thumb.src = localUrl;
+            if (placeholder) placeholder.classList.add('hidden');
+            if (previewWrap) previewWrap.classList.remove('hidden');
+            if (statusEl) statusEl.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-amber-500"></i> Uploading...';
+
+            try {
+                // Upload to Cloudinary unsigned preset
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('upload_preset', 'mubashir');
+                formData.append('cloud_name', 'dis1ptaip');
+
+                const res = await fetch('https://api.cloudinary.com/v1_1/dis1ptaip/image/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.secure_url) {
+                        if (side === 'front') window._cnicFrontUrl = data.secure_url;
+                        else window._cnicBackUrl = data.secure_url;
+                        if (statusEl) statusEl.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-500"></i> Cloud Attached';
+                        return;
+                    }
+                }
+                throw new Error('Cloudinary upload response not OK');
+            } catch (err) {
+                console.warn('Cloudinary upload fallback to base64:', err);
+                // Fallback to local Base64 data URI so guest flow is never blocked
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64Data = e.target.result;
+                    if (side === 'front') window._cnicFrontUrl = base64Data;
+                    else window._cnicBackUrl = base64Data;
+                    if (statusEl) statusEl.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-500"></i> Attached';
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+
+        window.removeCnicPhoto = function(side) {
+            if (side === 'front') window._cnicFrontUrl = '';
+            else window._cnicBackUrl = '';
+
+            const fileInput = document.getElementById(`cnic-${side}-file`);
+            if (fileInput) fileInput.value = '';
+
+            const placeholder = document.getElementById(`cnic-${side}-placeholder`);
+            const previewWrap = document.getElementById(`cnic-${side}-preview-wrap`);
+            const thumb = document.getElementById(`cnic-${side}-thumb`);
+
+            if (thumb) thumb.src = '';
+            if (previewWrap) previewWrap.classList.add('hidden');
+            if (placeholder) placeholder.classList.remove('hidden');
+        };
+
         // Submit Booking
         async function submitBooking() {
             const name = document.getElementById('guest-name').value;
             const phone = document.getElementById('guest-phone').value;
             const email = document.getElementById('guest-email').value;
+            const cnic = (document.getElementById('guest-cnic')?.value || '').trim();
+            const cnicFrontImg = window._cnicFrontUrl || '';
+            const cnicBackImg = window._cnicBackUrl || '';
             
             const checkIn = document.getElementById('book-check-in').value;
             const checkOut = document.getElementById('book-check-out').value;
@@ -2397,6 +2554,11 @@
                 guestName: name,
                 guestEmail: email,
                 guestPhone: phone,
+                guestCnic: cnic,
+                cnic: cnic,
+                cnicPassport: cnic || 'Verified at Check-in',
+                cnicFrontImg: cnicFrontImg,
+                cnicBackImg: cnicBackImg,
                 adults: parseInt(document.getElementById('book-adults')?.value || 2, 10),
                 children: parseInt(document.getElementById('book-children')?.value || 0, 10),
                 infants: parseInt(document.getElementById('book-infants')?.value || 0, 10),

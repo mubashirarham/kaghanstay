@@ -304,6 +304,7 @@
         const guestName = document.getElementById('add-booking-name').value.trim();
         const guestEmail = document.getElementById('add-booking-email').value.trim();
         const guestPhone = document.getElementById('add-booking-phone').value.trim();
+        const guestCnic = (document.getElementById('add-booking-cnic')?.value || '').trim();
         const roomId = document.getElementById('add-booking-room').value;
         const checkIn = document.getElementById('add-booking-checkin').value;
         const checkOut = document.getElementById('add-booking-checkout').value;
@@ -353,6 +354,9 @@
             guestName,
             guestEmail,
             guestPhone,
+            guestCnic: guestCnic,
+            cnic: guestCnic,
+            cnicPassport: guestCnic || 'Verified at Check-in',
             checkIn,
             checkOut,
             totalPrice,
@@ -392,10 +396,31 @@
         document.getElementById('edit-booking-name').value = booking.guestName;
         document.getElementById('edit-booking-email').value = booking.guestEmail;
         document.getElementById('edit-booking-phone').value = booking.guestPhone;
+        const editCnicEl = document.getElementById('edit-booking-cnic');
+        if (editCnicEl) editCnicEl.value = booking.cnicPassport || booking.cnic || booking.guestCnic || '';
         document.getElementById('edit-booking-checkin').value = booking.checkIn;
         document.getElementById('edit-booking-checkout').value = booking.checkOut;
         document.getElementById('edit-booking-price').value = booking.totalPrice;
         document.getElementById('edit-booking-status').value = booking.status;
+
+        const editPhotosWrap = document.getElementById('edit-booking-cnic-photos-wrap');
+        const editPhotosGrid = document.getElementById('edit-booking-cnic-photos-grid');
+        if (editPhotosWrap && editPhotosGrid) {
+            const photos = [];
+            if (booking.cnicFrontImg) photos.push({ label: 'CNIC Front', url: booking.cnicFrontImg });
+            if (booking.cnicBackImg) photos.push({ label: 'CNIC Back', url: booking.cnicBackImg });
+            if (photos.length > 0) {
+                editPhotosGrid.innerHTML = photos.map(p => `
+                    <div class="relative group rounded-xl overflow-hidden border border-slate-200 bg-white p-1.5 cursor-pointer hover:border-[#D4AF37] transition-all" onclick="openCnicLightbox('${p.url}', '${p.label} - ${booking.id}')">
+                        <img src="${p.url}" alt="${p.label}" class="w-full h-16 object-cover rounded-lg">
+                        <div class="text-[9px] font-bold text-slate-700 text-center mt-1 truncate">${p.label}</div>
+                    </div>
+                `).join('');
+                editPhotosWrap.classList.remove('hidden');
+            } else {
+                editPhotosWrap.classList.add('hidden');
+            }
+        }
 
         const modal = document.getElementById('edit-booking-modal');
         modal.classList.remove('hidden');
@@ -439,6 +464,7 @@
         const guestName = document.getElementById('edit-booking-name').value.trim();
         const guestEmail = document.getElementById('edit-booking-email').value.trim();
         const guestPhone = document.getElementById('edit-booking-phone').value.trim();
+        const guestCnic = (document.getElementById('edit-booking-cnic')?.value || '').trim();
         const roomId = document.getElementById('edit-booking-room').value;
         const checkIn = document.getElementById('edit-booking-checkin').value;
         const checkOut = document.getElementById('edit-booking-checkout').value;
@@ -455,6 +481,9 @@
             guestName,
             guestEmail,
             guestPhone,
+            guestCnic,
+            cnic: guestCnic,
+            cnicPassport: guestCnic || 'Verified at Check-in',
             checkIn,
             checkOut,
             totalPrice,
@@ -646,7 +675,32 @@
         const gEmailLink = document.getElementById('detail-email-link');
         if (gEmailLink) gEmailLink.href = `mailto:${booking.guestEmail || ''}`;
         const gCnic = document.getElementById('detail-guest-cnic');
-        if (gCnic) gCnic.textContent = booking.cnicPassport || booking.cnic || 'Verified at Check-in';
+        if (gCnic) gCnic.textContent = booking.cnicPassport || booking.cnic || booking.guestCnic || 'Verified at Check-in';
+
+        // Attached CNIC Photos Gallery in Details
+        const photosWrap = document.getElementById('detail-cnic-photos-wrap');
+        const photosGrid = document.getElementById('detail-cnic-photos-grid');
+        if (photosWrap && photosGrid) {
+            const attachedPhotos = [];
+            if (booking.cnicFrontImg) attachedPhotos.push({ label: 'CNIC Front Photo', url: booking.cnicFrontImg });
+            if (booking.cnicBackImg) attachedPhotos.push({ label: 'CNIC Back Photo', url: booking.cnicBackImg });
+
+            if (attachedPhotos.length > 0) {
+                photosGrid.innerHTML = attachedPhotos.map(p => `
+                    <div class="relative group rounded-xl overflow-hidden border border-slate-200 bg-white p-2 cursor-pointer hover:border-[#D4AF37] hover:shadow-md transition-all flex flex-col items-center gap-1.5" onclick="openCnicLightbox('${p.url}', '${p.label} - ${booking.id}')">
+                        <img src="${p.url}" alt="${p.label}" class="w-full h-24 object-cover rounded-lg group-hover:scale-105 transition-transform">
+                        <div class="w-full flex items-center justify-between text-[10px] font-bold text-slate-700 px-1">
+                            <span class="truncate">${p.label}</span>
+                            <span class="text-[#D4AF37] group-hover:translate-x-0.5 transition-transform"><i class="fa-solid fa-expand text-[9px]"></i></span>
+                        </div>
+                    </div>
+                `).join('');
+                photosWrap.classList.remove('hidden');
+            } else {
+                photosWrap.classList.add('hidden');
+                photosGrid.innerHTML = '';
+            }
+        }
 
         const phoneActions = document.getElementById('detail-phone-actions');
         if (phoneActions && booking.guestPhone) {
@@ -858,6 +912,37 @@
             `);
             printWin.document.close();
         }
+    };
+
+    // CNIC Document Lightbox Viewer
+    window.openCnicLightbox = (imgUrl, title = 'ID Document') => {
+        const modal = document.getElementById('cnic-lightbox-modal');
+        const img = document.getElementById('cnic-lightbox-img');
+        const titleEl = document.getElementById('cnic-lightbox-title');
+        const dlLink = document.getElementById('cnic-lightbox-download');
+
+        if (!modal || !img) return;
+        img.src = imgUrl;
+        if (titleEl) titleEl.innerHTML = `<i class="fa-solid fa-id-card text-[#D4AF37]"></i> ${KaghanSafe.escapeHTML(title)}`;
+        if (dlLink) dlLink.href = imgUrl;
+
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            modal.firstElementChild.classList.remove('scale-95');
+        }, 10);
+    };
+
+    window.closeCnicLightbox = () => {
+        const modal = document.getElementById('cnic-lightbox-modal');
+        if (!modal) return;
+        modal.classList.add('opacity-0');
+        modal.firstElementChild.classList.add('scale-95');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            const img = document.getElementById('cnic-lightbox-img');
+            if (img) img.src = '';
+        }, 300);
     };
 
     // Export to window

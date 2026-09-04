@@ -1263,7 +1263,11 @@ const db = {
             guestName: booking.guestName || (user ? user.name : 'Valued Guest'),
             guestEmail: (booking.guestEmail || (user ? user.email : 'guest@kphstay.com')).toLowerCase().trim(),
             guestPhone: booking.guestPhone || '',
-            guestCnic: booking.guestCnic || booking.cnicPassport || '',
+            guestCnic: booking.guestCnic || booking.cnic || booking.cnicPassport || '',
+            cnic: booking.cnic || booking.guestCnic || booking.cnicPassport || '',
+            cnicPassport: booking.cnicPassport || booking.cnic || booking.guestCnic || 'Verified at Check-in',
+            cnicFrontImg: booking.cnicFrontImg || booking.cnicFront || '',
+            cnicBackImg: booking.cnicBackImg || booking.cnicBack || '',
             nationality: booking.nationality || 'Pakistani',
             address: booking.address || '',
             checkIn: checkInStr,
@@ -2836,7 +2840,7 @@ window.getCleanInvoiceHTML = function(booking, room) {
                 <div style="font-weight: 800; font-size: 14px; color: #0F172A; margin-bottom: 3px;">${guestName}</div>
                 <div style="color: #475569; margin-top: 2px;">Phone: <strong style="color: #0F172A;">${guestPhone}</strong></div>
                 <div style="color: #475569; margin-top: 2px;">Email: <strong>${guestEmail}</strong></div>
-                ${cnicPassport && cnicPassport !== 'N/A' ? `<div style="color: #64748B; font-size: 10px; margin-top: 3px;">ID / CNIC: ${cnicPassport}</div>` : ''}
+                <div style="color: #475569; margin-top: 2px;">CNIC / ID: <strong style="color: #0F172A; font-family: monospace;">${cnicPassport}</strong>${(b.cnicFrontImg || b.cnicBackImg) ? ' <span style="display:inline-block; padding: 1px 6px; background: #ECFDF5; color: #059669; font-size: 8.5px; font-weight: 800; border-radius: 4px; border: 1px solid #A7F3D0; vertical-align: middle;">ID Photos Attached ✓</span>' : ''}</div>
             </div>
             <div style="flex: 1; border-left: 1px solid #CBD5E1; padding-left: 18px;">
                 <div style="font-size: 9px; font-weight: 800; text-transform: uppercase; color: #94A3B8; letter-spacing: 1px; margin-bottom: 6px;">RESERVATION DETAILS</div>
@@ -3091,7 +3095,8 @@ window.downloadPDFInvoice = async function(bookingId) {
         doc.setTextColor(71, 85, 105);
         doc.text(`Phone: ${guestPhone}`, margin + 14, boxTop + 48);
         doc.text(`Email: ${guestEmail}`, margin + 14, boxTop + 62);
-        doc.text(`CNIC / ID: ${cnicPassport}`, margin + 14, boxTop + 76);
+        const hasCnicPhotos = !!(booking.cnicFrontImg || booking.cnicBackImg);
+        doc.text(`CNIC / ID: ${cnicPassport}${hasCnicPhotos ? ' [Photos Attached]' : ''}`, margin + 14, boxTop + 76);
 
         // Box 2: Reservation Details
         const box2Left = margin + boxWidth + 14;
@@ -3318,6 +3323,7 @@ window.downloadPDFInvoice = async function(bookingId) {
         } catch(fallbackErr) {
             console.error("Print fallback error:", fallbackErr);
         }
+    }
 };
 window.downloadPDFInvoiceMaster = window.downloadPDFInvoice;
 
