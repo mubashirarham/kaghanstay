@@ -85,7 +85,11 @@
                     <h1 id="booking-guest-title" class="text-2xl font-black outfit text-slate-900 mt-1">Guest Reservation</h1>
                 </div>
 
-                <div class="flex items-center gap-3">
+                <div class="flex flex-wrap items-center gap-3">
+                    <button type="button" onclick="addToNewsletter()" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 text-xs font-bold px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5" title="Add guest to Newsletter broadcast list">
+                        <i class="fa-solid fa-envelope-open-text text-indigo-500 text-xs"></i>
+                        <span>Add to Newsletter</span>
+                    </button>
                     <div class="flex items-center bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 gap-2">
                         <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Status:</span>
                         <select id="booking-status-select" onchange="changeStatus(this.value)" class="bg-transparent text-xs font-bold outline-none cursor-pointer text-slate-800">
@@ -541,6 +545,29 @@
             // Live Invoice
             if (window.getCleanInvoiceHTML) {
                 document.getElementById('live-invoice-container').innerHTML = window.getCleanInvoiceHTML(b, r);
+            }
+        }
+
+        async function addToNewsletter() {
+            if (!currentBooking || !currentBooking.guestEmail) {
+                KaghanUI.showToast('No guest email available for this booking.', 'error');
+                return;
+            }
+            try {
+                const res = await KaghanDB.addNewsletterSubscribers([{
+                    email: currentBooking.guestEmail,
+                    name: currentBooking.guestName || '',
+                    phone: currentBooking.guestPhone || '',
+                    source: 'booking_details_page'
+                }]);
+                const added = res && typeof res.added === 'number' ? res.added : 1;
+                if (added > 0) {
+                    KaghanUI.showToast(`Subscribed ${currentBooking.guestName || currentBooking.guestEmail} to newsletter!`, 'success');
+                } else {
+                    KaghanUI.showToast(`${currentBooking.guestEmail} is already subscribed to the newsletter.`, 'info');
+                }
+            } catch (e) {
+                KaghanUI.showToast('Failed to add to newsletter: ' + e.message, 'error');
             }
         }
 

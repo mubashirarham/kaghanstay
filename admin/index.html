@@ -570,36 +570,63 @@
 
             <!-- VIEW: BOOKINGS -->
             <div id="view-bookings" class="tab-view hidden space-y-6">
-                <div class="flex justify-between items-center">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                         <span class="text-[#D4AF37] text-xs font-bold uppercase tracking-wider">Stay Circles</span>
                         <h1 class="text-2xl font-extrabold outfit text-slate-900 mt-0.5">Bookings Ledger Manager</h1>
                         <p class="text-slate-400 text-xs font-light">Search, inspect details, and update approval state of reservations.</p>
                     </div>
-                    <button onclick="openAddBookingModal()" class="bg-gradient-to-r from-[#D4AF37] to-[#DC2626] text-white text-xs font-bold px-4 py-3 rounded-xl hover:opacity-90 transition-all shadow-md flex items-center gap-1.5">
-                        <i class="fa-solid fa-plus"></i> Add Walk-in Booking
-                    </button>
+                    <div class="flex flex-wrap items-center gap-2.5">
+                        <button onclick="exportBookingsToExcel(false)" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-3 rounded-xl transition-all shadow-md flex items-center gap-1.5" title="Export all bookings & customer leads to Excel/CSV">
+                            <i class="fa-solid fa-file-excel"></i> Export Leads (Excel)
+                        </button>
+                        <button onclick="openAddBookingModal()" class="bg-gradient-to-r from-[#D4AF37] to-[#DC2626] text-white text-xs font-bold px-4 py-3 rounded-xl hover:opacity-90 transition-all shadow-md flex items-center gap-1.5">
+                            <i class="fa-solid fa-plus"></i> Add Walk-in Booking
+                        </button>
+                    </div>
                 </div>
 
                 <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md space-y-6">
-                    <div class="flex flex-col lg:flex-row gap-4 justify-between items-start lg:items-center">
-                        <div class="relative w-full sm:w-80">
-                            <input type="text" id="booking-search-input" placeholder="Search by name, email, booking ID..." class="w-full border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-xs bg-slate-50 outline-none focus:border-[#D4AF37]">
-                            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-400 text-xs"></i>
+                    <div class="flex flex-col xl:flex-row gap-4 justify-between items-start xl:items-center">
+                        <div class="flex flex-wrap items-center gap-3 w-full xl:w-auto">
+                            <div class="relative w-full sm:w-72">
+                                <input type="text" id="booking-search-input" placeholder="Search name, email, ID..." class="w-full border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-xs bg-slate-50 outline-none focus:border-[#D4AF37]">
+                                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-400 text-xs"></i>
+                            </div>
+                            
+                            <!-- Sort Controls -->
+                            <div class="flex items-center bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 gap-2 shadow-xs">
+                                <i class="fa-solid fa-arrow-down-short-wide text-[#D4AF37] text-xs"></i>
+                                <span class="text-slate-400 font-bold text-[10px] uppercase tracking-wider hidden sm:inline">Sort:</span>
+                                <select id="booking-sort-by" onchange="changeBookingSort(this.value)" class="bg-transparent text-slate-700 font-bold text-xs outline-none cursor-pointer pr-1">
+                                    <option value="created-desc">Newest First (Recent)</option>
+                                    <option value="created-asc">Oldest First</option>
+                                    <option value="checkin-asc">Check-in: Earliest First</option>
+                                    <option value="checkin-desc">Check-in: Furthest First</option>
+                                    <option value="price-desc">Amount: High to Low (Desc)</option>
+                                    <option value="price-asc">Amount: Low to High (Asc)</option>
+                                    <option value="name-asc">Guest: Name (A to Z)</option>
+                                    <option value="name-desc">Guest: Name (Z to A)</option>
+                                </select>
+                                <button type="button" id="booking-sort-direction-btn" onclick="toggleBookingSortDirection()" class="p-1 text-slate-500 hover:text-[#D4AF37] transition-colors rounded hover:bg-white" title="Toggle Sort Ascending / Descending">
+                                    <i id="booking-sort-dir-icon" class="fa-solid fa-arrow-down-wide-short text-xs"></i>
+                                </button>
+                            </div>
                         </div>
-                        <div class="flex flex-wrap gap-2 w-full lg:w-auto">
+
+                        <div class="flex flex-wrap gap-2 w-full xl:w-auto">
                             <!-- Premium Filter Pills -->
                             <div class="flex flex-wrap gap-2" id="booking-filter-pills">
-                                <button type="button" onclick="setBookingFilterStatus('all')" id="filter-pill-all" class="px-4 py-2 rounded-xl text-xs font-bold transition-all border border-[#D4AF37]/30 bg-[#D4AF37]/10 text-[#D4AF37] hover:bg-[#D4AF37]/15">
+                                <button type="button" onclick="setBookingFilterStatus('all')" id="filter-pill-all" class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all border border-[#D4AF37]/30 bg-[#D4AF37]/10 text-[#D4AF37] hover:bg-[#D4AF37]/15">
                                     <i class="fa-solid fa-list-check mr-1.5"></i> All
                                 </button>
-                                <button type="button" onclick="setBookingFilterStatus('confirmed')" id="filter-pill-confirmed" class="px-4 py-2 rounded-xl text-xs font-bold transition-all border border-slate-200 bg-slate-50/50 text-slate-500 hover:bg-slate-100">
+                                <button type="button" onclick="setBookingFilterStatus('confirmed')" id="filter-pill-confirmed" class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all border border-slate-200 bg-slate-50/50 text-slate-500 hover:bg-slate-100">
                                     <i class="fa-solid fa-circle-check mr-1.5 text-emerald-500"></i> Confirmed
                                 </button>
-                                <button type="button" onclick="setBookingFilterStatus('completed')" id="filter-pill-completed" class="px-4 py-2 rounded-xl text-xs font-bold transition-all border border-slate-200 bg-slate-50/50 text-slate-500 hover:bg-slate-100">
+                                <button type="button" onclick="setBookingFilterStatus('completed')" id="filter-pill-completed" class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all border border-slate-200 bg-slate-50/50 text-slate-500 hover:bg-slate-100">
                                     <i class="fa-solid fa-circle-check mr-1.5 text-blue-500"></i> Successful (Completed)
                                 </button>
-                                <button type="button" onclick="setBookingFilterStatus('cancelled')" id="filter-pill-cancelled" class="px-4 py-2 rounded-xl text-xs font-bold transition-all border border-slate-200 bg-slate-50/50 text-slate-500 hover:bg-slate-100">
+                                <button type="button" onclick="setBookingFilterStatus('cancelled')" id="filter-pill-cancelled" class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all border border-slate-200 bg-slate-50/50 text-slate-500 hover:bg-slate-100">
                                     <i class="fa-solid fa-circle-xmark mr-1.5 text-rose-500"></i> Cancelled
                                 </button>
                             </div>
@@ -625,6 +652,17 @@
                         <button onclick="bulkChangeBookingStatus('cancelled')" class="bg-rose-50 text-rose-700 hover:bg-rose-600 hover:text-white border border-rose-100 text-[10px] font-bold px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5">
                             <i class="fa-solid fa-circle-xmark"></i> Bulk Cancel
                         </button>
+
+                        <div class="h-4 border-r border-slate-300 mx-1 hidden sm:block"></div>
+
+                        <!-- Bulk Excel Export & Newsletter Subscription -->
+                        <button onclick="exportBookingsToExcel(true)" class="bg-emerald-50 text-emerald-800 hover:bg-emerald-600 hover:text-white border border-emerald-200 text-[10px] font-bold px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5" title="Export selected booking leads to Excel">
+                            <i class="fa-solid fa-file-excel text-emerald-600"></i> Export Selected (Excel)
+                        </button>
+                        <button onclick="bulkAddBookingsToNewsletter(true)" class="bg-indigo-50 text-indigo-800 hover:bg-indigo-600 hover:text-white border border-indigo-200 text-[10px] font-bold px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5" title="Add selected guest leads to Newsletter broadcast list">
+                            <i class="fa-solid fa-envelope-open-text text-indigo-600"></i> Add to Newsletter
+                        </button>
+
                         <button onclick="bulkDeleteBookings()" class="bg-slate-100 text-slate-700 hover:bg-rose-600 hover:text-white border border-slate-200 text-[10px] font-bold px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 sm:ml-auto">
                             <i class="fa-solid fa-trash-can"></i> Bulk Delete Ledger
                         </button>
@@ -635,11 +673,31 @@
                             <thead>
                                 <tr class="border-b border-slate-100 text-slate-400 text-[9px] uppercase tracking-wider font-bold">
                                     <th class="px-4 py-3 w-10"><input type="checkbox" id="bookings-select-all" onclick="toggleSelectAllBookings(this)" class="rounded border-slate-300 text-[#D4AF37] focus:ring-[#D4AF37] cursor-pointer"></th>
-                                    <th class="px-6 py-3">ID</th>
-                                    <th class="px-6 py-3">Guest Details</th>
+                                    <th class="px-6 py-3 cursor-pointer select-none hover:text-[#D4AF37] transition-colors" onclick="toggleHeaderSort('created')" title="Sort by Date / ID">
+                                        <div class="flex items-center gap-1.5">
+                                            <span>ID / Date</span>
+                                            <i id="th-sort-created" class="fa-solid fa-arrow-down-wide-short text-[#D4AF37] text-[10px]"></i>
+                                        </div>
+                                    </th>
+                                    <th class="px-6 py-3 cursor-pointer select-none hover:text-[#D4AF37] transition-colors" onclick="toggleHeaderSort('name')" title="Sort by Guest Name">
+                                        <div class="flex items-center gap-1.5">
+                                            <span>Guest Details</span>
+                                            <i id="th-sort-name" class="fa-solid fa-sort text-slate-300 text-[10px]"></i>
+                                        </div>
+                                    </th>
                                     <th class="px-6 py-3">Suite Style</th>
-                                    <th class="px-6 py-3">Stay Dates</th>
-                                    <th class="px-6 py-3">Amount</th>
+                                    <th class="px-6 py-3 cursor-pointer select-none hover:text-[#D4AF37] transition-colors" onclick="toggleHeaderSort('checkin')" title="Sort by Check-in Date">
+                                        <div class="flex items-center gap-1.5">
+                                            <span>Stay Dates</span>
+                                            <i id="th-sort-checkin" class="fa-solid fa-sort text-slate-300 text-[10px]"></i>
+                                        </div>
+                                    </th>
+                                    <th class="px-6 py-3 cursor-pointer select-none hover:text-[#D4AF37] transition-colors" onclick="toggleHeaderSort('price')" title="Sort by Total Amount">
+                                        <div class="flex items-center gap-1.5">
+                                            <span>Amount</span>
+                                            <i id="th-sort-price" class="fa-solid fa-sort text-slate-300 text-[10px]"></i>
+                                        </div>
+                                    </th>
                                     <th class="px-6 py-3">Change Status</th>
                                 </tr>
                             </thead>
@@ -702,6 +760,12 @@
                             <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
                             <span class="hidden sm:inline">New Tab</span>
                         </a>
+
+                        <!-- Add to Newsletter -->
+                        <button type="button" onclick="addCurrentBookingToNewsletter()" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 text-xs font-bold px-3.5 py-2.5 rounded-xl transition-all flex items-center gap-1.5" title="Add guest to Newsletter broadcast list">
+                            <i class="fa-solid fa-envelope-open-text text-indigo-500 text-xs"></i>
+                            <span class="hidden sm:inline">Add to Newsletter</span>
+                        </button>
 
                         <!-- Edit Button -->
                         <button type="button" id="detail-edit-booking-btn" onclick="openDetailEditModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-3.5 py-2.5 rounded-xl transition-all flex items-center gap-1.5">

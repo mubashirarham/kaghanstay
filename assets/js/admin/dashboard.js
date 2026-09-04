@@ -290,11 +290,15 @@ async function refreshAll() {
 function setupEventListeners() {
     const bookingSearch = document.getElementById('booking-search-input');
     const bookingStatus = document.getElementById('booking-filter-status');
+    const bookingSort = document.getElementById('booking-sort-by');
     if (bookingSearch) bookingSearch.addEventListener('input', () => {
         if (window.AdminBookingsModule) window.AdminBookingsModule.render();
     });
     if (bookingStatus) bookingStatus.addEventListener('change', () => {
         if (window.AdminBookingsModule) window.AdminBookingsModule.render();
+    });
+    if (bookingSort) bookingSort.addEventListener('change', (e) => {
+        if (window.changeBookingSort) window.changeBookingSort(e.target.value);
     });
 
     const guestSearch = document.getElementById('guest-search-input');

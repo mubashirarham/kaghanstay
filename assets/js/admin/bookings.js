@@ -2,6 +2,109 @@
 (function() {
     let adminBookingsPage = 1;
     const adminBookingsPerPage = 8;
+    let currentBookingSort = 'created-desc';
+
+    function getBookingTimestamp(b) {
+        if (b.createdAt) {
+            const t = new Date(b.createdAt).getTime();
+            if (!isNaN(t) && t > 0) return t;
+        }
+        if (b.date) {
+            const t = new Date(b.date).getTime();
+            if (!isNaN(t) && t > 0) return t;
+        }
+        if (b.id) {
+            const match = String(b.id).match(/\d{10,13}/);
+            if (match) {
+                const num = parseInt(match[0], 10);
+                if (!isNaN(num) && num > 1000000000) {
+                    return num < 10000000000 ? num * 1000 : num;
+                }
+            }
+        }
+        return 0;
+    }
+
+    function updateSortVisualIndicators() {
+        // 1. Sync dropdown
+        const sortSelect = document.getElementById('booking-sort-by');
+        if (sortSelect && sortSelect.value !== currentBookingSort) {
+            sortSelect.value = currentBookingSort;
+        }
+
+        // 2. Sync toolbar direction button icon
+        const dirIcon = document.getElementById('booking-sort-dir-icon');
+        if (dirIcon) {
+            if (currentBookingSort.endsWith('-asc')) {
+                dirIcon.className = 'fa-solid fa-arrow-up-short-wide text-xs text-[#D4AF37]';
+            } else {
+                dirIcon.className = 'fa-solid fa-arrow-down-wide-short text-xs text-[#D4AF37]';
+            }
+        }
+
+        // 3. Sync table column header icons
+        const thCreated = document.getElementById('th-sort-created');
+        const thName = document.getElementById('th-sort-name');
+        const thCheckin = document.getElementById('th-sort-checkin');
+        const thPrice = document.getElementById('th-sort-price');
+
+        if (thCreated) thCreated.className = 'fa-solid fa-sort text-slate-300 text-[10px]';
+        if (thName) thName.className = 'fa-solid fa-sort text-slate-300 text-[10px]';
+        if (thCheckin) thCheckin.className = 'fa-solid fa-sort text-slate-300 text-[10px]';
+        if (thPrice) thPrice.className = 'fa-solid fa-sort text-slate-300 text-[10px]';
+
+        if (currentBookingSort === 'created-desc' && thCreated) {
+            thCreated.className = 'fa-solid fa-arrow-down-wide-short text-[#D4AF37] text-[10px]';
+        } else if (currentBookingSort === 'created-asc' && thCreated) {
+            thCreated.className = 'fa-solid fa-arrow-up-short-wide text-[#D4AF37] text-[10px]';
+        } else if (currentBookingSort === 'name-asc' && thName) {
+            thName.className = 'fa-solid fa-arrow-down-a-z text-[#D4AF37] text-[10px]';
+        } else if (currentBookingSort === 'name-desc' && thName) {
+            thName.className = 'fa-solid fa-arrow-up-z-a text-[#D4AF37] text-[10px]';
+        } else if (currentBookingSort === 'checkin-asc' && thCheckin) {
+            thCheckin.className = 'fa-solid fa-arrow-up-short-wide text-[#D4AF37] text-[10px]';
+        } else if (currentBookingSort === 'checkin-desc' && thCheckin) {
+            thCheckin.className = 'fa-solid fa-arrow-down-wide-short text-[#D4AF37] text-[10px]';
+        } else if (currentBookingSort === 'price-desc' && thPrice) {
+            thPrice.className = 'fa-solid fa-arrow-down-9-1 text-[#D4AF37] text-[10px]';
+        } else if (currentBookingSort === 'price-asc' && thPrice) {
+            thPrice.className = 'fa-solid fa-arrow-up-1-9 text-[#D4AF37] text-[10px]';
+        }
+    }
+
+    window.changeBookingSort = (val) => {
+        if (val) currentBookingSort = val;
+        adminBookingsPage = 1;
+        updateSortVisualIndicators();
+        renderBookings();
+    };
+
+    window.toggleBookingSortDirection = () => {
+        const parts = currentBookingSort.split('-');
+        const field = parts[0];
+        const dir = parts[1] === 'desc' ? 'asc' : 'desc';
+        currentBookingSort = `${field}-${dir}`;
+        adminBookingsPage = 1;
+        updateSortVisualIndicators();
+        renderBookings();
+    };
+
+    window.toggleHeaderSort = (field) => {
+        if (currentBookingSort.startsWith(field + '-')) {
+            const currentDir = currentBookingSort.split('-')[1];
+            const newDir = currentDir === 'desc' ? 'asc' : 'desc';
+            currentBookingSort = `${field}-${newDir}`;
+        } else {
+            if (field === 'created' || field === 'price') {
+                currentBookingSort = `${field}-desc`;
+            } else {
+                currentBookingSort = `${field}-asc`;
+            }
+        }
+        adminBookingsPage = 1;
+        updateSortVisualIndicators();
+        renderBookings();
+    };
 
     async function renderBookings() {
         const bookings = await KaghanDB.getBookings();
@@ -10,6 +113,8 @@
         const emptyState = document.getElementById('bookings-empty-state');
 
         if (!tbody) return;
+
+        updateSortVisualIndicators();
 
         // Reset check boxes state on re-render
         const selectAll = document.getElementById('bookings-select-all');
@@ -22,12 +127,57 @@
 
         let filtered = bookings.filter(b => {
             const matchesKeyword = !keyword || 
-                                   b.id.toLowerCase().includes(keyword) || 
-                                   b.guestName.toLowerCase().includes(keyword) || 
-                                   b.guestEmail.toLowerCase().includes(keyword) ||
-                                   b.guestPhone.includes(keyword);
+                                   (b.id && b.id.toLowerCase().includes(keyword)) || 
+                                   (b.guestName && b.guestName.toLowerCase().includes(keyword)) || 
+                                   (b.guestEmail && b.guestEmail.toLowerCase().includes(keyword)) ||
+                                   (b.guestPhone && b.guestPhone.includes(keyword)) ||
+                                   (b.cnic && b.cnic.toLowerCase().includes(keyword));
             const matchesStatus = statusFilter === 'all' || b.status === statusFilter;
             return matchesKeyword && matchesStatus;
+        });
+
+        // Apply dynamic multi-field sorting
+        filtered.sort((a, b) => {
+            switch (currentBookingSort) {
+                case 'created-asc': {
+                    return getBookingTimestamp(a) - getBookingTimestamp(b);
+                }
+                case 'created-desc': {
+                    return getBookingTimestamp(b) - getBookingTimestamp(a);
+                }
+                case 'checkin-asc': {
+                    const dateA = new Date(a.checkIn || 0).getTime() || 0;
+                    const dateB = new Date(b.checkIn || 0).getTime() || 0;
+                    return dateA - dateB;
+                }
+                case 'checkin-desc': {
+                    const dateA = new Date(a.checkIn || 0).getTime() || 0;
+                    const dateB = new Date(b.checkIn || 0).getTime() || 0;
+                    return dateB - dateA;
+                }
+                case 'price-asc': {
+                    const priceA = Number(a.totalPrice || a.total || 0);
+                    const priceB = Number(b.totalPrice || b.total || 0);
+                    return priceA - priceB;
+                }
+                case 'price-desc': {
+                    const priceA = Number(a.totalPrice || a.total || 0);
+                    const priceB = Number(b.totalPrice || b.total || 0);
+                    return priceB - priceA;
+                }
+                case 'name-asc': {
+                    const nameA = String(a.guestName || '').toLowerCase();
+                    const nameB = String(b.guestName || '').toLowerCase();
+                    return nameA.localeCompare(nameB);
+                }
+                case 'name-desc': {
+                    const nameA = String(a.guestName || '').toLowerCase();
+                    const nameB = String(b.guestName || '').toLowerCase();
+                    return nameB.localeCompare(nameA);
+                }
+                default:
+                    return 0;
+            }
         });
 
         if (filtered.length === 0) {
@@ -213,6 +363,242 @@
         KaghanUI.showToast(`Permanently deleted ${successes}/${selectedIds.length} bookings from ledger.`, 'success');
         if (window.AdminDashboardModule) {
             await window.AdminDashboardModule.refreshAll();
+        }
+    };
+
+    // Excel Leads & Bookings Export (.csv with UTF-8 BOM)
+    window.exportBookingsToExcel = async (selectedOnly = false) => {
+        try {
+            const bookings = await KaghanDB.getBookings();
+            const rooms = await KaghanDB.getRooms();
+            
+            let targetBookings = [];
+            if (selectedOnly) {
+                const checkBoxes = document.querySelectorAll('.booking-row-checkbox:checked');
+                const selectedIds = Array.from(checkBoxes).map(cb => cb.value);
+                if (selectedIds.length === 0) {
+                    KaghanUI.showToast('Please select at least one booking to export.', 'warning');
+                    return;
+                }
+                targetBookings = bookings.filter(b => selectedIds.includes(b.id));
+            } else {
+                const keyword = (document.getElementById('booking-search-input')?.value || '').toLowerCase().trim();
+                const statusFilter = document.getElementById('booking-filter-status')?.value || 'all';
+                
+                targetBookings = bookings.filter(b => {
+                    const matchesKeyword = !keyword || 
+                                           (b.id && b.id.toLowerCase().includes(keyword)) || 
+                                           (b.guestName && b.guestName.toLowerCase().includes(keyword)) || 
+                                           (b.guestEmail && b.guestEmail.toLowerCase().includes(keyword)) ||
+                                           (b.guestPhone && b.guestPhone.includes(keyword)) ||
+                                           (b.cnic && b.cnic.toLowerCase().includes(keyword));
+                    const matchesStatus = statusFilter === 'all' || b.status === statusFilter;
+                    return matchesKeyword && matchesStatus;
+                });
+                if (targetBookings.length === 0) {
+                    targetBookings = bookings;
+                }
+            }
+
+            if (targetBookings.length === 0) {
+                KaghanUI.showToast('No booking records available to export.', 'info');
+                return;
+            }
+
+            const headers = [
+                'Booking ID',
+                'Booking Date',
+                'Guest Name',
+                'Email Address',
+                'Phone Number',
+                'CNIC / ID Number',
+                'Suite Style',
+                'Check-in Date',
+                'Check-out Date',
+                'Nights',
+                'Adults',
+                'Children',
+                'Total Amount (PKR)',
+                'Advance Paid (PKR)',
+                'Balance Due (PKR)',
+                'Booking Status',
+                'Payment Status',
+                'Payment Method',
+                'Coupon Used',
+                'Special Requests / Notes',
+                'Account Type',
+                'CNIC Front Document URL',
+                'CNIC Back Document URL'
+            ];
+
+            const csvRows = [];
+            csvRows.push(headers.map(h => `"${h.replace(/"/g, '""')}"`).join(','));
+
+            targetBookings.forEach(b => {
+                const room = rooms.find(r => r.id === b.roomId) || { name: b.roomName || 'Luxury Suite' };
+                const isWalkin = b.userId === 'usr-guest-walkin';
+                const bookingDate = b.createdAt ? new Date(b.createdAt).toLocaleDateString('en-GB') : (b.date || '');
+                const checkInDate = b.checkIn || '';
+                const checkOutDate = b.checkOut || '';
+                
+                let nights = b.nights;
+                if (!nights && checkInDate && checkOutDate) {
+                    const diff = Math.ceil((new Date(checkOutDate) - new Date(checkInDate)) / (1000 * 60 * 60 * 24));
+                    nights = diff > 0 ? diff : 1;
+                }
+                nights = nights || 1;
+
+                const total = Number(b.totalPrice || b.total || 0);
+                const advance = Number(b.advancePaid || (b.status === 'completed' ? total : 0));
+                const balance = Math.max(0, total - advance);
+
+                const row = [
+                    b.id || '',
+                    bookingDate,
+                    b.guestName || '',
+                    b.guestEmail || '',
+                    b.guestPhone || '',
+                    b.cnic || 'N/A',
+                    room.name,
+                    checkInDate,
+                    checkOutDate,
+                    nights,
+                    b.adults || b.guests || 2,
+                    b.children || 0,
+                    total,
+                    advance,
+                    balance,
+                    b.status ? b.status.toUpperCase() : 'CONFIRMED',
+                    b.paymentStatus || (b.status === 'completed' ? 'PAID' : 'PENDING'),
+                    b.paymentMethod || 'Pay on Arrival / Cash',
+                    b.couponUsed || 'None',
+                    b.specialRequests || b.notes || 'None',
+                    isWalkin ? 'Walk-in Guest' : 'Registered Member',
+                    b.cnicFrontUrl || '',
+                    b.cnicBackUrl || ''
+                ];
+
+                csvRows.push(row.map(val => {
+                    const str = String(val === null || val === undefined ? '' : val);
+                    return `"${str.replace(/"/g, '""')}"`;
+                }).join(','));
+            });
+
+            const csvContent = '\uFEFF' + csvRows.join('\r\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            const dateStr = new Date().toISOString().split('T')[0];
+            link.setAttribute('href', url);
+            link.setAttribute('download', `Kaghan_Stay_Leads_Bookings_${dateStr}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+
+            KaghanUI.showToast(`Successfully downloaded Excel leads file (${targetBookings.length} bookings).`, 'success');
+        } catch (err) {
+            console.error("Export Excel error:", err);
+            KaghanUI.showToast('Failed to export Excel leads: ' + err.message, 'error');
+        }
+    };
+
+    // Bulk Add Customer Leads to Newsletter List
+    window.bulkAddBookingsToNewsletter = async (selectedOnly = true) => {
+        try {
+            const bookings = await KaghanDB.getBookings();
+            let targetBookings = [];
+
+            if (selectedOnly) {
+                const checkBoxes = document.querySelectorAll('.booking-row-checkbox:checked');
+                const selectedIds = Array.from(checkBoxes).map(cb => cb.value);
+                if (selectedIds.length === 0) {
+                    KaghanUI.showToast('Please select at least one booking to add to the newsletter.', 'warning');
+                    return;
+                }
+                targetBookings = bookings.filter(b => selectedIds.includes(b.id));
+            } else {
+                targetBookings = bookings;
+            }
+
+            const subscribers = [];
+            const seenEmails = new Set();
+
+            targetBookings.forEach(b => {
+                const email = String(b.guestEmail || '').toLowerCase().trim();
+                if (email && email.includes('@') && !seenEmails.has(email)) {
+                    seenEmails.add(email);
+                    subscribers.push({
+                        email: email,
+                        name: b.guestName || '',
+                        phone: b.guestPhone || '',
+                        source: 'booking_lead'
+                    });
+                }
+            });
+
+            if (subscribers.length === 0) {
+                KaghanUI.showToast('No valid customer email addresses found in the selection.', 'warning');
+                return;
+            }
+
+            if (!confirm(`Subscribe ${subscribers.length} unique customer lead(s) to the Kaghan Stay Newsletter broadcast list?`)) {
+                return;
+            }
+
+            const result = await KaghanDB.addNewsletterSubscribers(subscribers);
+            const added = result && typeof result.added === 'number' ? result.added : subscribers.length;
+            const skipped = result && typeof result.skipped === 'number' ? result.skipped : 0;
+
+            if (added > 0) {
+                KaghanUI.showToast(`Subscribed ${added} guest(s) to the newsletter list! (${skipped} already subscribed / skipped)`, 'success');
+            } else {
+                KaghanUI.showToast(`All selected guests are already subscribed to the newsletter (${skipped} skipped).`, 'info');
+            }
+
+            if (window.renderNewsletter) {
+                window.renderNewsletter();
+            }
+            window.dispatchEvent(new CustomEvent('kaghan-db-newsletter', { detail: subscribers }));
+        } catch (err) {
+            console.error("Add to newsletter error:", err);
+            KaghanUI.showToast('Failed to add to newsletter: ' + err.message, 'error');
+        }
+    };
+
+    // Add Single Booking Guest to Newsletter
+    window.addCurrentBookingToNewsletter = async (bookingId) => {
+        try {
+            const id = bookingId || activeDetailBookingId;
+            if (!id) {
+                KaghanUI.showToast('No active booking selected.', 'error');
+                return;
+            }
+            const b = await KaghanDB.getBookingById(id);
+            if (!b || !b.guestEmail) {
+                KaghanUI.showToast('No email found for this booking record.', 'error');
+                return;
+            }
+
+            const result = await KaghanDB.addNewsletterSubscribers([{
+                email: b.guestEmail,
+                name: b.guestName || '',
+                phone: b.guestPhone || '',
+                source: 'booking_detail'
+            }]);
+
+            const added = result && typeof result.added === 'number' ? result.added : 1;
+            if (added > 0) {
+                KaghanUI.showToast(`Added ${b.guestName || b.guestEmail} to the newsletter subscribers list!`, 'success');
+            } else {
+                KaghanUI.showToast(`${b.guestEmail} is already subscribed to the newsletter.`, 'info');
+            }
+
+            if (window.renderNewsletter) window.renderNewsletter();
+            window.dispatchEvent(new CustomEvent('kaghan-db-newsletter', { detail: [] }));
+        } catch (err) {
+            console.error("Add single to newsletter error:", err);
+            KaghanUI.showToast('Failed to add to newsletter: ' + err.message, 'error');
         }
     };
 

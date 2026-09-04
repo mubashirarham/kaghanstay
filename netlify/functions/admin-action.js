@@ -302,6 +302,39 @@ exports.handler = async (event, context) => {
                 }
                 break;
             }
+            case 'addNewsletterSubscribers': {
+                const { subscribers } = data || {};
+                if (!Array.isArray(subscribers) || subscribers.length === 0) {
+                    throw new Error("Subscribers list is required.");
+                }
+                const results = { added: 0, skipped: 0 };
+                const subscribersRef = fdb.collection('newsletter');
+                const listToProcess = subscribers.slice(0, 100);
+                for (const item of listToProcess) {
+                    const email = String(item.email || '').toLowerCase().trim();
+                    if (!email || !email.includes('@')) {
+                        results.skipped++;
+                        continue;
+                    }
+                    const query = await subscribersRef.where('email', '==', email).limit(1).get();
+                    if (!query.empty) {
+                        results.skipped++;
+                        continue;
+                    }
+                    const subId = 'sub-' + Math.floor(100000 + Math.random() * 900000);
+                    await subscribersRef.doc(subId).set({
+                        id: subId,
+                        email: email,
+                        name: item.name ? String(item.name).trim() : '',
+                        phone: item.phone ? String(item.phone).trim() : '',
+                        source: item.source || 'bookings_lead',
+                        subscribedAt: new Date().toISOString()
+                    });
+                    results.added++;
+                }
+                result = results;
+                break;
+            }
             case 'deleteReview': {
                 const { reviewId } = data;
                 if (!reviewId) throw new Error("Review ID is required.");

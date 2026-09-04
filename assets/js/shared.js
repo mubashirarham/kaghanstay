@@ -1560,16 +1560,58 @@ const db = {
     },
     subscribeNewsletter: async (email) => {
         const docId = email.trim().toLowerCase().replace(/[^a-z0-9]/g, '_');
-        await fdb.collection('subscribers').doc(docId).set({
+        await fdb.collection('newsletter').doc(docId).set({
             email: email.trim().toLowerCase(),
             subscribedAt: new Date().toISOString()
         });
+        window.KaghanDB_Cache.newsletter = null;
         return true;
     },
+    addNewsletterSubscribers: async (subscribers) => {
+        if (!Array.isArray(subscribers) || subscribers.length === 0) return { added: 0, skipped: 0 };
+        try {
+            const res = await callAdminAction('addNewsletterSubscribers', { subscribers });
+            window.KaghanDB_Cache.newsletter = null;
+            return res;
+        } catch (e) {
+            console.warn("Serverless addNewsletterSubscribers fallback to local/direct:", e.message);
+            let localList = [];
+            try {
+                localList = JSON.parse(localStorage.getItem('kaghan_local_newsletter') || '[]');
+            } catch (_) {}
+            let added = 0;
+            let skipped = 0;
+            subscribers.forEach(s => {
+                const email = String(s.email || '').toLowerCase().trim();
+                if (email && !localList.some(item => item.email === email)) {
+                    localList.push({
+                        id: 'sub-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
+                        email: email,
+                        name: s.name || '',
+                        phone: s.phone || '',
+                        subscribedAt: new Date().toISOString()
+                    });
+                    added++;
+                } else {
+                    skipped++;
+                }
+            });
+            localStorage.setItem('kaghan_local_newsletter', JSON.stringify(localList));
+            window.KaghanDB_Cache.newsletter = localList;
+            return { added, skipped };
+        }
+    },
     deleteNewsletterSubscriber: async (email) => {
-        const docId = email.trim().toLowerCase().replace(/[^a-z0-9]/g, '_');
-        await fdb.collection('subscribers').doc(docId).delete();
-        return true;
+        try {
+            await callAdminAction('deleteNewsletterSubscriber', { email });
+            window.KaghanDB_Cache.newsletter = null;
+            return true;
+        } catch (e) {
+            const docId = email.trim().toLowerCase().replace(/[^a-z0-9]/g, '_');
+            await fdb.collection('newsletter').doc(docId).delete();
+            window.KaghanDB_Cache.newsletter = null;
+            return true;
+        }
     },
     getReviews: async () => {
         if (window.KaghanDB_Cache.reviews) {
