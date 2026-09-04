@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Booking Details | KPH Stay Administrator</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/png" href="/assets/images/logo.png">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- html2pdf.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- Global CSS -->
+    <link rel="stylesheet" href="/assets/css/style.css?v=5">
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #F8FAFC; color: #0F172A; }
+        .outfit { font-family: 'Outfit', sans-serif; }
+    </style>
+</head>
+<body class="min-h-screen pb-16">
+
+    <!-- Top Admin Header -->
+    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-slate-200 px-4 sm:px-8 py-3.5 flex items-center justify-between shadow-xs">
+        <div class="flex items-center gap-3">
+            <a href="/admin/index.html" class="flex items-center gap-2 text-slate-500 hover:text-slate-900 transition-colors text-xs font-bold mr-2">
+                <i class="fa-solid fa-arrow-left"></i>
+                <span class="hidden sm:inline">Admin Console</span>
+            </a>
+            <div class="h-4 w-px bg-slate-200"></div>
+            <img src="/assets/images/logo.png" alt="KPH Stay" class="h-8 w-auto object-contain">
+            <span class="text-xs font-extrabold tracking-wider uppercase text-slate-800 outfit">Booking Inspector</span>
+        </div>
+
+        <div class="flex items-center gap-2">
+            <button type="button" onclick="downloadBookingPDF()" id="pdf-download-btn" class="bg-slate-900 hover:bg-black text-white text-xs font-bold px-4 py-2 rounded-xl transition-all shadow-sm flex items-center gap-2">
+                <i class="fa-solid fa-file-pdf text-rose-400"></i>
+                <span>Download PDF</span>
+            </button>
+            <button type="button" onclick="window.print()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5">
+                <i class="fa-solid fa-print text-slate-500"></i>
+                <span class="hidden sm:inline">Print</span>
+            </button>
+            <a href="/admin/index.html" class="bg-amber-50 hover:bg-amber-100 text-[#B8860B] border border-amber-200 text-xs font-bold px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5">
+                <i class="fa-solid fa-table-list"></i>
+                <span class="hidden sm:inline">All Bookings</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 pt-8 space-y-6">
+
+        <!-- Loading State -->
+        <div id="booking-loading" class="text-center py-20">
+            <i class="fa-solid fa-circle-notch fa-spin text-3xl text-[#D4AF37] mb-3"></i>
+            <p class="text-xs text-slate-400 font-medium">Retrieving booking record from secure ledger...</p>
+        </div>
+
+        <!-- Not Found State -->
+        <div id="booking-not-found" class="hidden bg-white rounded-3xl p-12 text-center border border-slate-200 shadow-sm space-y-4">
+            <div class="w-16 h-16 rounded-full bg-rose-50 text-rose-500 mx-auto flex items-center justify-center text-2xl">
+                <i class="fa-solid fa-calendar-xmark"></i>
+            </div>
+            <h2 class="text-xl font-bold text-slate-800 outfit">Booking Record Not Found</h2>
+            <p class="text-xs text-slate-500 max-w-md mx-auto">The requested reservation ID could not be located in the ledger or may have been deleted.</p>
+            <a href="/admin/index.html" class="inline-block bg-slate-900 text-white text-xs font-bold px-5 py-2.5 rounded-xl hover:bg-slate-800 transition-all">
+                Return to Bookings Ledger
+            </a>
+        </div>
+
+        <!-- Booking Details View -->
+        <div id="booking-content" class="hidden space-y-6">
+
+            <!-- Title & Status Header -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Reservation Reference /</span>
+                        <span id="booking-id-tag" class="text-xs font-black text-[#D4AF37] uppercase font-mono tracking-wider">BK-...</span>
+                    </div>
+                    <h1 id="booking-guest-title" class="text-2xl font-black outfit text-slate-900 mt-1">Guest Reservation</h1>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <div class="flex items-center bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 gap-2">
+                        <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Status:</span>
+                        <select id="booking-status-select" onchange="changeStatus(this.value)" class="bg-transparent text-xs font-bold outline-none cursor-pointer text-slate-800">
+                            <option value="confirmed">Confirmed</option>
+                            <option value="completed">Completed</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Executive Ribbon -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Booking Reference</span>
+                    <div id="ribbon-id" class="text-base font-black outfit text-slate-900 font-mono">BK-...</div>
+                    <div id="ribbon-source" class="text-[11px] text-slate-500 font-medium mt-0.5">KPHStay.com</div>
+                </div>
+                <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Stay Duration</span>
+                    <div id="ribbon-nights" class="text-base font-black outfit text-slate-900">0 Nights</div>
+                    <div id="ribbon-dates" class="text-[11px] text-slate-500 font-medium mt-0.5">Date range</div>
+                </div>
+                <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Total Amount</span>
+                    <div id="ribbon-total" class="text-base font-black outfit text-[#D4AF37]">PKR 0</div>
+                    <div id="ribbon-payment-status" class="text-[10px] font-extrabold uppercase mt-0.5 text-emerald-600">PAID</div>
+                </div>
+                <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Balance Due</span>
+                    <div id="ribbon-balance" class="text-base font-black outfit text-slate-800">PKR 0</div>
+                    <div id="ribbon-advance" class="text-[11px] text-slate-500 font-medium mt-0.5">Advance: PKR 0</div>
+                </div>
+            </div>
+
+            <!-- Two-Column Layout -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+                <!-- Left Column (7 cols) -->
+                <div class="lg:col-span-7 space-y-6">
+
+                    <!-- Guest Profile Card -->
+                    <div class="bg-white rounded-3xl p-6 sm:p-7 border border-slate-100 shadow-sm space-y-5">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-2xl bg-[#D4AF37]/10 text-[#D4AF37] flex items-center justify-center font-black outfit text-sm shadow-xs">
+                                    <i class="fa-solid fa-user-check"></i>
+                                </div>
+                                <div>
+                                    <h2 class="text-base font-bold outfit text-slate-900">Guest Information</h2>
+                                    <p class="text-xs text-slate-400">Personal contact details and identity</p>
+                                </div>
+                            </div>
+                            <div id="guest-badge-wrap"></div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                            <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200/60">
+                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Primary Guest Name</span>
+                                <span id="guest-name" class="font-extrabold text-sm text-slate-900 block">...</span>
+                            </div>
+                            <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200/60">
+                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Phone Number</span>
+                                <div class="flex items-center justify-between">
+                                    <span id="guest-phone" class="font-extrabold text-slate-800">...</span>
+                                    <div class="flex items-center gap-1.5" id="guest-phone-actions"></div>
+                                </div>
+                            </div>
+                            <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200/60">
+                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Email Address</span>
+                                <div class="flex items-center justify-between">
+                                    <span id="guest-email" class="font-extrabold text-slate-800 truncate mr-2">...</span>
+                                    <a id="guest-email-link" href="#" class="text-indigo-600 hover:text-indigo-800" title="Send Email"><i class="fa-solid fa-envelope"></i></a>
+                                </div>
+                            </div>
+                            <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200/60">
+                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">CNIC / Passport ID</span>
+                                <span id="guest-cnic" class="font-extrabold text-slate-800 block">Verified at Check-in</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Suite Details Card -->
+                    <div class="bg-white rounded-3xl p-6 sm:p-7 border border-slate-100 shadow-sm space-y-5">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm shadow-xs">
+                                    <i class="fa-solid fa-hotel"></i>
+                                </div>
+                                <div>
+                                    <h2 class="text-base font-bold outfit text-slate-900">Reservation & Suite Details</h2>
+                                    <p class="text-xs text-slate-400">Accommodations, schedule, and guest count</p>
+                                </div>
+                            </div>
+                            <div id="suite-location-badge" class="text-xs font-bold text-slate-600 bg-slate-100 px-3 py-1 rounded-full">
+                                Islamabad
+                            </div>
+                        </div>
+
+                        <!-- Suite Banner -->
+                        <div class="flex flex-col sm:flex-row gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-200/70 items-start sm:items-center">
+                            <img id="suite-thumb" src="/assets/images/logo.png" alt="Suite Thumbnail" class="w-20 h-16 rounded-xl object-cover border border-slate-200 bg-white flex-shrink-0">
+                            <div class="flex-1 min-w-0">
+                                <h3 id="suite-name" class="font-bold text-sm text-slate-900 truncate">Luxury Suite</h3>
+                                <p id="suite-rate" class="text-xs text-[#D4AF37] font-bold mt-0.5">PKR 0 / Night</p>
+                                <p id="suite-id" class="text-[10px] text-slate-400 font-mono mt-0.5">Room ID: ...</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                            <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200/60">
+                                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Check-in</span>
+                                <div id="stay-checkin" class="font-extrabold text-slate-900 text-xs">...</div>
+                                <span class="text-[10px] text-slate-400 font-medium">From 2:00 PM</span>
+                            </div>
+                            <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200/60">
+                                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Check-out</span>
+                                <div id="stay-checkout" class="font-extrabold text-slate-900 text-xs">...</div>
+                                <span class="text-[10px] text-slate-400 font-medium">Until 12:00 PM</span>
+                            </div>
+                            <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200/60">
+                                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Nights</span>
+                                <div id="stay-nights" class="font-extrabold text-slate-900 text-xs">1 Night</div>
+                                <span class="text-[10px] text-slate-400 font-medium">Total Stay</span>
+                            </div>
+                            <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200/60">
+                                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Occupancy</span>
+                                <div id="stay-guests" class="font-extrabold text-slate-900 text-xs">2 Adults</div>
+                                <span id="stay-children" class="text-[10px] text-slate-400 font-medium">0 Children</span>
+                            </div>
+                        </div>
+
+                        <!-- Special Notes -->
+                        <div id="notes-card" class="bg-amber-50/50 border border-amber-200/70 p-4 rounded-2xl">
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-amber-800 block mb-1 flex items-center gap-1.5">
+                                <i class="fa-solid fa-message-quote"></i> Special Requests & Guest Notes
+                            </span>
+                            <p id="special-notes" class="text-xs text-amber-900 italic font-medium">No special requests specified for this stay.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column (5 cols) -->
+                <div class="lg:col-span-5 space-y-6">
+
+                    <!-- Billing & Payment Card -->
+                    <div class="bg-white rounded-3xl p-6 sm:p-7 border border-slate-100 shadow-sm space-y-5">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-sm shadow-xs">
+                                    <i class="fa-solid fa-receipt"></i>
+                                </div>
+                                <div>
+                                    <h2 class="text-base font-bold outfit text-slate-900">Billing & Payment</h2>
+                                    <p class="text-xs text-slate-400">Financial summary & transaction receipt</p>
+                                </div>
+                            </div>
+                            <span id="billing-status-badge" class="bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full px-3 py-0.5 text-[10px] font-bold tracking-wide uppercase">
+                                PAID
+                            </span>
+                        </div>
+
+                        <!-- Itemized Breakdown -->
+                        <div class="space-y-2.5 text-xs text-slate-600">
+                            <div class="flex justify-between items-center py-1">
+                                <span id="line-room-lbl">Accommodation Subtotal:</span>
+                                <span id="line-room-val" class="font-bold text-slate-900">PKR 0</span>
+                            </div>
+                            <div id="line-cleaning-row" class="hidden flex justify-between items-center py-1 border-t border-slate-100 pt-2">
+                                <span>Housekeeping & Cleaning:</span>
+                                <span id="line-cleaning-val" class="font-semibold text-slate-800">PKR 0</span>
+                            </div>
+                            <div id="line-extra-row" class="hidden flex justify-between items-center py-1 border-t border-slate-100 pt-2">
+                                <span>Extra Guest Charges:</span>
+                                <span id="line-extra-val" class="font-semibold text-slate-800">PKR 0</span>
+                            </div>
+                            <div id="line-upgrades-row" class="hidden flex justify-between items-center py-1 border-t border-slate-100 pt-2">
+                                <span>Add-ons / Amenities:</span>
+                                <span id="line-upgrades-val" class="font-semibold text-slate-800">PKR 0</span>
+                            </div>
+                            <div id="line-discount-row" class="hidden flex justify-between items-center py-1 border-t border-slate-100 pt-2 text-emerald-600 font-bold">
+                                <span id="discount-lbl">Coupon Discount:</span>
+                                <span id="line-discount-val">- PKR 0</span>
+                            </div>
+                            
+                            <div class="border-t-2 border-slate-900 pt-3 flex justify-between items-center text-sm font-black text-slate-900">
+                                <span>Grand Total:</span>
+                                <span id="grand-total" class="text-base text-[#D4AF37] font-black outfit">PKR 0</span>
+                            </div>
+
+                            <div class="flex justify-between items-center text-xs text-slate-500 pt-1">
+                                <span>Advance Collected:</span>
+                                <span id="advance-paid" class="font-semibold">PKR 0</span>
+                            </div>
+
+                            <div class="flex justify-between items-center text-xs font-bold pt-1.5 border-t border-dashed border-slate-200">
+                                <span>Balance Due:</span>
+                                <span id="balance-due" class="text-rose-600 font-extrabold text-sm">PKR 0</span>
+                            </div>
+                        </div>
+
+                        <!-- Reference Details -->
+                        <div class="bg-slate-50 rounded-2xl p-3.5 border border-slate-200/70 text-[11px] space-y-1.5">
+                            <div class="flex justify-between">
+                                <span class="text-slate-400 font-bold uppercase text-[9px]">Payment Method:</span>
+                                <span id="payment-method" class="font-bold text-slate-800">Cash / Direct Bank</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-400 font-bold uppercase text-[9px]">Transaction Ref:</span>
+                                <span id="payment-ref" class="font-mono text-slate-700">N/A</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-400 font-bold uppercase text-[9px]">Invoice Number:</span>
+                                <span id="invoice-no" class="font-mono font-bold text-slate-900">#KPH-INV-...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Live Invoice Preview Card -->
+                    <div class="bg-white rounded-3xl p-6 sm:p-7 border border-slate-100 shadow-sm space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                            <div>
+                                <h3 class="text-sm font-bold outfit text-slate-900">Official Invoice Preview</h3>
+                                <p class="text-[10px] text-slate-400">Live preview of guest voucher & receipt</p>
+                            </div>
+                            <button type="button" onclick="downloadBookingPDF()" class="text-xs text-[#D4AF37] hover:underline font-bold flex items-center gap-1">
+                                <i class="fa-solid fa-download"></i> Download PDF
+                            </button>
+                        </div>
+
+                        <div class="border border-slate-200 rounded-2xl p-2 bg-slate-50/50 max-h-[420px] overflow-y-auto shadow-inner text-left">
+                            <div id="live-invoice-container" class="transform origin-top scale-[0.82] -mb-16">
+                                <!-- Populated dynamically via window.getCleanInvoiceHTML() -->
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="/assets/js/shared.js?v=5"></script>
+
+    <script>
+        let currentBooking = null;
+        let currentRoom = null;
+
+        async function initPage() {
+            // Check session
+            const sessionUser = KaghanDB.getCurrentUser();
+            if (!sessionUser || !['admin', 'moderator', 'editor'].includes(sessionUser.role)) {
+                window.location.href = '/login.html?redirect=' + encodeURIComponent(window.location.pathname + window.location.search);
+                return;
+            }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const bookingId = urlParams.get('id') || urlParams.get('booking');
+
+            if (!bookingId) {
+                document.getElementById('booking-loading').classList.add('hidden');
+                document.getElementById('booking-not-found').classList.remove('hidden');
+                return;
+            }
+
+            try {
+                const bookings = await KaghanDB.getBookings();
+                currentBooking = bookings.find(b => b.id === bookingId);
+
+                if (!currentBooking) {
+                    document.getElementById('booking-loading').classList.add('hidden');
+                    document.getElementById('booking-not-found').classList.remove('hidden');
+                    return;
+                }
+
+                const rooms = await KaghanDB.getRooms();
+                currentRoom = rooms.find(r => r.id === currentBooking.roomId) || {
+                    name: currentBooking.propertyName || 'Luxury Accommodation',
+                    price: currentBooking.totalPrice,
+                    location: 'Islamabad'
+                };
+
+                renderDetails(currentBooking, currentRoom);
+                document.getElementById('booking-loading').classList.add('hidden');
+                document.getElementById('booking-content').classList.remove('hidden');
+
+            } catch (err) {
+                console.error("Error loading booking:", err);
+                document.getElementById('booking-loading').classList.add('hidden');
+                document.getElementById('booking-not-found').classList.remove('hidden');
+            }
+        }
+
+        function renderDetails(b, r) {
+            const inDate = new Date(b.checkIn);
+            const outDate = new Date(b.checkOut);
+            let nights = 1;
+            if (!isNaN(inDate.getTime()) && !isNaN(outDate.getTime())) {
+                nights = Math.max(1, Math.ceil((outDate - inDate) / (1000 * 3600 * 24)));
+            }
+
+            const grandTotal = Number(b.grandTotal || b.totalPrice || 0);
+            const accomCharges = b.accomCharges !== undefined ? Number(b.accomCharges) : (b.subtotal ? Number(b.subtotal) : grandTotal);
+            const cleaningFee = Number(b.cleaningFee || 0);
+            const extraGuestCharges = Number(b.extraGuestCharges || 0);
+            const otherCharges = Number(b.otherCharges || (b.upgradesTotal || 0));
+            const subtotal = b.subtotal !== undefined ? Number(b.subtotal) : (accomCharges + cleaningFee + extraGuestCharges + otherCharges);
+            const discount = Number(b.discount || b.discountAmount || 0);
+            const advancePaid = b.advancePaid !== undefined ? Number(b.advancePaid) : (b.paymentStatus === 'PAID' ? grandTotal : Number(b.advanceAmount || 0));
+            const balanceDue = b.balanceDue !== undefined ? Number(b.balanceDue) : Math.max(0, grandTotal - advancePaid);
+            const paymentStatus = (b.paymentStatus || (balanceDue === 0 ? 'PAID' : (advancePaid > 0 ? 'PARTIALLY PAID' : 'UNPAID'))).toUpperCase();
+            const isPaid = paymentStatus === 'PAID';
+
+            const bookingSource = b.bookingSource || (b.userId === 'usr-guest-walkin' ? 'Walk-in Guest' : 'KPHStay.com');
+            const invoiceNo = b.invoiceNo || `KPH-INV-${(b.id || '').replace(/^KPH-BOOK-|^BK-/, '')}`;
+
+            // Header
+            document.getElementById('booking-id-tag').textContent = b.id;
+            document.getElementById('booking-guest-title').textContent = `Booking ${b.id} — ${b.guestName}`;
+            document.getElementById('booking-status-select').value = b.status || 'confirmed';
+
+            // Ribbon
+            document.getElementById('ribbon-id').textContent = b.id;
+            document.getElementById('ribbon-source').textContent = bookingSource;
+            document.getElementById('ribbon-nights').textContent = `${nights} Night${nights > 1 ? 's' : ''}`;
+            document.getElementById('ribbon-dates').textContent = `${KaghanUI.formatDate(b.checkIn)} → ${KaghanUI.formatDate(b.checkOut)}`;
+            document.getElementById('ribbon-total').textContent = KaghanUI.formatPKR(grandTotal);
+            const rPayStatus = document.getElementById('ribbon-payment-status');
+            rPayStatus.textContent = paymentStatus;
+            rPayStatus.className = `text-[10px] font-extrabold uppercase mt-0.5 ${isPaid ? 'text-emerald-600' : (balanceDue === 0 ? 'text-emerald-600' : 'text-amber-600')}`;
+            document.getElementById('ribbon-balance').textContent = KaghanUI.formatPKR(balanceDue);
+            document.getElementById('ribbon-advance').textContent = `Advance: ${KaghanUI.formatPKR(advancePaid)}`;
+
+            // Guest Profile
+            document.getElementById('guest-name').textContent = b.guestName;
+            document.getElementById('guest-phone').textContent = b.guestPhone || 'N/A';
+            document.getElementById('guest-email').textContent = b.guestEmail || 'N/A';
+            document.getElementById('guest-email-link').href = `mailto:${b.guestEmail || ''}`;
+            document.getElementById('guest-cnic').textContent = b.cnicPassport || b.cnic || 'Verified at Check-in';
+
+            const phoneActions = document.getElementById('guest-phone-actions');
+            if (phoneActions && b.guestPhone) {
+                const cleanPhone = b.guestPhone.replace(/[^0-9+]/g, '');
+                const waPhone = cleanPhone.replace(/^0/, '92').replace(/^\+/, '');
+                phoneActions.innerHTML = `
+                    <a href="tel:${cleanPhone}" class="w-6 h-6 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-600 flex items-center justify-center text-[10px]" title="Call Guest"><i class="fa-solid fa-phone"></i></a>
+                    <a href="https://wa.me/${waPhone}" target="_blank" class="w-6 h-6 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-600 flex items-center justify-center text-[10px]" title="WhatsApp Guest"><i class="fa-brands fa-whatsapp"></i></a>
+                `;
+            }
+
+            const isWalkin = b.userId === 'usr-guest-walkin';
+            document.getElementById('guest-badge-wrap').innerHTML = isWalkin
+                ? `<span class="bg-slate-200 text-slate-700 border border-slate-300 rounded-full px-3 py-1 text-[10px] font-bold tracking-wide uppercase">Walk-in Guest</span>`
+                : `<span class="bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-full px-3 py-1 text-[10px] font-bold tracking-wide uppercase">Kaghan Member</span>`;
+
+            // Suite Details
+            document.getElementById('suite-name').textContent = r.name || 'Luxury Suite';
+            document.getElementById('suite-rate').textContent = `${KaghanUI.formatPKR(r.price || (grandTotal / nights))} / Night`;
+            document.getElementById('suite-id').textContent = `Room ID: ${r.id || b.roomId}`;
+            document.getElementById('suite-location-badge').textContent = r.location || 'Islamabad';
+            document.getElementById('suite-thumb').src = (r.images && r.images[0]) || r.image || '/assets/images/logo.png';
+
+            document.getElementById('stay-checkin').textContent = KaghanUI.formatDate(b.checkIn);
+            document.getElementById('stay-checkout').textContent = KaghanUI.formatDate(b.checkOut);
+            document.getElementById('stay-nights').textContent = `${nights} Night${nights > 1 ? 's' : ''}`;
+            document.getElementById('stay-guests').textContent = `${b.adults || 2} Adults`;
+            document.getElementById('stay-children').textContent = `${b.children || 0} Children`;
+            document.getElementById('special-notes').textContent = b.specialRequests || b.notes || 'No special requests specified for this stay.';
+
+            // Billing
+            document.getElementById('line-room-lbl').textContent = `Accommodation (${nights} Night${nights > 1 ? 's' : ''}):`;
+            document.getElementById('line-room-val').textContent = KaghanUI.formatPKR(accomCharges);
+
+            if (cleaningFee > 0) {
+                document.getElementById('line-cleaning-row').classList.remove('hidden');
+                document.getElementById('line-cleaning-val').textContent = KaghanUI.formatPKR(cleaningFee);
+            }
+            if (extraGuestCharges > 0) {
+                document.getElementById('line-extra-row').classList.remove('hidden');
+                document.getElementById('line-extra-val').textContent = KaghanUI.formatPKR(extraGuestCharges);
+            }
+            if (otherCharges > 0) {
+                document.getElementById('line-upgrades-row').classList.remove('hidden');
+                document.getElementById('line-upgrades-val').textContent = KaghanUI.formatPKR(otherCharges);
+            }
+            if (discount > 0) {
+                document.getElementById('line-discount-row').classList.remove('hidden');
+                document.getElementById('discount-lbl').textContent = `Discount ${b.couponUsed ? `(${b.couponUsed})` : ''}:`;
+                document.getElementById('line-discount-val').textContent = `- ${KaghanUI.formatPKR(discount)}`;
+            }
+
+            document.getElementById('grand-total').textContent = KaghanUI.formatPKR(grandTotal);
+            document.getElementById('advance-paid').textContent = KaghanUI.formatPKR(advancePaid);
+            const bDue = document.getElementById('balance-due');
+            bDue.textContent = KaghanUI.formatPKR(balanceDue);
+            bDue.className = balanceDue > 0 ? 'text-rose-600 font-extrabold text-sm' : 'text-emerald-600 font-extrabold text-sm';
+
+            document.getElementById('payment-method').textContent = b.paymentMethod || 'Credit/Debit Card / Direct Pay';
+            document.getElementById('payment-ref').textContent = b.transactionNo || b.paymentRef || b.id || 'N/A';
+            document.getElementById('invoice-no').textContent = `#${invoiceNo}`;
+
+            const bBadge = document.getElementById('billing-status-badge');
+            bBadge.textContent = paymentStatus;
+            bBadge.className = isPaid 
+                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full px-3 py-0.5 text-[10px] font-bold tracking-wide uppercase'
+                : 'bg-amber-50 text-amber-700 border border-amber-200 rounded-full px-3 py-0.5 text-[10px] font-bold tracking-wide uppercase';
+
+            // Live Invoice
+            if (window.getCleanInvoiceHTML) {
+                document.getElementById('live-invoice-container').innerHTML = window.getCleanInvoiceHTML(b, r);
+            }
+        }
+
+        async function changeStatus(newStatus) {
+            if (!currentBooking) return;
+            const success = await KaghanDB.updateBookingStatus(currentBooking.id, newStatus);
+            if (success) {
+                KaghanUI.showToast(`Status updated to ${newStatus}.`, 'success');
+                currentBooking.status = newStatus;
+            } else {
+                KaghanUI.showToast('Failed to update status.', 'error');
+            }
+        }
+
+        async function downloadBookingPDF() {
+            if (!currentBooking) return;
+            const btn = document.getElementById('pdf-download-btn');
+            const orig = btn ? btn.innerHTML : '';
+            if (btn) {
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>Generating...</span>';
+                btn.disabled = true;
+            }
+            try {
+                await window.downloadPDFInvoice(currentBooking.id);
+            } finally {
+                if (btn) {
+                    btn.innerHTML = orig;
+                    btn.disabled = false;
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initPage);
+    </script>
+</body>
+</html>

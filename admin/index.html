@@ -656,6 +656,290 @@
                 </div>
             </div>
 
+            <!-- VIEW: BOOKING DETAILS (CLEAN FULL VIEW) -->
+            <div id="view-booking-details" class="tab-view hidden space-y-6">
+                <!-- Top Navigation & Action Bar -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
+                    <div class="flex items-center gap-4">
+                        <button type="button" onclick="backToBookings()" class="w-10 h-10 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-all shadow-xs" title="Back to Bookings Ledger">
+                            <i class="fa-solid fa-arrow-left text-sm"></i>
+                        </button>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Bookings /</span>
+                                <span id="detail-booking-breadcrumb-id" class="text-xs font-bold text-[#D4AF37] uppercase tracking-wider font-mono">BK-...</span>
+                            </div>
+                            <h1 id="detail-booking-title" class="text-2xl font-extrabold outfit text-slate-900 mt-0.5">Booking Details</h1>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex flex-wrap items-center gap-2.5">
+                        <!-- Status Selector -->
+                        <div class="flex items-center bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 gap-2">
+                            <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Status:</span>
+                            <select id="detail-booking-status-select" onchange="updateBookingDetailStatus(this.value)" class="bg-transparent text-xs font-bold outline-none cursor-pointer text-slate-800">
+                                <option value="confirmed">Confirmed</option>
+                                <option value="completed">Completed</option>
+                                <option value="cancelled">Cancelled</option>
+                            </select>
+                        </div>
+
+                        <!-- Download PDF Invoice -->
+                        <button type="button" id="detail-download-pdf-btn" onclick="triggerDetailPDFDownload()" class="bg-slate-900 hover:bg-black text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-all shadow-md flex items-center gap-2">
+                            <i class="fa-solid fa-file-pdf text-rose-400 text-xs"></i>
+                            <span>Download PDF</span>
+                        </button>
+
+                        <!-- Print Receipt -->
+                        <button type="button" onclick="printBookingDetailReceipt()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-3.5 py-2.5 rounded-xl transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-print text-slate-500 text-xs"></i>
+                            <span class="hidden sm:inline">Print</span>
+                        </button>
+
+                        <!-- Open Standalone Page -->
+                        <a id="detail-standalone-link" href="#" target="_blank" class="bg-amber-50 hover:bg-amber-100 text-[#B8860B] border border-amber-200 text-xs font-bold px-3.5 py-2.5 rounded-xl transition-all flex items-center gap-1.5" title="Open in dedicated tab">
+                            <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                            <span class="hidden sm:inline">New Tab</span>
+                        </a>
+
+                        <!-- Edit Button -->
+                        <button type="button" id="detail-edit-booking-btn" onclick="openDetailEditModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-3.5 py-2.5 rounded-xl transition-all flex items-center gap-1.5">
+                            <i class="fa-solid fa-pen text-slate-500 text-xs"></i>
+                            <span class="hidden sm:inline">Edit</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Executive Summary Ribbon -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Booking Reference</span>
+                        <div id="detail-ribbon-id" class="text-base font-black outfit text-slate-900 font-mono">BK-...</div>
+                        <div id="detail-ribbon-source" class="text-[11px] text-slate-500 font-medium mt-0.5">KPHStay.com</div>
+                    </div>
+                    <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Stay Duration</span>
+                        <div id="detail-ribbon-nights" class="text-base font-black outfit text-slate-900">0 Nights</div>
+                        <div id="detail-ribbon-dates" class="text-[11px] text-slate-500 font-medium mt-0.5">Date range</div>
+                    </div>
+                    <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Total Amount</span>
+                        <div id="detail-ribbon-total" class="text-base font-black outfit text-[#D4AF37]">PKR 0</div>
+                        <div id="detail-ribbon-payment-status" class="text-[10px] font-extrabold uppercase mt-0.5 text-emerald-600">PAID</div>
+                    </div>
+                    <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Balance Due</span>
+                        <div id="detail-ribbon-balance" class="text-base font-black outfit text-slate-800">PKR 0</div>
+                        <div id="detail-ribbon-advance" class="text-[11px] text-slate-500 font-medium mt-0.5">Advance: PKR 0</div>
+                    </div>
+                </div>
+
+                <!-- Main Content Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <!-- Left Column: Guest & Reservation Details (7 cols) -->
+                    <div class="lg:col-span-7 space-y-6">
+                        <!-- Card: Guest Information -->
+                        <div class="bg-white rounded-3xl p-6 sm:p-7 border border-slate-100 shadow-sm space-y-5">
+                            <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-2xl bg-[#D4AF37]/10 text-[#D4AF37] flex items-center justify-center font-black outfit text-sm shadow-xs">
+                                        <i class="fa-solid fa-user-check"></i>
+                                    </div>
+                                    <div>
+                                        <h2 class="text-base font-bold outfit text-slate-900">Guest Information</h2>
+                                        <p class="text-xs text-slate-400">Personal contact details and guest profile</p>
+                                    </div>
+                                </div>
+                                <div id="detail-guest-type-badge">
+                                    <span class="bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-full px-3 py-1 text-[10px] font-bold tracking-wide uppercase">Member</span>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                                <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200/60">
+                                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Primary Guest Name</span>
+                                    <span id="detail-guest-name" class="font-extrabold text-sm text-slate-900 block">...</span>
+                                </div>
+                                <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200/60">
+                                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Phone Number</span>
+                                    <div class="flex items-center justify-between">
+                                        <span id="detail-guest-phone" class="font-extrabold text-slate-800">...</span>
+                                        <div class="flex items-center gap-1.5" id="detail-phone-actions"></div>
+                                    </div>
+                                </div>
+                                <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200/60">
+                                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Email Address</span>
+                                    <div class="flex items-center justify-between">
+                                        <span id="detail-guest-email" class="font-extrabold text-slate-800 truncate mr-2">...</span>
+                                        <a id="detail-email-link" href="#" class="text-indigo-600 hover:text-indigo-800" title="Send Email"><i class="fa-solid fa-envelope"></i></a>
+                                    </div>
+                                </div>
+                                <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200/60">
+                                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">CNIC / Passport ID</span>
+                                    <span id="detail-guest-cnic" class="font-extrabold text-slate-800 block">Verified at Check-in</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card: Suite & Stay Specifics -->
+                        <div class="bg-white rounded-3xl p-6 sm:p-7 border border-slate-100 shadow-sm space-y-5">
+                            <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm shadow-xs">
+                                        <i class="fa-solid fa-hotel"></i>
+                                    </div>
+                                    <div>
+                                        <h2 class="text-base font-bold outfit text-slate-900">Reservation & Suite Details</h2>
+                                        <p class="text-xs text-slate-400">Accommodations, schedule, and guest count</p>
+                                    </div>
+                                </div>
+                                <div id="detail-suite-location-badge" class="text-xs font-bold text-slate-600 bg-slate-100 px-3 py-1 rounded-full">
+                                    Islamabad
+                                </div>
+                            </div>
+
+                            <!-- Suite Info Preview Banner -->
+                            <div class="flex flex-col sm:flex-row gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-200/70 items-start sm:items-center">
+                                <img id="detail-suite-thumb" src="../assets/images/logo.png" alt="Suite Thumbnail" class="w-20 h-16 rounded-xl object-cover border border-slate-200 bg-white flex-shrink-0">
+                                <div class="flex-1 min-w-0">
+                                    <h3 id="detail-suite-name" class="font-bold text-sm text-slate-900 truncate">Luxury Suite</h3>
+                                    <p id="detail-suite-rate" class="text-xs text-[#D4AF37] font-bold mt-0.5">PKR 0 / Night</p>
+                                    <p id="detail-suite-id" class="text-[10px] text-slate-400 font-mono mt-0.5">Room ID: ...</p>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                                <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200/60">
+                                    <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Check-in</span>
+                                    <div id="detail-stay-checkin" class="font-extrabold text-slate-900 text-xs">...</div>
+                                    <span class="text-[10px] text-slate-400 font-medium">From 2:00 PM</span>
+                                </div>
+                                <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200/60">
+                                    <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Check-out</span>
+                                    <div id="detail-stay-checkout" class="font-extrabold text-slate-900 text-xs">...</div>
+                                    <span class="text-[10px] text-slate-400 font-medium">Until 12:00 PM</span>
+                                </div>
+                                <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200/60">
+                                    <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Nights</span>
+                                    <div id="detail-stay-nights" class="font-extrabold text-slate-900 text-xs">1 Night</div>
+                                    <span class="text-[10px] text-slate-400 font-medium">Total Stay</span>
+                                </div>
+                                <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200/60">
+                                    <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Occupancy</span>
+                                    <div id="detail-stay-guests" class="font-extrabold text-slate-900 text-xs">2 Adults</div>
+                                    <span id="detail-stay-children" class="text-[10px] text-slate-400 font-medium">0 Children</span>
+                                </div>
+                            </div>
+
+                            <!-- Special Notes / Requests -->
+                            <div id="detail-notes-card" class="bg-amber-50/50 border border-amber-200/70 p-4 rounded-2xl">
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-amber-800 block mb-1 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-message-quote"></i> Special Requests &amp; Guest Notes
+                                </span>
+                                <p id="detail-special-notes" class="text-xs text-amber-900 italic font-medium">No special requests specified for this stay.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Financial Breakdown & Live Invoice Preview (5 cols) -->
+                    <div class="lg:col-span-5 space-y-6">
+                        <!-- Card: Financial Breakdown -->
+                        <div class="bg-white rounded-3xl p-6 sm:p-7 border border-slate-100 shadow-sm space-y-5">
+                            <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-sm shadow-xs">
+                                        <i class="fa-solid fa-receipt"></i>
+                                    </div>
+                                    <div>
+                                        <h2 class="text-base font-bold outfit text-slate-900">Billing &amp; Payment</h2>
+                                        <p class="text-xs text-slate-400">Financial summary &amp; transaction receipt</p>
+                                    </div>
+                                </div>
+                                <span id="detail-billing-status-badge" class="bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full px-3 py-0.5 text-[10px] font-bold tracking-wide uppercase">
+                                    PAID
+                                </span>
+                            </div>
+
+                            <!-- Itemized Breakdown -->
+                            <div class="space-y-2.5 text-xs text-slate-600">
+                                <div class="flex justify-between items-center py-1">
+                                    <span id="detail-line-room-lbl">Accommodation Subtotal:</span>
+                                    <span id="detail-line-room-val" class="font-bold text-slate-900">PKR 0</span>
+                                </div>
+                                <div id="detail-line-cleaning-row" class="hidden flex justify-between items-center py-1 border-t border-slate-100 pt-2">
+                                    <span>Housekeeping &amp; Cleaning:</span>
+                                    <span id="detail-line-cleaning-val" class="font-semibold text-slate-800">PKR 0</span>
+                                </div>
+                                <div id="detail-line-extra-row" class="hidden flex justify-between items-center py-1 border-t border-slate-100 pt-2">
+                                    <span>Extra Guest Charges:</span>
+                                    <span id="detail-line-extra-val" class="font-semibold text-slate-800">PKR 0</span>
+                                </div>
+                                <div id="detail-line-upgrades-row" class="hidden flex justify-between items-center py-1 border-t border-slate-100 pt-2">
+                                    <span>Add-ons / Amenities:</span>
+                                    <span id="detail-line-upgrades-val" class="font-semibold text-slate-800">PKR 0</span>
+                                </div>
+                                <div id="detail-line-discount-row" class="hidden flex justify-between items-center py-1 border-t border-slate-100 pt-2 text-emerald-600 font-bold">
+                                    <span id="detail-discount-lbl">Coupon Discount:</span>
+                                    <span id="detail-line-discount-val">- PKR 0</span>
+                                </div>
+                                
+                                <div class="border-t-2 border-slate-900 pt-3 flex justify-between items-center text-sm font-black text-slate-900">
+                                    <span>Grand Total:</span>
+                                    <span id="detail-grand-total" class="text-base text-[#D4AF37] font-black outfit">PKR 0</span>
+                                </div>
+
+                                <div class="flex justify-between items-center text-xs text-slate-500 pt-1">
+                                    <span>Advance Collected:</span>
+                                    <span id="detail-advance-paid" class="font-semibold">PKR 0</span>
+                                </div>
+
+                                <div class="flex justify-between items-center text-xs font-bold pt-1.5 border-t border-dashed border-slate-200">
+                                    <span>Balance Due:</span>
+                                    <span id="detail-balance-due" class="text-rose-600 font-extrabold text-sm">PKR 0</span>
+                                </div>
+                            </div>
+
+                            <!-- Payment Method & Reference Box -->
+                            <div class="bg-slate-50 rounded-2xl p-3.5 border border-slate-200/70 text-[11px] space-y-1.5">
+                                <div class="flex justify-between">
+                                    <span class="text-slate-400 font-bold uppercase text-[9px]">Payment Method:</span>
+                                    <span id="detail-payment-method" class="font-bold text-slate-800">Cash / Direct Bank</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-400 font-bold uppercase text-[9px]">Transaction Ref:</span>
+                                    <span id="detail-payment-ref" class="font-mono text-slate-700">N/A</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-400 font-bold uppercase text-[9px]">Invoice Number:</span>
+                                    <span id="detail-invoice-no" class="font-mono font-bold text-slate-900">#KPH-INV-...</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card: Live Official Invoice Preview -->
+                        <div class="bg-white rounded-3xl p-6 sm:p-7 border border-slate-100 shadow-sm space-y-4">
+                            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                                <div>
+                                    <h3 class="text-sm font-bold outfit text-slate-900">Official Invoice Preview</h3>
+                                    <p class="text-[10px] text-slate-400">Live preview of guest voucher &amp; receipt</p>
+                                </div>
+                                <button type="button" onclick="triggerDetailPDFDownload()" class="text-xs text-[#D4AF37] hover:underline font-bold flex items-center gap-1">
+                                    <i class="fa-solid fa-download"></i> Download PDF
+                                </button>
+                            </div>
+
+                            <!-- Scaled down invoice container preview -->
+                            <div class="border border-slate-200 rounded-2xl p-2 bg-slate-50/50 max-h-[420px] overflow-y-auto shadow-inner text-left">
+                                <div id="detail-live-invoice-container" class="transform origin-top scale-[0.82] -mb-16">
+                                    <!-- Populated dynamically via window.getCleanInvoiceHTML() -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- VIEW: ROOMS -->
             <div id="view-rooms" class="tab-view hidden space-y-6">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">

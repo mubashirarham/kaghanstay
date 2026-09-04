@@ -70,11 +70,15 @@
                 : '';
 
             return `
-                <tr class="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
-                    <td class="px-4 py-4"><input type="checkbox" value="${booking.id}" onclick="updateBulkActionBar()" class="booking-row-checkbox rounded border-slate-300 text-[#D4AF37] focus:ring-[#D4AF37] cursor-pointer"></td>
-                    <td class="px-6 py-4 text-xs font-bold text-[#D4AF37] uppercase">${KaghanSafe.escapeHTML(booking.id)}</td>
+                <tr onclick="openBookingDetails('${booking.id}')" class="border-b border-slate-100 hover:bg-amber-50/40 transition-colors cursor-pointer group">
+                    <td class="px-4 py-4" onclick="event.stopPropagation()">
+                        <input type="checkbox" value="${booking.id}" onclick="updateBulkActionBar()" class="booking-row-checkbox rounded border-slate-300 text-[#D4AF37] focus:ring-[#D4AF37] cursor-pointer">
+                    </td>
+                    <td class="px-6 py-4 text-xs font-extrabold text-[#D4AF37] uppercase font-mono group-hover:underline">
+                        ${KaghanSafe.escapeHTML(booking.id)}
+                    </td>
                     <td class="px-6 py-4">
-                        <span class="font-bold text-slate-800 text-sm block">${KaghanSafe.escapeHTML(booking.guestName)}</span>
+                        <span class="font-bold text-slate-800 text-sm block group-hover:text-[#D4AF37] transition-colors">${KaghanSafe.escapeHTML(booking.guestName)}</span>
                         <span class="text-slate-400 text-[10px] block mt-0.5">${KaghanSafe.escapeHTML(booking.guestEmail)} | ${KaghanSafe.escapeHTML(booking.guestPhone || '')}</span>
                         <div class="flex flex-wrap gap-1 items-center mt-1">
                             ${guestBadge}
@@ -85,16 +89,19 @@
                     <td class="px-6 py-4 text-xs text-slate-600">
                         ${KaghanUI.formatDate(booking.checkIn)} to ${KaghanUI.formatDate(booking.checkOut)}
                     </td>
-                    <td class="px-6 py-4 font-bold text-slate-800 text-sm">${KaghanUI.formatPKR(booking.totalPrice)}</td>
-                    <td class="px-6 py-4 flex gap-2">
+                    <td class="px-6 py-4 font-bold text-slate-800 text-sm font-mono">${KaghanUI.formatPKR(booking.totalPrice)}</td>
+                    <td class="px-6 py-4 flex gap-1.5 items-center" onclick="event.stopPropagation()">
                         ${statusSelect}
-                        <button onclick="downloadPDFInvoice('${booking.id}')" class="bg-indigo-50 border border-indigo-200 text-indigo-700 text-[10px] font-bold px-2.5 py-1.5 rounded hover:bg-indigo-100 transition-all inline-flex items-center gap-1.5" title="Download PDF Invoice">
+                        <button onclick="event.stopPropagation(); openBookingDetails('${booking.id}')" class="bg-amber-50 border border-amber-200 text-[#B8860B] hover:bg-amber-100 text-[10px] font-bold px-2.5 py-1.5 rounded-lg transition-all inline-flex items-center gap-1" title="View Full Booking Details">
+                            <i class="fa-solid fa-eye text-[9px]"></i> View
+                        </button>
+                        <button onclick="event.stopPropagation(); downloadPDFInvoice('${booking.id}')" class="bg-indigo-50 border border-indigo-200 text-indigo-700 hover:bg-indigo-100 text-[10px] font-bold px-2.5 py-1.5 rounded-lg transition-all inline-flex items-center gap-1" title="Download PDF Invoice">
                             <i class="fa-solid fa-file-pdf text-[9px]"></i> PDF
                         </button>
-                        <button onclick="openEditBookingModal('${booking.id}')" class="bg-slate-50 border border-slate-200 text-slate-700 text-[10px] font-bold px-2.5 py-1.5 rounded hover:bg-slate-100 transition-all inline-flex items-center gap-1.5" title="Edit Booking Details">
+                        <button onclick="event.stopPropagation(); openEditBookingModal('${booking.id}')" class="bg-slate-50 border border-slate-200 text-slate-700 hover:bg-slate-100 text-[10px] font-bold px-2.5 py-1.5 rounded-lg transition-all inline-flex items-center gap-1" title="Edit Booking Details">
                             <i class="fa-solid fa-pen text-[9px]"></i> Edit
                         </button>
-                        <button onclick="deleteBookingRecord('${booking.id}')" class="text-rose-500 hover:text-rose-700 p-1.5 rounded hover:bg-rose-50 transition-colors" title="Delete Booking">
+                        <button onclick="event.stopPropagation(); deleteBookingRecord('${booking.id}')" class="text-rose-500 hover:text-rose-700 p-1.5 rounded hover:bg-rose-50 transition-colors" title="Delete Booking">
                             <i class="fa-solid fa-trash-can text-sm"></i>
                         </button>
                     </td>
@@ -553,6 +560,306 @@
         }
     });
 
+    // --- BOOKING DETAILS CONTROLLER ---
+    let activeDetailBookingId = null;
+
+    window.openBookingDetails = async (bookingId) => {
+        if (!bookingId) return;
+        activeDetailBookingId = bookingId;
+
+        const bookings = await KaghanDB.getBookings();
+        const booking = bookings.find(b => b.id === bookingId);
+        if (!booking) {
+            if (window.KaghanUI) KaghanUI.showToast(`Booking record ${bookingId} not found.`, 'error');
+            return;
+        }
+
+        const rooms = await KaghanDB.getRooms();
+        const room = rooms.find(r => r.id === booking.roomId) || { 
+            name: booking.propertyName || 'Luxury Accommodation',
+            price: booking.totalPrice,
+            location: 'Islamabad'
+        };
+
+        const inDate = new Date(booking.checkIn);
+        const outDate = new Date(booking.checkOut);
+        let nights = 1;
+        if (!isNaN(inDate.getTime()) && !isNaN(outDate.getTime())) {
+            nights = Math.max(1, Math.ceil((outDate - inDate) / (1000 * 3600 * 24)));
+        }
+
+        const grandTotal = Number(booking.grandTotal || booking.totalPrice || 0);
+        const accomCharges = booking.accomCharges !== undefined ? Number(booking.accomCharges) : (booking.subtotal ? Number(booking.subtotal) : grandTotal);
+        const cleaningFee = Number(booking.cleaningFee || 0);
+        const extraGuestCharges = Number(booking.extraGuestCharges || 0);
+        const otherCharges = Number(booking.otherCharges || (booking.upgradesTotal || 0));
+        const subtotal = booking.subtotal !== undefined ? Number(booking.subtotal) : (accomCharges + cleaningFee + extraGuestCharges + otherCharges);
+        const discount = Number(booking.discount || booking.discountAmount || 0);
+        const advancePaid = booking.advancePaid !== undefined ? Number(booking.advancePaid) : (booking.paymentStatus === 'PAID' ? grandTotal : Number(booking.advanceAmount || 0));
+        const balanceDue = booking.balanceDue !== undefined ? Number(booking.balanceDue) : Math.max(0, grandTotal - advancePaid);
+        const paymentStatus = (booking.paymentStatus || (balanceDue === 0 ? 'PAID' : (advancePaid > 0 ? 'PARTIALLY PAID' : 'UNPAID'))).toUpperCase();
+        const isPaid = paymentStatus === 'PAID';
+
+        const bookingSource = booking.bookingSource || (booking.userId === 'usr-guest-walkin' ? 'Walk-in Guest' : 'KPHStay.com');
+        const invoiceNo = booking.invoiceNo || `KPH-INV-${(booking.id || '').replace(/^KPH-BOOK-|^BK-/, '')}`;
+
+        // Header & Breadcrumb
+        const bcId = document.getElementById('detail-booking-breadcrumb-id');
+        if (bcId) bcId.textContent = booking.id;
+        const titleEl = document.getElementById('detail-booking-title');
+        if (titleEl) titleEl.textContent = `Booking Details — ${booking.guestName}`;
+
+        const statusSelect = document.getElementById('detail-booking-status-select');
+        if (statusSelect) statusSelect.value = booking.status || 'confirmed';
+
+        const standaloneLink = document.getElementById('detail-standalone-link');
+        if (standaloneLink) standaloneLink.href = `booking-details.html?id=${encodeURIComponent(booking.id)}`;
+
+        // Ribbon
+        const ribId = document.getElementById('detail-ribbon-id');
+        if (ribId) ribId.textContent = booking.id;
+        const ribSource = document.getElementById('detail-ribbon-source');
+        if (ribSource) ribSource.textContent = bookingSource;
+        const ribNights = document.getElementById('detail-ribbon-nights');
+        if (ribNights) ribNights.textContent = `${nights} Night${nights > 1 ? 's' : ''}`;
+        const ribDates = document.getElementById('detail-ribbon-dates');
+        if (ribDates) ribDates.textContent = `${KaghanUI.formatDate(booking.checkIn)} → ${KaghanUI.formatDate(booking.checkOut)}`;
+        const ribTotal = document.getElementById('detail-ribbon-total');
+        if (ribTotal) ribTotal.textContent = KaghanUI.formatPKR(grandTotal);
+        const ribPayStatus = document.getElementById('detail-ribbon-payment-status');
+        if (ribPayStatus) {
+            ribPayStatus.textContent = paymentStatus;
+            ribPayStatus.className = `text-[10px] font-extrabold uppercase mt-0.5 ${isPaid ? 'text-emerald-600' : (balanceDue === 0 ? 'text-emerald-600' : 'text-amber-600')}`;
+        }
+        const ribBalance = document.getElementById('detail-ribbon-balance');
+        if (ribBalance) ribBalance.textContent = KaghanUI.formatPKR(balanceDue);
+        const ribAdvance = document.getElementById('detail-ribbon-advance');
+        if (ribAdvance) ribAdvance.textContent = `Advance: ${KaghanUI.formatPKR(advancePaid)}`;
+
+        // Guest Card
+        const gName = document.getElementById('detail-guest-name');
+        if (gName) gName.textContent = booking.guestName;
+        const gPhone = document.getElementById('detail-guest-phone');
+        if (gPhone) gPhone.textContent = booking.guestPhone || 'N/A';
+        const gEmail = document.getElementById('detail-guest-email');
+        if (gEmail) gEmail.textContent = booking.guestEmail || 'N/A';
+        const gEmailLink = document.getElementById('detail-email-link');
+        if (gEmailLink) gEmailLink.href = `mailto:${booking.guestEmail || ''}`;
+        const gCnic = document.getElementById('detail-guest-cnic');
+        if (gCnic) gCnic.textContent = booking.cnicPassport || booking.cnic || 'Verified at Check-in';
+
+        const phoneActions = document.getElementById('detail-phone-actions');
+        if (phoneActions && booking.guestPhone) {
+            const cleanPhone = booking.guestPhone.replace(/[^0-9+]/g, '');
+            const waPhone = cleanPhone.replace(/^0/, '92').replace(/^\+/, '');
+            phoneActions.innerHTML = `
+                <a href="tel:${cleanPhone}" class="w-6 h-6 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-600 flex items-center justify-center text-[10px]" title="Call Guest"><i class="fa-solid fa-phone"></i></a>
+                <a href="https://wa.me/${waPhone}" target="_blank" class="w-6 h-6 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-600 flex items-center justify-center text-[10px]" title="WhatsApp Guest"><i class="fa-brands fa-whatsapp"></i></a>
+            `;
+        } else if (phoneActions) {
+            phoneActions.innerHTML = '';
+        }
+
+        const isWalkin = booking.userId === 'usr-guest-walkin';
+        const guestBadgeEl = document.getElementById('detail-guest-type-badge');
+        if (guestBadgeEl) {
+            guestBadgeEl.innerHTML = isWalkin
+                ? `<span class="bg-slate-200 text-slate-700 border border-slate-300 rounded-full px-3 py-1 text-[10px] font-bold tracking-wide uppercase">Walk-in Guest</span>`
+                : `<span class="bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-full px-3 py-1 text-[10px] font-bold tracking-wide uppercase">Kaghan Member</span>`;
+        }
+
+        // Suite Details
+        const sName = document.getElementById('detail-suite-name');
+        if (sName) sName.textContent = room.name || 'Luxury Suite';
+        const sRate = document.getElementById('detail-suite-rate');
+        if (sRate) sRate.textContent = `${KaghanUI.formatPKR(room.price || (grandTotal / nights))} / Night`;
+        const sId = document.getElementById('detail-suite-id');
+        if (sId) sId.textContent = `Room ID: ${room.id || booking.roomId}`;
+        const sLoc = document.getElementById('detail-suite-location-badge');
+        if (sLoc) sLoc.textContent = room.location || 'Islamabad';
+        const sThumb = document.getElementById('detail-suite-thumb');
+        if (sThumb) {
+            sThumb.src = (room.images && room.images[0]) || room.image || '../assets/images/logo.png';
+        }
+
+        const stayCheckin = document.getElementById('detail-stay-checkin');
+        if (stayCheckin) stayCheckin.textContent = KaghanUI.formatDate(booking.checkIn);
+        const stayCheckout = document.getElementById('detail-stay-checkout');
+        if (stayCheckout) stayCheckout.textContent = KaghanUI.formatDate(booking.checkOut);
+        const stayNights = document.getElementById('detail-stay-nights');
+        if (stayNights) stayNights.textContent = `${nights} Night${nights > 1 ? 's' : ''}`;
+        const stayGuests = document.getElementById('detail-stay-guests');
+        if (stayGuests) stayGuests.textContent = `${booking.adults || 2} Adults`;
+        const stayChildren = document.getElementById('detail-stay-children');
+        if (stayChildren) stayChildren.textContent = `${booking.children || 0} Children`;
+
+        const specialNotes = document.getElementById('detail-special-notes');
+        if (specialNotes) specialNotes.textContent = booking.specialRequests || booking.notes || 'No special requests specified for this stay.';
+
+        // Billing
+        const lineRoomLbl = document.getElementById('detail-line-room-lbl');
+        if (lineRoomLbl) lineRoomLbl.textContent = `Accommodation (${nights} Night${nights > 1 ? 's' : ''}):`;
+        const lineRoomVal = document.getElementById('detail-line-room-val');
+        if (lineRoomVal) lineRoomVal.textContent = KaghanUI.formatPKR(accomCharges);
+
+        const cleaningRow = document.getElementById('detail-line-cleaning-row');
+        if (cleaningRow) {
+            if (cleaningFee > 0) {
+                cleaningRow.classList.remove('hidden');
+                document.getElementById('detail-line-cleaning-val').textContent = KaghanUI.formatPKR(cleaningFee);
+            } else {
+                cleaningRow.classList.add('hidden');
+            }
+        }
+
+        const extraRow = document.getElementById('detail-line-extra-row');
+        if (extraRow) {
+            if (extraGuestCharges > 0) {
+                extraRow.classList.remove('hidden');
+                document.getElementById('detail-line-extra-val').textContent = KaghanUI.formatPKR(extraGuestCharges);
+            } else {
+                extraRow.classList.add('hidden');
+            }
+        }
+
+        const upgradesRow = document.getElementById('detail-line-upgrades-row');
+        if (upgradesRow) {
+            if (otherCharges > 0) {
+                upgradesRow.classList.remove('hidden');
+                document.getElementById('detail-line-upgrades-val').textContent = KaghanUI.formatPKR(otherCharges);
+            } else {
+                upgradesRow.classList.add('hidden');
+            }
+        }
+
+        const discountRow = document.getElementById('detail-line-discount-row');
+        if (discountRow) {
+            if (discount > 0) {
+                discountRow.classList.remove('hidden');
+                const discLbl = document.getElementById('detail-discount-lbl');
+                if (discLbl) discLbl.textContent = `Discount ${booking.couponUsed ? `(${booking.couponUsed})` : ''}:`;
+                document.getElementById('detail-line-discount-val').textContent = `- ${KaghanUI.formatPKR(discount)}`;
+            } else {
+                discountRow.classList.add('hidden');
+            }
+        }
+
+        const grandTotalEl = document.getElementById('detail-grand-total');
+        if (grandTotalEl) grandTotalEl.textContent = KaghanUI.formatPKR(grandTotal);
+        const advEl = document.getElementById('detail-advance-paid');
+        if (advEl) advEl.textContent = KaghanUI.formatPKR(advancePaid);
+        const balEl = document.getElementById('detail-balance-due');
+        if (balEl) {
+            balEl.textContent = KaghanUI.formatPKR(balanceDue);
+            balEl.className = balanceDue > 0 ? 'text-rose-600 font-extrabold text-sm' : 'text-emerald-600 font-extrabold text-sm';
+        }
+
+        const payMethodEl = document.getElementById('detail-payment-method');
+        if (payMethodEl) payMethodEl.textContent = booking.paymentMethod || 'Credit/Debit Card / Direct Pay';
+        const payRefEl = document.getElementById('detail-payment-ref');
+        if (payRefEl) payRefEl.textContent = booking.transactionNo || booking.paymentRef || booking.id || 'N/A';
+        const invNoEl = document.getElementById('detail-invoice-no');
+        if (invNoEl) invNoEl.textContent = `#${invoiceNo}`;
+
+        const billBadge = document.getElementById('detail-billing-status-badge');
+        if (billBadge) {
+            billBadge.textContent = paymentStatus;
+            billBadge.className = isPaid 
+                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full px-3 py-0.5 text-[10px] font-bold tracking-wide uppercase'
+                : 'bg-amber-50 text-amber-700 border border-amber-200 rounded-full px-3 py-0.5 text-[10px] font-bold tracking-wide uppercase';
+        }
+
+        // Live Official Invoice Preview
+        const previewContainer = document.getElementById('detail-live-invoice-container');
+        if (previewContainer && window.getCleanInvoiceHTML) {
+            previewContainer.innerHTML = window.getCleanInvoiceHTML(booking, room);
+        }
+
+        // Switch to detail tab
+        if (window.switchTab) {
+            window.switchTab('booking-details');
+        }
+        window.location.hash = `#booking?id=${encodeURIComponent(booking.id)}`;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    window.backToBookings = () => {
+        activeDetailBookingId = null;
+        if (window.switchTab) {
+            window.switchTab('bookings');
+        }
+        window.location.hash = '#bookings';
+    };
+
+    window.updateBookingDetailStatus = async (newStatus) => {
+        if (!activeDetailBookingId) return;
+        const success = await KaghanDB.updateBookingStatus(activeDetailBookingId, newStatus);
+        if (success) {
+            KaghanUI.showToast(`Booking ${activeDetailBookingId} status updated to ${newStatus}.`, 'success');
+            await renderBookings();
+            if (window.AdminDashboardModule) {
+                await window.AdminDashboardModule.refreshAll();
+            }
+            // Refresh detail view
+            await openBookingDetails(activeDetailBookingId);
+        } else {
+            KaghanUI.showToast('Failed to update booking status.', 'error');
+        }
+    };
+
+    window.triggerDetailPDFDownload = async () => {
+        if (!activeDetailBookingId) return;
+        const btn = document.getElementById('detail-download-pdf-btn');
+        const origHTML = btn ? btn.innerHTML : '';
+        if (btn) {
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-xs"></i> <span>Generating...</span>';
+            btn.disabled = true;
+        }
+        try {
+            await window.downloadPDFInvoice(activeDetailBookingId);
+        } finally {
+            if (btn) {
+                btn.innerHTML = origHTML;
+                btn.disabled = false;
+            }
+        }
+    };
+
+    window.openDetailEditModal = () => {
+        if (activeDetailBookingId && window.openEditBookingModal) {
+            window.openEditBookingModal(activeDetailBookingId);
+        }
+    };
+
+    window.printBookingDetailReceipt = () => {
+        if (!activeDetailBookingId) return;
+        const container = document.getElementById('detail-live-invoice-container');
+        const invoiceContent = container ? container.innerHTML : '';
+        const printWin = window.open('', '_blank');
+        if (printWin) {
+            printWin.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>KPH Stay Official Invoice - ${activeDetailBookingId}</title>
+                    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+                    <style>
+                        body { margin: 0; padding: 24px; font-family: 'Inter', sans-serif; display: flex; justify-content: center; background: #fff; }
+                        @media print {
+                            body { padding: 0; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    ${invoiceContent}
+                    <script>window.onload = function() { window.print(); };</script>
+                </body>
+                </html>
+            `);
+            printWin.document.close();
+        }
+    };
+
     // Export to window
     window.AdminBookingsModule = {
         render: async () => {
@@ -569,6 +876,7 @@
             } else {
                 await renderCalendar();
             }
-        }
+        },
+        openBookingDetails: (id) => window.openBookingDetails(id)
     };
 })();

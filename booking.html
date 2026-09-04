@@ -2904,38 +2904,11 @@
                 btn.disabled = true;
             }
 
-            let tempDiv = null;
             try {
-                // Check if invoice container already exists inside modal
-                const modalInvoice = document.getElementById('invoice-modal-content');
-                let targetEl = null;
-
-                if (modalInvoice && modalInvoice.firstElementChild) {
-                    targetEl = modalInvoice.firstElementChild;
-                } else {
-                    tempDiv = document.createElement('div');
-                    tempDiv.style.position = 'absolute';
-                    tempDiv.style.left = '-9999px';
-                    tempDiv.style.top = '0';
-                    tempDiv.style.width = '780px';
-                    tempDiv.style.background = '#ffffff';
-                    tempDiv.innerHTML = getInvoiceHTML(bookingData);
-                    document.body.appendChild(tempDiv);
-                    targetEl = tempDiv;
-                }
-
-                const opt = {
-                    margin:       [0.15, 0.15, 0.15, 0.15],
-                    filename:     `KPH-Stay-Invoice-${bookingData.id || 'receipt'}.pdf`,
-                    image:        { type: 'jpeg', quality: 0.98 },
-                    html2canvas:  { scale: 2, useCORS: true, logging: false, scrollX: 0, scrollY: 0 },
-                    jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' },
-                    pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
-                };
-
-                if (typeof html2pdf !== 'undefined') {
-                    await html2pdf().set(opt).from(targetEl).save();
-                    if (window.KaghanUI) KaghanUI.showToast('PDF Receipt downloaded successfully!', 'success');
+                if (typeof window.downloadPDFInvoice === 'function') {
+                    await window.downloadPDFInvoice(bookingData.id || bookingData);
+                } else if (typeof window.downloadPDFInvoiceMaster === 'function') {
+                    await window.downloadPDFInvoiceMaster(bookingData.id || bookingData);
                 } else {
                     window.print();
                 }
@@ -2944,9 +2917,6 @@
                 if (window.KaghanUI) KaghanUI.showToast('Could not generate PDF download. Opening print view instead.', 'info');
                 window.print();
             } finally {
-                if (tempDiv && tempDiv.parentNode) {
-                    tempDiv.parentNode.removeChild(tempDiv);
-                }
                 if (btn) {
                     btn.innerHTML = originalText;
                     btn.disabled = false;

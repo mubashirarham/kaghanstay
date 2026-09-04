@@ -51,6 +51,7 @@ const DEFAULT_ROLE_PERMS = {
 const TAB_PERMISSIONS = {
     overview: ['manage_settings'],
     bookings: ['manage_bookings'],
+    'booking-details': ['manage_bookings'],
     messages: ['manage_bookings'],
     inquiries: ['manage_bookings'],
     calendar: ['manage_bookings'],
@@ -65,7 +66,7 @@ const TAB_PERMISSIONS = {
     seo: ['manage_settings']
 };
 
-const ALL_TABS = ['overview', 'bookings', 'messages', 'inquiries', 'calendar', 'rooms', 'guests', 'newsletter', 'reviews', 'blogs', 'coupons', 'announcement', 'settings', 'seo'];
+const ALL_TABS = ['overview', 'bookings', 'booking-details', 'messages', 'inquiries', 'calendar', 'rooms', 'guests', 'newsletter', 'reviews', 'blogs', 'coupons', 'announcement', 'settings', 'seo'];
 
 function getUserPermissions(user) {
     if (!user) return [];
@@ -210,7 +211,18 @@ async function initAdminDashboard() {
     const urlParams = new URLSearchParams(window.location.search);
     let initialTab = urlParams.get('tab');
 
-    if (!initialTab || !window.hasPermissionForTab(sessionUser, initialTab)) {
+    // Support direct booking view via query ?booking=BK-XXXX or ?id=BK-XXXX or hash
+    const bookingParam = urlParams.get('booking') || urlParams.get('id');
+    let hashBookingId = null;
+    if (window.location.hash && window.location.hash.includes('booking')) {
+        const hashMatch = window.location.hash.match(/[?&]id=([^&]+)/);
+        if (hashMatch) hashBookingId = decodeURIComponent(hashMatch[1]);
+    }
+    const directBookingId = bookingParam || hashBookingId;
+
+    if (directBookingId) {
+        initialTab = 'booking-details';
+    } else if (!initialTab || !window.hasPermissionForTab(sessionUser, initialTab)) {
         initialTab = getFirstAllowedTab(sessionUser);
     }
 
@@ -228,6 +240,12 @@ async function initAdminDashboard() {
     }
 
     await refreshAll();
+
+    if (directBookingId && window.openBookingDetails) {
+        setTimeout(() => {
+            window.openBookingDetails(directBookingId);
+        }, 80);
+    }
 }
 
 async function refreshAll() {
@@ -341,13 +359,14 @@ window.switchTab = (tabName) => {
         btn.classList.add('text-slate-400', 'hover:text-white', 'hover:bg-slate-800/20');
     });
 
-    const activeBtn = document.getElementById(`tab-btn-${tabName}`);
+    const activeNavTab = tabName === 'booking-details' ? 'bookings' : tabName;
+    const activeBtn = document.getElementById(`tab-btn-${activeNavTab}`);
     if (activeBtn) {
         activeBtn.classList.add('sidebar-active');
         activeBtn.classList.remove('text-slate-400', 'hover:text-white', 'hover:bg-slate-800/20');
         const tabLabel = document.getElementById('admin-current-tab-label');
         if (tabLabel) {
-            tabLabel.textContent = activeBtn.textContent.trim();
+            tabLabel.textContent = tabName === 'booking-details' ? 'Booking Details' : activeBtn.textContent.trim();
         }
     }
 
@@ -589,10 +608,10 @@ async function renderOverviewBookings() {
             : `<span class="bg-indigo-50 text-indigo-700 border border-indigo-200 rounded px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wider ml-2">Member</span>`;
 
         return `
-            <tr class="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
-                <td class="px-6 py-4 text-xs font-bold text-[#D4AF37] uppercase">${KaghanSafe.escapeHTML(booking.id)}</td>
+            <tr onclick="window.openBookingDetails ? window.openBookingDetails('${booking.id}') : (window.switchTab && window.switchTab('bookings'))" class="border-b border-slate-100 hover:bg-amber-50/40 transition-colors cursor-pointer group">
+                <td class="px-6 py-4 text-xs font-bold text-[#D4AF37] uppercase font-mono group-hover:underline">${KaghanSafe.escapeHTML(booking.id)}</td>
                 <td class="px-6 py-4">
-                    <span class="font-bold text-slate-800 text-xs flex items-center">
+                    <span class="font-bold text-slate-800 text-xs flex items-center group-hover:text-[#D4AF37] transition-colors">
                         ${KaghanSafe.escapeHTML(booking.guestName)}
                         ${guestBadge}
                     </span>
@@ -601,7 +620,7 @@ async function renderOverviewBookings() {
                 <td class="px-6 py-4 text-[11px] text-slate-500">
                     ${KaghanUI.formatDate(booking.checkIn)} to ${KaghanUI.formatDate(booking.checkOut)}
                 </td>
-                <td class="px-6 py-4 font-bold text-slate-800 text-xs">${KaghanUI.formatPKR(booking.totalPrice)}</td>
+                <td class="px-6 py-4 font-bold text-slate-800 text-xs font-mono">${KaghanUI.formatPKR(booking.totalPrice)}</td>
                 <td class="px-6 py-4">${statusBadge}</td>
             </tr>
         `;

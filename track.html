@@ -511,25 +511,29 @@
         async function downloadPDFReceipt() {
             if (!currentBookingData) return;
             const btn = document.querySelector('button[onclick="downloadPDFReceipt()"]');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generating PDF...';
-            btn.disabled = true;
+            const originalText = btn ? btn.innerHTML : '';
+            if (btn) {
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generating PDF...';
+                btn.disabled = true;
+            }
 
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = getInvoiceHTML(currentBookingData);
-            
-            const opt = {
-                margin:       0,
-                filename:     `Kaghan-Stay-Invoice-${currentBookingData.id}.pdf`,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2 },
-                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
-            };
-
-            await html2pdf().set(opt).from(tempDiv).save();
-            
-            btn.innerHTML = originalText;
-            btn.disabled = false;
+            try {
+                if (typeof window.downloadPDFInvoice === 'function') {
+                    await window.downloadPDFInvoice(currentBookingData.id);
+                } else if (typeof window.downloadPDFInvoiceMaster === 'function') {
+                    await window.downloadPDFInvoiceMaster(currentBookingData.id);
+                } else {
+                    window.print();
+                }
+            } catch (err) {
+                console.error("PDF download error:", err);
+                window.print();
+            } finally {
+                if (btn) {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }
+            }
         }
 
         function getInvoiceHTML(currentBookingData) {

@@ -108,15 +108,9 @@
 
     // Delegate PDF invoice generation to shared.js master generator
     window.downloadPDFInvoice = function(bookingId) {
+        window.allHistoryBookings = allHistoryBookings;
         if (typeof window.downloadPDFInvoiceMaster === 'function') {
             return window.downloadPDFInvoiceMaster(bookingId);
-        } else {
-            // Store reference to history bookings for shared.js lookup
-            window.allHistoryBookings = allHistoryBookings;
-            // Call global handler
-            if (typeof window.downloadPDFInvoice === 'function' && window.downloadPDFInvoice !== this) {
-                return window.downloadPDFInvoice(bookingId);
-            }
         }
     };
 
