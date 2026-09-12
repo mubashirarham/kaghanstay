@@ -58,27 +58,27 @@
     <!-- Global CSS -->
     <link rel="stylesheet" href="/assets/css/style.css?v=5">
 </head>
-<body class="bg-[#F8FAFC] text-[#0F172A] overflow-x-clip font-sans pt-24">
+<body class="bg-[#F8FAFC] text-[#0F172A] overflow-x-clip font-sans pt-24 flex flex-col min-h-screen">
 
     <!-- Header / Navigation -->
-    <nav id="hotel-navbar" class="fixed top-0 left-0 right-0 z-50 py-5 px-6 md:px-12 flex justify-between items-center text-white bg-[#0B0F19] border-b border-white/10">
+    <nav id="hotel-navbar" class="fixed top-0 left-0 right-0 z-50 py-4 px-6 md:px-12 flex justify-between items-center text-white bg-[#0F172A]/95 backdrop-blur-md border-b border-slate-700/80 shadow-md">
         <a href="/" class="flex items-center gap-3 hover:opacity-90 transition-opacity shrink-0">
             <img src="/assets/images/logo.png" alt="KPH Stay Logo" class="h-10 w-auto object-contain">
             <div class="flex flex-col">
-                <span class="text-lg font-bold tracking-wider uppercase outfit leading-none">KPH</span>
-                <span class="text-xs text-[#C5A059] tracking-[0.2em] uppercase font-semibold">Stay</span>
+                <span class="text-xl font-extrabold tracking-wider uppercase outfit leading-none text-white">KPH</span>
+                <span class="text-xs text-[#D4AF37] tracking-[0.2em] uppercase font-bold">Stay</span>
             </div>
         </a>
 
-        <div class="hidden md:flex gap-8 items-center font-medium">
-            <a href="index.html" class="hover:text-[#C5A059] transition-colors">Home</a>
-            <a href="rooms.html" class="hover:text-[#C5A059] transition-colors">Rooms</a>
-            <a href="blog.html" class="hover:text-[#C5A059] transition-colors">Blog</a>
-            <a href="track.html" class="hover:text-[#C5A059] transition-colors">Track Stay</a>
-            <a href="booking.html" aria-current="page" class="text-[#C5A059] font-bold border-b-2 border-[#C5A059] pb-0.5">Book Now</a>
+        <div class="hidden md:flex gap-8 items-center font-bold text-sm">
+            <a href="index.html" class="text-slate-200 hover:text-[#D4AF37] transition-colors">Home</a>
+            <a href="rooms.html" class="text-slate-200 hover:text-[#D4AF37] transition-colors">Rooms</a>
+            <a href="blog.html" class="text-slate-200 hover:text-[#D4AF37] transition-colors">Journal</a>
+            <a href="track.html" class="text-slate-200 hover:text-[#D4AF37] transition-colors">Track Stay</a>
+            <a href="booking.html" aria-current="page" class="text-[#D4AF37] font-extrabold border-b-2 border-[#D4AF37] pb-0.5">Book Now</a>
             <div id="auth-links" class="flex gap-4 items-center">
-                <a href="login.html" class="border border-[#C5A059] text-white px-5 py-2 rounded-full hover:bg-[#C5A059] hover:text-white transition-all text-sm font-semibold">Login</a>
-                <a href="login.html?register=true" class="bg-[#C5A059] text-white px-5 py-2 rounded-full hover:bg-white hover:text-slate-900 transition-all text-sm font-semibold luxury-shadow">Register</a>
+                <a href="login.html" class="border-2 border-[#D4AF37] bg-[#D4AF37]/10 text-white px-5 py-2 rounded-xl hover:bg-[#D4AF37] hover:text-slate-900 transition-all text-xs font-extrabold tracking-wider uppercase">Login</a>
+                <a href="login.html?register=true" class="bg-[#D4AF37] text-slate-900 px-5 py-2 rounded-xl hover:bg-white transition-all text-xs font-black tracking-wider uppercase shadow-md border-2 border-amber-300 hover:border-white">Register</a>
             </div>
         </div>
 
@@ -88,26 +88,26 @@
     </nav>
 
     <!-- Mobile Drawer -->
-    <div id="mobile-drawer" class="fixed inset-0 bg-[#0B0F19]/95 z-[60] flex flex-col items-center justify-center gap-8 text-white text-xl font-semibold">
+    <div id="mobile-drawer" class="fixed inset-0 bg-[#0F172A]/98 z-[60] flex flex-col items-center justify-center gap-8 text-white text-xl font-bold">
         <button id="menu-close" class="absolute top-8 right-6 text-white text-3xl w-12 h-12 flex items-center justify-center focus:outline-none active:scale-90 transition-transform" aria-label="Close Menu">
             <i class="fa-solid fa-xmark"></i>
         </button>
-        <a href="index.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Home</a>
-        <a href="rooms.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Rooms</a>
-        <a href="blog.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Blog</a>
-        <a href="track.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Track Stay</a>
+        <a href="index.html" class="hover:text-[#D4AF37]" onclick="toggleDrawer()">Home</a>
+        <a href="rooms.html" class="hover:text-[#D4AF37]" onclick="toggleDrawer()">Rooms</a>
+        <a href="blog.html" class="hover:text-[#D4AF37]" onclick="toggleDrawer()">Journal</a>
+        <a href="track.html" class="hover:text-[#D4AF37]" onclick="toggleDrawer()">Track Stay</a>
         <div id="auth-links-mobile" class="flex flex-col gap-4 w-64 text-center">
-            <a href="login.html" class="border border-[#C5A059] text-white py-3 rounded-full hover:bg-[#C5A059] transition-all text-base" onclick="toggleDrawer()">Login</a>
-            <a href="login.html?register=true" class="bg-[#C5A059] text-white py-3 rounded-full hover:bg-white hover:text-slate-900 transition-all text-base" onclick="toggleDrawer()">Register</a>
+            <a href="login.html" class="border-2 border-[#D4AF37] text-white py-3 rounded-xl hover:bg-[#D4AF37] hover:text-slate-900 transition-all text-sm font-extrabold uppercase" onclick="toggleDrawer()">Login</a>
+            <a href="login.html?register=true" class="bg-[#D4AF37] text-slate-900 py-3 rounded-xl hover:bg-white transition-all text-sm font-black uppercase shadow-md" onclick="toggleDrawer()">Register</a>
         </div>
     </div>
 
     <!-- Booking Content -->
-    <main class="py-8 px-6 md:px-12 max-w-7xl mx-auto">
+    <main class="py-8 px-6 md:px-12 max-w-7xl mx-auto flex-grow">
         <!-- Accessible page title for screen readers (B1) -->
         <h1 class="sr-only">Book Your Stay at KPH Stay</h1>
         <!-- Stepper Indicator Card -->
-        <div class="mb-10 max-w-3xl mx-auto bg-white/90 backdrop-blur-md rounded-3xl border-2 border-slate-200/80 p-5 shadow-xl shadow-slate-200/50" data-animate="fade-down">
+        <div class="mb-10 max-w-3xl mx-auto bg-white rounded-3xl border-2 border-slate-200 p-6 shadow-md" data-animate="fade-down">
             <div class="relative flex items-center justify-between">
                 <!-- Progress Line -->
                 <div class="absolute left-0 right-0 top-1/2 h-[3px] bg-slate-200 -translate-y-1/2 z-0"></div>
@@ -115,78 +115,78 @@
                 
                 <!-- Step 1 -->
                 <div class="relative z-10 flex flex-col items-center gap-2">
-                    <div class="w-10 h-10 rounded-full bg-[#C5A059] text-white flex items-center justify-center text-xs font-bold shadow-lg shadow-[#C5A059]/30 transition-all duration-300">
-                        <i class="fa-solid fa-calendar-days"></i>
+                    <div class="w-11 h-11 rounded-2xl bg-[#C5A059] border-2 border-amber-300 text-slate-900 flex items-center justify-center text-sm font-black shadow-md transition-all duration-300">
+                        <i class="fa-solid fa-calendar-days text-slate-900"></i>
                     </div>
-                    <span class="text-[9px] uppercase tracking-widest text-[#0B0F19] font-black">1. Stay Dates</span>
+                    <span class="text-[10px] uppercase tracking-wider text-slate-900 font-extrabold outfit">1. Stay Dates</span>
                 </div>
                 
                 <!-- Step 2 -->
                 <div class="relative z-10 flex flex-col items-center gap-2">
-                    <div class="w-10 h-10 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center text-xs font-bold transition-all duration-300" id="step-node-2">
+                    <div class="w-11 h-11 rounded-2xl bg-slate-100 border-2 border-slate-300 text-slate-600 flex items-center justify-center text-sm font-bold transition-all duration-300" id="step-node-2">
                         <i class="fa-solid fa-user"></i>
                     </div>
-                    <span class="text-[9px] uppercase tracking-widest text-slate-400 font-bold animate-pulse" id="step-text-2">2. Guest Details</span>
+                    <span class="text-[10px] uppercase tracking-wider text-slate-600 font-bold outfit" id="step-text-2">2. Guest Details</span>
                 </div>
                 
                 <!-- Step 3 -->
                 <div class="relative z-10 flex flex-col items-center gap-2">
-                    <div class="w-10 h-10 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center text-xs font-bold transition-all duration-300" id="step-node-3">
+                    <div class="w-11 h-11 rounded-2xl bg-slate-100 border-2 border-slate-300 text-slate-600 flex items-center justify-center text-sm font-bold transition-all duration-300" id="step-node-3">
                         <i class="fa-solid fa-cubes"></i>
                     </div>
-                    <span class="text-[9px] uppercase tracking-widest text-slate-400 font-bold" id="step-text-3">3. Upgrades</span>
+                    <span class="text-[10px] uppercase tracking-wider text-slate-600 font-bold outfit" id="step-text-3">3. Upgrades</span>
                 </div>
 
                 <!-- Step 4 -->
                 <div class="relative z-10 flex flex-col items-center gap-2">
-                    <div class="w-10 h-10 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center text-xs font-bold transition-all duration-300" id="step-node-4">
+                    <div class="w-11 h-11 rounded-2xl bg-slate-100 border-2 border-slate-300 text-slate-600 flex items-center justify-center text-sm font-bold transition-all duration-300" id="step-node-4">
                         <i class="fa-solid fa-check"></i>
                     </div>
-                    <span class="text-[9px] uppercase tracking-widest text-slate-400 font-bold" id="step-text-4">4. Confirm</span>
+                    <span class="text-[10px] uppercase tracking-wider text-slate-600 font-bold outfit" id="step-text-4">4. Confirm</span>
                 </div>
             </div>
         </div>
 
         <!-- Empty State Card (Visible when no listing selected) -->
-        <div id="no-room-selected-card" class="bg-white rounded-[2.25rem] border-2 border-slate-200/90 p-8 md:p-12 shadow-2xl text-center max-w-2xl mx-auto my-12 hidden" data-animate="fade-up">
-            <div class="w-16 h-16 bg-[#C5A059]/10 text-[#C5A059] rounded-3xl flex items-center justify-center mx-auto mb-6 text-2xl">
+        <div id="no-room-selected-card" class="bg-white rounded-3xl border-2 border-slate-200 p-8 md:p-12 shadow-xl text-center max-w-2xl mx-auto my-12 hidden" data-animate="fade-up">
+            <div class="w-16 h-16 bg-[#C5A059]/10 border-2 border-[#C5A059]/30 text-[#C5A059] rounded-2xl flex items-center justify-center mx-auto mb-6 text-2xl">
                 <i class="fa-solid fa-hotel"></i>
             </div>
-            <h3 class="text-2xl font-bold outfit text-slate-900 mb-3">No Suite Selected</h3>
-            <p class="text-slate-500 text-sm leading-relaxed mb-8 max-w-md mx-auto">
+            <h3 class="text-2xl font-extrabold outfit text-slate-900 mb-3">No Suite Selected</h3>
+            <p class="text-slate-600 text-sm leading-relaxed mb-8 max-w-md mx-auto font-medium">
                 Please select a room or suite from our available accommodations to begin your reservation.
             </p>
-            <a href="rooms.html" class="inline-flex items-center gap-2 bg-[#C5A059] text-white font-bold px-8 py-3.5 rounded-2xl hover:bg-[#0B0F19] transition-all shadow-lg text-sm">
+            <a href="rooms.html" class="inline-flex items-center gap-2 bg-[#C5A059] text-slate-900 font-extrabold px-8 py-3.5 rounded-xl hover:bg-slate-900 hover:text-white transition-all shadow-md text-sm border-2 border-amber-300 hover:border-slate-900">
                 <i class="fa-solid fa-compass"></i>
                 <span>Explore Rooms & Suites</span>
             </a>
         </div>
 
-        <div id="booking-content-wrapper" class="flex flex-col lg:flex-row gap-12 relative">
+        <div id="booking-content-wrapper" class="flex flex-col lg:flex-row gap-10 relative">
             
             <!-- Booking Form Column (Left) -->
             <div class="w-full lg:w-2/3 space-y-8">
                 
                 <!-- Stay Details (Calendar & Room) -->
-                <div data-animate="fade-up" class="bg-white rounded-[2.25rem] border-2 border-slate-200/90 p-6 md:p-8 shadow-2xl shadow-slate-200/60 relative overflow-hidden group">
+                <div data-animate="fade-up" class="bg-white rounded-3xl border-2 border-slate-200 p-6 md:p-8 shadow-lg relative overflow-hidden group">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#C5A059]/10 to-transparent rounded-bl-full pointer-events-none"></div>
-                    <h2 class="text-xl font-bold outfit text-slate-900 mb-8 flex items-center gap-3">
-                        <span class="w-10 h-10 bg-gradient-to-br from-[#C5A059] to-[#A88443] text-white rounded-full flex items-center justify-center text-sm font-black shadow-lg shadow-[#C5A059]/30">1</span>
+                    <h2 class="text-2xl font-extrabold outfit text-slate-900 mb-6 flex items-center gap-3">
+                        <span class="w-10 h-10 bg-slate-900 border-2 border-[#C5A059] text-[#D4AF37] rounded-xl flex items-center justify-center text-sm font-black shadow-md">1</span>
                         Stay Dates Selection
                     </h2>
                     
                     <!-- Interactive Calendar -->
                     <div class="mb-8">
-                        <label for="book-check-in" class="block text-[10px] uppercase tracking-widest text-[#C5A059] font-black mb-3 ml-1">Choose Stay Dates on Calendar</label>
-                        <div class="bg-slate-50/80 border-2 border-slate-200 rounded-3xl p-5 md:p-6 shadow-sm">
+                        <label for="book-check-in" class="block text-xs uppercase tracking-wider text-slate-800 font-extrabold mb-3 ml-1">Choose Stay Dates on Calendar</label>
+                        <div class="bg-white border-2 border-slate-200 rounded-3xl p-5 md:p-6 shadow-sm">
                             <div class="flex justify-between items-center mb-6">
-                                <button type="button" onclick="changeCalendarMonth(-1)" class="w-10 h-10 rounded-2xl bg-white border-2 border-slate-200 shadow-sm hover:border-[#C5A059] hover:text-[#C5A059] flex items-center justify-center text-slate-600 transition-all active:scale-95"><i class="fa-solid fa-chevron-left text-sm"></i></button>
-                                <span id="calendar-month-year" class="font-black text-sm outfit text-slate-800 uppercase tracking-[0.1em]"></span>
-                                <button type="button" onclick="changeCalendarMonth(1)" class="w-10 h-10 rounded-2xl bg-white border-2 border-slate-200 shadow-sm hover:border-[#C5A059] hover:text-[#C5A059] flex items-center justify-center text-slate-600 transition-all active:scale-95"><i class="fa-solid fa-chevron-right text-sm"></i></button>
+                                <button type="button" onclick="changeCalendarMonth(-1)" class="w-10 h-10 rounded-xl bg-slate-50 border-2 border-slate-300 shadow-xs hover:border-[#C5A059] hover:text-[#C5A059] flex items-center justify-center text-slate-700 transition-all active:scale-95"><i class="fa-solid fa-chevron-left text-sm"></i></button>
+                                <span id="calendar-month-year" class="font-extrabold text-base outfit text-slate-900 uppercase tracking-wider"></span>
+                                <button type="button" onclick="changeCalendarMonth(1)" class="w-10 h-10 rounded-xl bg-slate-50 border-2 border-slate-300 shadow-xs hover:border-[#C5A059] hover:text-[#C5A059] flex items-center justify-center text-slate-700 transition-all active:scale-95"><i class="fa-solid fa-chevron-right text-sm"></i></button>
                             </div>
                             
-                            <div class="grid grid-cols-7 gap-1 text-center text-[10px] uppercase font-bold text-slate-400 mb-3">
-                                <span class="text-rose-400">Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span class="text-[#C5A059]">Sa</span>
+                            <div class="grid grid-cols-7 gap-1 text-center text-xs uppercase font-extrabold text-slate-600 mb-3">
+                                <span class="text-rose-600">Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span class="text-[#B8860B]">Sa</span>
                             </div>
                             
                             <div id="calendar-days-grid" class="grid grid-cols-7 gap-1.5 md:gap-2">
@@ -197,17 +197,17 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                         <div>
-                            <label for="book-check-in" class="block text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 ml-1">Check In Date</label>
+                            <label for="book-check-in" class="block text-xs uppercase tracking-wider text-slate-800 font-extrabold mb-2 ml-1">Check In Date</label>
                             <div class="relative">
-                                <i class="fa-regular fa-calendar absolute left-4 top-4 text-slate-400"></i>
-                                <input type="date" id="book-check-in" required class="w-full border-2 border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none text-sm bg-white text-slate-800 font-medium focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 shadow-xs transition-all cursor-pointer">
+                                <i class="fa-regular fa-calendar absolute left-4 top-4 text-slate-500 font-bold"></i>
+                                <input type="date" id="book-check-in" required class="w-full border-2 border-slate-300 rounded-xl pl-11 pr-4 py-3 outline-none text-sm bg-white text-slate-900 font-bold focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 shadow-xs transition-all cursor-pointer">
                             </div>
                         </div>
                         <div>
-                            <label for="book-check-out" class="block text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 ml-1">Check Out Date</label>
+                            <label for="book-check-out" class="block text-xs uppercase tracking-wider text-slate-800 font-extrabold mb-2 ml-1">Check Out Date</label>
                             <div class="relative">
-                                <i class="fa-regular fa-calendar-check absolute left-4 top-4 text-slate-400"></i>
-                                <input type="date" id="book-check-out" required class="w-full border-2 border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none text-sm bg-white text-slate-800 font-medium focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 shadow-xs transition-all cursor-pointer">
+                                <i class="fa-regular fa-calendar-check absolute left-4 top-4 text-slate-500 font-bold"></i>
+                                <input type="date" id="book-check-out" required class="w-full border-2 border-slate-300 rounded-xl pl-11 pr-4 py-3 outline-none text-sm bg-white text-slate-900 font-bold focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 shadow-xs transition-all cursor-pointer">
                             </div>
                         </div>
                     </div>
@@ -216,13 +216,13 @@
                     <input type="hidden" id="book-room-id" value="">
 
                     <!-- Rent Billing Cycle & Interactive Rate Plan Comparison -->
-                    <div id="billing-cycle-box" class="mt-8 hidden p-6 bg-gradient-to-br from-slate-50 via-white to-amber-50/20 rounded-3xl border-2 border-[#C5A059]/30 shadow-md">
+                    <div id="billing-cycle-box" class="mt-8 hidden p-6 bg-slate-50 rounded-3xl border-2 border-[#C5A059]/40 shadow-sm">
                         <div class="flex items-center justify-between mb-4">
                             <div>
-                                <span class="text-[10px] uppercase font-black tracking-widest text-[#C5A059] block">Rate Plan & Rate Comparison</span>
-                                <h4 class="text-sm font-bold text-slate-900 outfit">Select Your Preferred Duration Rate Plan</h4>
+                                <span class="text-xs uppercase font-extrabold tracking-wider text-[#B8860B] block">Rate Plan & Rate Comparison</span>
+                                <h4 class="text-base font-extrabold text-slate-900 outfit">Select Your Preferred Duration Rate Plan</h4>
                             </div>
-                            <span class="text-[9px] bg-emerald-50 text-emerald-700 font-extrabold px-2.5 py-1 rounded-full border border-emerald-200 uppercase">Save Up to 35%</span>
+                            <span class="text-[10px] bg-emerald-50 text-emerald-800 font-extrabold px-3 py-1 rounded-xl border border-emerald-300 uppercase">Save Up to 35%</span>
                         </div>
 
                         <!-- Dropdown Select (Hidden visually, synced with cards) -->
@@ -238,69 +238,69 @@
                             <div onclick="selectBookingRatePlan('daily')" id="rate-card-daily" role="radio" aria-checked="true" tabindex="0" class="rate-card-item p-4 rounded-2xl border-2 border-[#C5A059] bg-white cursor-pointer transition-all shadow-sm relative hover:scale-[1.02]">
                                 <div class="flex justify-between items-center mb-1.5">
                                     <span class="text-xs font-black uppercase text-slate-900">Daily Stay</span>
-                                    <span class="w-3 h-3 rounded-full border-2 border-[#C5A059] bg-[#C5A059]" id="rate-dot-daily"></span>
+                                    <span class="w-3.5 h-3.5 rounded-full border-2 border-[#C5A059] bg-[#C5A059]" id="rate-dot-daily"></span>
                                 </div>
                                 <div class="text-lg font-black text-slate-900 outfit" id="rate-price-daily">PKR 0</div>
-                                <div class="text-[10px] text-slate-400 font-medium">Standard nightly rate</div>
+                                <div class="text-[11px] text-slate-600 font-semibold">Standard nightly rate</div>
                             </div>
 
                             <!-- Weekly Plan Card (-15%) -->
-                            <div onclick="selectBookingRatePlan('weekly')" id="rate-card-weekly" role="radio" aria-checked="false" tabindex="0" class="rate-card-item p-4 rounded-2xl border-2 border-slate-200 bg-white hover:border-[#C5A059]/60 cursor-pointer transition-all shadow-sm relative hover:scale-[1.02]">
+                            <div onclick="selectBookingRatePlan('weekly')" id="rate-card-weekly" role="radio" aria-checked="false" tabindex="0" class="rate-card-item p-4 rounded-2xl border-2 border-slate-300 bg-white hover:border-[#C5A059] cursor-pointer transition-all shadow-sm relative hover:scale-[1.02]">
                                 <div class="flex justify-between items-center mb-1.5">
-                                    <span class="text-xs font-black uppercase text-emerald-700">Weekly Stay</span>
+                                    <span class="text-xs font-black uppercase text-emerald-800">Weekly Stay</span>
                                     <div class="flex items-center gap-1.5">
-                                        <span class="text-[8px] bg-emerald-100 text-emerald-800 font-extrabold px-1.5 py-0.5 rounded">SAVE 15%</span>
-                                        <span class="w-3 h-3 rounded-full border-2 border-slate-300 bg-white" id="rate-dot-weekly"></span>
+                                        <span class="text-[9px] bg-emerald-100 text-emerald-800 font-extrabold px-2 py-0.5 rounded-lg">SAVE 15%</span>
+                                        <span class="w-3.5 h-3.5 rounded-full border-2 border-slate-300 bg-white" id="rate-dot-weekly"></span>
                                     </div>
                                 </div>
-                                <div class="text-lg font-black text-emerald-700 outfit" id="rate-price-weekly">PKR 0</div>
-                                <div class="text-[10px] text-emerald-600 font-bold" id="rate-save-weekly">Save 15% / night</div>
+                                <div class="text-lg font-black text-emerald-800 outfit" id="rate-price-weekly">PKR 0</div>
+                                <div class="text-[11px] text-emerald-700 font-bold" id="rate-save-weekly">Save 15% / night</div>
                             </div>
 
                             <!-- Monthly Plan Card (-35%) -->
-                            <div onclick="selectBookingRatePlan('monthly')" id="rate-card-monthly" role="radio" aria-checked="false" tabindex="0" class="rate-card-item p-4 rounded-2xl border-2 border-slate-200 bg-white hover:border-[#C5A059]/60 cursor-pointer transition-all shadow-sm relative hover:scale-[1.02]">
+                            <div onclick="selectBookingRatePlan('monthly')" id="rate-card-monthly" role="radio" aria-checked="false" tabindex="0" class="rate-card-item p-4 rounded-2xl border-2 border-slate-300 bg-white hover:border-[#C5A059] cursor-pointer transition-all shadow-sm relative hover:scale-[1.02]">
                                 <div class="flex justify-between items-center mb-1.5">
-                                    <span class="text-xs font-black uppercase text-indigo-700">Monthly Stay</span>
+                                    <span class="text-xs font-black uppercase text-indigo-800">Monthly Stay</span>
                                     <div class="flex items-center gap-1.5">
-                                        <span class="text-[8px] bg-indigo-100 text-indigo-800 font-extrabold px-1.5 py-0.5 rounded">BEST VALUE -35%</span>
-                                        <span class="w-3 h-3 rounded-full border-2 border-slate-300 bg-white" id="rate-dot-monthly"></span>
+                                        <span class="text-[9px] bg-indigo-100 text-indigo-800 font-extrabold px-2 py-0.5 rounded-lg">BEST VALUE -35%</span>
+                                        <span class="w-3.5 h-3.5 rounded-full border-2 border-slate-300 bg-white" id="rate-dot-monthly"></span>
                                     </div>
                                 </div>
-                                <div class="text-lg font-black text-indigo-700 outfit" id="rate-price-monthly">PKR 0</div>
-                                <div class="text-[10px] text-indigo-600 font-bold" id="rate-save-monthly">Save 35% / night</div>
+                                <div class="text-lg font-black text-indigo-800 outfit" id="rate-price-monthly">PKR 0</div>
+                                <div class="text-[11px] text-indigo-700 font-bold" id="rate-save-monthly">Save 35% / night</div>
                             </div>
                         </div>
                     </div>
                     <!-- Upcoming Reserved Dates Box -->
-                    <div id="reserved-dates-box" class="mt-6 hidden bg-rose-50/70 border-2 border-rose-200 p-5 rounded-2xl shadow-xs">
-                        <span class="block text-[10px] uppercase tracking-widest text-rose-600 font-extrabold mb-3 flex items-center gap-2"><i class="fa-solid fa-calendar-xmark text-sm"></i> Suite Reserved Dates:</span>
+                    <div id="reserved-dates-box" class="mt-6 hidden bg-rose-50 border-2 border-rose-300 p-5 rounded-2xl shadow-xs">
+                        <span class="block text-xs uppercase tracking-wider text-rose-800 font-extrabold mb-3 flex items-center gap-2"><i class="fa-solid fa-calendar-xmark text-sm"></i> Suite Reserved Dates:</span>
                         <div id="reserved-dates-list" class="flex flex-wrap gap-2 text-xs"></div>
                     </div>
                 </div>
 
                 <!-- Selected Property Details Showcase Section -->
-                <div id="property-details-section" data-animate="fade-up" class="bg-white rounded-[2.25rem] border-2 border-slate-200/90 p-6 md:p-8 shadow-2xl shadow-slate-200/60 relative overflow-hidden transition-all duration-500 hidden">
+                <div id="property-details-section" data-animate="fade-up" class="bg-white rounded-3xl border-2 border-slate-200 p-6 md:p-8 shadow-lg relative overflow-hidden transition-all duration-500 hidden">
                     <div class="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-[#C5A059]/10 to-transparent rounded-bl-full pointer-events-none"></div>
                     
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b-2 border-slate-100 pb-5">
                         <div>
                             <div class="flex items-center gap-2 mb-2 flex-wrap">
-                                <span id="prop-category-badge" class="bg-[#0B0F19] text-[#C5A059] text-[10px] font-extrabold uppercase tracking-widest px-3 py-1 rounded-full border border-[#C5A059]/30 shadow-xs">
+                                <span id="prop-category-badge" class="bg-slate-900 text-[#D4AF37] text-xs font-extrabold uppercase tracking-wider px-3.5 py-1.5 rounded-xl border border-amber-400 shadow-xs">
                                     Luxury Suite
                                 </span>
-                                <span id="prop-location-badge" class="bg-slate-100 text-slate-800 text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full border border-slate-200 flex items-center gap-1">
-                                    <i class="fa-solid fa-location-dot text-[#C5A059]"></i> <span id="prop-location-text">Islamabad</span>
+                                <span id="prop-location-badge" class="bg-white text-slate-900 text-xs font-extrabold uppercase tracking-wider px-3.5 py-1.5 rounded-xl border-2 border-slate-200 flex items-center gap-1.5 shadow-xs">
+                                    <i class="fa-solid fa-location-dot text-[#B8860B]"></i> <span id="prop-location-text">Islamabad</span>
                                 </span>
-                                <span id="prop-rating-badge" class="bg-amber-50 text-amber-800 text-[10px] font-black px-2.5 py-1 rounded-full border border-amber-200 flex items-center gap-1">
-                                    <i class="fa-solid fa-star text-amber-400"></i> 5.0 (Verified)
+                                <span id="prop-rating-badge" class="bg-amber-50 text-amber-900 text-xs font-black px-3 py-1.5 rounded-xl border border-amber-300 flex items-center gap-1.5 shadow-xs">
+                                    <i class="fa-solid fa-star text-amber-500"></i> 5.0 (Verified)
                                 </span>
                             </div>
-                            <h3 id="prop-title" class="text-2xl md:text-3xl font-bold outfit text-slate-900 leading-tight">Selected Suite Name</h3>
+                            <h3 id="prop-title" class="text-2xl md:text-3xl font-extrabold outfit text-slate-900 leading-tight">Selected Suite Name</h3>
                         </div>
 
-                        <a id="prop-full-details-link" href="room-details.html" target="_blank" class="inline-flex items-center gap-2 text-xs font-bold text-[#C5A059] bg-[#C5A059]/10 hover:bg-[#C5A059] hover:text-white px-4 py-2.5 rounded-xl transition-all shadow-sm border-2 border-[#C5A059]/30 self-start md:self-center">
+                        <a id="prop-full-details-link" href="room-details.html" target="_blank" class="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-slate-900 bg-amber-50 hover:bg-[#D4AF37] hover:text-slate-900 px-5 py-3 rounded-xl transition-all shadow-sm border-2 border-amber-300 self-start md:self-center">
                             <span>View Full Details</span>
-                            <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                            <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
                         </a>
                     </div>
 
@@ -313,16 +313,16 @@
                                 <img id="prop-main-img" src="/assets/images/logo.png" alt="Property View" class="w-full h-full object-cover transition-all duration-500">
                                 
                                 <!-- Overlay Gallery Navigation Buttons -->
-                                <button type="button" onclick="navigatePropGallery(-1)" class="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-slate-900/60 hover:bg-[#C5A059] text-white flex items-center justify-center backdrop-blur-md transition-all shadow-md active:scale-95">
-                                    <i class="fa-solid fa-chevron-left text-xs"></i>
+                                <button type="button" onclick="navigatePropGallery(-1)" class="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-xl bg-slate-900/80 hover:bg-[#C5A059] text-white flex items-center justify-center backdrop-blur-md transition-all shadow-md active:scale-95 border border-slate-700">
+                                    <i class="fa-solid fa-chevron-left text-sm"></i>
                                 </button>
-                                <button type="button" onclick="navigatePropGallery(1)" class="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-slate-900/60 hover:bg-[#C5A059] text-white flex items-center justify-center backdrop-blur-md transition-all shadow-md active:scale-95">
-                                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                                <button type="button" onclick="navigatePropGallery(1)" class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-xl bg-slate-900/80 hover:bg-[#C5A059] text-white flex items-center justify-center backdrop-blur-md transition-all shadow-md active:scale-95 border border-slate-700">
+                                    <i class="fa-solid fa-chevron-right text-sm"></i>
                                 </button>
 
                                 <!-- Photo Counter Pill -->
-                                <div class="absolute bottom-3 right-3 bg-black/70 backdrop-blur-md text-white text-[10px] font-bold px-3 py-1 rounded-full border border-white/20 flex items-center gap-1.5 shadow-md">
-                                    <i class="fa-solid fa-camera text-[#C5A059]"></i>
+                                <div class="absolute bottom-3 right-3 bg-slate-900/90 backdrop-blur-md text-white text-xs font-extrabold px-3 py-1 rounded-xl border border-slate-700 flex items-center gap-1.5 shadow-md">
+                                    <i class="fa-solid fa-camera text-[#D4AF37]"></i>
                                     <span id="prop-photo-counter">1 / 1</span>
                                 </div>
                             </div>
@@ -334,75 +334,75 @@
                         </div>
 
                         <!-- Highlights & Base Rate Sidebar (LG: 5 cols) -->
-                        <div class="lg:col-span-5 flex flex-col justify-between space-y-4 bg-slate-50/90 border-2 border-slate-200 rounded-2xl p-5 shadow-sm">
+                        <div class="lg:col-span-5 flex flex-col justify-between space-y-4 bg-slate-50 border-2 border-slate-200 rounded-2xl p-5 shadow-sm">
                             <div class="space-y-3">
-                                <h4 class="text-xs uppercase font-extrabold tracking-widest text-[#C5A059] flex items-center gap-2">
+                                <h4 class="text-xs uppercase font-extrabold tracking-wider text-[#B8860B] flex items-center gap-2">
                                     <i class="fa-solid fa-crown text-xs"></i> Luxury Accommodation
                                 </h4>
-                                <p class="text-slate-600 text-xs leading-relaxed font-normal">
+                                <p class="text-slate-700 text-xs leading-relaxed font-medium">
                                     Meticulously designed alpine suite featuring luxury bedding, climate control, fast Wi-Fi, and 24/7 guest services.
                                 </p>
                             </div>
 
                             <!-- Rate Badge Container -->
-                            <div class="bg-white p-4 rounded-xl border-2 border-[#C5A059]/40 flex flex-wrap items-center justify-between gap-2 shadow-md">
+                            <div class="bg-white p-4 rounded-2xl border-2 border-[#C5A059]/50 flex flex-wrap items-center justify-between gap-2 shadow-sm">
                                 <div>
-                                    <span class="text-[9px] uppercase tracking-widest text-slate-500 font-extrabold block">Base Rate</span>
+                                    <span class="text-[10px] uppercase tracking-wider text-slate-600 font-extrabold block">Base Rate</span>
                                     <div class="flex items-baseline gap-1 mt-0.5">
-                                        <span id="prop-rate-amount" class="text-xl font-black outfit text-[#0B0F19]">PKR 0</span>
-                                        <span class="text-[10px] text-slate-500 font-semibold">/ night</span>
+                                        <span id="prop-rate-amount" class="text-2xl font-black outfit text-slate-900">PKR 0</span>
+                                        <span class="text-xs text-slate-600 font-bold">/ night</span>
                                     </div>
                                 </div>
-                                <div id="prop-rate-tag" class="bg-emerald-50 border border-emerald-200 text-emerald-800 text-[10px] font-extrabold px-2.5 py-1 rounded-lg flex items-center gap-1 shadow-2xs">
-                                    <i class="fa-solid fa-bolt text-emerald-500"></i> Best Available Rate
+                                <div id="prop-rate-tag" class="bg-emerald-50 border border-emerald-300 text-emerald-900 text-xs font-extrabold px-3 py-1.5 rounded-xl flex items-center gap-1.5 shadow-2xs">
+                                    <i class="fa-solid fa-bolt text-emerald-600"></i> Best Available Rate
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Suite Key Features (Full-Width 4-Column Bar) -->
-                    <div class="mb-6 bg-slate-50/90 border-2 border-slate-200 rounded-2xl p-4 md:p-5 shadow-xs">
-                        <h4 class="text-xs uppercase font-extrabold tracking-widest text-[#C5A059] mb-3 flex items-center gap-2">
+                    <div class="mb-6 bg-slate-50 border-2 border-slate-200 rounded-2xl p-4 md:p-5 shadow-xs">
+                        <h4 class="text-xs uppercase font-extrabold tracking-wider text-[#B8860B] mb-3 flex items-center gap-2">
                             <i class="fa-solid fa-sliders text-xs"></i> Suite Key Features
                         </h4>
                         
                         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                            <div class="bg-white p-3 rounded-xl border-2 border-slate-200/90 shadow-xs flex items-center gap-3 hover:border-[#C5A059]/50 transition-colors">
-                                <div class="w-9 h-9 rounded-xl bg-[#C5A059]/10 text-[#C5A059] flex items-center justify-center shrink-0 text-sm">
+                            <div class="bg-white p-3.5 rounded-xl border-2 border-slate-200 shadow-xs flex items-center gap-3 hover:border-[#C5A059] transition-colors">
+                                <div class="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 text-[#B8860B] flex items-center justify-center shrink-0 text-sm font-bold">
                                     <i class="fa-solid fa-user-group"></i>
                                 </div>
                                 <div class="min-w-0 flex-1">
-                                    <span class="text-[10px] uppercase tracking-wider text-slate-500 font-extrabold block">Capacity</span>
+                                    <span class="text-[10px] uppercase tracking-wider text-slate-600 font-extrabold block">Capacity</span>
                                     <span id="prop-spec-guests" class="text-xs md:text-sm font-black text-slate-900 leading-snug block break-words">Max 2 Guests</span>
                                 </div>
                             </div>
 
-                            <div class="bg-white p-3 rounded-xl border-2 border-slate-200/90 shadow-xs flex items-center gap-3 hover:border-[#C5A059]/50 transition-colors">
-                                <div class="w-9 h-9 rounded-xl bg-[#C5A059]/10 text-[#C5A059] flex items-center justify-center shrink-0 text-sm">
+                            <div class="bg-white p-3.5 rounded-xl border-2 border-slate-200 shadow-xs flex items-center gap-3 hover:border-[#C5A059] transition-colors">
+                                <div class="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 text-[#B8860B] flex items-center justify-center shrink-0 text-sm font-bold">
                                     <i class="fa-solid fa-bed"></i>
                                 </div>
                                 <div class="min-w-0 flex-1">
-                                    <span class="text-[10px] uppercase tracking-wider text-slate-500 font-extrabold block">Bedrooms</span>
+                                    <span class="text-[10px] uppercase tracking-wider text-slate-600 font-extrabold block">Bedrooms</span>
                                     <span id="prop-spec-beds" class="text-xs md:text-sm font-black text-slate-900 leading-snug block break-words">1 Bed</span>
                                 </div>
                             </div>
 
-                            <div class="bg-white p-3 rounded-xl border-2 border-slate-200/90 shadow-xs flex items-center gap-3 hover:border-[#C5A059]/50 transition-colors">
-                                <div class="w-9 h-9 rounded-xl bg-[#C5A059]/10 text-[#C5A059] flex items-center justify-center shrink-0 text-sm">
+                            <div class="bg-white p-3.5 rounded-xl border-2 border-slate-200 shadow-xs flex items-center gap-3 hover:border-[#C5A059] transition-colors">
+                                <div class="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 text-[#B8860B] flex items-center justify-center shrink-0 text-sm font-bold">
                                     <i class="fa-solid fa-bath"></i>
                                 </div>
                                 <div class="min-w-0 flex-1">
-                                    <span class="text-[10px] uppercase tracking-wider text-slate-500 font-extrabold block">Bathrooms</span>
+                                    <span class="text-[10px] uppercase tracking-wider text-slate-600 font-extrabold block">Bathrooms</span>
                                     <span id="prop-spec-baths" class="text-xs md:text-sm font-black text-slate-900 leading-snug block break-words">1 Bath</span>
                                 </div>
                             </div>
 
-                            <div class="bg-white p-3 rounded-xl border-2 border-slate-200/90 shadow-xs flex items-center gap-3 hover:border-[#C5A059]/50 transition-colors">
-                                <div class="w-9 h-9 rounded-xl bg-[#C5A059]/10 text-[#C5A059] flex items-center justify-center shrink-0 text-sm">
+                            <div class="bg-white p-3.5 rounded-xl border-2 border-slate-200 shadow-xs flex items-center gap-3 hover:border-[#C5A059] transition-colors">
+                                <div class="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 text-[#B8860B] flex items-center justify-center shrink-0 text-sm font-bold">
                                     <i class="fa-solid fa-ruler-combined"></i>
                                 </div>
                                 <div class="min-w-0 flex-1">
-                                    <span class="text-[10px] uppercase tracking-wider text-slate-500 font-extrabold block">Suite Type</span>
+                                    <span class="text-[10px] uppercase tracking-wider text-slate-600 font-extrabold block">Suite Type</span>
                                     <span id="prop-spec-size" class="text-xs md:text-sm font-black text-slate-900 leading-snug block break-words">Luxury Suite</span>
                                 </div>
                             </div>
@@ -413,18 +413,18 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-5 border-t-2 border-slate-100">
                         <!-- About Property Description -->
                         <div>
-                            <h4 class="text-xs uppercase font-extrabold tracking-widest text-slate-900 mb-2 flex items-center gap-2">
-                                <i class="fa-solid fa-circle-info text-[#C5A059]"></i> About This Suite
+                            <h4 class="text-xs uppercase font-extrabold tracking-wider text-slate-900 mb-2 flex items-center gap-2">
+                                <i class="fa-solid fa-circle-info text-[#B8860B]"></i> About This Suite
                             </h4>
-                            <div id="prop-description" class="text-slate-600 text-xs leading-relaxed font-normal space-y-1">
+                            <div id="prop-description" class="text-slate-700 text-xs leading-relaxed font-normal space-y-1">
                                 Experience luxury accommodation designed for comfort and modern aesthetic elegance.
                             </div>
                         </div>
 
                         <!-- Amenities Chips Grid -->
                         <div>
-                            <h4 class="text-xs uppercase font-extrabold tracking-widest text-slate-900 mb-2 flex items-center gap-2">
-                                <i class="fa-solid fa-sparkles text-[#C5A059]"></i> Key Amenities
+                            <h4 class="text-xs uppercase font-extrabold tracking-wider text-slate-900 mb-2 flex items-center gap-2">
+                                <i class="fa-solid fa-sparkles text-[#B8860B]"></i> Key Amenities
                             </h4>
                             <div id="prop-amenities-list" class="flex flex-wrap gap-2">
                                 <!-- Dynamically populated amenities chips -->
@@ -434,114 +434,114 @@
                 </div>
 
                 <!-- Guest Information Card -->
-                <div data-animate="fade-up" class="bg-white rounded-[2.25rem] border-2 border-slate-200/90 p-6 md:p-8 shadow-2xl shadow-slate-200/60 relative overflow-hidden">
+                <div data-animate="fade-up" class="bg-white rounded-3xl border-2 border-slate-200 p-6 md:p-8 shadow-lg relative overflow-hidden">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#C5A059]/10 to-transparent rounded-bl-full pointer-events-none"></div>
-                    <h2 class="text-xl font-bold outfit text-slate-900 mb-6 flex items-center gap-3">
-                        <span class="w-10 h-10 bg-slate-900 text-[#C5A059] rounded-full flex items-center justify-center text-sm font-black shadow-lg">2</span>
+                    <h2 class="text-2xl font-extrabold outfit text-slate-900 mb-6 flex items-center gap-3">
+                        <span class="w-10 h-10 bg-slate-900 border-2 border-[#C5A059] text-[#D4AF37] rounded-xl flex items-center justify-center text-sm font-black shadow-md">2</span>
                         Guest Details
                     </h2>
                     
-                    <div id="guest-login-promo" class="mb-8 p-5 bg-gradient-to-r from-[#C5A059]/10 to-amber-50/50 border-l-4 border-2 border-[#C5A059] rounded-r-2xl text-xs flex flex-col md:flex-row justify-between items-center text-slate-800 gap-4 shadow-sm">
-                        <span class="font-medium leading-relaxed"><i class="fa-solid fa-gift text-[#C5A059] mr-2 text-lg"></i> Are you a registered member? Log in to easily manage your stay!</span>
-                        <a href="login.html?redirect=booking.html" class="font-black text-white bg-[#C5A059] px-6 py-2.5 rounded-xl hover:bg-slate-900 whitespace-nowrap transition-all shadow-md">Login Now</a>
+                    <div id="guest-login-promo" class="mb-8 p-5 bg-amber-50/60 border-l-4 border-2 border-[#C5A059] rounded-2xl text-xs flex flex-col md:flex-row justify-between items-center text-slate-800 gap-4 shadow-sm">
+                        <span class="font-bold leading-relaxed text-slate-900"><i class="fa-solid fa-gift text-[#B8860B] mr-2 text-lg"></i> Are you a registered member? Log in to easily manage your stay!</span>
+                        <a href="login.html?redirect=booking.html" class="font-extrabold text-slate-900 bg-[#D4AF37] px-6 py-2.5 rounded-xl hover:bg-slate-900 hover:text-white whitespace-nowrap transition-all shadow-md border border-amber-300">Login Now</a>
                     </div>
 
                     <form id="booking-form" class="space-y-6">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label for="guest-name" class="block text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 ml-1">Full Name</label>
+                                <label for="guest-name" class="block text-xs uppercase tracking-wider text-slate-800 font-extrabold mb-2 ml-1">Full Name</label>
                                 <div class="relative">
-                                    <i class="fa-solid fa-user absolute left-4 top-4 text-slate-400"></i>
-                                    <input type="text" id="guest-name" required placeholder="John Doe" class="w-full border-2 border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 text-sm bg-slate-50/50 focus:bg-white text-slate-800 transition-all font-medium shadow-2xs">
-                                    <p id="err-guest-name" class="hidden text-rose-500 text-[10px] font-semibold mt-1 ml-1">Please enter your full name.</p>
+                                    <i class="fa-solid fa-user absolute left-4 top-4 text-slate-500 font-bold"></i>
+                                    <input type="text" id="guest-name" required placeholder="John Doe" class="w-full border-2 border-slate-300 rounded-xl pl-11 pr-4 py-3 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 text-sm bg-white text-slate-900 transition-all font-bold shadow-xs">
+                                    <p id="err-guest-name" class="hidden text-rose-600 text-xs font-bold mt-1.5 ml-1">Please enter your full name.</p>
                                 </div>
                             </div>
                             <div>
-                                <label for="guest-phone" class="block text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 ml-1">Phone Number</label>
+                                <label for="guest-phone" class="block text-xs uppercase tracking-wider text-slate-800 font-extrabold mb-2 ml-1">Phone Number</label>
                                 <div class="relative">
-                                    <i class="fa-solid fa-phone absolute left-4 top-4 text-slate-400"></i>
-                                    <input type="tel" id="guest-phone" required placeholder="0300-1234567" maxlength="12" class="w-full border-2 border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 text-sm bg-slate-50/50 focus:bg-white text-slate-800 transition-all font-medium font-mono shadow-2xs">
-                                    <p id="err-guest-phone" class="hidden text-rose-500 text-[10px] font-semibold mt-1 ml-1">Enter a valid Pakistani number (03XX-XXXXXXX).</p>
+                                    <i class="fa-solid fa-phone absolute left-4 top-4 text-slate-500 font-bold"></i>
+                                    <input type="tel" id="guest-phone" required placeholder="0300-1234567" maxlength="12" class="w-full border-2 border-slate-300 rounded-xl pl-11 pr-4 py-3 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 text-sm bg-white text-slate-900 transition-all font-bold font-mono shadow-xs">
+                                    <p id="err-guest-phone" class="hidden text-rose-600 text-xs font-bold mt-1.5 ml-1">Enter a valid Pakistani number (03XX-XXXXXXX).</p>
                                 </div>
                             </div>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label for="guest-email" class="block text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 ml-1">Email Address</label>
+                                <label for="guest-email" class="block text-xs uppercase tracking-wider text-slate-800 font-extrabold mb-2 ml-1">Email Address</label>
                                 <div class="relative">
-                                    <i class="fa-solid fa-envelope absolute left-4 top-4 text-slate-400"></i>
-                                    <input type="email" id="guest-email" required placeholder="john@example.com" class="w-full border-2 border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 text-sm bg-slate-50/50 focus:bg-white text-slate-800 transition-all font-medium shadow-2xs">
-                                    <p id="err-guest-email" class="hidden text-rose-500 text-[10px] font-semibold mt-1 ml-1">Please enter a valid email address.</p>
+                                    <i class="fa-solid fa-envelope absolute left-4 top-4 text-slate-500 font-bold"></i>
+                                    <input type="email" id="guest-email" required placeholder="john@example.com" class="w-full border-2 border-slate-300 rounded-xl pl-11 pr-4 py-3 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 text-sm bg-white text-slate-900 transition-all font-bold shadow-xs">
+                                    <p id="err-guest-email" class="hidden text-rose-600 text-xs font-bold mt-1.5 ml-1">Please enter a valid email address.</p>
                                 </div>
                             </div>
                             <div>
-                                <label for="guest-cnic" class="block text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 ml-1 flex items-center justify-between">
+                                <label for="guest-cnic" class="block text-xs uppercase tracking-wider text-slate-800 font-extrabold mb-2 ml-1 flex items-center justify-between">
                                     <span>CNIC / National ID / Passport</span>
-                                    <span class="text-[9px] text-[#C5A059] font-bold">Mandatory for check-in</span>
+                                    <span class="text-[10px] text-[#B8860B] font-extrabold">Mandatory for check-in</span>
                                 </label>
                                 <div class="relative">
-                                    <i class="fa-solid fa-id-card absolute left-4 top-4 text-slate-400"></i>
-                                    <input type="text" id="guest-cnic" placeholder="35201-1234567-1 or Passport No." maxlength="25" class="w-full border-2 border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 text-sm bg-slate-50/50 focus:bg-white text-slate-800 transition-all font-medium font-mono shadow-2xs">
-                                    <p id="err-guest-cnic" class="hidden text-rose-500 text-[10px] font-semibold mt-1 ml-1">Please enter your CNIC or Passport number.</p>
+                                    <i class="fa-solid fa-id-card absolute left-4 top-4 text-slate-500 font-bold"></i>
+                                    <input type="text" id="guest-cnic" placeholder="35201-1234567-1 or Passport No." maxlength="25" class="w-full border-2 border-slate-300 rounded-xl pl-11 pr-4 py-3 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 text-sm bg-white text-slate-900 transition-all font-bold font-mono shadow-xs">
+                                    <p id="err-guest-cnic" class="hidden text-rose-600 text-xs font-bold mt-1.5 ml-1">Please enter your CNIC or Passport number.</p>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Optional CNIC Front & Back Image Upload -->
-                        <div class="bg-slate-50/80 rounded-2xl p-4 sm:p-5 border border-slate-200/90 shadow-inner">
+                        <div class="bg-slate-50 rounded-2xl p-4 sm:p-5 border-2 border-slate-200 shadow-xs">
                             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-3.5">
-                                <label class="text-[11px] uppercase tracking-wider font-extrabold text-slate-800 flex items-center gap-2">
-                                    <i class="fa-solid fa-camera text-[#C5A059]"></i>
+                                <label class="text-xs uppercase tracking-wider font-extrabold text-slate-900 flex items-center gap-2">
+                                    <i class="fa-solid fa-camera text-[#B8860B]"></i>
                                     Attach CNIC / ID Photos
-                                    <span class="text-[9px] bg-slate-200/80 text-slate-700 font-bold px-2 py-0.5 rounded-full lowercase">optional</span>
+                                    <span class="text-[10px] bg-slate-200 text-slate-800 font-extrabold px-2 py-0.5 rounded-lg lowercase">optional</span>
                                 </label>
-                                <span class="text-[10px] text-slate-400 font-medium">Upload front &amp; back for express reception check-in</span>
+                                <span class="text-xs text-slate-600 font-medium">Upload front &amp; back for express reception check-in</span>
                             </div>
 
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                                 <!-- Front Side Upload -->
-                                <div id="cnic-front-card" class="relative border-2 border-dashed border-slate-300 hover:border-[#C5A059] bg-white rounded-xl p-3.5 transition-all flex flex-col items-center justify-center text-center group cursor-pointer min-h-[110px]" onclick="document.getElementById('cnic-front-file').click()">
+                                <div id="cnic-front-card" class="relative border-2 border-dashed border-slate-300 hover:border-[#C5A059] bg-white rounded-2xl p-4 transition-all flex flex-col items-center justify-center text-center group cursor-pointer min-h-[110px]" onclick="document.getElementById('cnic-front-file').click()">
                                     <input type="file" id="cnic-front-file" accept="image/*" class="hidden" onchange="handleCnicFileSelect('front', this.files[0])">
                                     <div id="cnic-front-placeholder" class="flex flex-col items-center gap-1.5 py-1">
-                                        <div class="w-8 h-8 rounded-lg bg-amber-50 text-[#C5A059] flex items-center justify-center text-sm group-hover:scale-110 transition-transform">
+                                        <div class="w-9 h-9 rounded-xl bg-amber-50 text-[#B8860B] border border-amber-200 flex items-center justify-center text-base group-hover:scale-110 transition-transform font-bold">
                                             <i class="fa-solid fa-address-card"></i>
                                         </div>
-                                        <span class="text-xs font-bold text-slate-700">CNIC Front Side</span>
-                                        <span class="text-[9px] text-slate-400 font-medium">Click to upload photo</span>
+                                        <span class="text-xs font-extrabold text-slate-900">CNIC Front Side</span>
+                                        <span class="text-[10px] text-slate-500 font-semibold">Click to upload photo</span>
                                     </div>
                                     <div id="cnic-front-preview-wrap" class="hidden w-full flex items-center justify-between gap-2">
                                         <div class="flex items-center gap-2.5 overflow-hidden">
-                                            <img id="cnic-front-thumb" class="w-12 h-9 object-cover rounded-lg border border-slate-200 shadow-xs" src="" alt="CNIC Front">
+                                            <img id="cnic-front-thumb" class="w-12 h-9 object-cover rounded-lg border-2 border-slate-200 shadow-xs" src="" alt="CNIC Front">
                                             <div class="text-left overflow-hidden">
-                                                <div class="text-[11px] font-bold text-slate-800 truncate">CNIC Front</div>
-                                                <div id="cnic-front-status" class="text-[9px] text-emerald-600 font-semibold flex items-center gap-1"><i class="fa-solid fa-check"></i> Attached</div>
+                                                <div class="text-xs font-extrabold text-slate-900 truncate">CNIC Front</div>
+                                                <div id="cnic-front-status" class="text-[10px] text-emerald-700 font-bold flex items-center gap-1"><i class="fa-solid fa-check"></i> Attached</div>
                                             </div>
                                         </div>
-                                        <button type="button" onclick="event.stopPropagation(); removeCnicPhoto('front')" class="w-7 h-7 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center text-xs transition-colors shrink-0" title="Remove photo">
+                                        <button type="button" onclick="event.stopPropagation(); removeCnicPhoto('front')" class="w-8 h-8 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 flex items-center justify-center text-xs transition-colors shrink-0" title="Remove photo">
                                             <i class="fa-solid fa-trash-can"></i>
                                         </button>
                                     </div>
                                 </div>
 
                                 <!-- Back Side Upload -->
-                                <div id="cnic-back-card" class="relative border-2 border-dashed border-slate-300 hover:border-[#C5A059] bg-white rounded-xl p-3.5 transition-all flex flex-col items-center justify-center text-center group cursor-pointer min-h-[110px]" onclick="document.getElementById('cnic-back-file').click()">
+                                <div id="cnic-back-card" class="relative border-2 border-dashed border-slate-300 hover:border-[#C5A059] bg-white rounded-2xl p-4 transition-all flex flex-col items-center justify-center text-center group cursor-pointer min-h-[110px]" onclick="document.getElementById('cnic-back-file').click()">
                                     <input type="file" id="cnic-back-file" accept="image/*" class="hidden" onchange="handleCnicFileSelect('back', this.files[0])">
                                     <div id="cnic-back-placeholder" class="flex flex-col items-center gap-1.5 py-1">
-                                        <div class="w-8 h-8 rounded-lg bg-amber-50 text-[#C5A059] flex items-center justify-center text-sm group-hover:scale-110 transition-transform">
+                                        <div class="w-9 h-9 rounded-xl bg-amber-50 text-[#B8860B] border border-amber-200 flex items-center justify-center text-base group-hover:scale-110 transition-transform font-bold">
                                             <i class="fa-solid fa-id-card-clip"></i>
                                         </div>
-                                        <span class="text-xs font-bold text-slate-700">CNIC Back Side</span>
-                                        <span class="text-[9px] text-slate-400 font-medium">Click to upload photo</span>
+                                        <span class="text-xs font-extrabold text-slate-900">CNIC Back Side</span>
+                                        <span class="text-[10px] text-slate-500 font-semibold">Click to upload photo</span>
                                     </div>
                                     <div id="cnic-back-preview-wrap" class="hidden w-full flex items-center justify-between gap-2">
                                         <div class="flex items-center gap-2.5 overflow-hidden">
-                                            <img id="cnic-back-thumb" class="w-12 h-9 object-cover rounded-lg border border-slate-200 shadow-xs" src="" alt="CNIC Back">
+                                            <img id="cnic-back-thumb" class="w-12 h-9 object-cover rounded-lg border-2 border-slate-200 shadow-xs" src="" alt="CNIC Back">
                                             <div class="text-left overflow-hidden">
-                                                <div class="text-[11px] font-bold text-slate-800 truncate">CNIC Back</div>
-                                                <div id="cnic-back-status" class="text-[9px] text-emerald-600 font-semibold flex items-center gap-1"><i class="fa-solid fa-check"></i> Attached</div>
+                                                <div class="text-xs font-extrabold text-slate-900 truncate">CNIC Back</div>
+                                                <div id="cnic-back-status" class="text-[10px] text-emerald-700 font-bold flex items-center gap-1"><i class="fa-solid fa-check"></i> Attached</div>
                                             </div>
                                         </div>
-                                        <button type="button" onclick="event.stopPropagation(); removeCnicPhoto('back')" class="w-7 h-7 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center text-xs transition-colors shrink-0" title="Remove photo">
+                                        <button type="button" onclick="event.stopPropagation(); removeCnicPhoto('back')" class="w-8 h-8 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 flex items-center justify-center text-xs transition-colors shrink-0" title="Remove photo">
                                             <i class="fa-solid fa-trash-can"></i>
                                         </button>
                                     </div>
@@ -551,36 +551,36 @@
                         <!-- Guest Count (Adults, Children, Infants) -->
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                             <div>
-                                <label for="book-adults" class="block text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 ml-1 flex items-center justify-between">
+                                <label for="book-adults" class="block text-xs uppercase tracking-wider text-slate-800 font-extrabold mb-2 ml-1 flex items-center justify-between">
                                     <span>Adults</span>
-                                    <span class="text-[9px] text-slate-400 font-medium">Ages 13+</span>
+                                    <span class="text-[10px] text-slate-500 font-bold">Ages 13+</span>
                                 </label>
-                                <div class="flex items-center border-2 border-slate-200 rounded-2xl overflow-hidden bg-slate-50/50 focus-within:border-[#C5A059] transition-all">
-                                    <button type="button" onclick="adjustGuests('adults',-1)" class="px-3.5 py-3 text-slate-600 hover:text-[#C5A059] hover:bg-slate-200/50 font-black text-base transition-colors shrink-0" aria-label="Decrease adults">−</button>
-                                    <input type="number" id="book-adults" value="2" min="1" max="10" readonly class="w-full text-center text-sm font-bold text-slate-800 bg-transparent outline-none pointer-events-none">
-                                    <button type="button" onclick="adjustGuests('adults',1)" class="px-3.5 py-3 text-slate-600 hover:text-[#C5A059] hover:bg-slate-200/50 font-black text-base transition-colors shrink-0" aria-label="Increase adults">+</button>
+                                <div class="flex items-center border-2 border-slate-300 rounded-xl overflow-hidden bg-white focus-within:border-[#C5A059] shadow-xs transition-all">
+                                    <button type="button" onclick="adjustGuests('adults',-1)" class="px-4 py-3 text-slate-700 hover:text-[#B8860B] hover:bg-slate-100 font-black text-lg transition-colors shrink-0" aria-label="Decrease adults">−</button>
+                                    <input type="number" id="book-adults" value="2" min="1" max="10" readonly class="w-full text-center text-base font-extrabold text-slate-900 bg-transparent outline-none pointer-events-none">
+                                    <button type="button" onclick="adjustGuests('adults',1)" class="px-4 py-3 text-slate-700 hover:text-[#B8860B] hover:bg-slate-100 font-black text-lg transition-colors shrink-0" aria-label="Increase adults">+</button>
                                 </div>
                             </div>
                             <div>
-                                <label for="book-children" class="block text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 ml-1 flex items-center justify-between">
+                                <label for="book-children" class="block text-xs uppercase tracking-wider text-slate-800 font-extrabold mb-2 ml-1 flex items-center justify-between">
                                     <span>Children</span>
-                                    <span class="text-[9px] text-slate-400 font-medium">Ages 2–12</span>
+                                    <span class="text-[10px] text-slate-500 font-bold">Ages 2–12</span>
                                 </label>
-                                <div class="flex items-center border-2 border-slate-200 rounded-2xl overflow-hidden bg-slate-50/50 focus-within:border-[#C5A059] transition-all">
-                                    <button type="button" onclick="adjustGuests('children',-1)" class="px-3.5 py-3 text-slate-600 hover:text-[#C5A059] hover:bg-slate-200/50 font-black text-base transition-colors shrink-0" aria-label="Decrease children">−</button>
-                                    <input type="number" id="book-children" value="0" min="0" max="6" readonly class="w-full text-center text-sm font-bold text-slate-800 bg-transparent outline-none pointer-events-none">
-                                    <button type="button" onclick="adjustGuests('children',1)" class="px-3.5 py-3 text-slate-600 hover:text-[#C5A059] hover:bg-slate-200/50 font-black text-base transition-colors shrink-0" aria-label="Increase children">+</button>
+                                <div class="flex items-center border-2 border-slate-300 rounded-xl overflow-hidden bg-white focus-within:border-[#C5A059] shadow-xs transition-all">
+                                    <button type="button" onclick="adjustGuests('children',-1)" class="px-4 py-3 text-slate-700 hover:text-[#B8860B] hover:bg-slate-100 font-black text-lg transition-colors shrink-0" aria-label="Decrease children">−</button>
+                                    <input type="number" id="book-children" value="0" min="0" max="6" readonly class="w-full text-center text-base font-extrabold text-slate-900 bg-transparent outline-none pointer-events-none">
+                                    <button type="button" onclick="adjustGuests('children',1)" class="px-4 py-3 text-slate-700 hover:text-[#B8860B] hover:bg-slate-100 font-black text-lg transition-colors shrink-0" aria-label="Increase children">+</button>
                                 </div>
                             </div>
                             <div>
-                                <label for="book-infants" class="block text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 ml-1 flex items-center justify-between">
+                                <label for="book-infants" class="block text-xs uppercase tracking-wider text-slate-800 font-extrabold mb-2 ml-1 flex items-center justify-between">
                                     <span>Infants</span>
-                                    <span class="text-[9px] text-slate-400 font-medium">Under 2</span>
+                                    <span class="text-[10px] text-slate-500 font-bold">Under 2</span>
                                 </label>
-                                <div class="flex items-center border-2 border-slate-200 rounded-2xl overflow-hidden bg-slate-50/50 focus-within:border-[#C5A059] transition-all">
-                                    <button type="button" onclick="adjustGuests('infants',-1)" class="px-3.5 py-3 text-slate-600 hover:text-[#C5A059] hover:bg-slate-200/50 font-black text-base transition-colors shrink-0" aria-label="Decrease infants">−</button>
-                                    <input type="number" id="book-infants" value="0" min="0" max="5" readonly class="w-full text-center text-sm font-bold text-slate-800 bg-transparent outline-none pointer-events-none">
-                                    <button type="button" onclick="adjustGuests('infants',1)" class="px-3.5 py-3 text-slate-600 hover:text-[#C5A059] hover:bg-slate-200/50 font-black text-base transition-colors shrink-0" aria-label="Increase infants">+</button>
+                                <div class="flex items-center border-2 border-slate-300 rounded-xl overflow-hidden bg-white focus-within:border-[#C5A059] shadow-xs transition-all">
+                                    <button type="button" onclick="adjustGuests('infants',-1)" class="px-4 py-3 text-slate-700 hover:text-[#B8860B] hover:bg-slate-100 font-black text-lg transition-colors shrink-0" aria-label="Decrease infants">−</button>
+                                    <input type="number" id="book-infants" value="0" min="0" max="5" readonly class="w-full text-center text-base font-extrabold text-slate-900 bg-transparent outline-none pointer-events-none">
+                                    <button type="button" onclick="adjustGuests('infants',1)" class="px-4 py-3 text-slate-700 hover:text-[#B8860B] hover:bg-slate-100 font-black text-lg transition-colors shrink-0" aria-label="Increase infants">+</button>
                                 </div>
                             </div>
                         </div>
@@ -588,13 +588,13 @@
                 </div>
 
                 <!-- Custom Upgrades Card -->
-                <div id="upgrades-section-wrapper" data-animate="fade-up" class="bg-white rounded-[2.25rem] border-2 border-slate-200/90 p-6 md:p-8 shadow-2xl shadow-slate-200/60 relative overflow-hidden hidden">
+                <div id="upgrades-section-wrapper" data-animate="fade-up" class="bg-white rounded-3xl border-2 border-slate-200 p-6 md:p-8 shadow-lg relative overflow-hidden hidden">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#C5A059]/10 to-transparent rounded-bl-full pointer-events-none"></div>
-                    <h2 class="text-xl font-bold outfit text-slate-900 mb-6 flex items-center gap-3">
-                        <span class="w-10 h-10 bg-slate-900 text-[#C5A059] rounded-full flex items-center justify-center text-sm font-black shadow-lg">3</span>
+                    <h2 class="text-2xl font-extrabold outfit text-slate-900 mb-4 flex items-center gap-3">
+                        <span class="w-10 h-10 bg-slate-900 border-2 border-[#C5A059] text-[#D4AF37] rounded-xl flex items-center justify-center text-sm font-black shadow-md">3</span>
                         Luxury Add-ons & Upgrades
                     </h2>
-                    <p class="text-slate-400 text-xs mb-6 font-light leading-relaxed">
+                    <p class="text-slate-600 text-xs mb-6 font-medium leading-relaxed">
                         Customize your alpine getaway with our curated premium add-on services. Select any package to include it in your stay.
                     </p>
                     <div id="upgrades-container" class="space-y-4">
@@ -613,18 +613,18 @@
                 </div>
 
                 <!-- Payment Selection Card -->
-                <div class="bg-white rounded-[2.25rem] border-2 border-slate-200/90 p-6 md:p-8 shadow-2xl shadow-slate-200/60 relative overflow-hidden" id="payment-selection-section">
+                <div class="bg-white rounded-3xl border-2 border-slate-200 p-6 md:p-8 shadow-lg relative overflow-hidden" id="payment-selection-section">
                     <div class="absolute top-0 right-0 w-36 h-36 bg-gradient-to-br from-[#C5A059]/10 to-transparent rounded-bl-full pointer-events-none"></div>
                     <div class="flex items-center justify-between mb-4">
-                        <h2 class="text-xl font-bold outfit text-slate-900 flex items-center gap-3">
-                            <span class="w-10 h-10 bg-slate-900 text-[#C5A059] rounded-full flex items-center justify-center text-sm font-black shadow-lg">4</span>
+                        <h2 class="text-2xl font-extrabold outfit text-slate-900 flex items-center gap-3">
+                            <span class="w-10 h-10 bg-slate-900 border-2 border-[#C5A059] text-[#D4AF37] rounded-xl flex items-center justify-center text-sm font-black shadow-md">4</span>
                             Payment Method
                         </h2>
-                        <span class="text-[10px] uppercase tracking-wider font-extrabold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1">
-                            <i class="fa-solid fa-shield-halved text-xs"></i> SSL 256-Bit Encrypted
+                        <span class="text-xs uppercase tracking-wider font-extrabold px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-300 flex items-center gap-1.5 shadow-xs">
+                            <i class="fa-solid fa-shield-halved text-xs text-emerald-600"></i> SSL 256-Bit Encrypted
                         </span>
                     </div>
-                    <p class="text-slate-400 text-xs mb-6 font-light">
+                    <p class="text-slate-600 text-xs mb-6 font-medium">
                         Select how you would like to complete your reservation. Online payments are processed instantaneously through the official PayFast gateway.
                     </p>
 
@@ -632,18 +632,18 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         
                         <!-- Option 1: Pay on Check-in (Active Default) -->
-                        <div onclick="selectPaymentMethod('pay_on_checkin')" id="pay-opt-checkin" role="radio" aria-checked="true" class="p-5 rounded-2xl border-2 border-[#C5A059] bg-amber-50/20 hover:bg-amber-50/40 cursor-pointer transition-all shadow-md relative group flex flex-col justify-between space-y-3">
+                        <div onclick="selectPaymentMethod('pay_on_checkin')" id="pay-opt-checkin" role="radio" aria-checked="true" class="p-5 rounded-2xl border-2 border-[#C5A059] bg-amber-50/30 hover:bg-amber-50/50 cursor-pointer transition-all shadow-md relative group flex flex-col justify-between space-y-3">
                             <div class="flex justify-between items-start">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-xl bg-[#0B0F19] text-[#D4AF37] flex items-center justify-center text-lg font-black shadow-sm group-hover:scale-105 transition-transform">
+                                    <div class="w-11 h-11 rounded-xl bg-slate-900 border-2 border-amber-400 text-[#D4AF37] flex items-center justify-center text-xl font-black shadow-sm group-hover:scale-105 transition-transform">
                                         <i class="fa-solid fa-hotel"></i>
                                     </div>
                                     <div>
                                         <div class="flex items-center gap-2">
-                                            <h4 class="font-bold text-slate-900 text-sm">Pay on Check-in</h4>
-                                            <span class="text-[8px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">NO PREPAYMENT</span>
+                                            <h4 class="font-extrabold text-slate-900 text-sm outfit">Pay on Check-in</h4>
+                                            <span class="text-[9px] bg-emerald-100 text-emerald-900 font-extrabold px-2 py-0.5 rounded-md uppercase tracking-wider border border-emerald-200">NO PREPAYMENT</span>
                                         </div>
-                                        <p class="text-[11px] text-slate-500 font-medium">Cash / Card / Bank Transfer at reception</p>
+                                        <p class="text-xs text-slate-600 font-medium">Cash / Card / Bank Transfer at reception</p>
                                     </div>
                                 </div>
                                 <span class="w-4 h-4 rounded-full border-2 border-[#C5A059] bg-[#C5A059] flex items-center justify-center shrink-0 mt-1" id="pay-dot-checkin">
@@ -653,33 +653,33 @@
                         </div>
 
                         <!-- Option 2: Pay Online (Disabled in Sandbox Mode) -->
-                        <div id="pay-opt-payfast" role="radio" aria-checked="false" class="p-5 rounded-2xl border-2 border-slate-200 bg-slate-50/80 opacity-60 cursor-not-allowed transition-all shadow-xs relative group flex flex-col justify-between space-y-3" title="Online card payment gateway is currently in sandbox testing mode and will be enabled soon.">
+                        <div id="pay-opt-payfast" role="radio" aria-checked="false" class="p-5 rounded-2xl border-2 border-slate-200 bg-slate-50 opacity-60 cursor-not-allowed transition-all shadow-xs relative group flex flex-col justify-between space-y-3" title="Online card payment gateway is currently in sandbox testing mode and will be enabled soon.">
                             <div class="flex justify-between items-start">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-xl bg-slate-200 text-slate-500 flex items-center justify-center text-lg font-black shadow-sm">
+                                    <div class="w-11 h-11 rounded-xl bg-slate-200 text-slate-500 border border-slate-300 flex items-center justify-center text-lg font-black shadow-sm">
                                         <i class="fa-solid fa-credit-card"></i>
                                     </div>
                                     <div>
                                         <div class="flex items-center gap-2">
-                                            <h4 class="font-bold text-slate-600 text-sm">Pay Online (Cards / Wallets)</h4>
-                                            <span class="text-[8px] bg-amber-100 text-amber-800 font-black px-2 py-0.5 rounded-full uppercase tracking-wider">COMING SOON</span>
+                                            <h4 class="font-extrabold text-slate-700 text-sm outfit">Pay Online (Cards / Wallets)</h4>
+                                            <span class="text-[9px] bg-amber-100 text-amber-900 font-extrabold px-2 py-0.5 rounded-md uppercase tracking-wider border border-amber-300">COMING SOON</span>
                                         </div>
-                                        <p class="text-[11px] text-slate-400 font-medium">Temporarily disabled during gateway sandbox review</p>
+                                        <p class="text-xs text-slate-500 font-medium">Temporarily disabled during gateway sandbox review</p>
                                     </div>
                                 </div>
                                 <span class="w-4 h-4 rounded-full border-2 border-slate-300 bg-white flex items-center justify-center shrink-0 mt-1" id="pay-dot-payfast"></span>
                             </div>
 
                             <!-- Accepted logos strip -->
-                            <div class="pt-2 border-t border-slate-200/70 flex items-center justify-between flex-wrap gap-2 text-[10px] text-slate-400">
-                                <div class="flex items-center gap-1.5 font-bold text-slate-400">
-                                    <span class="px-1.5 py-0.5 bg-white border border-slate-200 rounded font-mono text-[9px]">VISA</span>
-                                    <span class="px-1.5 py-0.5 bg-white border border-slate-200 rounded font-mono text-[9px]">Mastercard</span>
-                                    <span class="px-1.5 py-0.5 bg-white border border-slate-200 rounded font-mono text-[9px]">PayPak</span>
-                                    <span class="px-1.5 py-0.5 bg-white border border-slate-200 rounded font-mono text-[9px]">JazzCash</span>
-                                    <span class="px-1.5 py-0.5 bg-white border border-slate-200 rounded font-mono text-[9px]">EasyPaisa</span>
+                            <div class="pt-2 border-t border-slate-200 flex items-center justify-between flex-wrap gap-2 text-xs text-slate-500">
+                                <div class="flex items-center gap-1.5 font-bold">
+                                    <span class="px-2 py-0.5 bg-white border border-slate-300 rounded-md font-mono text-[10px]">VISA</span>
+                                    <span class="px-2 py-0.5 bg-white border border-slate-300 rounded-md font-mono text-[10px]">Mastercard</span>
+                                    <span class="px-2 py-0.5 bg-white border border-slate-300 rounded-md font-mono text-[10px]">PayPak</span>
+                                    <span class="px-2 py-0.5 bg-white border border-slate-300 rounded-md font-mono text-[10px]">JazzCash</span>
+                                    <span class="px-2 py-0.5 bg-white border border-slate-300 rounded-md font-mono text-[10px]">EasyPaisa</span>
                                 </div>
-                                <span class="text-[9px] text-slate-400 font-bold flex items-center gap-1"><i class="fa-solid fa-clock"></i> Live Soon</span>
+                                <span class="text-[10px] text-slate-600 font-extrabold flex items-center gap-1"><i class="fa-solid fa-clock"></i> Live Soon</span>
                             </div>
                         </div>
 
@@ -687,14 +687,14 @@
                 </div>
 
                 <!-- Guest Reviews Card -->
-                <div class="bg-white rounded-[2.25rem] border-2 border-slate-200/90 p-6 md:p-8 shadow-2xl shadow-slate-200/60 relative overflow-hidden hidden" id="booking-reviews-section">
-                    <h2 class="text-xl font-bold outfit text-slate-900 mb-6 flex items-center justify-between">
+                <div class="bg-white rounded-3xl border-2 border-slate-200 p-6 md:p-8 shadow-lg relative overflow-hidden hidden" id="booking-reviews-section">
+                    <h2 class="text-2xl font-extrabold outfit text-slate-900 mb-6 flex items-center justify-between">
                         <div class="flex items-center gap-3">
-                            <span class="w-10 h-10 bg-slate-100 text-[#D4AF37] rounded-full flex items-center justify-center text-sm font-black shadow-inner"><i class="fa-solid fa-star"></i></span>
+                            <span class="w-10 h-10 bg-amber-50 border border-amber-200 text-[#B8860B] rounded-xl flex items-center justify-center text-base font-black shadow-xs"><i class="fa-solid fa-star"></i></span>
                             Verified Guest Reviews
                         </div>
-                        <div class="flex items-center gap-2 text-sm bg-[#D4AF37]/10 px-3 py-1.5 rounded-xl border border-[#D4AF37]/20 text-[#D4AF37]">
-                            <span class="font-black" id="avg-rating-display">5.0</span>
+                        <div class="flex items-center gap-2 text-sm bg-amber-50 px-3.5 py-1.5 rounded-xl border border-amber-300 text-amber-900 font-black">
+                            <span id="avg-rating-display">5.0</span>
                         </div>
                     </h2>
 
@@ -706,129 +706,129 @@
 
             <!-- Price Summary Sidebar (Right) -->
             <div class="w-full lg:w-1/3">
-                <div class="bg-white rounded-[2.25rem] border-2 border-slate-200/90 shadow-2xl shadow-slate-300/60 p-6 md:p-8 space-y-7 lg:sticky lg:top-28 z-30">
+                <div class="bg-white rounded-3xl border-2 border-slate-200 shadow-xl p-6 md:p-8 space-y-6 lg:sticky lg:top-28 z-30">
                     <div class="flex items-center justify-between border-b-2 border-slate-100 pb-4">
-                        <h3 class="font-bold text-xl outfit text-slate-900">Stay Summary</h3>
-                        <i class="fa-solid fa-receipt text-slate-300 text-xl"></i>
+                        <h3 class="font-extrabold text-xl outfit text-slate-900">Stay Summary</h3>
+                        <i class="fa-solid fa-receipt text-slate-400 text-xl"></i>
                     </div>
                     
                     <!-- Selected Room Card Preview -->
-                    <div id="room-preview-box" class="flex gap-4 border-2 border-slate-200 bg-slate-50/70 p-4 rounded-2xl shadow-sm overflow-hidden">
+                    <div id="room-preview-box" class="flex gap-4 border-2 border-slate-200 bg-slate-50 p-4 rounded-2xl shadow-xs overflow-hidden">
                         <div class="relative group cursor-pointer w-20 h-20 md:w-24 md:h-24 flex-shrink-0" onclick="openBookingLightbox()" title="View full gallery">
-                            <img id="preview-room-img" src="" alt="Suite Preview" class="w-full h-full object-cover rounded-2xl border-2 border-slate-200 shadow-md">
-                            <div class="absolute inset-0 bg-black/40 rounded-2xl opacity-0 group-hover:opacity-100 flex items-center justify-center text-white transition-opacity duration-300">
+                            <img id="preview-room-img" src="" alt="Suite Preview" class="w-full h-full object-cover rounded-xl border-2 border-slate-200 shadow-xs">
+                            <div class="absolute inset-0 bg-black/40 rounded-xl opacity-0 group-hover:opacity-100 flex items-center justify-center text-white transition-opacity duration-300">
                                 <i class="fa-solid fa-magnifying-glass-plus text-base"></i>
                             </div>
                         </div>
                         <div class="flex flex-col justify-center min-w-0 flex-1">
-                            <h4 id="preview-room-name" class="font-black text-slate-900 outfit text-sm leading-snug break-words">Deluxe Alpine Room</h4>
-                            <span id="preview-room-location" class="text-[10px] uppercase tracking-widest text-slate-500 font-bold mt-1 flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-[#C5A059]"></i> Islamabad</span>
+                            <h4 id="preview-room-name" class="font-extrabold text-slate-900 outfit text-sm leading-snug break-words">Deluxe Alpine Room</h4>
+                            <span id="preview-room-location" class="text-xs uppercase tracking-wider text-slate-600 font-bold mt-1 flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-[#B8860B]"></i> Islamabad</span>
                             <div id="preview-room-price" class="mt-1.5 flex flex-wrap gap-1 items-center min-w-0"></div>
-                            <span id="preview-room-guests" class="text-[10px] text-slate-500 font-semibold mt-1">Capacity: Max 2 guests</span>
+                            <span id="preview-room-guests" class="text-xs text-slate-600 font-semibold mt-1">Capacity: Max 2 guests</span>
                         </div>
                     </div>
 
                     <!-- Advanced Pricing Strategy Noticeable Graphics -->
-                    <div id="pricing-breakdown-graphics" class="hidden bg-slate-50 border border-slate-100 rounded-2xl p-4 space-y-3">
-                        <div class="text-[10px] uppercase tracking-wider text-slate-400 font-bold mb-1 flex items-center gap-1"><i class="fa-solid fa-tags text-[#C5A059]"></i> Pricing Advantage Available</div>
+                    <div id="pricing-breakdown-graphics" class="hidden bg-slate-50 border-2 border-slate-200 rounded-2xl p-4 space-y-3">
+                        <div class="text-xs uppercase tracking-wider text-slate-600 font-extrabold mb-1 flex items-center gap-1.5"><i class="fa-solid fa-tags text-[#B8860B]"></i> Pricing Advantage Available</div>
                         <div id="graphics-daily-row" class="flex justify-between items-center text-xs">
-                            <span class="text-slate-600 font-medium">Standard Daily</span>
-                            <span id="graphics-daily-val" class="font-bold text-slate-800">PKR 0 / day</span>
+                            <span class="text-slate-700 font-semibold">Standard Daily</span>
+                            <span id="graphics-daily-val" class="font-bold text-slate-900">PKR 0 / day</span>
                         </div>
                         <div id="graphics-weekly-row" class="hidden justify-between items-center text-xs">
                             <div class="flex flex-col">
-                                <span class="text-slate-650 font-medium">Weekly Deal</span>
-                                <span id="graphics-weekly-per-day" class="text-[9px] text-emerald-600 font-bold"></span>
+                                <span class="text-slate-700 font-semibold">Weekly Deal</span>
+                                <span id="graphics-weekly-per-day" class="text-[10px] text-emerald-700 font-bold"></span>
                             </div>
-                            <span id="graphics-weekly-val" class="font-black text-slate-900 bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded border border-emerald-100"></span>
+                            <span id="graphics-weekly-val" class="font-black text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200"></span>
                         </div>
                         <div id="graphics-monthly-row" class="hidden justify-between items-center text-xs">
                             <div class="flex flex-col">
-                                <span class="text-slate-650 font-medium">Monthly Deal</span>
-                                <span id="graphics-monthly-per-day" class="text-[9px] text-indigo-600 font-bold"></span>
+                                <span class="text-slate-700 font-semibold">Monthly Deal</span>
+                                <span id="graphics-monthly-per-day" class="text-[10px] text-indigo-700 font-bold"></span>
                             </div>
-                            <span id="graphics-monthly-val" class="font-black text-slate-900 bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded border border-indigo-100"></span>
+                            <span id="graphics-monthly-val" class="font-black text-indigo-800 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200"></span>
                         </div>
                     </div>
 
                     <!-- Price Calculations -->
-                    <div class="space-y-4 text-sm font-medium">
-                        <div class="flex justify-between text-slate-500">
+                    <div class="space-y-3.5 text-sm font-semibold">
+                        <div class="flex justify-between text-slate-700">
                             <span>Room Rate</span>
-                            <span id="calc-rate">PKR 0</span>
+                            <span id="calc-rate" class="font-bold text-slate-900">PKR 0</span>
                         </div>
-                        <div class="flex justify-between text-slate-500">
+                        <div class="flex justify-between text-slate-700">
                             <span>Nights Stayed</span>
-                            <span id="calc-nights">0 Nights</span>
+                            <span id="calc-nights" class="font-bold text-slate-900">0 Nights</span>
                         </div>
-                        <div class="flex justify-between text-slate-500">
+                        <div class="flex justify-between text-slate-700">
                             <span>Subtotal</span>
-                            <span id="calc-subtotal">PKR 0</span>
+                            <span id="calc-subtotal" class="font-bold text-slate-900">PKR 0</span>
                         </div>
-                        <div class="flex justify-between text-slate-500">
+                        <div class="flex justify-between text-slate-700">
                             <span>GST (15%)</span>
-                            <span id="calc-tax">PKR 0</span>
+                            <span id="calc-tax" class="font-bold text-slate-900">PKR 0</span>
                         </div>
                         
                         <!-- Luxury Upgrades row -->
-                        <div id="calc-addons-row" class="hidden justify-between text-slate-500">
+                        <div id="calc-addons-row" class="hidden justify-between text-slate-700">
                             <span>Upgrades & Add-ons</span>
-                            <span id="calc-addons-total">PKR 0</span>
+                            <span id="calc-addons-total" class="font-bold text-slate-900">PKR 0</span>
                         </div>
 
                         <!-- Golootlo Partner Promo Banner -->
-                        <div class="bg-gradient-to-r from-amber-500/10 via-emerald-500/10 to-amber-500/10 border border-[#C5A059]/40 rounded-2xl p-3.5 mt-2 mb-1 shadow-xs">
+                        <div class="bg-amber-50/60 border-2 border-[#C5A059]/40 rounded-2xl p-3.5 mt-2 mb-1 shadow-xs">
                             <div class="flex items-center justify-between gap-2">
                                 <div class="flex items-center gap-2.5 min-w-0">
-                                    <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-[#0B0F19] to-slate-800 text-[#C5A059] flex items-center justify-center font-black text-xs shrink-0 shadow-xs">
+                                    <div class="w-9 h-9 rounded-xl bg-slate-900 border border-amber-400 text-[#D4AF37] flex items-center justify-center font-black text-sm shrink-0 shadow-xs">
                                         <i class="fa-solid fa-gift"></i>
                                     </div>
                                     <div class="min-w-0">
-                                        <div class="text-[11px] font-black text-slate-900 flex items-center gap-1.5 flex-wrap">
+                                        <div class="text-xs font-black text-slate-900 flex items-center gap-1.5 flex-wrap">
                                             <span>Golootlo Partner Deal</span>
-                                            <span class="bg-emerald-100 text-emerald-800 text-[9px] px-1.5 py-0.2 rounded font-black tracking-wide">15% OFF</span>
+                                            <span class="bg-emerald-100 text-emerald-800 text-[10px] px-1.5 py-0.2 rounded font-black tracking-wide">15% OFF</span>
                                         </div>
-                                        <p class="text-[10px] text-slate-500 font-medium truncate">Download Golootlo app for exclusive booking discounts</p>
+                                        <p class="text-[11px] text-slate-600 font-medium truncate">Download Golootlo app for exclusive booking discounts</p>
                                     </div>
                                 </div>
-                                <a href="https://play.google.com/store/apps/details?id=com.golootlo.golootlo" target="_blank" rel="noopener noreferrer" id="golootlo-get-app-btn" class="bg-[#0B0F19] hover:bg-[#C5A059] text-white text-[11px] font-bold px-3 py-1.5 rounded-xl transition-all shadow-xs shrink-0 inline-flex items-center gap-1.5 cursor-pointer" title="Download Golootlo app from Google Play Store">
-                                    <i class="fa-brands fa-google-play text-[#C5A059] text-xs"></i>
+                                <a href="https://play.google.com/store/apps/details?id=com.golootlo.golootlo" target="_blank" rel="noopener noreferrer" id="golootlo-get-app-btn" class="bg-slate-900 hover:bg-[#C5A059] text-white text-xs font-bold px-3.5 py-2 rounded-xl transition-all shadow-xs shrink-0 inline-flex items-center gap-1.5 cursor-pointer" title="Download Golootlo app from Google Play Store">
+                                    <i class="fa-brands fa-google-play text-[#D4AF37] text-xs"></i>
                                     <span>Get App</span>
                                 </a>
                             </div>
                         </div>
                         
                         <!-- Coupon Input Box -->
-                        <div class="border-t border-slate-100/80 pt-3 pb-1">
-                            <label class="block text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-2 ml-1">Have a Voucher / Promo Code?</label>
+                        <div class="border-t-2 border-slate-100 pt-3.5 pb-1">
+                            <label class="block text-xs uppercase tracking-wider text-slate-800 font-extrabold mb-2 ml-1">Have a Voucher / Promo Code?</label>
                             <div class="flex gap-2">
                                 <div class="relative flex-grow">
-                                    <i class="fa-solid fa-ticket absolute left-3 top-3 text-slate-400 text-xs"></i>
-                                    <input type="text" id="coupon-code-input" placeholder="Enter promo or voucher code" class="w-full border border-slate-200 rounded-xl pl-8 pr-3 py-2 outline-none focus:border-[#C5A059] focus:ring-2 focus:ring-[#C5A059]/10 text-xs bg-slate-50 focus:bg-white text-slate-800 transition-all font-medium uppercase">
+                                    <i class="fa-solid fa-ticket absolute left-3.5 top-3 text-slate-400 text-xs"></i>
+                                    <input type="text" id="coupon-code-input" placeholder="Enter promo code" class="w-full border-2 border-slate-300 rounded-xl pl-9 pr-3 py-2 outline-none focus:border-[#C5A059] focus:ring-2 focus:ring-[#C5A059]/10 text-xs bg-white text-slate-900 transition-all font-bold uppercase">
                                 </div>
-                                <button id="coupon-apply-btn" onclick="validateAndApplyCoupon()" class="bg-[#0B0F19] text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-[#C5A059] transition-all shadow-md">Apply</button>
+                                <button id="coupon-apply-btn" onclick="validateAndApplyCoupon()" class="bg-slate-900 hover:bg-[#C5A059] text-white px-5 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow-md">Apply</button>
                             </div>
-                            <p id="coupon-message" class="text-[9px] font-semibold mt-2 hidden ml-1"></p>
+                            <p id="coupon-message" class="text-xs font-bold mt-2 hidden ml-1"></p>
                         </div>
 
                         <!-- Coupon Discount Row -->
-                        <div id="coupon-discount-row" class="hidden justify-between text-emerald-600 font-bold items-center">
+                        <div id="coupon-discount-row" class="hidden justify-between text-emerald-700 font-extrabold items-center">
                             <span id="coupon-discount-lbl" class="flex items-center gap-1">Coupon</span>
                             <span id="calc-coupon-discount">-PKR 0</span>
                         </div>
 
-                        <div class="border-t border-slate-100/80 pt-4 flex justify-between items-center font-extrabold text-lg text-[#0B0F19]">
-                            <span>Total (PKR)</span>
-                            <span id="calc-total" class="text-[#C5A059] outfit text-xl">PKR 0</span>
+                        <div class="border-t-2 border-slate-200 pt-4 flex justify-between items-center font-black text-lg text-slate-900">
+                            <span class="outfit">Total (PKR)</span>
+                            <span id="calc-total" class="text-[#B8860B] outfit text-2xl font-black">PKR 0</span>
                         </div>
                     </div>
 
-                    <button onclick="submitBooking()" id="main-booking-submit-btn" class="w-full bg-[#C5A059] text-white py-4 rounded-2xl font-bold hover:bg-[#0B0F19] transition-all shadow-lg flex items-center justify-center gap-2 btn-shimmer">
-                        <i class="fa-solid fa-lock text-xs"></i>
+                    <button onclick="submitBooking()" id="main-booking-submit-btn" class="w-full bg-[#C5A059] border-2 border-amber-300 text-slate-900 hover:bg-slate-900 hover:text-white hover:border-slate-900 py-4 rounded-xl font-black text-sm uppercase tracking-wider transition-all shadow-lg flex items-center justify-center gap-2 btn-shimmer cursor-pointer">
+                        <i class="fa-solid fa-lock text-sm"></i>
                         <span id="submit-btn-text">Confirm Reservation (Pay on Check-in)</span>
                     </button>
-                    <p class="text-[10px] text-center text-slate-400">
-                        Secured SSL checkout powered by KPH Stay & PayFast Gateway. <br><span class="font-bold text-[#C5A059]">48-Hour Refund Policy:</span> Cancellations made 48h before check-in receive a 100% full refund in 5-7 business days. See our <a href="pricing.html" target="_blank" class="underline hover:text-[#C5A059]">Pricing Policy</a>, <a href="terms.html" target="_blank" class="underline hover:text-[#C5A059]">Terms of Stay</a> & <a href="refund.html" target="_blank" class="underline hover:text-[#C5A059]">Refund Policy</a>.
+                    <p class="text-[11px] text-center text-slate-500 font-medium leading-relaxed">
+                        Secured SSL checkout powered by KPH Stay & PayFast Gateway. <br><span class="font-bold text-[#B8860B]">48-Hour Refund Policy:</span> Cancellations made 48h before check-in receive a 100% full refund in 5-7 business days. See our <a href="pricing.html" target="_blank" class="underline hover:text-[#B8860B] font-bold">Pricing Policy</a>, <a href="terms.html" target="_blank" class="underline hover:text-[#B8860B] font-bold">Terms of Stay</a> & <a href="refund.html" target="_blank" class="underline hover:text-[#B8860B] font-bold">Refund Policy</a>.
                     </p>
                 </div>
             </div>
@@ -837,30 +837,30 @@
     </main>
 
     <!-- Booking Confirmation Success Modal -->
-    <div id="confirmation-modal" class="fixed inset-0 bg-[#0F172A]/80 z-[10000] flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300 overflow-y-auto">
-        <div class="bg-white rounded-3xl max-w-4xl w-full overflow-hidden shadow-2xl relative border border-slate-100 transform scale-95 transition-transform duration-300 p-6 text-center text-slate-800 my-8">
-            <div class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-3 shadow-inner">
-                <i class="fa-solid fa-check text-2xl"></i>
+    <div id="confirmation-modal" class="fixed inset-0 bg-slate-900/85 backdrop-blur-sm z-[10000] flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300 overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-4xl w-full overflow-hidden shadow-2xl relative border-2 border-slate-200 transform scale-95 transition-transform duration-300 p-6 md:p-8 text-center text-slate-900 my-8">
+            <div class="w-16 h-16 bg-emerald-50 border-2 border-emerald-300 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
+                <i class="fa-solid fa-check text-2xl font-black"></i>
             </div>
             
-            <h2 class="text-2xl font-black outfit text-slate-900 mb-1">Booking Confirmed!</h2>
-            <p class="text-slate-500 text-xs px-4 mb-6 leading-relaxed">
+            <h2 class="text-3xl font-extrabold outfit text-slate-900 mb-2">Booking Confirmed!</h2>
+            <p class="text-slate-600 text-sm px-4 mb-6 leading-relaxed font-medium">
                 Thank you for choosing KPH Stay. Below is your official reservation invoice.
             </p>
 
             <!-- Scrollable Invoice Preview Container -->
-            <div id="invoice-modal-content" class="bg-slate-50 border border-slate-200 rounded-2xl p-2 max-h-[60vh] overflow-y-auto mb-6 text-left shadow-xs">
+            <div id="invoice-modal-content" class="bg-slate-50 border-2 border-slate-200 rounded-2xl p-4 max-h-[60vh] overflow-y-auto mb-6 text-left shadow-xs">
                 <!-- Populated dynamically by getInvoiceHTML(booking) -->
             </div>
 
             <div class="flex flex-col sm:flex-row gap-3">
-                <a id="whatsapp-share-btn" target="_blank" class="w-full sm:w-1/3 bg-[#25D366] text-white font-bold py-3.5 rounded-xl hover:bg-[#128C7E] transition-all text-xs shadow-md flex items-center justify-center gap-2">
+                <a id="whatsapp-share-btn" target="_blank" class="w-full sm:w-1/3 bg-[#25D366] text-white font-extrabold py-3.5 rounded-xl hover:bg-[#128C7E] transition-all text-xs uppercase tracking-wider shadow-md flex items-center justify-center gap-2">
                     <i class="fa-brands fa-whatsapp text-lg"></i> Share WhatsApp
                 </a>
-                <button onclick="downloadPDFReceipt()" class="w-full sm:w-1/3 border-2 border-slate-200 text-slate-800 font-bold py-3.5 rounded-xl hover:bg-slate-100 transition-all text-xs flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-file-pdf text-[#C5A059]"></i> Download Invoice PDF
+                <button onclick="downloadPDFReceipt()" class="w-full sm:w-1/3 border-2 border-slate-300 text-slate-800 font-extrabold py-3.5 rounded-xl hover:bg-slate-100 transition-all text-xs uppercase tracking-wider flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-file-pdf text-[#B8860B]"></i> Download Invoice PDF
                 </button>
-                <button id="receipt-dashboard-btn" onclick="goToDashboard()" class="w-full sm:w-1/3 bg-[#0F172A] text-white font-bold py-3.5 rounded-xl hover:bg-[#C5A059] transition-all text-xs shadow-md text-center flex items-center justify-center">
+                <button id="receipt-dashboard-btn" onclick="goToDashboard()" class="w-full sm:w-1/3 bg-slate-900 text-white font-extrabold py-3.5 rounded-xl hover:bg-[#C5A059] hover:text-slate-900 transition-all text-xs uppercase tracking-wider shadow-md text-center flex items-center justify-center">
                     My Account / Stays
                 </button>
             </div>
@@ -2365,8 +2365,9 @@
 
                     msg.classList.remove('hidden', 'text-rose-500');
                     msg.classList.add('text-emerald-600', 'font-bold');
-                    calculatePrice();
-                    if (btn) { btn.disabled = false; btn.innerHTML = 'Applied ✓'; }
+                    if (window.trackGA4Event) {
+                        trackGA4Event('apply_coupon', { coupon_name: data.code, discount: data.discountPercentage });
+                    }
                     if (window.KaghanUI) KaghanUI.showToast(`Coupon ${data.code} (${data.discountPercentage}% OFF) applied!`, 'success');
                     return;
                 }
@@ -2649,8 +2650,24 @@
             }
 
             try {
-                // Save directly to Firestore via KaghanDB.addBooking
                 const confirmedBooking = await KaghanDB.addBooking(booking);
+
+                // Track GA4 Purchase Conversion
+                if (window.trackGA4Event) {
+                    trackGA4Event('purchase', {
+                        transaction_id: confirmedBooking.id,
+                        value: Number(confirmedBooking.totalPrice || finalPrice),
+                        currency: 'PKR',
+                        coupon: appliedCoupon ? appliedCoupon.code : undefined,
+                        items: [{
+                            item_id: selectedRoom.id,
+                            item_name: selectedRoom.name,
+                            item_category: selectedRoom.type || 'Suite',
+                            price: Number(confirmedBooking.totalPrice || finalPrice),
+                            quantity: stayNights
+                        }]
+                    });
+                }
 
                 // If Golootlo coupon was applied, trigger background redemption service
                 if (appliedCoupon && (appliedCoupon.provider === 'golootlo' || appliedCoupon.code === 'KPHSTAY' || appliedCoupon.code === 'KPHSGL12' || (appliedCoupon.code && appliedCoupon.code.startsWith('GOL')))) {

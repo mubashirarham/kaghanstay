@@ -22,12 +22,46 @@ const fdb = firebase.firestore();
 
 // Google Analytics 4 (GA4) Event Tracker for G-ZDPMHR68PZ
 window.trackGA4Event = function(eventName, params = {}) {
-    if (typeof window.gtag === 'function') {
-        window.gtag('event', eventName, params);
-    } else if (window.dataLayer) {
-        window.dataLayer.push({ event: eventName, ...params });
+    try {
+        if (typeof window.gtag === 'function') {
+            window.gtag('event', eventName, params);
+        } else if (window.dataLayer) {
+            window.dataLayer.push({ event: eventName, ...params });
+        }
+    } catch (e) {
+        console.warn('[GA4 Tracker Notice]:', e);
     }
 };
+
+// Global GA4 Conversion Listener (WhatsApp clicks, Phone calls, CTAs)
+if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+    document.addEventListener('click', (e) => {
+        const link = e.target.closest('a, button');
+        if (!link) return;
+
+        const href = (link.getAttribute('href') || '').toLowerCase();
+        const onclick = (link.getAttribute('onclick') || '').toLowerCase();
+        const text = (link.innerText || link.getAttribute('title') || '').trim();
+
+        if (href.includes('wa.me') || href.includes('whatsapp') || onclick.includes('whatsapp') || link.querySelector('.fa-whatsapp')) {
+            window.trackGA4Event('contact_whatsapp', {
+                location: window.location.pathname,
+                cta_text: text || 'WhatsApp Chat'
+            });
+        } else if (href.startsWith('tel:')) {
+            window.trackGA4Event('contact_phone', {
+                phone_number: href.replace('tel:', ''),
+                location: window.location.pathname
+            });
+        } else if (href.includes('booking') && (text.toLowerCase().includes('book') || text.toLowerCase().includes('reserve'))) {
+            window.trackGA4Event('click_booking_cta', {
+                destination: href,
+                cta_text: text,
+                location: window.location.pathname
+            });
+        }
+    }, { passive: true });
+}
 
 // ⚡ Force long-polling to eliminate QUIC protocol connection stalls (ERR_QUIC_PROTOCOL_ERROR)
 try {
@@ -249,16 +283,17 @@ function startActiveListeners() {
     }, err => console.warn("Payment settings listener notice:", err));
 
     // 4. Authenticated User Listeners (Subscribed only when Firebase Auth is ready)
-    firebase.auth().onAuthStateChanged(authUser => {
-        // Stop existing auth listeners on state change
-        ['currentUser', 'coupons', 'bookings', 'users', 'newsletter'].forEach(key => {
-            if (window.KaghanDB_Listeners[key]) {
-                try { window.KaghanDB_Listeners[key](); } catch(e) {}
-                window.KaghanDB_Listeners[key] = null;
-            }
-        });
+    if (typeof firebase.auth === 'function') {
+        firebase.auth().onAuthStateChanged(authUser => {
+            // Stop existing auth listeners on state change
+            ['currentUser', 'coupons', 'bookings', 'users', 'newsletter'].forEach(key => {
+                if (window.KaghanDB_Listeners[key]) {
+                    try { window.KaghanDB_Listeners[key](); } catch(e) {}
+                    window.KaghanDB_Listeners[key] = null;
+                }
+            });
 
-        if (!authUser) return;
+            if (!authUser) return;
 
         const currentSession = JSON.parse(localStorage.getItem(DB_KEYS.SESSION) || 'null');
         const isAdminUser = (currentSession && ['admin', 'moderator', 'editor'].includes(currentSession.role)) ||
@@ -375,6 +410,7 @@ function startActiveListeners() {
             }, err => {});
         }
     });
+    }
 }
 
 function stopActiveListeners() {

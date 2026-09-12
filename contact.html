@@ -100,118 +100,141 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/style.css?v=5">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/style.css?v=6">
 
     <style>
         body { font-family: 'Inter', sans-serif; }
         .outfit { font-family: 'Outfit', sans-serif; }
-        .glass-panel {
-            background: rgba(15, 23, 42, 0.65);
-            backdrop-filter: blur(12px);
-            border: 1px border rgba(255, 255, 255, 0.08);
-        }
     </style>
 </head>
-<body class="bg-[#F8FAFC] text-[#0F172A] pt-24 min-h-screen flex flex-col justify-between">
+<body class="bg-[#F8FAFC] text-slate-900 pt-24 min-h-screen flex flex-col justify-between selection:bg-[#C5A059] selection:text-slate-900">
 
     <!-- Navigation Header -->
-    <nav id="hotel-navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-5 px-6 md:px-12 flex justify-between items-center text-white bg-[#0F172A]/90 backdrop-blur-md border-b border-white/10">
+    <nav id="hotel-navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-4 px-6 md:px-12 flex justify-between items-center text-white bg-[#0F172A]/95 backdrop-blur-md border-b border-white/10 shadow-lg">
         <a href="/" class="flex items-center gap-3 hover:opacity-90 transition-opacity">
             <img src="/assets/images/logo.png" alt="KPH Stay Logo" class="h-10 w-auto object-contain" onerror="this.src='/assets/images/logo.png'">
             <div class="flex flex-col">
-                <span class="text-lg font-bold tracking-wider uppercase outfit leading-none">KPH</span>
-                <span class="text-xs text-[#D4AF37] tracking-[0.2em] uppercase font-semibold">Stay</span>
+                <span class="text-lg font-black tracking-wider uppercase outfit leading-none text-white">KPH</span>
+                <span class="text-xs text-[#C5A059] tracking-[0.2em] uppercase font-extrabold">Stay</span>
             </div>
         </a>
 
         <!-- Navigation Links -->
-        <div class="hidden md:flex gap-8 items-center font-medium">
-            <a href="index.html" class="hover:text-[#D4AF37] transition-colors">Home</a>
-            <a href="rooms.html" class="hover:text-[#D4AF37] transition-colors">Rooms</a>
-            <a href="blog.html" class="hover:text-[#D4AF37] transition-colors">Blog</a>
-            <a href="contact.html" class="text-[#D4AF37] hover:text-[#D4AF37] transition-colors font-bold underline decoration-[#D4AF37] decoration-2 underline-offset-4">Contact</a>
-            <div id="auth-links" class="flex gap-4 items-center">
-                <a href="login.html" class="border border-[#D4AF37] text-white px-5 py-2 rounded-full hover:bg-[#D4AF37] hover:text-white transition-all text-sm font-semibold">Login</a>
-                <a href="login.html?register=true" class="bg-[#D4AF37] text-white px-5 py-2 rounded-full hover:bg-white hover:text-slate-900 transition-all text-sm font-semibold luxury-shadow">Register</a>
+        <div class="hidden md:flex gap-8 items-center font-bold text-xs uppercase tracking-wider">
+            <a href="index.html" class="text-slate-300 hover:text-[#C5A059] transition-colors">Home</a>
+            <a href="rooms.html" class="text-slate-300 hover:text-[#C5A059] transition-colors">Rooms</a>
+            <a href="blog.html" class="text-slate-300 hover:text-[#C5A059] transition-colors">Blog</a>
+            <a href="contact.html" class="text-[#C5A059] font-black underline decoration-[#C5A059] decoration-2 underline-offset-8">Contact</a>
+            <a href="track.html" class="text-slate-300 hover:text-[#C5A059] transition-colors">Track Stay</a>
+            <div id="auth-links" class="flex gap-3 items-center ml-4">
+                <a href="login.html" class="border-2 border-slate-600 hover:border-[#C5A059] text-white px-5 py-2.5 rounded-xl hover:text-[#C5A059] transition-all text-xs font-black">Login</a>
+                <a href="login.html?register=true" class="bg-[#C5A059] text-slate-900 border-2 border-amber-300 hover:bg-white hover:border-white px-5 py-2.5 rounded-xl transition-all text-xs font-black shadow-md">Register</a>
             </div>
         </div>
 
         <!-- Mobile Menu Toggle Button -->
-        <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
-            <i class="fa-solid fa-bars text-2xl"></i>
+        <button id="menu-toggle" class="md:hidden text-white focus:outline-none p-2 rounded-xl bg-white/5 border border-white/10" aria-label="Toggle Navigation Menu">
+            <i class="fa-solid fa-bars text-xl"></i>
         </button>
     </nav>
 
     <!-- Mobile Drawer -->
-    <div id="mobile-drawer" class="fixed inset-0 bg-[#0F172A]/95 z-[60] flex flex-col items-center justify-center gap-8 text-white text-xl font-semibold">
+    <div id="mobile-drawer" class="fixed inset-0 bg-[#0F172A]/98 z-[60] flex flex-col items-center justify-center gap-8 text-white text-xl font-bold hidden">
         <button id="menu-close" class="absolute top-8 right-6 text-white text-3xl w-12 h-12 flex items-center justify-center focus:outline-none active:scale-90 transition-transform" aria-label="Close Menu">
             <i class="fa-solid fa-xmark"></i>
         </button>
-        <a href="index.html" class="hover:text-[#D4AF37]" onclick="toggleDrawer()">Home</a>
-        <a href="rooms.html" class="hover:text-[#D4AF37]" onclick="toggleDrawer()">Rooms</a>
-        <a href="blog.html" class="hover:text-[#D4AF37]" onclick="toggleDrawer()">Blog</a>
-        <a href="contact.html" class="text-[#D4AF37]" onclick="toggleDrawer()">Contact</a>
-        <div id="auth-links-mobile" class="flex flex-col gap-4 w-64 text-center">
-            <a href="login.html" class="border border-[#D4AF37] text-white py-3 rounded-full hover:bg-[#D4AF37] transition-all text-base" onclick="toggleDrawer()">Login</a>
-            <a href="login.html?register=true" class="bg-[#D4AF37] text-white py-3 rounded-full hover:bg-white hover:text-slate-900 transition-all text-base shadow-lg" onclick="toggleDrawer()">Register</a>
+        <a href="index.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Home</a>
+        <a href="rooms.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Rooms</a>
+        <a href="blog.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Blog</a>
+        <a href="track.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Track Stay</a>
+        <a href="contact.html" class="text-[#C5A059]" onclick="toggleDrawer()">Contact</a>
+        <div id="auth-links-mobile" class="flex flex-col gap-3 w-64 text-center mt-4">
+            <a href="login.html" class="border-2 border-[#C5A059] text-white py-3.5 rounded-xl hover:bg-[#C5A059] hover:text-slate-900 transition-all text-sm font-black" onclick="toggleDrawer()">Login</a>
+            <a href="login.html?register=true" class="bg-[#C5A059] text-slate-900 py-3.5 rounded-xl hover:bg-white transition-all text-sm font-black shadow-lg" onclick="toggleDrawer()">Register</a>
         </div>
     </div>
 
     <!-- Main Section -->
-    <main class="flex-grow py-16 px-6 md:px-12 max-w-6xl mx-auto w-full">
-        <div class="text-center max-w-2xl mx-auto mb-16">
-            <span class="text-xs text-[#D4AF37] uppercase tracking-[0.3em] font-bold">Lobby & Reservations</span>
-            <h1 class="text-3xl md:text-5xl font-extrabold outfit mt-3 mb-5 tracking-tight text-slate-900">Get In Touch</h1>
-            <p class="text-slate-500 font-light leading-relaxed">
-                Whether you have an event inquiry, special accommodation requirements, or need travel assistance in Islamabad & Nathia Gali, our lobby desk is standing by 24/7.
+    <main class="flex-grow py-14 px-6 md:px-12 max-w-7xl mx-auto w-full">
+        <!-- Top Hero Badge -->
+        <div class="text-center max-w-3xl mx-auto mb-14">
+            <div class="inline-flex items-center gap-2 bg-amber-50 border-2 border-amber-300 text-amber-900 text-xs font-black uppercase tracking-widest px-4 py-1.5 rounded-xl shadow-xs mb-4">
+                <i class="fa-solid fa-headset text-xs text-[#C5A059]"></i> 24/7 Resort Lobby & Reservations
+            </div>
+            <h1 class="text-3xl md:text-5xl font-extrabold outfit mt-1 mb-4 tracking-tight text-slate-900">Get In Touch with Us</h1>
+            <p class="text-slate-700 text-base md:text-lg font-normal leading-relaxed">
+                Whether you have an event inquiry, need custom VIP travel arrangements, or require instant assistance with reservations in Islamabad & Nathia Gali, our front desk is standing by 24/7.
             </p>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
-            <!-- Contact Card Column (5 cols) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <!-- Contact Channels (5 cols) -->
             <div class="lg:col-span-5 space-y-6">
                 <!-- Card 1: Phones -->
-                <div class="bg-white p-8 rounded-3xl border border-slate-200/60 shadow-sm flex items-start gap-5">
-                    <div class="w-12 h-12 rounded-2xl bg-[#D4AF37]/10 flex items-center justify-center text-[#D4AF37] flex-shrink-0">
-                        <i class="fa-solid fa-phone-volume text-lg"></i>
+                <div class="bg-white p-7 md:p-8 rounded-3xl border-2 border-slate-200 shadow-md hover:border-[#C5A059] transition-all flex items-start gap-5 group">
+                    <div class="w-14 h-14 rounded-2xl bg-amber-50 border-2 border-amber-200 flex items-center justify-center text-[#C5A059] flex-shrink-0 text-xl shadow-xs group-hover:scale-105 transition-transform">
+                        <i class="fa-solid fa-phone-volume"></i>
                     </div>
-                    <div>
-                        <h4 class="outfit font-bold text-slate-800 text-base mb-1">Resort Hotline</h4>
-                        <p class="text-slate-600 text-sm font-medium mb-1">+92 334 009 1127</p>
-                        <p class="text-[11px] text-slate-400">Available 24/7 for booking support</p>
-                    </div>
-                </div>
-
-                <!-- Card 2: Email -->
-                <div class="bg-white p-8 rounded-3xl border border-slate-200/60 shadow-sm flex items-start gap-5">
-                    <div class="w-12 h-12 rounded-2xl bg-[#D4AF37]/10 flex items-center justify-center text-[#D4AF37] flex-shrink-0">
-                        <i class="fa-solid fa-envelope-open-text text-lg"></i>
-                    </div>
-                    <div>
-                        <h4 class="outfit font-bold text-slate-800 text-base mb-1">Email Inquiries</h4>
-                        <p class="text-slate-600 text-sm font-medium mb-1"><a href="mailto:info@kphstay.com" class="hover:text-[#D4AF37]">info@kphstay.com</a></p>
-                        <p class="text-[11px] text-slate-400">Average response time: 2 hours</p>
+                    <div class="flex-grow">
+                        <h4 class="outfit font-extrabold text-slate-900 text-base mb-1">Resort Hotline & Helpline</h4>
+                        <div class="space-y-1">
+                            <a href="tel:+923340091127" class="text-slate-900 hover:text-[#C5A059] text-base font-extrabold tracking-tight block transition-colors">+92 334 009 1127</a>
+                            <a href="tel:+92518461975" class="text-slate-700 hover:text-[#C5A059] text-sm font-bold block transition-colors">+92 51 8461975</a>
+                        </div>
+                        <p class="text-xs text-slate-500 font-semibold mt-2 flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Available 24/7 for booking assistance
+                        </p>
                     </div>
                 </div>
 
-                <!-- Card 3: Locations -->
-                <div class="bg-white p-8 rounded-3xl border border-slate-200/60 shadow-sm flex items-start gap-5">
-                    <div class="w-12 h-12 rounded-2xl bg-[#D4AF37]/10 flex items-center justify-center text-[#D4AF37] flex-shrink-0">
-                        <i class="fa-solid fa-map-location-dot text-lg"></i>
+                <!-- Card 2: WhatsApp Concierge -->
+                <div class="bg-white p-7 md:p-8 rounded-3xl border-2 border-slate-200 shadow-md hover:border-[#C5A059] transition-all flex items-start gap-5 group">
+                    <div class="w-14 h-14 rounded-2xl bg-emerald-50 border-2 border-emerald-200 flex items-center justify-center text-emerald-600 flex-shrink-0 text-2xl shadow-xs group-hover:scale-105 transition-transform">
+                        <i class="fa-brands fa-whatsapp"></i>
                     </div>
-                    <div>
-                        <h4 class="outfit font-bold text-slate-800 text-base mb-1">Resort Headquarters</h4>
-                        <div class="space-y-3 mt-2 text-xs leading-relaxed text-slate-500">
-                            <div>
-                                <span class="font-bold text-slate-700 block text-xs">ðŸŒ² Nathia Gali Branch:</span>
-                                Main Alpine Road, Adjacent to Pine Hills, Nathia Gali, Pakistan
+                    <div class="flex-grow">
+                        <h4 class="outfit font-extrabold text-slate-900 text-base mb-1">WhatsApp Fast Support</h4>
+                        <p class="text-slate-700 text-sm font-semibold mb-3">Direct chat with resort manager on duty.</p>
+                        <a href="https://wa.me/923340091127?text=Hello%20KPH%20Stay%20Lobby,%20I%20have%20an%20inquiry." target="_blank" rel="noopener" class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs px-4 py-2.5 rounded-xl shadow-xs transition-all">
+                            <i class="fa-brands fa-whatsapp text-sm"></i> Chat on WhatsApp
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card 3: Email -->
+                <div class="bg-white p-7 md:p-8 rounded-3xl border-2 border-slate-200 shadow-md hover:border-[#C5A059] transition-all flex items-start gap-5 group">
+                    <div class="w-14 h-14 rounded-2xl bg-blue-50 border-2 border-blue-200 flex items-center justify-center text-blue-600 flex-shrink-0 text-xl shadow-xs group-hover:scale-105 transition-transform">
+                        <i class="fa-solid fa-envelope-open-text"></i>
+                    </div>
+                    <div class="flex-grow">
+                        <h4 class="outfit font-extrabold text-slate-900 text-base mb-1">Email Inquiries</h4>
+                        <p class="text-slate-900 text-sm font-extrabold mb-1">
+                            <a href="mailto:info@kphstay.com" class="hover:text-[#C5A059] transition-colors">info@kphstay.com</a>
+                        </p>
+                        <p class="text-xs text-slate-500 font-semibold">Average response turnaround: under 2 hours</p>
+                    </div>
+                </div>
+
+                <!-- Card 4: Locations -->
+                <div class="bg-white p-7 md:p-8 rounded-3xl border-2 border-slate-200 shadow-md hover:border-[#C5A059] transition-all flex items-start gap-5 group">
+                    <div class="w-14 h-14 rounded-2xl bg-amber-50 border-2 border-amber-200 flex items-center justify-center text-[#C5A059] flex-shrink-0 text-xl shadow-xs group-hover:scale-105 transition-transform">
+                        <i class="fa-solid fa-map-location-dot"></i>
+                    </div>
+                    <div class="flex-grow">
+                        <h4 class="outfit font-extrabold text-slate-900 text-base mb-2">Resort Branches & Office</h4>
+                        <div class="space-y-3 text-xs leading-relaxed">
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                                <span class="font-extrabold text-slate-900 block text-xs mb-0.5">
+                                    <i class="fa-solid fa-tree text-emerald-600 mr-1"></i> Nathia Gali Resort:
+                                </span>
+                                <span class="text-slate-700 font-medium">Main Alpine Road, Adjacent to Pine Hills, Nathia Gali, KPK, Pakistan</span>
                             </div>
-                            <div>
-                                <span class="font-bold text-slate-700 block text-xs">ðŸ¢ Islamabad Office:</span>
-                                Kaghan Properties Pvt Ltd<br>
-                                Office 203, 2nd Floor, Asian Arcade, opposite Zoo, C Avenue, Sector C, Bahria Enclave, Islamabad, Pakistan<br>
-                                <span class="font-semibold text-slate-600 text-[11px]">Phone: +92 51 8461975</span>
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                                <span class="font-extrabold text-slate-900 block text-xs mb-0.5">
+                                    <i class="fa-solid fa-building text-amber-600 mr-1"></i> Islamabad Head Office:
+                                </span>
+                                <span class="text-slate-700 font-medium">Kaghan Properties Pvt Ltd, Office 203, 2nd Floor, Asian Arcade, opposite Zoo, Sector C, Bahria Enclave, Islamabad</span>
                             </div>
                         </div>
                     </div>
@@ -220,34 +243,44 @@
 
             <!-- Form Column (7 cols) -->
             <div class="lg:col-span-7">
-                <div class="bg-white p-10 rounded-[2.5rem] border border-slate-200/60 shadow-sm">
-                    <h3 class="text-xl font-bold outfit text-slate-800 mb-6">Send an Inquiry Message</h3>
+                <div class="bg-white p-8 md:p-10 rounded-3xl border-2 border-slate-200 shadow-md">
+                    <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
+                        <div class="w-10 h-10 rounded-xl bg-amber-50 border-2 border-amber-200 text-[#C5A059] flex items-center justify-center font-black">
+                            <i class="fa-solid fa-paper-plane text-sm"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-extrabold outfit text-slate-900 leading-tight">Send an Inquiry Message</h3>
+                            <p class="text-xs text-slate-600 font-semibold">Our hospitality team will get back to you promptly</p>
+                        </div>
+                    </div>
                     
-                    <form id="contact-form" class="space-y-6 text-left">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <form id="contact-form" class="space-y-5 text-left">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                             <div>
-                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Your Name</label>
-                                <input type="text" id="contact-name" required placeholder="Enter full name" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 outline-none focus:border-[#D4AF37] focus:bg-white transition-all">
+                                <label for="contact-name" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-2">Your Full Name <span class="text-rose-500">*</span></label>
+                                <input type="text" id="contact-name" required placeholder="e.g. Tariq Mehmood" class="w-full bg-white border-2 border-slate-300 rounded-xl px-4 py-3.5 text-sm text-slate-900 font-bold outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 transition-all shadow-xs">
                             </div>
                             <div>
-                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Email Address</label>
-                                <input type="email" id="contact-email" required placeholder="name@email.com" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 outline-none focus:border-[#D4AF37] focus:bg-white transition-all">
+                                <label for="contact-email" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-2">Email Address <span class="text-rose-500">*</span></label>
+                                <input type="email" id="contact-email" required placeholder="name@domain.com" class="w-full bg-white border-2 border-slate-300 rounded-xl px-4 py-3.5 text-sm text-slate-900 font-bold outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 transition-all shadow-xs">
                             </div>
                         </div>
 
                         <div>
-                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Subject</label>
-                            <input type="text" id="contact-subject" required placeholder="How can we help you?" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 outline-none focus:border-[#D4AF37] focus:bg-white transition-all">
+                            <label for="contact-subject" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-2">Inquiry Subject <span class="text-rose-500">*</span></label>
+                            <input type="text" id="contact-subject" required placeholder="e.g. Booking inquiry for Nathia Gali Executive Suite" class="w-full bg-white border-2 border-slate-300 rounded-xl px-4 py-3.5 text-sm text-slate-900 font-bold outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 transition-all shadow-xs">
                         </div>
 
                         <div>
-                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Message</label>
-                            <textarea id="contact-message" required rows="5" placeholder="Write details here..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 outline-none focus:border-[#D4AF37] focus:bg-white transition-all resize-none"></textarea>
+                            <label for="contact-message" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-2">Message Details <span class="text-rose-500">*</span></label>
+                            <textarea id="contact-message" required rows="5" placeholder="Please mention preferred dates, number of guests, or special requirements..." class="w-full bg-white border-2 border-slate-300 rounded-xl px-4 py-3.5 text-sm text-slate-900 font-bold outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 transition-all resize-none shadow-xs"></textarea>
                         </div>
 
-                        <button type="submit" class="w-full bg-[#0F172A] text-white hover:bg-[#D4AF37] hover:text-slate-900 transition-all py-4 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-paper-plane"></i> Submit Inquiry
-                        </button>
+                        <div class="pt-2">
+                            <button type="submit" class="w-full bg-[#C5A059] hover:bg-slate-900 text-slate-900 hover:text-white border-2 border-amber-300 hover:border-slate-900 transition-all py-4 rounded-xl text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 shadow-md cursor-pointer">
+                                <i class="fa-solid fa-paper-plane"></i> Submit Inquiry to Front Desk
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -255,80 +288,89 @@
     </main>
 
     <!-- Business Hours & Map Section -->
-    <section class="py-20 px-6 md:px-12 bg-slate-50 border-t border-slate-100">
-        <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
+    <section class="py-16 px-6 md:px-12 bg-slate-100 border-t-2 border-slate-200 mt-12">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             <!-- Business Hours -->
-            <div class="bg-white p-10 rounded-3xl border border-slate-200 shadow-sm">
-                <h3 class="text-xl font-bold outfit text-[#0F172A] mb-6"><i class="fa-solid fa-clock text-[#D4AF37] mr-2"></i> Business Hours</h3>
-                <div class="space-y-4">
-                    <div class="flex justify-between items-center py-3 border-b border-slate-100">
-                        <span class="text-sm font-semibold text-slate-700">Front Desk & Reception</span>
-                        <span class="text-sm text-[#D4AF37] font-bold">24/7 Open</span>
+            <div class="bg-white p-8 md:p-10 rounded-3xl border-2 border-slate-200 shadow-md">
+                <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
+                    <div class="w-10 h-10 rounded-xl bg-amber-50 border-2 border-amber-200 text-[#C5A059] flex items-center justify-center font-black">
+                        <i class="fa-solid fa-clock text-sm"></i>
                     </div>
-                    <div class="flex justify-between items-center py-3 border-b border-slate-100">
-                        <span class="text-sm font-semibold text-slate-700">Room Service</span>
-                        <span class="text-sm text-[#D4AF37] font-bold">24/7 Available</span>
+                    <div>
+                        <h3 class="text-xl font-extrabold outfit text-slate-900 leading-tight">Front Desk & Operating Hours</h3>
+                        <p class="text-xs text-slate-600 font-semibold">Around the clock hospitality assistance</p>
                     </div>
-                    <div class="flex justify-between items-center py-3 border-b border-slate-100">
-                        <span class="text-sm font-semibold text-slate-700">Concierge & Shuttle Booking</span>
-                        <span class="text-sm text-slate-600">8:00 AM â€“ 10:00 PM</span>
+                </div>
+
+                <div class="space-y-3.5">
+                    <div class="flex justify-between items-center py-3 px-4 bg-slate-50 rounded-2xl border border-slate-200">
+                        <span class="text-sm font-bold text-slate-900">Front Desk & Reception</span>
+                        <span class="bg-emerald-50 text-emerald-800 border border-emerald-300 text-xs font-black uppercase px-3 py-1 rounded-xl">24/7 Open</span>
                     </div>
-                    <div class="flex justify-between items-center py-3 border-b border-slate-100">
-                        <span class="text-sm font-semibold text-slate-700">Check-in</span>
-                        <span class="text-sm text-slate-600">2:00 PM onwards</span>
+                    <div class="flex justify-between items-center py-3 px-4 bg-slate-50 rounded-2xl border border-slate-200">
+                        <span class="text-sm font-bold text-slate-900">Room Service & Housekeeping</span>
+                        <span class="bg-emerald-50 text-emerald-800 border border-emerald-300 text-xs font-black uppercase px-3 py-1 rounded-xl">24/7 Available</span>
                     </div>
-                    <div class="flex justify-between items-center py-3">
-                        <span class="text-sm font-semibold text-slate-700">Check-out</span>
-                        <span class="text-sm text-slate-600">By 12:00 PM (noon)</span>
+                    <div class="flex justify-between items-center py-3 px-4 bg-slate-50 rounded-2xl border border-slate-200">
+                        <span class="text-sm font-bold text-slate-900">Concierge & Airport Shuttle Booking</span>
+                        <span class="text-xs font-bold text-slate-700">8:00 AM – 10:00 PM</span>
+                    </div>
+                    <div class="flex justify-between items-center py-3 px-4 bg-slate-50 rounded-2xl border border-slate-200">
+                        <span class="text-sm font-bold text-slate-900">Check-in Standard Time</span>
+                        <span class="text-xs font-bold text-slate-700">2:00 PM onwards</span>
+                    </div>
+                    <div class="flex justify-between items-center py-3 px-4 bg-slate-50 rounded-2xl border border-slate-200">
+                        <span class="text-sm font-bold text-slate-900">Check-out Standard Time</span>
+                        <span class="text-xs font-bold text-slate-700">By 12:00 PM (noon)</span>
                     </div>
                 </div>
             </div>
 
             <!-- Google Maps Embed -->
-            <div class="rounded-3xl overflow-hidden border border-slate-200 shadow-sm h-full min-h-[360px]">
+            <div class="rounded-3xl overflow-hidden border-2 border-slate-200 shadow-md h-full min-h-[380px] bg-white">
                 <iframe
                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d53115.25!2d73.04!3d33.73!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38dfbf2b0a1c5c1b%3A0x9c8e1e4a3a3b3b3b!2sMargalla%20Hills%2C%20Islamabad!5e0!3m2!1sen!2spk!4v1640000000000"
-                    width="100%" height="100%" style="border:0; min-height:360px;" allowfullscreen="" loading="lazy"
+                    width="100%" height="100%" style="border:0; min-height:380px;" allowfullscreen="" loading="lazy"
                     referrerpolicy="no-referrer-when-downgrade"
-                    title="KPH Stay Location â€” Margalla Hills, Islamabad">
+                    title="KPH Stay Location — Margalla Hills & Islamabad">
                 </iframe>
             </div>
         </div>
     </section>
 
     <!-- Contact FAQ -->
-    <section class="py-20 px-6 md:px-12 bg-white border-t border-slate-100">
+    <section class="py-16 px-6 md:px-12 bg-white border-t-2 border-slate-200">
         <div class="max-w-4xl mx-auto">
-            <div class="text-center mb-12">
-                <span class="text-[#D4AF37] font-bold uppercase tracking-widest text-xs mb-3 block">Need Help?</span>
-                <h2 class="text-3xl font-bold outfit text-[#0F172A]">Contact <span class="text-[#D4AF37]">FAQs</span></h2>
+            <div class="text-center mb-10">
+                <span class="text-[#C5A059] font-black uppercase tracking-widest text-xs mb-2 block">Frequently Asked Questions</span>
+                <h2 class="text-3xl font-extrabold outfit text-slate-900">Contact & Reservation <span class="text-[#C5A059]">FAQs</span></h2>
             </div>
             <div class="space-y-4">
-                <div class="border border-slate-200 rounded-2xl overflow-hidden bg-slate-50">
-                    <button onclick="this.parentElement.classList.toggle('faq-open')" class="w-full flex justify-between items-center p-6 text-left hover:bg-slate-100 transition-colors">
-                        <span class="font-bold text-[#0F172A] text-sm outfit pr-4">How quickly will I receive a response to my inquiry?</span>
-                        <i class="fa-solid fa-chevron-down text-[#D4AF37] text-xs shrink-0 transition-transform duration-300"></i>
+                <div class="border-2 border-slate-200 rounded-2xl overflow-hidden bg-white shadow-xs transition-all hover:border-slate-300">
+                    <button onclick="this.parentElement.classList.toggle('faq-open')" class="w-full flex justify-between items-center p-6 text-left hover:bg-slate-50 transition-colors">
+                        <span class="font-extrabold text-slate-900 text-sm md:text-base outfit pr-4">How quickly will I receive a response to my inquiry?</span>
+                        <i class="fa-solid fa-chevron-down text-[#C5A059] text-xs shrink-0 transition-transform duration-300"></i>
                     </button>
-                    <div class="px-6 pb-6 hidden text-slate-600 text-sm leading-relaxed font-light">
-                        Our team typically responds to all inquiries within <strong>2â€“4 hours</strong> during business hours (8 AM â€“ 10 PM PKT). For urgent booking requests, please call our front desk directly at <strong>+92 334 009 1127</strong> for immediate assistance.
+                    <div class="px-6 pb-6 hidden text-slate-700 text-sm leading-relaxed font-normal">
+                        Our lobby desk typically responds to all inquiries within <strong>1 to 2 hours</strong> during standard hours. For urgent booking requests or immediate assistance, please call our front desk directly at <strong>+92 334 009 1127</strong>.
                     </div>
                 </div>
-                <div class="border border-slate-200 rounded-2xl overflow-hidden bg-slate-50">
-                    <button onclick="this.parentElement.classList.toggle('faq-open')" class="w-full flex justify-between items-center p-6 text-left hover:bg-slate-100 transition-colors">
-                        <span class="font-bold text-[#0F172A] text-sm outfit pr-4">Can I modify or cancel an existing booking through the contact form?</span>
-                        <i class="fa-solid fa-chevron-down text-[#D4AF37] text-xs shrink-0 transition-transform duration-300"></i>
+                <div class="border-2 border-slate-200 rounded-2xl overflow-hidden bg-white shadow-xs transition-all hover:border-slate-300">
+                    <button onclick="this.parentElement.classList.toggle('faq-open')" class="w-full flex justify-between items-center p-6 text-left hover:bg-slate-50 transition-colors">
+                        <span class="font-extrabold text-slate-900 text-sm md:text-base outfit pr-4">Can I modify or cancel an existing booking through the contact form?</span>
+                        <i class="fa-solid fa-chevron-down text-[#C5A059] text-xs shrink-0 transition-transform duration-300"></i>
                     </button>
-                    <div class="px-6 pb-6 hidden text-slate-600 text-sm leading-relaxed font-light">
-                        Yes, you can request booking modifications or cancellations through the contact form. Alternatively, log in to your <a href="login.html" class="text-[#D4AF37] font-semibold hover:underline">Guest Portal</a> to manage reservations directly. Free cancellation is available up to 48 hours before check-in.
+                    <div class="px-6 pb-6 hidden text-slate-700 text-sm leading-relaxed font-normal">
+                        Yes, you can request booking modifications or cancellations through the contact form. Alternatively, look up your reference on the <a href="track.html" class="text-[#C5A059] font-bold hover:underline">Track Stay</a> portal or log in to your Guest Dashboard. Free cancellation is provided within 48 hours of booking.
                     </div>
                 </div>
-                <div class="border border-slate-200 rounded-2xl overflow-hidden bg-slate-50">
-                    <button onclick="this.parentElement.classList.toggle('faq-open')" class="w-full flex justify-between items-center p-6 text-left hover:bg-slate-100 transition-colors">
-                        <span class="font-bold text-[#0F172A] text-sm outfit pr-4">Does KPH Stay accommodate corporate events or group bookings?</span>
-                        <i class="fa-solid fa-chevron-down text-[#D4AF37] text-xs shrink-0 transition-transform duration-300"></i>
+                <div class="border-2 border-slate-200 rounded-2xl overflow-hidden bg-white shadow-xs transition-all hover:border-slate-300">
+                    <button onclick="this.parentElement.classList.toggle('faq-open')" class="w-full flex justify-between items-center p-6 text-left hover:bg-slate-50 transition-colors">
+                        <span class="font-extrabold text-slate-900 text-sm md:text-base outfit pr-4">Does KPH Stay accommodate corporate events or group bookings?</span>
+                        <i class="fa-solid fa-chevron-down text-[#C5A059] text-xs shrink-0 transition-transform duration-300"></i>
                     </button>
-                    <div class="px-6 pb-6 hidden text-slate-600 text-sm leading-relaxed font-light">
-                        Absolutely! We offer customized packages for corporate retreats, team offsites, family reunions, and special celebrations. Contact our events team through the form above or call <strong>+92 334 009 1127</strong> to discuss group rates and venue arrangements.
+                    <div class="px-6 pb-6 hidden text-slate-700 text-sm leading-relaxed font-normal">
+                        Yes! We offer tailored corporate retreat packages, family reunion bookings, and luxury group arrangements in both Islamabad and Nathia Gali. Contact us directly or call <strong>+92 334 009 1127</strong> to speak with our corporate sales coordinator.
                     </div>
                 </div>
             </div>
@@ -338,57 +380,59 @@
     <style>
         .faq-open > div:last-child { display: block !important; }
         .faq-open > button i { transform: rotate(180deg); }
-        .faq-open { background-color: white; border-color: #D4AF37; }
+        .faq-open { border-color: #C5A059 !important; background-color: #FAFAF9; }
     </style>
 
     <!-- Footer -->
-    <footer class="bg-[#0F172A] text-white pt-16 pb-8 border-t border-white/5 mt-16">
-        <div class="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 text-left mb-12">
+    <footer class="bg-[#0F172A] text-white pt-16 pb-8 border-t border-white/10 mt-12">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 text-left mb-12">
             <div>
                 <div class="flex items-center gap-3 mb-4">
                     <img src="/assets/images/logo.png" alt="KPH Stay" class="h-8 w-auto">
-                    <span class="font-bold tracking-wider outfit text-lg uppercase">KPH <span class="text-[#D4AF37] text-xs">Stay</span></span>
+                    <span class="font-black tracking-wider outfit text-lg uppercase text-white">KPH <span class="text-[#C5A059]">Stay</span></span>
                 </div>
-                <p class="text-xs text-slate-400 font-light leading-relaxed">
-                    Premium serviced apartments, cabins, and suites in Nathia Gali and Islamabad.
+                <p class="text-xs text-slate-300 font-normal leading-relaxed">
+                    Premium serviced apartments, luxury suites, and mountain chalets across Islamabad and Nathia Gali.
                 </p>
             </div>
             <div>
-                <h5 class="text-xs uppercase tracking-widest font-bold text-[#D4AF37] mb-4">Quick Links</h5>
-                <ul class="space-y-2 text-xs font-light text-slate-300">
-                    <li><a href="rooms.html" class="hover:text-white">Suites Catalog</a></li>
-                    <li><a href="blog.html" class="hover:text-white">Resort Journal</a></li>
-                    <li><a href="contact.html" class="hover:text-white">Contact Lobby</a></li>
+                <h5 class="text-xs uppercase tracking-widest font-black text-[#C5A059] mb-4">Quick Links</h5>
+                <ul class="space-y-2.5 text-xs font-medium text-slate-300">
+                    <li><a href="rooms.html" class="hover:text-white transition-colors">Suites Catalog</a></li>
+                    <li><a href="blog.html" class="hover:text-white transition-colors">Resort Journal</a></li>
+                    <li><a href="track.html" class="hover:text-white transition-colors">Track Stay</a></li>
+                    <li><a href="contact.html" class="hover:text-white transition-colors">Contact Lobby</a></li>
                 </ul>
             </div>
             <div>
-                <h5 class="text-xs uppercase tracking-widest font-bold text-[#D4AF37] mb-4">Legal Guides</h5>
-                <ul class="space-y-2 text-xs font-light text-slate-300">
-                    <li><a href="pricing.html" class="hover:text-white">Pricing & Payment Policy</a></li>
-                    <li><a href="terms.html" class="hover:text-white">Terms & Conditions</a></li>
-                    <li><a href="privacy.html" class="hover:text-white">Privacy Policy</a></li>
-                    <li><a href="refund.html" class="hover:text-white">Refund Policy</a></li>
-                    <li><a href="cookies.html" class="hover:text-white">Cookie Policy</a></li>
+                <h5 class="text-xs uppercase tracking-widest font-black text-[#C5A059] mb-4">Legal Guides</h5>
+                <ul class="space-y-2.5 text-xs font-medium text-slate-300">
+                    <li><a href="pricing.html" class="hover:text-white transition-colors">Pricing & Payment Policy</a></li>
+                    <li><a href="terms.html" class="hover:text-white transition-colors">Terms & Conditions</a></li>
+                    <li><a href="privacy.html" class="hover:text-white transition-colors">Privacy Policy</a></li>
+                    <li><a href="refund.html" class="hover:text-white transition-colors">Refund Policy</a></li>
+                    <li><a href="cookies.html" class="hover:text-white transition-colors">Cookie Policy</a></li>
                 </ul>
             </div>
             <div>
-                <h5 class="text-xs uppercase tracking-widest font-bold text-[#D4AF37] mb-4">Contact Info</h5>
-                <p class="text-xs text-slate-300 font-light leading-relaxed">
+                <h5 class="text-xs uppercase tracking-widest font-black text-[#C5A059] mb-4">Front Desk Hotline</h5>
+                <p class="text-xs text-slate-300 font-normal leading-relaxed">
                     Asian Arcade, Sector C, Bahria Enclave, Islamabad<br>
-                    +92 334 009 1127 | +92 51 8461975<br>
+                    <strong class="text-white">+92 334 009 1127</strong> | +92 51 8461975<br>
                     info@kphstay.com
                 </p>
             </div>
         </div>
-        <div class="border-t border-white/5 pt-8 text-center text-xs text-slate-500 font-semibold tracking-wider uppercase">
-            &copy; 2026 KPH Stay. All Rights Reserved.
+        <div class="border-t border-white/10 pt-8 text-center text-xs text-slate-400 font-bold tracking-wider uppercase max-w-7xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <span>&copy; 2026 KPH Stay. All Rights Reserved. SECP Registered.</span>
+            <span>Secured via 256-Bit SSL Encryption</span>
         </div>
     </footer>
 
     <!-- Scripts -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <script src="/assets/js/shared.js?v=5"></script>
+    <script src="/assets/js/shared.js?v=6"></script>
     <script>
         document.getElementById('contact-form').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -408,7 +452,7 @@
             try {
                 if (submitBtn) {
                     submitBtn.disabled = true;
-                    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Sending Inquiry...';
+                    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Sending Inquiry to Front Desk...';
                 }
 
                 const res = await (window.safeFetch ? window.safeFetch : fetch)('/.netlify/functions/submit-inquiry', {
@@ -428,12 +472,12 @@
 
                 // Alert user
                 if (window.KaghanUI) {
-                    KaghanUI.showToast(data.message || 'Inquiry submitted successfully! We will contact you shortly.', 'success');
+                    KaghanUI.showToast(data.message || 'Inquiry submitted successfully! Our front desk will contact you shortly.', 'success');
                 }
             } catch (err) {
                 console.error("Error submitting inquiry:", err);
                 if (window.KaghanUI) {
-                    KaghanUI.showToast(err.message || 'Failed to submit message. Please try again.', 'error');
+                    KaghanUI.showToast(err.message || 'Failed to submit message. Please try again or call +92 334 009 1127.', 'error');
                 }
             } finally {
                 if (submitBtn) {

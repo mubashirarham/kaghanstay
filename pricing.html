@@ -85,24 +85,24 @@
 <body class="bg-[#F8FAFC] text-[#0F172A] pt-24 min-h-screen flex flex-col justify-between">
 
     <!-- Navigation Header -->
-    <nav id="hotel-navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-5 px-6 md:px-12 flex justify-between items-center text-white bg-[#0F172A]/90 backdrop-blur-md border-b border-white/10">
+    <nav id="hotel-navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-4 px-6 md:px-12 flex justify-between items-center text-white bg-[#0F172A]/95 backdrop-blur-md border-b border-slate-700/80 shadow-md">
         <a href="/" class="flex items-center gap-3 hover:opacity-90 transition-opacity">
             <img src="/assets/images/logo.png" alt="KPH Stay Logo" class="h-10 w-auto object-contain" onerror="this.src='/assets/images/logo.png'">
             <div class="flex flex-col">
-                <span class="text-lg font-bold tracking-wider uppercase outfit leading-none">KPH</span>
-                <span class="text-xs text-[#D4AF37] tracking-[0.2em] uppercase font-semibold">Stay</span>
+                <span class="text-xl font-extrabold tracking-wider uppercase outfit leading-none text-white">KPH</span>
+                <span class="text-xs text-[#D4AF37] tracking-[0.2em] uppercase font-bold">Stay</span>
             </div>
         </a>
 
         <!-- Navigation Links -->
-        <div class="hidden md:flex gap-8 items-center font-medium">
-            <a href="index.html" class="hover:text-[#D4AF37] transition-colors">Home</a>
-            <a href="rooms.html" class="hover:text-[#D4AF37] transition-colors">Rooms</a>
-            <a href="blog.html" class="hover:text-[#D4AF37] transition-colors">Blog</a>
-            <a href="contact.html" class="hover:text-[#D4AF37] transition-colors">Contact</a>
+        <div class="hidden md:flex gap-8 items-center font-bold text-sm">
+            <a href="index.html" class="text-slate-200 hover:text-[#D4AF37] transition-colors">Home</a>
+            <a href="rooms.html" class="text-slate-200 hover:text-[#D4AF37] transition-colors">Rooms</a>
+            <a href="blog.html" class="text-slate-200 hover:text-[#D4AF37] transition-colors">Journal</a>
+            <a href="contact.html" class="text-slate-200 hover:text-[#D4AF37] transition-colors">Contact</a>
             <div id="auth-links" class="flex gap-4 items-center">
-                <a href="login.html" class="border border-[#D4AF37] text-white px-5 py-2 rounded-full hover:bg-[#D4AF37] hover:text-white transition-all text-sm font-semibold">Login</a>
-                <a href="login.html?register=true" class="bg-[#D4AF37] text-white px-5 py-2 rounded-full hover:bg-white hover:text-slate-900 transition-all text-sm font-semibold luxury-shadow">Register</a>
+                <a href="login.html" class="border-2 border-[#D4AF37] bg-[#D4AF37]/10 text-white px-5 py-2 rounded-xl hover:bg-[#D4AF37] hover:text-slate-900 transition-all text-xs font-extrabold tracking-wider uppercase">Login</a>
+                <a href="login.html?register=true" class="bg-[#D4AF37] text-slate-900 px-5 py-2 rounded-xl hover:bg-white transition-all text-xs font-black tracking-wider uppercase shadow-md border-2 border-amber-300 hover:border-white">Register</a>
             </div>
         </div>
 
@@ -113,30 +113,32 @@
     </nav>
 
     <!-- Mobile Drawer -->
-    <div id="mobile-drawer" class="fixed inset-0 bg-[#0F172A]/95 z-[60] flex flex-col items-center justify-center gap-8 text-white text-xl font-semibold hidden">
+    <div id="mobile-drawer" class="fixed inset-0 bg-[#0F172A]/98 z-[60] flex flex-col items-center justify-center gap-8 text-white text-xl font-bold hidden">
         <button id="menu-close" class="absolute top-8 right-6 text-white text-3xl w-12 h-12 flex items-center justify-center focus:outline-none active:scale-90 transition-transform" aria-label="Close Menu">
             <i class="fa-solid fa-xmark"></i>
         </button>
         <a href="index.html" class="hover:text-[#D4AF37]">Home</a>
         <a href="rooms.html" class="hover:text-[#D4AF37]">Rooms</a>
-        <a href="blog.html" class="hover:text-[#D4AF37]">Blog</a>
+        <a href="blog.html" class="hover:text-[#D4AF37]">Journal</a>
         <a href="contact.html" class="hover:text-[#D4AF37]">Contact</a>
         <div id="auth-links-mobile" class="flex flex-col gap-4 w-64 text-center">
-            <a href="login.html" class="border border-[#D4AF37] text-white py-3 rounded-full hover:bg-[#D4AF37] transition-all text-base">Login</a>
-            <a href="login.html?register=true" class="bg-[#D4AF37] text-white py-3 rounded-full hover:bg-white hover:text-slate-900 transition-all text-base shadow-lg">Register</a>
+            <a href="login.html" class="border-2 border-[#D4AF37] text-white py-3 rounded-xl hover:bg-[#D4AF37] hover:text-slate-900 transition-all text-sm font-extrabold uppercase">Login</a>
+            <a href="login.html?register=true" class="bg-[#D4AF37] text-slate-900 py-3 rounded-xl hover:bg-white transition-all text-sm font-black uppercase shadow-md">Register</a>
         </div>
     </div>
 
     <!-- Main Content -->
     <main class="flex-grow py-16 px-6 md:px-12 max-w-4xl mx-auto w-full text-left">
-        <span class="text-xs text-[#D4AF37] uppercase tracking-[0.3em] font-bold block text-center">Payment & Merchant Compliance</span>
-        <h1 class="text-3xl md:text-5xl font-extrabold outfit mt-3 mb-4 text-center tracking-tight text-slate-900">Pricing & Payment Policy</h1>
-        <p class="text-center text-slate-400 text-xs font-semibold mb-10"><i class="fa-solid fa-clock mr-1"></i> Last Updated: August 2026 &nbsp;|&nbsp; <a href="contact.html" class="text-[#D4AF37] hover:underline">Questions? Contact Lobby</a></p>
+        <div class="text-center mb-10">
+            <span class="bg-amber-50 text-amber-900 border border-amber-200 text-xs font-extrabold uppercase tracking-wider px-3.5 py-1.5 rounded-xl inline-block shadow-xs mb-3">Payment & Merchant Compliance</span>
+            <h1 class="text-3xl md:text-5xl font-extrabold outfit mt-2 mb-3 tracking-tight text-slate-900">Pricing & Payment Policy</h1>
+            <p class="text-slate-600 text-xs font-bold inline-flex items-center gap-1.5"><i class="fa-regular fa-clock text-amber-600"></i> Last Updated: August 2026 &nbsp;|&nbsp; <a href="contact.html" class="text-[#B8860B] hover:underline font-extrabold">Questions? Contact Lobby</a></p>
+        </div>
         
-        <div class="bg-white p-8 md:p-12 rounded-[2.5rem] border border-slate-200/60 shadow-sm space-y-8 text-sm text-slate-600 leading-relaxed font-light">
+        <div class="bg-white p-8 md:p-12 rounded-3xl border-2 border-slate-200 shadow-md space-y-8 text-sm text-slate-700 leading-relaxed font-normal">
             
-            <section>
-                <h3 class="text-lg font-bold outfit text-slate-800 mb-3">1. Base Currency & Pricing Transparency</h3>
+            <section class="border-b-2 border-slate-100 pb-6">
+                <h3 class="text-xl font-extrabold outfit text-slate-900 mb-2">1. Base Currency & Pricing Transparency</h3>
                 <p>
                     All room rates, suite prices, packages, extra guest charges, and add-on service fees listed on <strong>KPH Stay</strong> (https://www.kphstay.com) are quoted and billed in <strong>Pakistani Rupees (PKR / Rs.)</strong>.
                 </p>
@@ -145,53 +147,53 @@
                 </p>
             </section>
 
-            <section>
-                <h3 class="text-lg font-bold outfit text-slate-800 mb-3">2. Accepted Payment Methods (PayFast Integration)</h3>
+            <section class="border-b-2 border-slate-100 pb-6">
+                <h3 class="text-xl font-extrabold outfit text-slate-900 mb-2">2. Accepted Payment Methods (PayFast Integration)</h3>
                 <p>
                     Online payment transactions on KPH Stay are securely processed through <strong>PayFast</strong> (APPS - Payment Systems Provider / PSO licensed by the State Bank of Pakistan). We accept the following payment options:
                 </p>
-                <ul class="list-disc pl-5 mt-2 space-y-1">
+                <ul class="list-disc pl-5 mt-2 space-y-1 font-medium">
                     <li><strong>Visa & Mastercard</strong> Debit and Credit Cards (Local & International)</li>
                     <li><strong>PayPak & UnionPay</strong> Cards</li>
                     <li><strong>Direct Bank Accounts & Mobile Wallets</strong> (JazzCash, EasyPaisa, NayaPay, SadaPay, and 1LINK enabled bank accounts)</li>
                 </ul>
             </section>
 
-            <section>
-                <h3 class="text-lg font-bold outfit text-slate-800 mb-3">3. Applicable Taxes & Fees</h3>
+            <section class="border-b-2 border-slate-100 pb-6">
+                <h3 class="text-xl font-extrabold outfit text-slate-900 mb-2">3. Applicable Taxes & Fees</h3>
                 <p>
                     Unless explicitly stated otherwise during the booking process, room prices are subject to provincial sales tax (PST / GST) and federal levies where applicable by the laws of Pakistan. All tax amounts are calculated dynamically and displayed clearly before you submit payment.
                 </p>
             </section>
 
-            <section>
-                <h3 class="text-lg font-bold outfit text-slate-800 mb-3">4. Dynamic Pricing & Rate Adjustments</h3>
+            <section class="border-b-2 border-slate-100 pb-6">
+                <h3 class="text-xl font-extrabold outfit text-slate-900 mb-2">4. Dynamic Pricing & Rate Adjustments</h3>
                 <p>
                     Room rates in Islamabad and Nathia Gali vary according to season, weekend demand, national holidays, and occupancy levels. Once a booking is confirmed and paid for, the nightly rate for that specific reservation is locked and guaranteed against future price increases.
                 </p>
             </section>
 
-            <section>
-                <h3 class="text-lg font-bold outfit text-slate-800 mb-3">5. Digital Invoice & Instant Confirmation</h3>
+            <section class="border-b-2 border-slate-100 pb-6">
+                <h3 class="text-xl font-extrabold outfit text-slate-900 mb-2">5. Digital Invoice & Instant Confirmation</h3>
                 <p>
-                    Upon successful completion of a transaction via PayFast, a digital booking voucher and payment confirmation receipt bearing your unique <strong>Booking ID (BK-XXXX)</strong> is instantly issued and dispatched to your registered email address. You may also view and download invoices anytime from your guest dashboard.
+                    Upon successful completion of a transaction via PayFast or reservation with Pay on Check-in, a digital booking voucher and payment confirmation receipt bearing your unique <strong>Booking ID (BK-XXXX)</strong> is instantly issued and dispatched to your registered email address. You may also view and download invoices anytime from your guest dashboard.
                 </p>
             </section>
 
-            <section>
-                <h3 class="text-lg font-bold outfit text-slate-800 mb-3">6. International Cardholders & Currency Conversion</h3>
+            <section class="border-b-2 border-slate-100 pb-6">
+                <h3 class="text-xl font-extrabold outfit text-slate-900 mb-2">6. International Cardholders & Currency Conversion</h3>
                 <p>
                     If you pay using an international credit card issued outside Pakistan, your bank or card issuer will convert the PKR transaction amount to your home currency (e.g. USD, GBP, EUR) based on their prevailing exchange rates and foreign transaction policies.
                 </p>
             </section>
 
             <section>
-                <h3 class="text-lg font-bold outfit text-slate-800 mb-3">7. Merchant Contact & Billing Inquiries</h3>
+                <h3 class="text-xl font-extrabold outfit text-slate-900 mb-2">7. Merchant Contact & Billing Inquiries</h3>
                 <p>
                     For any pricing clarifications, invoice requests, or billing queries, please contact our financial desk:
                 </p>
-                <div class="mt-3 p-4 bg-slate-50 rounded-xl border border-slate-200/80 text-xs leading-relaxed text-slate-700">
-                    <p><strong>Merchant Registered Name:</strong> KPH Stay</p>
+                <div class="mt-4 p-5 bg-slate-50 rounded-2xl border-2 border-slate-200 text-xs leading-relaxed text-slate-800 space-y-1.5 font-medium">
+                    <p><strong>Merchant Registered Name:</strong> KPH Stay (Kaghan Properties Hospitality)</p>
                     <p><strong>Registered Address:</strong> Asian Arcade, Sector C, Bahria Enclave, Islamabad, Pakistan</p>
                     <p><strong>Helpline:</strong> +92 334 009 1127 | +92 51 8461975</p>
                     <p><strong>Support Email:</strong> lobby@kphstay.com</p>
@@ -202,45 +204,45 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-[#0F172A] text-white pt-16 pb-8 border-t border-white/5 mt-16">
+    <footer class="bg-[#0F172A] text-white pt-16 pb-8 border-t-2 border-slate-800 mt-16">
         <div class="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 text-left mb-12">
             <div>
                 <div class="flex items-center gap-3 mb-4">
                     <img src="/assets/images/logo.png" alt="KPH Stay" class="h-8 w-auto">
-                    <span class="font-bold tracking-wider outfit text-lg uppercase">KPH <span class="text-[#D4AF37] text-xs">Stay</span></span>
+                    <span class="font-extrabold tracking-wider outfit text-lg uppercase text-white">KPH <span class="text-[#D4AF37] text-xs">Stay</span></span>
                 </div>
-                <p class="text-xs text-slate-400 font-light leading-relaxed">
-                    Premium serviced apartments, cabins, and suites in Nathia Gali and Islamabad.
+                <p class="text-xs text-slate-400 font-medium leading-relaxed">
+                    Premium serviced apartments, alpine cabins, and suites in Nathia Gali, Murree and Islamabad.
                 </p>
             </div>
             <div>
-                <h5 class="text-xs uppercase tracking-widest font-bold text-[#D4AF37] mb-4">Quick Links</h5>
-                <ul class="space-y-2 text-xs font-light text-slate-300">
-                    <li><a href="rooms.html" class="hover:text-white">Suites Catalog</a></li>
-                    <li><a href="blog.html" class="hover:text-white">Resort Journal</a></li>
-                    <li><a href="contact.html" class="hover:text-white">Contact Lobby</a></li>
+                <h5 class="text-xs uppercase tracking-wider font-extrabold text-[#D4AF37] mb-4">Quick Links</h5>
+                <ul class="space-y-2 text-xs font-medium text-slate-300">
+                    <li><a href="rooms.html" class="hover:text-white transition-colors">Suites Catalog</a></li>
+                    <li><a href="blog.html" class="hover:text-white transition-colors">Resort Journal</a></li>
+                    <li><a href="contact.html" class="hover:text-white transition-colors">Contact Lobby</a></li>
                 </ul>
             </div>
             <div>
-                <h5 class="text-xs uppercase tracking-widest font-bold text-[#D4AF37] mb-4">Legal Guides</h5>
-                <ul class="space-y-2 text-xs font-light text-slate-300">
-                    <li><a href="pricing.html" class="hover:text-white">Pricing & Payment Policy</a></li>
-                    <li><a href="terms.html" class="hover:text-white">Terms & Conditions</a></li>
-                    <li><a href="privacy.html" class="hover:text-white">Privacy Policy</a></li>
-                    <li><a href="refund.html" class="hover:text-white">Refund Policy</a></li>
-                    <li><a href="cookies.html" class="hover:text-white">Cookie Policy</a></li>
+                <h5 class="text-xs uppercase tracking-wider font-extrabold text-[#D4AF37] mb-4">Legal Guides</h5>
+                <ul class="space-y-2 text-xs font-medium text-slate-300">
+                    <li><a href="pricing.html" class="hover:text-white transition-colors">Pricing & Payment Policy</a></li>
+                    <li><a href="terms.html" class="hover:text-white transition-colors">Terms & Conditions</a></li>
+                    <li><a href="privacy.html" class="hover:text-white transition-colors">Privacy Policy</a></li>
+                    <li><a href="refund.html" class="hover:text-white transition-colors">Refund Policy</a></li>
+                    <li><a href="cookies.html" class="hover:text-white transition-colors">Cookie Policy</a></li>
                 </ul>
             </div>
             <div>
-                <h5 class="text-xs uppercase tracking-widest font-bold text-[#D4AF37] mb-4">Contact Info</h5>
-                <p class="text-xs text-slate-300 font-light leading-relaxed">
+                <h5 class="text-xs uppercase tracking-wider font-extrabold text-[#D4AF37] mb-4">Contact Info</h5>
+                <p class="text-xs text-slate-300 font-medium leading-relaxed">
                     Asian Arcade, Sector C, Bahria Enclave, Islamabad<br>
                     +92 334 009 1127 | +92 51 8461975<br>
                     lobby@kphstay.com
                 </p>
             </div>
         </div>
-        <div class="border-t border-white/5 pt-8 text-center text-xs text-slate-500 font-semibold tracking-wider uppercase">
+        <div class="border-t border-slate-800 pt-8 text-center text-xs text-slate-400 font-bold tracking-wider uppercase">
             &copy; 2026 KPH Stay. All Rights Reserved.
         </div>
     </footer>

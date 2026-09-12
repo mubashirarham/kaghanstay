@@ -14,7 +14,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
     <!-- DOMPurify for HTML Sanitization -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
-    <title>Page Not Found | KPH Stay</title>
+    <title>404 - Suite Not Found | KPH Stay</title>
     <meta name="robots" content="noindex, follow">
     <link rel="manifest" href="/manifest.json">
     <link rel="icon" type="image/x-icon" href="/assets/images/favicon.ico">
@@ -23,83 +23,81 @@
     <!-- Tailwind CSS (Play CDN with JIT) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/assets/css/style.css?v=6">
     
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        .outfit {
-            font-family: 'Outfit', sans-serif;
-        }
+        body { font-family: 'Inter', sans-serif; }
+        .outfit { font-family: 'Outfit', sans-serif; }
         .luxury-gradient {
             background: radial-gradient(circle at center, #1E293B 0%, #0F172A 100%);
         }
-        .gold-glow {
-            box-shadow: 0 0 30px rgba(212, 175, 55, 0.15);
-        }
         @keyframes pulse-slow {
-            0%, 100% { opacity: 0.3; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(1.05); }
+            0%, 100% { opacity: 0.2; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.05); }
         }
         .bg-glow-ring {
             animation: pulse-slow 8s infinite ease-in-out;
         }
     </style>
 </head>
-<body class="luxury-gradient text-white h-screen flex flex-col justify-between overflow-hidden relative">
+<body class="luxury-gradient text-white h-screen flex flex-col justify-between overflow-hidden relative selection:bg-[#C5A059] selection:text-slate-900">
 
     <!-- Ambient glowing rings in background -->
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full border border-[#D4AF37]/5 bg-glow-ring pointer-events-none"></div>
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full border border-[#D4AF37]/10 bg-glow-ring pointer-events-none" style="animation-delay: -4s;"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] h-[650px] rounded-full border-2 border-[#C5A059]/10 bg-glow-ring pointer-events-none"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[420px] h-[420px] rounded-full border-2 border-[#C5A059]/15 bg-glow-ring pointer-events-none" style="animation-delay: -4s;"></div>
 
     <!-- Header Logo -->
-    <div class="py-8 px-8 flex justify-center z-10">
+    <div class="py-6 px-8 flex justify-center z-10">
         <a href="/" class="flex items-center gap-3 hover:opacity-90 transition-opacity">
             <img src="/assets/images/logo.png" alt="KPH Stay Logo" class="h-10 w-auto object-contain" onerror="this.src='/assets/images/logo.png'">
             <div class="flex flex-col text-left">
-                <span class="text-lg font-bold tracking-wider uppercase outfit leading-none">KPH</span>
-                <span class="text-xs text-[#D4AF37] tracking-[0.2em] uppercase font-semibold">Stay</span>
+                <span class="text-lg font-black tracking-wider uppercase outfit leading-none text-white">KPH</span>
+                <span class="text-xs text-[#C5A059] tracking-[0.2em] uppercase font-extrabold">Stay</span>
             </div>
         </a>
     </div>
 
     <!-- Main Content Area -->
     <main class="flex-grow flex flex-col justify-center items-center text-center px-6 z-10">
-        <div class="max-w-md w-full bg-[#1E293B]/40 backdrop-blur-md border border-white/5 p-10 rounded-[2.5rem] gold-glow animate-fade-in">
-            <h1 class="text-8xl font-black text-[#D4AF37] outfit tracking-tight mb-2">404</h1>
-            <h2 class="text-xl font-bold outfit text-slate-100 uppercase tracking-widest mb-4">Suite Not Found</h2>
-            <p class="text-slate-400 text-sm font-light leading-relaxed mb-8">
-                It appears you've wandered onto an uncharted trail. The luxury accommodations you're searching for are elsewhere in our resort valley.
+        <div class="max-w-lg w-full bg-slate-900/90 backdrop-blur-xl border-2 border-slate-700 p-8 md:p-12 rounded-3xl shadow-2xl animate-fade-in">
+            <div class="inline-flex items-center gap-2 bg-amber-500/10 border-2 border-[#C5A059]/40 text-[#C5A059] text-xs font-black uppercase tracking-widest px-4 py-1.5 rounded-xl mb-4">
+                <i class="fa-solid fa-compass text-xs"></i> 404 Route Uncharted
+            </div>
+            
+            <h1 class="text-7xl md:text-8xl font-black text-[#C5A059] outfit tracking-tight mb-2 leading-none">404</h1>
+            <h2 class="text-xl md:text-2xl font-extrabold outfit text-white uppercase tracking-wider mb-3">Suite Not Found</h2>
+            <p class="text-slate-300 text-sm md:text-base font-normal leading-relaxed mb-8">
+                It appears you've wandered onto an uncharted trail. The luxury accommodations you're searching for are located elsewhere in our resort catalogue.
             </p>
 
             <!-- Interactive Redirect Button -->
-            <div class="flex flex-col gap-4">
-                <a href="/" class="bg-[#D4AF37] text-slate-950 text-xs font-bold uppercase tracking-wider py-4 rounded-xl hover:bg-white hover:text-slate-900 transition-all shadow-lg gold-glow flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-hotel"></i> Return to Resort Lobby
+            <div class="flex flex-col sm:flex-row gap-3">
+                <a href="/" class="w-full sm:w-1/2 bg-[#C5A059] hover:bg-white text-slate-900 hover:text-slate-900 border-2 border-amber-300 hover:border-white text-xs font-black uppercase tracking-wider py-4 rounded-xl transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer">
+                    <i class="fa-solid fa-hotel"></i> Return Home
                 </a>
-                <a href="/rooms" class="border border-white/10 text-white text-xs font-bold uppercase tracking-wider py-4 rounded-xl hover:bg-white/5 transition-all">
-                    Explore Suites & Rooms
+                <a href="/rooms.html" class="w-full sm:w-1/2 border-2 border-slate-600 hover:border-[#C5A059] text-white hover:text-[#C5A059] bg-white/5 hover:bg-white/10 text-xs font-black uppercase tracking-wider py-4 rounded-xl transition-all flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-door-open"></i> Explore Suites
                 </a>
             </div>
 
             <!-- Auto-redirect Timer -->
-            <div class="mt-8 text-[11px] text-slate-500 font-semibold tracking-wide">
-                Redirecting back to home page in <span id="countdown" class="text-[#D4AF37]">5</span> seconds...
+            <div class="mt-8 text-xs text-slate-400 font-bold tracking-wide">
+                Redirecting back to resort lobby in <span id="countdown" class="text-[#C5A059] font-black text-sm">6</span> seconds...
             </div>
         </div>
     </main>
 
     <!-- Footer -->
-    <footer class="py-8 px-6 text-center text-slate-500 text-[10px] uppercase tracking-widest font-semibold z-10 border-t border-white/5">
-        &copy; 2026 KPH Stay Resort & Apartments. Islamabad, Pakistan.
+    <footer class="py-6 px-6 text-center text-slate-500 text-xs uppercase tracking-widest font-bold z-10 border-t border-white/5">
+        &copy; 2026 KPH Stay Resort & Apartments. Islamabad & Nathia Gali, Pakistan.
     </footer>
 
     <!-- Redirect logic -->
     <script>
-        let timeLeft = 5;
+        let timeLeft = 6;
         const countdownEl = document.getElementById('countdown');
         
         const interval = setInterval(() => {

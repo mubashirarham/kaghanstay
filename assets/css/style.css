@@ -8,14 +8,18 @@
     --brand-gold: #C5A059;
     --brand-gold-hover: #A88443;
     --brand-gold-light: rgba(197, 160, 89, 0.08);
+    --brand-gold-border: rgba(197, 160, 89, 0.35);
     --brand-emerald: #0F382C;
     --brand-emerald-hover: #164E63;
     --brand-emerald-light: rgba(15, 56, 44, 0.08);
-    --brand-dark: #0B0F19;
-    --brand-dark-light: #161B26;
-    --brand-light: #FBFBFB;
+    --brand-dark: #0F172A;
+    --brand-dark-light: #1E293B;
+    --brand-light: #F8FAFC;
+    --border-light: #E2E8F0;
+    --border-card: #CBD5E1;
+    --border-dark: #334155;
     --accent-red: #DC2626;
-    --font-sans: 'Inter', system-ui, sans-serif;
+    --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     --font-display: 'Outfit', var(--font-sans);
     --font-serif: 'Playfair Display', Georgia, serif;
     --section-pad-y: clamp(3rem, 6vw, 6rem);
@@ -34,14 +38,14 @@
     --duration-base: 0.35s;
     --duration-slow: 0.6s;
 
-    /* Airbnb-style UX Tokens (Kaghan Stay Themed) */
+    /* High Clarity UX Tokens */
     --card-radius: 1.25rem;
     --pill-radius: 999px;
     --hover-lift: translateY(-4px);
-    --transition-card: transform 0.25s var(--ease-smooth), box-shadow 0.25s var(--ease-smooth);
+    --transition-card: transform 0.25s var(--ease-smooth), box-shadow 0.25s var(--ease-smooth), border-color 0.25s var(--ease-smooth);
     --heart-idle: rgba(11, 15, 25, 0.55);
     --heart-active: #DC2626;
-    --divider: #EDEDED;
+    --divider: #E2E8F0;
 }
 
 *,*::before,*::after { box-sizing: border-box; }
@@ -57,13 +61,70 @@ body {
     line-height: 1.65;
 }
 
-h1,h2,h3,h4,h5,h6 { font-family: var(--font-display); letter-spacing: -0.02em; line-height: 1.2; }
+h1,h2,h3,h4,h5,h6 { font-family: var(--font-display); letter-spacing: -0.02em; line-height: 1.2; font-weight: 700; }
 .font-serif { font-family: var(--font-serif) !important; }
 .font-display { font-family: var(--font-display) !important; }
 .outfit { font-family: var(--font-display); }
 .playfair { font-family: var(--font-serif); }
 .text-gold { color: var(--brand-gold); }
 .bg-gold { background-color: var(--brand-gold); }
+
+/* High-Contrast Clear Border & Card Styles */
+.card-bordered {
+    background: #FFFFFF;
+    border: 1.5px solid var(--border-light);
+    border-radius: var(--radius-xl);
+    box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.05);
+    transition: var(--transition-card);
+}
+.card-bordered:hover {
+    border-color: var(--brand-gold);
+    box-shadow: 0 16px 36px -6px rgba(15, 23, 42, 0.1);
+    transform: translateY(-4px);
+}
+
+.card-bordered-dark {
+    background: #0F172A;
+    border: 1.5px solid var(--border-dark);
+    border-radius: var(--radius-xl);
+    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
+    transition: var(--transition-card);
+}
+.card-bordered-dark:hover {
+    border-color: var(--brand-gold);
+    box-shadow: 0 16px 36px -6px rgba(0, 0, 0, 0.7);
+    transform: translateY(-4px);
+}
+
+.tag-pill-clear {
+    background: #F1F5F9;
+    color: #334155;
+    border: 1px solid #CBD5E1;
+    border-radius: 9999px;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.tag-pill-gold {
+    background: rgba(197, 160, 89, 0.12);
+    color: #926E27;
+    border: 1px solid rgba(197, 160, 89, 0.4);
+    border-radius: 9999px;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
 
 .hero-title { font-size: clamp(2.25rem, 5vw + 1rem, 4.5rem); line-height: 1.1; letter-spacing: -0.03em; }
 .section-title { font-size: clamp(1.75rem, 3vw + 0.5rem, 3rem); line-height: 1.15; }
@@ -1312,7 +1373,12 @@ main, .main-content {
    KPH STAY — ULTRA LUXURY CUSTOM DROPDOWN SYSTEM
    ============================================================ */
 .custom-dropdown {
-    position: relative;
+    position: relative !important;
+    z-index: 20;
+}
+
+.custom-dropdown.open {
+    z-index: 9999 !important;
 }
 
 .custom-dropdown.open button i.fa-chevron-down {
@@ -1321,21 +1387,23 @@ main, .main-content {
 }
 
 .custom-dropdown .dropdown-menu {
-    position: absolute;
-    top: calc(100% + 8px);
-    left: 0;
-    width: max-content;
-    min-width: 100%;
-    max-width: 320px;
+    position: absolute !important;
+    top: calc(100% + 8px) !important;
+    left: 0 !important;
+    width: 100% !important;
+    min-width: 270px !important;
+    max-width: min(340px, 95vw) !important;
     background: #0B0F19 !important;
+    background-color: #0B0F19 !important;
     border: 1px solid rgba(197, 160, 89, 0.45) !important;
-    border-radius: 1.25rem;
-    padding: 0.5rem;
-    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.95), 0 0 30px rgba(197, 160, 89, 0.25) !important;
-    z-index: 100;
+    border-radius: 1.25rem !important;
+    padding: 0.5rem !important;
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.98), 0 0 30px rgba(197, 160, 89, 0.25) !important;
+    z-index: 99999 !important;
     display: none;
-    max-height: 260px;
-    overflow-y: auto;
+    max-height: 280px !important;
+    overflow-y: auto !important;
+    opacity: 1 !important;
     scrollbar-width: thin;
     scrollbar-color: rgba(197, 160, 89, 0.4) transparent;
 }
@@ -1343,11 +1411,11 @@ main, .main-content {
 .custom-dropdown.open .dropdown-menu {
     display: block !important;
     z-index: 99999 !important;
-    animation: dropdownPopIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: dropdownPopIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
 }
 
 @keyframes dropdownPopIn {
-    from { opacity: 0; transform: translateY(-10px) scale(0.97); }
+    from { opacity: 0; transform: translateY(-8px) scale(0.98); }
     to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
@@ -1436,3 +1504,134 @@ main, .main-content {
     opacity: 1;
     pointer-events: auto;
 }
+
+/* ============================================================
+   KAGHAN STAY — EXTREME LUXURY HERO SUITE SLIDER STYLES
+   ============================================================ */
+@keyframes heroKenBurns {
+    0% { transform: scale(1.0) translate3d(0, 0, 0); }
+    50% { transform: scale(1.08) translate3d(-1%, -0.5%, 0); }
+    100% { transform: scale(1.0) translate3d(0, 0, 0); }
+}
+
+@keyframes goldShimmer {
+    0% { transform: translateX(-150%) rotate(25deg); }
+    100% { transform: translateX(250%) rotate(25deg); }
+}
+
+@keyframes pulseAura {
+    0%, 100% { opacity: 0.4; transform: scale(1.0); }
+    50% { opacity: 0.75; transform: scale(1.08); }
+}
+
+@keyframes floatGentle {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-6px); }
+}
+
+.hero-ken-burns {
+    animation: heroKenBurns 18s cubic-bezier(0.25, 1, 0.5, 1) infinite alternate;
+    will-change: transform;
+}
+
+.hero-bg-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 1200ms cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.hero-bg-slide.active {
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 2;
+}
+
+.hero-aura-glow {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(80px);
+    pointer-events: none;
+    animation: pulseAura 8s ease-in-out infinite alternate;
+}
+
+.hero-shimmer-btn {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+}
+
+.hero-shimmer-btn::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        60deg,
+        transparent 30%,
+        rgba(255, 255, 255, 0.35) 50%,
+        transparent 70%
+    );
+    transform: rotate(25deg);
+    animation: goldShimmer 4.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    pointer-events: none;
+}
+
+.hero-cockpit-card {
+    background: rgba(15, 23, 42, 0.88);
+    backdrop-filter: blur(28px) saturate(190%);
+    -webkit-backdrop-filter: blur(28px) saturate(190%);
+    border: 2px solid rgba(197, 160, 89, 0.75);
+    box-shadow: 0 30px 80px -15px rgba(0, 0, 0, 0.9), 
+                0 0 30px -5px rgba(197, 160, 89, 0.25),
+                inset 0 1px 2px rgba(255, 255, 255, 0.15);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero-cockpit-card:hover {
+    border-color: #C5A059;
+    box-shadow: 0 36px 100px -10px rgba(0, 0, 0, 0.95), 
+                0 0 45px rgba(197, 160, 89, 0.4),
+                inset 0 1px 2px rgba(255, 255, 255, 0.25);
+    transform: translateY(-4px);
+}
+
+.hero-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.3);
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    flex-shrink: 0;
+    border: none;
+    padding: 0;
+}
+
+.hero-dot:hover {
+    background: rgba(197, 160, 89, 0.9);
+    transform: scale(1.3);
+}
+
+.hero-dot.active {
+    width: 24px;
+    background: #C5A059;
+    box-shadow: 0 0 12px rgba(197, 160, 89, 0.75);
+}
+
+.hero-dest-pill {
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.hero-dest-pill.active {
+    background: #C5A059 !important;
+    color: #070A12 !important;
+    border-color: #FDE68A !important;
+    font-weight: 800 !important;
+    box-shadow: 0 4px 18px rgba(197, 160, 89, 0.4) !important;
+}
+
+

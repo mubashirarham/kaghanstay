@@ -76,22 +76,22 @@
         <div id="booking-content" class="hidden space-y-6">
 
             <!-- Title & Status Header -->
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white rounded-3xl p-6 border-2 border-slate-200 shadow-md">
                 <div>
                     <div class="flex items-center gap-2">
-                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Reservation Reference /</span>
+                        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Reservation Reference /</span>
                         <span id="booking-id-tag" class="text-xs font-black text-[#D4AF37] uppercase font-mono tracking-wider">BK-...</span>
                     </div>
                     <h1 id="booking-guest-title" class="text-2xl font-black outfit text-slate-900 mt-1">Guest Reservation</h1>
                 </div>
 
                 <div class="flex flex-wrap items-center gap-3">
-                    <button type="button" onclick="addToNewsletter()" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 text-xs font-bold px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5" title="Add guest to Newsletter broadcast list">
+                    <button type="button" onclick="addToNewsletter()" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border-2 border-indigo-200 text-xs font-bold px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5" title="Add guest to Newsletter broadcast list">
                         <i class="fa-solid fa-envelope-open-text text-indigo-500 text-xs"></i>
                         <span>Add to Newsletter</span>
                     </button>
-                    <div class="flex items-center bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 gap-2">
-                        <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Status:</span>
+                    <div class="flex items-center bg-slate-50 border-2 border-slate-200 rounded-xl px-3.5 py-2 gap-2">
+                        <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Status:</span>
                         <select id="booking-status-select" onchange="changeStatus(this.value)" class="bg-transparent text-xs font-bold outline-none cursor-pointer text-slate-800">
                             <option value="confirmed">Confirmed</option>
                             <option value="completed">Completed</option>
@@ -103,25 +103,25 @@
 
             <!-- Executive Ribbon -->
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Booking Reference</span>
+                <div class="bg-white rounded-2xl p-5 border-2 border-slate-200 shadow-md">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Booking Reference</span>
                     <div id="ribbon-id" class="text-base font-black outfit text-slate-900 font-mono">BK-...</div>
-                    <div id="ribbon-source" class="text-[11px] text-slate-500 font-medium mt-0.5">KPHStay.com</div>
+                    <div id="ribbon-source" class="text-[11px] text-slate-600 font-medium mt-0.5">KPHStay.com</div>
                 </div>
-                <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Stay Duration</span>
+                <div class="bg-white rounded-2xl p-5 border-2 border-slate-200 shadow-md">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Stay Duration</span>
                     <div id="ribbon-nights" class="text-base font-black outfit text-slate-900">0 Nights</div>
-                    <div id="ribbon-dates" class="text-[11px] text-slate-500 font-medium mt-0.5">Date range</div>
+                    <div id="ribbon-dates" class="text-[11px] text-slate-600 font-medium mt-0.5">Date range</div>
                 </div>
-                <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Total Amount</span>
+                <div class="bg-white rounded-2xl p-5 border-2 border-slate-200 shadow-md">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Total Amount</span>
                     <div id="ribbon-total" class="text-base font-black outfit text-[#D4AF37]">PKR 0</div>
                     <div id="ribbon-payment-status" class="text-[10px] font-extrabold uppercase mt-0.5 text-emerald-600">PAID</div>
                 </div>
-                <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Balance Due</span>
+                <div class="bg-white rounded-2xl p-5 border-2 border-slate-200 shadow-md">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Balance Due</span>
                     <div id="ribbon-balance" class="text-base font-black outfit text-slate-800">PKR 0</div>
-                    <div id="ribbon-advance" class="text-[11px] text-slate-500 font-medium mt-0.5">Advance: PKR 0</div>
+                    <div id="ribbon-advance" class="text-[11px] text-slate-600 font-medium mt-0.5">Advance: PKR 0</div>
                 </div>
             </div>
 
@@ -132,15 +132,15 @@
                 <div class="lg:col-span-7 space-y-6">
 
                     <!-- Guest Profile Card -->
-                    <div class="bg-white rounded-3xl p-6 sm:p-7 border border-slate-100 shadow-sm space-y-5">
-                        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                    <div class="bg-white rounded-3xl p-6 sm:p-7 border-2 border-slate-200 shadow-md space-y-5">
+                        <div class="flex items-center justify-between border-b-2 border-slate-100 pb-4">
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-2xl bg-[#D4AF37]/10 text-[#D4AF37] flex items-center justify-center font-black outfit text-sm shadow-xs">
+                                <div class="w-10 h-10 rounded-2xl bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#D4AF37] flex items-center justify-center font-black outfit text-sm shadow-xs">
                                     <i class="fa-solid fa-user-check"></i>
                                 </div>
                                 <div>
                                     <h2 class="text-base font-bold outfit text-slate-900">Guest Information</h2>
-                                    <p class="text-xs text-slate-400">Personal contact details and identity</p>
+                                    <p class="text-xs text-slate-500 font-medium">Personal contact details and identity</p>
                                 </div>
                             </div>
                             <div id="guest-badge-wrap"></div>
@@ -148,32 +148,32 @@
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                             <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200/60">
-                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Primary Guest Name</span>
+                                <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Primary Guest Name</span>
                                 <span id="guest-name" class="font-extrabold text-sm text-slate-900 block">...</span>
                             </div>
                             <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200/60">
-                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Phone Number</span>
+                                <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Phone Number</span>
                                 <div class="flex items-center justify-between">
                                     <span id="guest-phone" class="font-extrabold text-slate-800">...</span>
                                     <div class="flex items-center gap-1.5" id="guest-phone-actions"></div>
                                 </div>
                             </div>
                             <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200/60">
-                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Email Address</span>
+                                <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Email Address</span>
                                 <div class="flex items-center justify-between">
                                     <span id="guest-email" class="font-extrabold text-slate-800 truncate mr-2">...</span>
                                     <a id="guest-email-link" href="#" class="text-indigo-600 hover:text-indigo-800" title="Send Email"><i class="fa-solid fa-envelope"></i></a>
                                 </div>
                             </div>
                             <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200/60">
-                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">CNIC / Passport ID</span>
+                                <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">CNIC / Passport ID</span>
                                 <span id="guest-cnic" class="font-extrabold text-slate-800 block">Verified at Check-in</span>
                             </div>
 
                             <!-- Uploaded CNIC Photos Container -->
-                            <div id="detail-cnic-photos-wrap" class="hidden sm:col-span-2 bg-slate-50/90 p-4 rounded-2xl border border-slate-200/80">
+                            <div id="detail-cnic-photos-wrap" class="hidden sm:col-span-2 bg-slate-50/90 p-4 rounded-2xl border-2 border-slate-200/80">
                                 <div class="flex items-center justify-between mb-3">
-                                    <span class="text-[10px] font-bold text-slate-600 uppercase tracking-wider flex items-center gap-1.5">
+                                    <span class="text-[10px] font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
                                         <i class="fa-solid fa-id-card text-[#D4AF37]"></i>
                                         Uploaded CNIC / ID Documents
                                     </span>
@@ -189,57 +189,57 @@
                     </div>
 
                     <!-- Suite Details Card -->
-                    <div class="bg-white rounded-3xl p-6 sm:p-7 border border-slate-100 shadow-sm space-y-5">
-                        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                    <div class="bg-white rounded-3xl p-6 sm:p-7 border-2 border-slate-200 shadow-md space-y-5">
+                        <div class="flex items-center justify-between border-b-2 border-slate-100 pb-4">
                             <div class="flex items-center gap-3">
                                 <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm shadow-xs">
                                     <i class="fa-solid fa-hotel"></i>
                                 </div>
                                 <div>
                                     <h2 class="text-base font-bold outfit text-slate-900">Reservation & Suite Details</h2>
-                                    <p class="text-xs text-slate-400">Accommodations, schedule, and guest count</p>
+                                    <p class="text-xs text-slate-500">Accommodations, schedule, and guest count</p>
                                 </div>
                             </div>
-                            <div id="suite-location-badge" class="text-xs font-bold text-slate-600 bg-slate-100 px-3 py-1 rounded-full">
+                            <div id="suite-location-badge" class="text-xs font-bold text-slate-700 bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
                                 Islamabad
                             </div>
                         </div>
 
                         <!-- Suite Banner -->
-                        <div class="flex flex-col sm:flex-row gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-200/70 items-start sm:items-center">
+                        <div class="flex flex-col sm:flex-row gap-4 p-4 rounded-2xl bg-slate-50 border-2 border-slate-200/70 items-start sm:items-center">
                             <img id="suite-thumb" src="/assets/images/logo.png" alt="Suite Thumbnail" class="w-20 h-16 rounded-xl object-cover border border-slate-200 bg-white flex-shrink-0">
                             <div class="flex-1 min-w-0">
                                 <h3 id="suite-name" class="font-bold text-sm text-slate-900 truncate">Luxury Suite</h3>
                                 <p id="suite-rate" class="text-xs text-[#D4AF37] font-bold mt-0.5">PKR 0 / Night</p>
-                                <p id="suite-id" class="text-[10px] text-slate-400 font-mono mt-0.5">Room ID: ...</p>
+                                <p id="suite-id" class="text-[10px] text-slate-500 font-mono mt-0.5">Room ID: ...</p>
                             </div>
                         </div>
 
                         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
                             <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200/60">
-                                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Check-in</span>
+                                <span class="text-[9px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Check-in</span>
                                 <div id="stay-checkin" class="font-extrabold text-slate-900 text-xs">...</div>
-                                <span class="text-[10px] text-slate-400 font-medium">From 2:00 PM</span>
+                                <span class="text-[10px] text-slate-500 font-medium">From 2:00 PM</span>
                             </div>
                             <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200/60">
-                                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Check-out</span>
+                                <span class="text-[9px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Check-out</span>
                                 <div id="stay-checkout" class="font-extrabold text-slate-900 text-xs">...</div>
-                                <span class="text-[10px] text-slate-400 font-medium">Until 12:00 PM</span>
+                                <span class="text-[10px] text-slate-500 font-medium">Until 12:00 PM</span>
                             </div>
                             <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200/60">
-                                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Nights</span>
+                                <span class="text-[9px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Nights</span>
                                 <div id="stay-nights" class="font-extrabold text-slate-900 text-xs">1 Night</div>
-                                <span class="text-[10px] text-slate-400 font-medium">Total Stay</span>
+                                <span class="text-[10px] text-slate-500 font-medium">Total Stay</span>
                             </div>
                             <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200/60">
-                                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Occupancy</span>
+                                <span class="text-[9px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Occupancy</span>
                                 <div id="stay-guests" class="font-extrabold text-slate-900 text-xs">2 Adults</div>
-                                <span id="stay-children" class="text-[10px] text-slate-400 font-medium">0 Children</span>
+                                <span id="stay-children" class="text-[10px] text-slate-500 font-medium">0 Children</span>
                             </div>
                         </div>
 
                         <!-- Special Notes -->
-                        <div id="notes-card" class="bg-amber-50/50 border border-amber-200/70 p-4 rounded-2xl">
+                        <div id="notes-card" class="bg-amber-50/50 border-2 border-amber-200/70 p-4 rounded-2xl">
                             <span class="text-[10px] font-bold uppercase tracking-wider text-amber-800 block mb-1 flex items-center gap-1.5">
                                 <i class="fa-solid fa-message-quote"></i> Special Requests & Guest Notes
                             </span>
@@ -252,15 +252,15 @@
                 <div class="lg:col-span-5 space-y-6">
 
                     <!-- Billing & Payment Card -->
-                    <div class="bg-white rounded-3xl p-6 sm:p-7 border border-slate-100 shadow-sm space-y-5">
-                        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                    <div class="bg-white rounded-3xl p-6 sm:p-7 border-2 border-slate-200 shadow-md space-y-5">
+                        <div class="flex items-center justify-between border-b-2 border-slate-100 pb-4">
                             <div class="flex items-center gap-3">
                                 <div class="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-sm shadow-xs">
                                     <i class="fa-solid fa-receipt"></i>
                                 </div>
                                 <div>
                                     <h2 class="text-base font-bold outfit text-slate-900">Billing & Payment</h2>
-                                    <p class="text-xs text-slate-400">Financial summary & transaction receipt</p>
+                                    <p class="text-xs text-slate-500">Financial summary & transaction receipt</p>
                                 </div>
                             </div>
                             <span id="billing-status-badge" class="bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full px-3 py-0.5 text-[10px] font-bold tracking-wide uppercase">
@@ -308,35 +308,35 @@
                         </div>
 
                         <!-- Reference Details -->
-                        <div class="bg-slate-50 rounded-2xl p-3.5 border border-slate-200/70 text-[11px] space-y-1.5">
+                        <div class="bg-slate-50 rounded-2xl p-3.5 border-2 border-slate-200/70 text-[11px] space-y-1.5">
                             <div class="flex justify-between">
-                                <span class="text-slate-400 font-bold uppercase text-[9px]">Payment Method:</span>
+                                <span class="text-slate-500 font-bold uppercase text-[9px]">Payment Method:</span>
                                 <span id="payment-method" class="font-bold text-slate-800">Cash / Direct Bank</span>
                             </div>
                             <div class="flex justify-between">
-                                <span class="text-slate-400 font-bold uppercase text-[9px]">Transaction Ref:</span>
+                                <span class="text-slate-500 font-bold uppercase text-[9px]">Transaction Ref:</span>
                                 <span id="payment-ref" class="font-mono text-slate-700">N/A</span>
                             </div>
                             <div class="flex justify-between">
-                                <span class="text-slate-400 font-bold uppercase text-[9px]">Invoice Number:</span>
+                                <span class="text-slate-500 font-bold uppercase text-[9px]">Invoice Number:</span>
                                 <span id="invoice-no" class="font-mono font-bold text-slate-900">#KPH-INV-...</span>
                             </div>
                         </div>
                     </div>
 
                     <!-- Live Invoice Preview Card -->
-                    <div class="bg-white rounded-3xl p-6 sm:p-7 border border-slate-100 shadow-sm space-y-4">
-                        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                    <div class="bg-white rounded-3xl p-6 sm:p-7 border-2 border-slate-200 shadow-md space-y-4">
+                        <div class="flex items-center justify-between border-b-2 border-slate-100 pb-3">
                             <div>
                                 <h3 class="text-sm font-bold outfit text-slate-900">Official Invoice Preview</h3>
-                                <p class="text-[10px] text-slate-400">Live preview of guest voucher & receipt</p>
+                                <p class="text-[10px] text-slate-500">Live preview of guest voucher & receipt</p>
                             </div>
                             <button type="button" onclick="downloadBookingPDF()" class="text-xs text-[#D4AF37] hover:underline font-bold flex items-center gap-1">
                                 <i class="fa-solid fa-download"></i> Download PDF
                             </button>
                         </div>
 
-                        <div class="border border-slate-200 rounded-2xl p-2 bg-slate-50/50 max-h-[420px] overflow-y-auto shadow-inner text-left">
+                        <div class="border-2 border-slate-200 rounded-2xl p-2 bg-slate-50/50 max-h-[420px] overflow-y-auto shadow-inner text-left">
                             <div id="live-invoice-container" class="transform origin-top scale-[0.82] -mb-16">
                                 <!-- Populated dynamically via window.getCleanInvoiceHTML() -->
                             </div>

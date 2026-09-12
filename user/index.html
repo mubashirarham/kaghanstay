@@ -12,7 +12,7 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
-    <title>Hotels in Kaghan, Islamabad & Nathia Gali | KPH Stay App</title>
+    <title>Guest Super Portal | KPH Stay</title>
     <meta name="robots" content="noindex, nofollow">
     <link rel="manifest" href="/manifest.json">
     <link rel="icon" type="image/x-icon" href="/assets/images/favicon.ico">
@@ -22,111 +22,115 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <!-- Global CSS -->
-    <link rel="stylesheet" href="/assets/css/style.css?v=5">
+    <link rel="stylesheet" href="/assets/css/style.css?v=6">
     <!-- DOMPurify for HTML Sanitization -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .outfit { font-family: 'Outfit', sans-serif; }
+    </style>
 </head>
-<body class="guest-app-body bg-[#F8FAFC] text-[#0B0F19] overflow-x-hidden font-sans pt-20 pb-28 md:pb-12">
+<body class="guest-app-body bg-[#F8FAFC] text-slate-900 overflow-x-hidden font-sans pt-20 pb-28 md:pb-12 selection:bg-[#C5A059] selection:text-slate-900">
 
     <!-- Top Luxury App Navigation Header -->
-    <nav id="guest-app-navbar" class="fixed top-0 left-0 right-0 z-50 py-3 px-4 md:px-8 bg-[#0B0F19]/95 backdrop-blur-xl border-b border-white/10 shadow-xl text-white flex items-center justify-between gap-4">
+    <nav id="guest-app-navbar" class="fixed top-0 left-0 right-0 z-50 py-3.5 px-4 md:px-8 bg-[#0F172A]/95 backdrop-blur-xl border-b-2 border-white/10 shadow-xl text-white flex items-center justify-between gap-4">
         <!-- Left: Squircle Menu Icon & Brand Title -->
         <div class="flex items-center gap-3 shrink-0">
-            <button onclick="switchGuestTab('overview')" class="w-10 h-10 rounded-2xl bg-white/10 hover:bg-[#C5A059] text-slate-300 hover:text-slate-900 flex items-center justify-center transition-all">
+            <button onclick="switchGuestTab('overview')" class="w-10 h-10 rounded-2xl bg-white/10 border border-white/15 hover:bg-[#C5A059] text-slate-200 hover:text-slate-900 flex items-center justify-center transition-all shadow-xs" title="Browse Catalog">
                 <i class="fa-solid fa-border-all text-sm"></i>
             </button>
             <div class="flex flex-col">
-                <div class="flex items-center gap-1 text-[10px] text-[#C5A059] font-bold uppercase tracking-wider">
-                    <i class="fa-solid fa-location-dot"></i>
-                    <span>Hotels in Kaghan, Islamabad & Nathia Gali</span>
+                <div class="flex items-center gap-1.5 text-[10px] text-[#C5A059] font-black uppercase tracking-wider">
+                    <i class="fa-solid fa-hotel text-[10px]"></i>
+                    <span>KPH Luxury Super App</span>
                 </div>
-                <span class="text-base font-extrabold outfit text-white leading-none">Browse Luxury Suites</span>
+                <span class="text-sm md:text-base font-extrabold outfit text-white leading-tight">Guest Portal</span>
             </div>
         </div>
 
         <!-- Center Desktop Navigation Tabs -->
-        <div class="hidden xl:flex items-center gap-1.5 bg-white/5 border border-white/10 p-1.5 rounded-2xl">
-            <button onclick="switchGuestTab('overview')" class="tab-btn-overview px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 bg-[#C5A059] text-slate-900 shadow-md">
+        <div class="hidden xl:flex items-center gap-1.5 bg-white/5 border-2 border-white/10 p-1.5 rounded-2xl shadow-inner">
+            <button onclick="switchGuestTab('overview')" class="tab-btn-overview px-4 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-2 bg-[#C5A059] text-slate-900 border border-amber-300 shadow-md">
                 <i class="fa-solid fa-hotel text-xs"></i> Explore
             </button>
-            <button onclick="switchGuestTab('trips')" class="tab-btn-trips px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 text-slate-300 hover:text-white hover:bg-white/10">
+            <button onclick="switchGuestTab('trips')" class="tab-btn-trips px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 text-slate-300 hover:text-white hover:bg-white/10">
                 <i class="fa-solid fa-suitcase text-xs"></i> My Stays
             </button>
-            <button onclick="switchGuestTab('wishlists')" class="tab-btn-wishlists px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 text-slate-300 hover:text-white hover:bg-white/10">
+            <button onclick="switchGuestTab('wishlists')" class="tab-btn-wishlists px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 text-slate-300 hover:text-white hover:bg-white/10">
                 <i class="fa-solid fa-heart text-xs text-rose-400"></i> Wishlist
             </button>
-            <button onclick="switchGuestTab('notifications')" class="tab-btn-notifications px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 text-slate-300 hover:text-white hover:bg-white/10 relative">
+            <button onclick="switchGuestTab('notifications')" class="tab-btn-notifications px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 text-slate-300 hover:text-white hover:bg-white/10 relative">
                 <i class="fa-solid fa-bell text-xs"></i> Alerts
                 <span class="w-2 h-2 rounded-full bg-[#C5A059] absolute top-2 right-2 animate-ping"></span>
             </button>
-            <button onclick="switchGuestTab('support')" class="tab-btn-support px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 text-slate-300 hover:text-white hover:bg-white/10">
-                <i class="fa-solid fa-headset text-xs text-emerald-400"></i> Host Chat
+            <button onclick="switchGuestTab('support')" class="tab-btn-support px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 text-slate-300 hover:text-white hover:bg-white/10">
+                <i class="fa-solid fa-headset text-xs text-emerald-400"></i> Host Support
             </button>
-            <button onclick="switchGuestTab('account')" class="tab-btn-account px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 text-slate-300 hover:text-white hover:bg-white/10">
-                <i class="fa-solid fa-user text-xs"></i> Profile
+            <button onclick="switchGuestTab('account')" class="tab-btn-account px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 text-slate-300 hover:text-white hover:bg-white/10">
+                <i class="fa-solid fa-user-shield text-xs"></i> Account
             </button>
         </div>
 
         <!-- Right Search, Calendar, Bell & User Avatar Pill -->
         <div class="flex items-center gap-2.5 shrink-0">
-            <a href="search.html" class="w-9 h-9 rounded-full bg-white/10 hover:bg-[#C5A059] text-slate-300 hover:text-slate-900 flex items-center justify-center transition-all" title="Search Catalog">
+            <a href="../rooms.html" class="w-9 h-9 rounded-full bg-white/10 border border-white/10 hover:bg-[#C5A059] text-slate-200 hover:text-slate-900 flex items-center justify-center transition-all shadow-xs" title="Explore Suites">
                 <i class="fa-solid fa-magnifying-glass text-xs"></i>
             </a>
-            <a href="calendar.html" class="w-9 h-9 rounded-full bg-white/10 hover:bg-[#C5A059] text-slate-300 hover:text-slate-900 flex items-center justify-center transition-all" title="Availability Calendar">
-                <i class="fa-solid fa-calendar-days text-xs"></i>
-            </a>
-            <button onclick="switchGuestTab('notifications')" class="w-9 h-9 rounded-full bg-white/10 hover:bg-[#C5A059] text-slate-300 hover:text-slate-900 flex items-center justify-center transition-all relative">
+            <button onclick="switchGuestTab('notifications')" class="w-9 h-9 rounded-full bg-white/10 border border-white/10 hover:bg-[#C5A059] text-slate-200 hover:text-slate-900 flex items-center justify-center transition-all relative shadow-xs">
                 <i class="fa-solid fa-bell text-xs"></i>
                 <span class="w-2 h-2 rounded-full bg-[#C5A059] absolute top-1.5 right-1.5"></span>
             </button>
-            <div onclick="switchGuestTab('account')" class="flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 pl-1.5 pr-3 py-1 rounded-full cursor-pointer transition-all">
+            <div onclick="switchGuestTab('account')" class="flex items-center gap-2 bg-white/10 hover:bg-white/15 border-2 border-white/15 pl-1.5 pr-3 py-1 rounded-full cursor-pointer transition-all shadow-xs">
                 <div id="header-user-initial" class="w-7 h-7 rounded-full bg-[#C5A059] text-slate-900 font-black text-xs flex items-center justify-center shadow-xs">G</div>
-                <span id="header-user-name" class="text-xs font-bold text-slate-200 hidden sm:inline-block max-w-[100px] truncate">Guest</span>
+                <span id="header-user-name" class="text-xs font-extrabold text-white hidden sm:inline-block max-w-[110px] truncate">Guest</span>
             </div>
-            <button onclick="KaghanDB.logout()" class="w-9 h-9 rounded-full bg-white/10 text-white hover:bg-rose-600 flex items-center justify-center transition-all" title="Logout">
+            <button onclick="KaghanDB.logout()" class="w-9 h-9 rounded-full bg-white/10 border border-white/10 text-white hover:bg-rose-600 flex items-center justify-center transition-all shadow-xs" title="Logout">
                 <i class="fa-solid fa-power-off text-xs"></i>
             </button>
         </div>
     </nav>
 
     <!-- Main App Container -->
-    <main class="py-4 px-4 md:px-12 max-w-7xl mx-auto space-y-6">
+    <main class="py-6 px-4 md:px-12 max-w-7xl mx-auto space-y-8">
 
         <!-- Welcome Banner & Quick Action Card -->
-        <div class="bg-gradient-to-r from-[#0B0F19] via-[#161B26] to-[#0B0F19] rounded-3xl p-6 md:p-8 shadow-xl text-white flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative overflow-hidden border border-white/10">
-            <div class="absolute right-0 top-0 w-72 h-72 bg-[#C5A059]/15 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="bg-gradient-to-r from-[#0F172A] via-[#1E293B] to-[#0F172A] rounded-3xl p-6 md:p-8 shadow-xl text-white flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative overflow-hidden border-2 border-slate-700/60">
+            <div class="absolute right-0 top-0 w-80 h-80 bg-[#C5A059]/15 rounded-full blur-3xl pointer-events-none"></div>
             <div class="z-10">
-                <span class="inline-flex items-center gap-1.5 text-[#C5A059] text-[10px] font-extrabold uppercase tracking-widest bg-[#C5A059]/10 px-3 py-1 rounded-full border border-[#C5A059]/20 mb-2">
-                    <span class="w-2 h-2 rounded-full bg-[#C5A059] animate-pulse"></span> Kaghan Resort Clearance
-                </span>
-                <h1 class="text-2xl md:text-3xl font-bold outfit text-white">Welcome Back, <span id="user-greeting-name" class="text-[#C5A059]">Guest</span>!</h1>
-                <p class="text-slate-300 text-xs mt-1 font-light">Explore 5-star mountain suites, mobile boarding key passes, and 24/7 host support.</p>
+                <div class="inline-flex items-center gap-1.5 text-[#C5A059] text-[10px] font-black uppercase tracking-widest bg-[#C5A059]/15 px-3 py-1 rounded-xl border border-[#C5A059]/30 mb-2">
+                    <span class="w-2 h-2 rounded-full bg-[#C5A059] animate-pulse"></span> Kaghan & Islamabad Resort Network
+                </div>
+                <h1 class="text-2xl md:text-3xl font-extrabold outfit text-white tracking-tight">Welcome Back, <span id="user-greeting-name" class="text-[#C5A059]">Guest</span>!</h1>
+                <p class="text-slate-300 text-xs md:text-sm mt-1 font-medium">Explore 5-star mountain suites, mobile boarding key passes, and 24/7 host support.</p>
             </div>
             <div class="flex flex-wrap gap-2.5 z-10 w-full md:w-auto">
-                <a href="../rooms.html" class="bg-[#C5A059] text-slate-900 font-extrabold text-xs px-5 py-3.5 rounded-2xl hover:bg-white transition-all shadow-md text-center flex items-center justify-center gap-1.5">
+                <a href="../rooms.html" class="bg-[#C5A059] text-slate-900 border-2 border-amber-300 font-black text-xs px-5 py-3.5 rounded-xl hover:bg-white hover:border-white transition-all shadow-md text-center flex items-center justify-center gap-2 cursor-pointer">
                     <i class="fa-solid fa-plus text-xs"></i> New Booking
                 </a>
-                <a href="calendar.html" class="bg-white/10 text-white font-bold text-xs px-5 py-3.5 rounded-2xl hover:bg-white/20 transition-all text-center flex items-center justify-center gap-1.5 border border-white/20">
-                    <i class="fa-solid fa-calendar-days text-xs text-[#C5A059]"></i> Live Calendar
+                <a href="../track.html" class="bg-white/10 text-white font-extrabold text-xs px-5 py-3.5 rounded-xl hover:bg-white/20 transition-all text-center flex items-center justify-center gap-2 border-2 border-white/20">
+                    <i class="fa-solid fa-compass text-xs text-[#C5A059]"></i> Track Stay
                 </a>
-                <button onclick="switchGuestTab('support')" class="border border-white/20 text-white text-xs font-bold px-4 py-3.5 rounded-2xl hover:bg-white/10 transition-all text-center flex items-center justify-center gap-1.5">
+                <button onclick="switchGuestTab('support')" class="border-2 border-white/20 text-white text-xs font-extrabold px-4 py-3.5 rounded-xl hover:bg-white/10 transition-all text-center flex items-center justify-center gap-2">
                     <i class="fa-solid fa-comments text-xs text-[#C5A059]"></i> Host Desk
                 </button>
             </div>
         </div>
 
-        <!-- Tab Content 1: Overview & Main Page Catalog (Screen 1 & 2 of Screenshot) -->
+        <!-- Tab Content 1: Overview & Main Page Catalog -->
         <div id="tab-content-overview" class="space-y-8">
 
-            <!-- Category Squircles Grid (Loaded dynamically from Admin DB with Horizontal Scroller) -->
+            <!-- Category Squircles Grid -->
             <div class="space-y-3">
                 <div class="flex justify-between items-center px-1">
-                    <h3 class="text-lg font-extrabold outfit text-slate-900">Hotels in Kaghan, Islamabad & Nathia Gali</h3>
-                    <button onclick="filterUserListings('all', this)" class="text-xs text-[#C5A059] font-bold hover:underline">View All</button>
+                    <h3 class="text-lg md:text-xl font-extrabold outfit text-slate-900">Explore Destinations & Suites</h3>
+                    <button onclick="filterUserListings('all', this)" class="text-xs text-[#C5A059] font-black hover:underline">View All</button>
                 </div>
 
-                <!-- Horizontal Touch & Drag Scroll Container for Desktop & Mobile -->
+                <!-- Horizontal Touch & Drag Scroll Container -->
                 <div id="user-category-squircles-scroll" class="flex items-center gap-3 md:gap-4 overflow-x-auto pb-2 pt-1 no-scrollbar scroll-smooth">
                     <!-- Loaded dynamically from Admin DB -->
                 </div>
@@ -137,17 +141,17 @@
                 <div class="flex justify-between items-center px-1">
                     <h3 class="text-xl font-extrabold outfit text-slate-900">5 Star Luxury Suites</h3>
                     <div class="flex items-center gap-3">
-                        <span class="text-xs text-slate-400 font-medium hidden sm:inline">Real-time Rates</span>
-                        <a href="search.html" class="text-xs text-[#C5A059] font-bold hover:underline flex items-center gap-1">
-                            View All Search <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                        <span class="text-xs text-slate-500 font-bold hidden sm:inline">Real-time Rates</span>
+                        <a href="../rooms.html" class="text-xs text-[#C5A059] font-black hover:underline flex items-center gap-1">
+                            Explore Full Catalogue <i class="fa-solid fa-chevron-right text-[10px]"></i>
                         </a>
                     </div>
                 </div>
 
                 <!-- Live Firestore Rooms Grid -->
                 <div id="user-all-listings-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <div class="col-span-full text-center py-12 text-slate-400 text-xs font-light">
-                        Loading luxury resort catalog...
+                    <div class="col-span-full text-center py-12 text-slate-500 text-sm font-bold">
+                        <i class="fa-solid fa-spinner fa-spin mr-2 text-[#C5A059]"></i> Loading luxury resort catalog...
                     </div>
                 </div>
                 <div id="user-listings-pagination" class="mt-6 hidden"></div>
@@ -156,12 +160,12 @@
             <!-- Active Reservations & Host Chat Row -->
             <div class="flex flex-col lg:flex-row gap-8 pt-4">
                 <div class="w-full lg:w-2/3 space-y-4">
-                    <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-sm">
-                        <div class="flex flex-wrap justify-between items-center gap-3 mb-6">
-                            <h2 class="text-lg font-bold outfit text-slate-900 flex items-center gap-2">
+                    <div class="bg-white rounded-3xl border-2 border-slate-200 p-6 md:p-8 shadow-md">
+                        <div class="flex flex-wrap justify-between items-center gap-3 mb-6 pb-4 border-b-2 border-slate-100">
+                            <h2 class="text-lg md:text-xl font-extrabold outfit text-slate-900 flex items-center gap-2">
                                 <i class="fa-solid fa-calendar-check text-[#C5A059]"></i> Active Reservations
                             </h2>
-                            <a href="../rooms.html" class="bg-[#C5A059] text-slate-900 text-[10px] uppercase tracking-widest font-extrabold px-4 py-2 rounded-xl hover:bg-slate-900 hover:text-white transition-all shadow-xs">
+                            <a href="../rooms.html" class="bg-[#C5A059] text-slate-900 border-2 border-amber-300 text-xs font-black uppercase tracking-wider px-4 py-2 rounded-xl hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-all shadow-xs">
                                 New Booking
                             </a>
                         </div>
@@ -169,13 +173,13 @@
                         <div class="table-scroll-container overflow-x-auto">
                             <table class="w-full text-left border-collapse">
                                 <thead>
-                                    <tr class="border-b border-slate-100 text-slate-400 text-[9px] uppercase tracking-wider font-bold">
-                                        <th class="px-3 md:px-6 py-3 whitespace-nowrap">ID</th>
-                                        <th class="px-3 md:px-6 py-3 whitespace-nowrap">Suite Style</th>
-                                        <th class="px-3 md:px-6 py-3 whitespace-nowrap">Stay Dates</th>
-                                        <th class="px-3 md:px-6 py-3 whitespace-nowrap">Total Paid</th>
-                                        <th class="px-3 md:px-6 py-3 whitespace-nowrap">Status</th>
-                                        <th class="px-3 md:px-6 py-3 whitespace-nowrap">Actions</th>
+                                    <tr class="border-b-2 border-slate-200 text-slate-600 text-[10px] uppercase tracking-wider font-extrabold">
+                                        <th class="px-3 md:px-4 py-3 whitespace-nowrap">ID</th>
+                                        <th class="px-3 md:px-4 py-3 whitespace-nowrap">Suite Style</th>
+                                        <th class="px-3 md:px-4 py-3 whitespace-nowrap">Stay Dates</th>
+                                        <th class="px-3 md:px-4 py-3 whitespace-nowrap">Total Paid</th>
+                                        <th class="px-3 md:px-4 py-3 whitespace-nowrap">Status</th>
+                                        <th class="px-3 md:px-4 py-3 whitespace-nowrap">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody id="active-bookings-tbody">
@@ -186,24 +190,25 @@
 
                         <div id="active-bookings-empty-state" class="hidden text-center py-10">
                             <i class="fa-solid fa-suitcase text-3xl text-slate-300 mb-2"></i>
-                            <p class="text-slate-400 text-xs">No active reservations found.</p>
+                            <p class="text-slate-600 text-sm font-bold">No active reservations found.</p>
+                            <a href="../rooms.html" class="inline-block mt-3 text-xs text-[#C5A059] font-black hover:underline">Explore suites & book now →</a>
                         </div>
                     </div>
                 </div>
 
                 <div class="w-full lg:w-1/3 space-y-6">
-                    <div class="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm space-y-5">
-                        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
-                            <h3 class="font-bold outfit text-slate-900 text-base flex items-center gap-2">
-                                <i class="fa-solid fa-comments text-[#C5A059]"></i> Live Host Support
+                    <div class="bg-white rounded-3xl border-2 border-slate-200 p-6 shadow-md space-y-5">
+                        <div class="flex items-center justify-between border-b-2 border-slate-100 pb-4">
+                            <h3 class="font-extrabold outfit text-slate-900 text-base flex items-center gap-2">
+                                <i class="fa-solid fa-comments text-[#C5A059]"></i> Live Host Desk
                             </h3>
-                            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-600 text-[10px] font-bold">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-800 text-[10px] font-black uppercase">
                                 <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Online
                             </span>
                         </div>
-                        <p class="text-xs text-slate-500 font-light">Questions about check-in, Wi-Fi password, or trail guides? Ask our host team.</p>
+                        <p class="text-xs text-slate-700 font-medium leading-relaxed">Questions about check-in, Wi-Fi password, or trail guides? Ask our dedicated host desk team.</p>
                         
-                        <button onclick="switchGuestTab('support')" class="w-full bg-[#0B0F19] text-white text-xs font-bold py-3 rounded-2xl hover:bg-[#C5A059] hover:text-slate-900 transition-all shadow-md flex items-center justify-center gap-2">
+                        <button onclick="switchGuestTab('support')" class="w-full bg-[#0F172A] hover:bg-[#C5A059] text-white hover:text-slate-900 border-2 border-slate-800 hover:border-amber-300 text-xs font-black uppercase tracking-wider py-3.5 rounded-xl transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer">
                             <i class="fa-solid fa-paper-plane text-xs"></i> Open Host Chat Thread
                         </button>
                     </div>
@@ -213,24 +218,24 @@
 
         <!-- Tab Content 2: My Stays / Trips -->
         <div id="tab-content-trips" class="hidden space-y-8">
-            <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-sm space-y-6">
-                <div>
-                    <h2 class="text-xl font-bold outfit text-slate-900 flex items-center gap-2">
+            <div class="bg-white rounded-3xl border-2 border-slate-200 p-6 md:p-8 shadow-md space-y-6">
+                <div class="border-b-2 border-slate-100 pb-4">
+                    <h2 class="text-xl font-extrabold outfit text-slate-900 flex items-center gap-2">
                         <i class="fa-solid fa-suitcase text-[#C5A059]"></i> Current & Upcoming Stays
                     </h2>
-                    <p class="text-xs text-slate-400 font-light mt-0.5">View digital key passes, check-in instructions, and reschedule requests.</p>
+                    <p class="text-xs text-slate-600 font-bold mt-1">View digital key passes, check-in instructions, and reschedule requests.</p>
                 </div>
 
                 <div class="table-scroll-container overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="border-b border-slate-100 text-slate-400 text-[9px] uppercase tracking-wider font-bold">
-                                <th class="px-3 md:px-6 py-3 whitespace-nowrap">ID</th>
-                                <th class="px-3 md:px-6 py-3 whitespace-nowrap">Suite Style</th>
-                                <th class="px-3 md:px-6 py-3 whitespace-nowrap">Stay Dates</th>
-                                <th class="px-3 md:px-6 py-3 whitespace-nowrap">Total Paid</th>
-                                <th class="px-3 md:px-6 py-3 whitespace-nowrap">Status</th>
-                                <th class="px-3 md:px-6 py-3 whitespace-nowrap">Actions</th>
+                            <tr class="border-b-2 border-slate-200 text-slate-600 text-[10px] uppercase tracking-wider font-extrabold">
+                                <th class="px-3 md:px-4 py-3 whitespace-nowrap">ID</th>
+                                <th class="px-3 md:px-4 py-3 whitespace-nowrap">Suite Style</th>
+                                <th class="px-3 md:px-4 py-3 whitespace-nowrap">Stay Dates</th>
+                                <th class="px-3 md:px-4 py-3 whitespace-nowrap">Total Paid</th>
+                                <th class="px-3 md:px-4 py-3 whitespace-nowrap">Status</th>
+                                <th class="px-3 md:px-4 py-3 whitespace-nowrap">Actions</th>
                             </tr>
                         </thead>
                         <tbody id="active-bookings-tbody-trips">
@@ -241,29 +246,29 @@
 
                 <div id="active-bookings-empty-state-trips" class="hidden text-center py-10">
                     <i class="fa-solid fa-suitcase text-3xl text-slate-300 mb-2"></i>
-                    <p class="text-slate-400 text-xs">No active reservations.</p>
+                    <p class="text-slate-600 text-sm font-bold">No active reservations right now.</p>
                 </div>
             </div>
 
             <!-- Previous History -->
-            <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-sm space-y-6">
-                <div>
-                    <h2 class="text-xl font-bold outfit text-slate-900 flex items-center gap-2">
+            <div class="bg-white rounded-3xl border-2 border-slate-200 p-6 md:p-8 shadow-md space-y-6">
+                <div class="border-b-2 border-slate-100 pb-4">
+                    <h2 class="text-xl font-extrabold outfit text-slate-900 flex items-center gap-2">
                         <i class="fa-solid fa-clock-rotate-left text-[#C5A059]"></i> Previous Stays History
                     </h2>
-                    <p class="text-xs text-slate-400 font-light mt-0.5">Completed checkout history, review submissions, and receipt downloads.</p>
+                    <p class="text-xs text-slate-600 font-bold mt-1">Completed checkout history, review submissions, and receipt downloads.</p>
                 </div>
 
                 <div class="table-scroll-container overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="border-b border-slate-100 text-slate-400 text-[9px] uppercase tracking-wider font-bold">
-                                <th class="px-3 md:px-6 py-3 whitespace-nowrap">ID</th>
-                                <th class="px-3 md:px-6 py-3 whitespace-nowrap">Suite Style</th>
-                                <th class="px-3 md:px-6 py-3 whitespace-nowrap">Stay Dates</th>
-                                <th class="px-3 md:px-6 py-3 whitespace-nowrap">Total Paid</th>
-                                <th class="px-3 md:px-6 py-3 whitespace-nowrap">Status</th>
-                                <th class="px-3 md:px-6 py-3 whitespace-nowrap">Actions</th>
+                            <tr class="border-b-2 border-slate-200 text-slate-600 text-[10px] uppercase tracking-wider font-extrabold">
+                                <th class="px-3 md:px-4 py-3 whitespace-nowrap">ID</th>
+                                <th class="px-3 md:px-4 py-3 whitespace-nowrap">Suite Style</th>
+                                <th class="px-3 md:px-4 py-3 whitespace-nowrap">Stay Dates</th>
+                                <th class="px-3 md:px-4 py-3 whitespace-nowrap">Total Paid</th>
+                                <th class="px-3 md:px-4 py-3 whitespace-nowrap">Status</th>
+                                <th class="px-3 md:px-4 py-3 whitespace-nowrap">Actions</th>
                             </tr>
                         </thead>
                         <tbody id="previous-bookings-tbody">
@@ -274,21 +279,19 @@
                 <div id="user-previous-bookings-pagination" class="mt-4 hidden"></div>
 
                 <div id="previous-bookings-empty-state" class="hidden text-center py-10">
-                    <p class="text-slate-400 text-xs">No previous stay history.</p>
+                    <p class="text-slate-600 text-sm font-bold">No previous stay history.</p>
                 </div>
             </div>
         </div>
 
         <!-- Tab Content 3: Saved Wishlist -->
         <div id="tab-content-wishlists" class="hidden space-y-6">
-            <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-sm space-y-6">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h2 class="text-xl font-bold outfit text-slate-900 flex items-center gap-2">
-                            <i class="fa-solid fa-heart text-rose-500"></i> Saved Wishlist Suites
-                        </h2>
-                        <p class="text-xs text-slate-400 font-light mt-0.5">Favorites saved to your guest profile.</p>
-                    </div>
+            <div class="bg-white rounded-3xl border-2 border-slate-200 p-6 md:p-8 shadow-md space-y-6">
+                <div class="border-b-2 border-slate-100 pb-4">
+                    <h2 class="text-xl font-extrabold outfit text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-heart text-rose-500"></i> Saved Wishlist Suites
+                    </h2>
+                    <p class="text-xs text-slate-600 font-bold mt-1">Favorites saved to your guest profile for quick reservation.</p>
                 </div>
 
                 <div id="guest-wishlist-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -299,14 +302,12 @@
 
         <!-- Tab Content 4: Alerts & Offers -->
         <div id="tab-content-notifications" class="hidden space-y-6">
-            <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-sm space-y-6">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h2 class="text-xl font-bold outfit text-slate-900 flex items-center gap-2">
-                            <i class="fa-solid fa-bell text-[#C5A059]"></i> Guest Notification Center
-                        </h2>
-                        <p class="text-xs text-slate-400 font-light mt-0.5">Booking status updates, check-in alerts, and special offers.</p>
-                    </div>
+            <div class="bg-white rounded-3xl border-2 border-slate-200 p-6 md:p-8 shadow-md space-y-6">
+                <div class="border-b-2 border-slate-100 pb-4">
+                    <h2 class="text-xl font-extrabold outfit text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-bell text-[#C5A059]"></i> Guest Notification Center
+                    </h2>
+                    <p class="text-xs text-slate-600 font-bold mt-1">Booking status updates, check-in alerts, and special offers.</p>
                 </div>
 
                 <div id="guest-notifications-list" class="space-y-4">
@@ -317,33 +318,33 @@
 
         <!-- Tab Content 5: Host Support Desk -->
         <div id="tab-content-support" class="hidden space-y-6">
-            <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-sm space-y-6">
-                <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-5">
+            <div class="bg-white rounded-3xl border-2 border-slate-200 p-6 md:p-8 shadow-md space-y-6">
+                <div class="flex flex-wrap items-center justify-between gap-4 border-b-2 border-slate-100 pb-5">
                     <div>
-                        <h2 class="text-xl font-bold outfit text-slate-900 flex items-center gap-2">
+                        <h2 class="text-xl font-extrabold outfit text-slate-900 flex items-center gap-2">
                             <i class="fa-solid fa-headset text-[#C5A059]"></i> Live Host Support Desk
                         </h2>
-                        <p class="text-xs text-slate-500 font-light mt-0.5">Real-time chat thread with resort management.</p>
+                        <p class="text-xs text-slate-600 font-bold mt-0.5">Real-time chat thread with resort management.</p>
                     </div>
                 </div>
 
                 <!-- Quick Action Chips -->
                 <div class="flex flex-wrap gap-2 text-xs">
-                    <button onclick="sendQuickHostRequest('Hi! Could you please provide the Wi-Fi password for my room?')" class="bg-slate-50 border border-slate-200 text-slate-700 px-3.5 py-1.5 rounded-full hover:border-[#C5A059] transition-all">🔑 Wi-Fi Password Query</button>
-                    <button onclick="sendQuickHostRequest('Could I please request extra towels and amenities?')" class="bg-slate-50 border border-slate-200 text-slate-700 px-3.5 py-1.5 rounded-full hover:border-[#C5A059] transition-all">🧺 Extra Towels & Supplies</button>
-                    <button onclick="sendQuickHostRequest('What time is standard check-out and is late check-out available?')" class="bg-slate-50 border border-slate-200 text-slate-700 px-3.5 py-1.5 rounded-full hover:border-[#C5A059] transition-all">⏰ Late Check-Out Inquiry</button>
-                    <button onclick="sendQuickHostRequest('Could you arrange a shuttle transfer to Islamabad airport?')" class="bg-slate-50 border border-slate-200 text-slate-700 px-3.5 py-1.5 rounded-full hover:border-[#C5A059] transition-all">🚕 Airport Shuttle Request</button>
+                    <button onclick="sendQuickHostRequest('Hi! Could you please provide the Wi-Fi password for my room?')" class="bg-slate-50 border-2 border-slate-200 text-slate-800 font-bold px-4 py-2 rounded-xl hover:border-[#C5A059] transition-all">🔑 Wi-Fi Password Query</button>
+                    <button onclick="sendQuickHostRequest('Could I please request extra towels and amenities?')" class="bg-slate-50 border-2 border-slate-200 text-slate-800 font-bold px-4 py-2 rounded-xl hover:border-[#C5A059] transition-all">🧺 Extra Towels & Supplies</button>
+                    <button onclick="sendQuickHostRequest('What time is standard check-out and is late check-out available?')" class="bg-slate-50 border-2 border-slate-200 text-slate-800 font-bold px-4 py-2 rounded-xl hover:border-[#C5A059] transition-all">⏰ Late Check-Out Inquiry</button>
+                    <button onclick="sendQuickHostRequest('Could you arrange a shuttle transfer to Islamabad airport?')" class="bg-slate-50 border-2 border-slate-200 text-slate-800 font-bold px-4 py-2 rounded-xl hover:border-[#C5A059] transition-all">🚕 Airport Shuttle Request</button>
                 </div>
 
                 <!-- Messages Stream Box -->
-                <div id="guest-chat-stream" class="bg-slate-50/70 rounded-2xl p-4 md:p-6 border border-slate-100 h-96 overflow-y-auto space-y-4">
-                    <div class="text-center text-xs text-slate-400 py-16">Loading conversation...</div>
+                <div id="guest-chat-stream" class="bg-slate-50 rounded-2xl p-4 md:p-6 border-2 border-slate-200 h-96 overflow-y-auto space-y-4">
+                    <div class="text-center text-xs text-slate-500 font-bold py-16">Loading conversation...</div>
                 </div>
 
                 <!-- Message Form -->
                 <form id="guest-chat-form" class="flex items-center gap-3">
-                    <input type="text" id="guest-chat-input" placeholder="Type your inquiry to resort host..." required autocomplete="off" class="flex-grow border border-slate-200 rounded-2xl px-5 py-3.5 text-xs bg-white text-slate-800 outline-none focus:border-[#C5A059] transition-all">
-                    <button type="submit" class="bg-[#0B0F19] text-white px-6 py-3.5 rounded-2xl text-xs font-bold uppercase tracking-wider hover:bg-[#C5A059] hover:text-slate-900 transition-all shadow-md flex items-center gap-2 shrink-0">
+                    <input type="text" id="guest-chat-input" placeholder="Type your inquiry to resort host..." required autocomplete="off" class="flex-grow border-2 border-slate-300 rounded-xl px-5 py-3.5 text-xs md:text-sm font-bold bg-white text-slate-900 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 transition-all shadow-xs">
+                    <button type="submit" class="bg-[#0F172A] hover:bg-[#C5A059] text-white hover:text-slate-900 border-2 border-slate-800 hover:border-amber-300 px-6 py-3.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow-md flex items-center gap-2 shrink-0 cursor-pointer">
                         <i class="fa-solid fa-paper-plane text-xs"></i> Send Message
                     </button>
                 </form>
@@ -352,39 +353,44 @@
 
         <!-- Tab Content 6: Account Profile -->
         <div id="tab-content-account" class="hidden space-y-6">
-            <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-sm space-y-6">
-                <h2 class="text-xl font-bold outfit text-slate-900 flex items-center gap-2">
-                    <i class="fa-solid fa-user-gear text-[#C5A059]"></i> Profile & Account Settings
-                </h2>
+            <div class="bg-white rounded-3xl border-2 border-slate-200 p-6 md:p-8 shadow-md space-y-6">
+                <div class="border-b-2 border-slate-100 pb-4">
+                    <h2 class="text-xl font-extrabold outfit text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-user-gear text-[#C5A059]"></i> Profile & Account Settings
+                    </h2>
+                    <p class="text-xs text-slate-600 font-bold mt-1">Manage guest account credentials, phone contact, and security clearance.</p>
+                </div>
 
                 <form id="profile-form" class="space-y-5 max-w-xl">
                     <div>
-                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-2">Guest Account Email</label>
-                        <input type="email" id="profile-email" disabled class="w-full border border-slate-200 rounded-2xl px-4 py-3 text-xs bg-slate-100 text-slate-400 cursor-not-allowed">
+                        <label for="profile-email" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-2">Guest Account Email</label>
+                        <input type="email" id="profile-email" disabled class="w-full border-2 border-slate-200 rounded-xl px-4 py-3.5 text-sm font-bold bg-slate-100 text-slate-500 cursor-not-allowed">
                     </div>
                     <div>
-                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-2">Full Name</label>
-                        <input type="text" id="profile-name" required class="w-full border border-slate-200 rounded-2xl px-4 py-3 text-xs bg-slate-50 text-slate-800 focus:border-[#C5A059] outline-none">
+                        <label for="profile-name" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-2">Full Name <span class="text-rose-500">*</span></label>
+                        <input type="text" id="profile-name" required class="w-full border-2 border-slate-300 rounded-xl px-4 py-3.5 text-sm font-bold bg-white text-slate-900 focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 outline-none shadow-xs">
                     </div>
                     <div>
-                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-2">Phone Number</label>
-                        <input type="text" id="profile-phone" class="w-full border border-slate-200 rounded-2xl px-4 py-3 text-xs bg-slate-50 text-slate-800 focus:border-[#C5A059] outline-none" placeholder="0300-1234567">
+                        <label for="profile-phone" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-2">Phone Number</label>
+                        <input type="text" id="profile-phone" class="w-full border-2 border-slate-300 rounded-xl px-4 py-3.5 text-sm font-bold bg-white text-slate-900 font-mono focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 outline-none shadow-xs" placeholder="0300-1234567">
                     </div>
                     <div>
-                        <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-2">New Password (Leave blank to keep current)</label>
-                        <input type="password" id="profile-pass" class="w-full border border-slate-200 rounded-2xl px-4 py-3 text-xs bg-slate-50 text-slate-800 focus:border-[#C5A059] outline-none">
+                        <label for="profile-pass" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-2">New Password (Leave blank to keep current)</label>
+                        <input type="password" id="profile-pass" class="w-full border-2 border-slate-300 rounded-xl px-4 py-3.5 text-sm font-bold bg-white text-slate-900 focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 outline-none shadow-xs">
                     </div>
 
-                    <button type="submit" class="bg-[#0B0F19] text-white px-8 py-3.5 rounded-2xl font-bold hover:bg-[#C5A059] hover:text-slate-900 transition-all text-xs shadow-md">
-                        Save Profile
-                    </button>
+                    <div class="pt-2">
+                        <button type="submit" class="bg-[#C5A059] hover:bg-slate-900 text-slate-900 hover:text-white border-2 border-amber-300 hover:border-slate-900 px-8 py-3.5 rounded-xl font-black uppercase tracking-wider text-xs shadow-md transition-all cursor-pointer">
+                            Save Profile Changes
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
     </main>
 
-    <!-- Floating White Pill Mobile Dock with Center Raised Gold Search FAB -->
-    <nav class="app-bottom-dock md:hidden flex justify-between items-center">
+    <!-- Floating Mobile Navigation Dock -->
+    <nav class="app-bottom-dock md:hidden flex justify-between items-center bg-white/95 border-t-2 border-slate-200">
         <button onclick="switchGuestTab('overview')" class="dock-item dock-item-overview active">
             <i class="fa-solid fa-hotel text-lg"></i>
             <span>Home</span>
@@ -395,7 +401,7 @@
         </button>
         
         <!-- Center Raised Gold Search FAB -->
-        <a href="search.html" class="gold-fab-btn -mt-6">
+        <a href="../rooms.html" class="gold-fab-btn -mt-6">
             <i class="fa-solid fa-magnifying-glass text-lg"></i>
         </a>
 
@@ -410,48 +416,48 @@
     </nav>
 
     <!-- Digital Boarding Pass Modal -->
-    <div id="digital-pass-modal" class="fixed inset-0 bg-[#0B0F19]/80 z-[10000] flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300 overflow-y-auto">
-        <div class="bg-[#0B0F19] text-white rounded-3xl max-w-sm w-full overflow-hidden shadow-2xl relative border border-[#C5A059]/30 transform scale-95 transition-transform duration-300 p-6 text-center my-auto">
+    <div id="digital-pass-modal" class="fixed inset-0 bg-[#0F172A]/85 backdrop-blur-sm z-[10000] flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300 overflow-y-auto">
+        <div class="bg-[#0F172A] text-white rounded-3xl max-w-sm w-full overflow-hidden shadow-2xl relative border-2 border-[#C5A059]/40 transform scale-95 transition-transform duration-300 p-6 text-center my-auto">
             <button onclick="closeDigitalPassModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors">
                 <i class="fa-solid fa-xmark text-lg"></i>
             </button>
 
             <div class="text-center pb-4 border-b border-white/10">
-                <span class="text-[9px] uppercase tracking-widest text-[#C5A059] font-black block">KPH Stay Mobile Pass</span>
-                <h3 id="pass-room-name" class="text-lg font-bold outfit text-white mt-1">Deluxe Suite</h3>
-                <span id="pass-location" class="text-[10px] text-slate-400 font-medium block">Islamabad</span>
+                <span class="text-[10px] uppercase tracking-widest text-[#C5A059] font-black block">KPH Stay Mobile Key Pass</span>
+                <h3 id="pass-room-name" class="text-lg font-extrabold outfit text-white mt-1">Deluxe Suite</h3>
+                <span id="pass-location" class="text-xs text-slate-400 font-bold block">Islamabad</span>
             </div>
 
             <div class="py-6 space-y-4">
                 <div class="w-36 h-36 bg-white p-3 rounded-2xl mx-auto flex items-center justify-center shadow-inner">
                     <div class="w-full h-full border-2 border-slate-900 rounded-lg p-2 flex flex-col justify-between items-center text-slate-900 font-mono text-[9px] font-bold">
-                        <i class="fa-solid fa-qrcode text-6xl my-auto text-[#0B0F19]"></i>
-                        <span id="pass-booking-id" class="tracking-widest">BK-XXXX</span>
+                        <i class="fa-solid fa-qrcode text-6xl my-auto text-[#0F172A]"></i>
+                        <span id="pass-booking-id" class="tracking-widest font-black">BK-XXXX</span>
                     </div>
                 </div>
 
                 <div class="space-y-1">
-                    <span class="text-[9px] uppercase tracking-wider text-slate-400 block">Registered Guest</span>
-                    <span id="pass-guest-name" class="text-sm font-bold text-[#C5A059] block">Guest Name</span>
-                    <span id="pass-dates" class="text-xs text-slate-300 font-medium block">Stay Dates</span>
+                    <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold block">Registered Guest</span>
+                    <span id="pass-guest-name" class="text-base font-extrabold text-[#C5A059] block">Guest Name</span>
+                    <span id="pass-dates" class="text-xs text-slate-300 font-semibold block">Stay Dates</span>
                 </div>
 
-                <div class="bg-white/5 rounded-2xl p-3 border border-white/10 text-left text-xs flex justify-between items-center">
+                <div class="bg-white/5 rounded-2xl p-3.5 border border-white/10 text-left text-xs flex justify-between items-center">
                     <div>
-                        <span class="text-[9px] uppercase tracking-wider text-[#C5A059] font-bold block"><i class="fa-solid fa-wifi mr-1"></i> Resort Wi-Fi Passcode</span>
-                        <span class="font-mono text-slate-200 font-bold">KPH-Resort-5G!2026</span>
+                        <span class="text-[10px] uppercase tracking-wider text-[#C5A059] font-black block"><i class="fa-solid fa-wifi mr-1"></i> Resort Wi-Fi Passcode</span>
+                        <span id="pass-wifi-pass" class="font-mono text-slate-200 font-bold text-sm">Available at Check-in</span>
                     </div>
-                    <button onclick="copyWifiPassword()" class="bg-[#C5A059] text-slate-900 text-[10px] font-bold px-3 py-1.5 rounded-xl hover:bg-white transition-all">
+                    <button onclick="copyWifiPassword()" class="bg-[#C5A059] text-slate-900 text-[10px] font-black px-3 py-1.5 rounded-xl hover:bg-white transition-all">
                         Copy
                     </button>
                 </div>
             </div>
 
             <div class="flex gap-3">
-                <a href="https://maps.google.com" target="_blank" class="w-1/2 bg-white/10 text-white font-bold py-3 rounded-xl hover:bg-white/20 transition-all text-xs text-center flex items-center justify-center gap-1.5">
+                <a href="https://maps.google.com" target="_blank" class="w-1/2 bg-white/10 text-white font-bold py-3 rounded-xl hover:bg-white/20 transition-all text-xs text-center flex items-center justify-center gap-1.5 border border-white/10">
                     <i class="fa-solid fa-map-location-dot text-xs text-[#C5A059]"></i> Map Directions
                 </a>
-                <button onclick="closeDigitalPassModal()" class="w-1/2 bg-[#C5A059] text-slate-900 font-bold py-3 rounded-xl hover:bg-white transition-all text-xs">
+                <button onclick="closeDigitalPassModal()" class="w-1/2 bg-[#C5A059] text-slate-900 font-black py-3 rounded-xl hover:bg-white transition-all text-xs">
                     Done
                 </button>
             </div>
@@ -463,7 +469,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <script src="/assets/js/shared.js?v=5"></script>
+    <script src="/assets/js/shared.js?v=6"></script>
     <script src="/assets/js/users.js"></script>
     <script src="/assets/js/newsletter.js"></script>
     <script src="/assets/js/user/bookings.js"></script>

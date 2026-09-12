@@ -17,7 +17,7 @@
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
     <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
     <meta name="bingbot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
-    <link rel="canonical" href="https://kphstay.com/rooms">
+    <link rel="canonical" href="https://kphstay.com/room-details">
     <link rel="manifest" href="/manifest.json">
     <link rel="icon" type="image/x-icon" href="/assets/images/favicon.ico">
     <link rel="apple-touch-icon" href="/assets/images/logo.png">
@@ -150,38 +150,38 @@
 
     <!-- Main Content Grid -->
     <main class="py-10 px-6 md:px-12 max-w-7xl mx-auto w-full flex-grow">
-        <div class="flex flex-col lg:flex-row gap-10 relative">
+        <div class="flex flex-col lg:flex-row gap-8 relative">
 
             <!-- LEFT COLUMN: RoomHero Gallery & Detailed Information (68% Desktop Width) -->
-            <div class="w-full lg:w-2/3 space-y-10">
+            <div class="w-full lg:w-2/3 space-y-8">
                 
                 <!-- RoomHero Gallery Component -->
-                <div class="bg-white/80 backdrop-blur-md rounded-[2.5rem] border border-[#C5A059]/10 shadow-[0_12px_40px_-15px_rgba(11,15,25,0.05)] hover:border-[#C5A059]/30 transition-all duration-500 p-4 md:p-6 overflow-hidden">
+                <div class="bg-white rounded-2xl border-2 border-slate-200 shadow-md hover:border-[#C5A059] transition-all duration-300 p-4 md:p-6 overflow-hidden">
                     
                     <!-- Main Display Image Container with Touch Swipe & Fullscreen Lightbox -->
-                    <div id="pdp-gallery-main-container" class="relative h-72 md:h-[420px] rounded-2xl overflow-hidden bg-slate-900 group cursor-pointer" onclick="openPDPFullScreenLightbox()">
+                    <div id="pdp-gallery-main-container" class="relative h-72 md:h-[420px] rounded-xl overflow-hidden bg-slate-900 group cursor-pointer border-2 border-slate-200" onclick="openPDPFullScreenLightbox()">
                         <img id="gallery-main-img" src="/assets/images/logo.png" alt="Suite View" class="w-full h-full object-cover transition-all duration-500">
                         
                         <!-- Floating Navigation Arrows -->
-                        <button onclick="event.stopPropagation(); prevGalleryImage();" class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-slate-900/60 hover:bg-[#C5A059] text-white flex items-center justify-center backdrop-blur-md transition-all shadow-md z-10" aria-label="Previous Image">
+                        <button onclick="event.stopPropagation(); prevGalleryImage();" class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-slate-900/80 hover:bg-[#C5A059] text-white flex items-center justify-center backdrop-blur-md transition-all shadow-md z-10 border border-slate-700" aria-label="Previous Image">
                             <i class="fa-solid fa-chevron-left text-sm"></i>
                         </button>
-                        <button onclick="event.stopPropagation(); nextGalleryImage();" class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-slate-900/60 hover:bg-[#C5A059] text-white flex items-center justify-center backdrop-blur-md transition-all shadow-md z-10" aria-label="Next Image">
+                        <button onclick="event.stopPropagation(); nextGalleryImage();" class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-slate-900/80 hover:bg-[#C5A059] text-white flex items-center justify-center backdrop-blur-md transition-all shadow-md z-10 border border-slate-700" aria-label="Next Image">
                             <i class="fa-solid fa-chevron-right text-sm"></i>
                         </button>
 
                         <!-- Expand Fullscreen Gallery Badge Button -->
-                        <button onclick="event.stopPropagation(); openPDPFullScreenLightbox();" class="absolute top-4 right-4 bg-black/60 hover:bg-[#C5A059] text-white px-3.5 py-1.5 rounded-full text-xs font-bold backdrop-blur-md transition-all shadow-md flex items-center gap-1.5 z-10 border border-white/20">
+                        <button onclick="event.stopPropagation(); openPDPFullScreenLightbox();" class="absolute top-4 right-4 bg-slate-900/90 hover:bg-[#C5A059] text-white px-3.5 py-1.5 rounded-xl text-xs font-bold backdrop-blur-md transition-all shadow-md flex items-center gap-1.5 z-10 border border-slate-700">
                             <i class="fa-solid fa-expand text-xs"></i> <span class="hidden sm:inline">Fullscreen</span>
                         </button>
 
                         <!-- Room Badges -->
                         <div class="absolute top-4 left-4 flex flex-wrap gap-2 pointer-events-none">
-                            <span id="detail-category-badge" class="bg-[#0B0F19]/80 text-[#C5A059] text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full border border-white/10 backdrop-blur-md">
+                            <span id="detail-category-badge" class="bg-slate-900/90 text-white text-[11px] font-extrabold uppercase tracking-wider px-3.5 py-1.5 rounded-xl border border-slate-700 backdrop-blur-md">
                                 Luxury Suite
                             </span>
-                            <span id="detail-[#C5A059]-badge" class="bg-[#C5A059] text-slate-950 text-[10px] font-extrabold uppercase tracking-widest px-3 py-1.5 rounded-full shadow-md flex items-center gap-1">
-                                <i class="fa-solid fa-crown text-[9px]"></i> Guest Favorite
+                            <span id="detail-[#C5A059]-badge" class="bg-[#B8860B] text-white text-[11px] font-extrabold uppercase tracking-wider px-3.5 py-1.5 rounded-xl shadow-md flex items-center gap-1 border border-amber-300">
+                                <i class="fa-solid fa-crown text-[10px]"></i> Guest Favorite
                             </span>
                         </div>
                     </div>
@@ -189,8 +189,8 @@
                     <!-- Scrollable Thumbnails Strip -->
                     <div class="mt-4">
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Photo Gallery (<span id="gallery-count">1</span> photos)</span>
-                            <span class="text-[10px] text-slate-400 font-semibold"><i class="fa-solid fa-hand-pointer mr-1"></i> Click thumbnail to expand</span>
+                            <span class="text-[11px] uppercase tracking-wider text-slate-700 font-bold">Photo Gallery (<span id="gallery-count">1</span> photos)</span>
+                            <span class="text-[11px] text-slate-600 font-semibold"><i class="fa-solid fa-hand-pointer text-[#B8860B] mr-1"></i> Click thumbnail to expand</span>
                         </div>
                         <div id="gallery-thumbnails" class="flex gap-3 overflow-x-auto pb-2 scrollbar-thin hide-scrollbar">
                             <!-- Thumbnails dynamically rendered from Firestore -->
@@ -199,29 +199,29 @@
                 </div>
 
                 <!-- Room Title, Location, Specs & Highlights Header -->
-                <div class="bg-white/80 backdrop-blur-md rounded-[2.5rem] border border-[#C5A059]/10 shadow-[0_12px_40px_-15px_rgba(11,15,25,0.05)] hover:border-[#C5A059]/30 transition-all duration-500 p-6 md:p-8 space-y-6">
-                    <div class="flex flex-col md:flex-row md:items-start justify-between gap-4 border-b border-slate-100 pb-6">
+                <div class="bg-white rounded-2xl border-2 border-slate-200 shadow-md p-6 md:p-8 space-y-6">
+                    <div class="flex flex-col md:flex-row md:items-start justify-between gap-4 border-b-2 border-slate-100 pb-6">
                         <div>
                             <div class="flex flex-wrap items-center gap-2 mb-2">
-                                <span id="detail-rating-pill" class="inline-flex items-center gap-1 bg-[#C5A059]/10 text-[#C5A059] text-xs font-bold px-2.5 py-1 rounded-lg">
-                                    <i class="fa-solid fa-star"></i> 5.0
+                                <span id="detail-rating-pill" class="inline-flex items-center gap-1 bg-amber-50 text-amber-900 border border-amber-200 text-xs font-extrabold px-2.5 py-1 rounded-lg">
+                                    <i class="fa-solid fa-star text-amber-500"></i> 5.0
                                 </span>
-                                <span id="detail-location-pill" class="text-xs text-slate-500 font-semibold uppercase tracking-wider">
-                                    <i class="fa-solid fa-location-dot text-[#C5A059] mr-1"></i> Islamabad
+                                <span id="detail-location-pill" class="text-xs text-slate-700 font-bold uppercase tracking-wider flex items-center gap-1 bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-lg">
+                                    <i class="fa-solid fa-location-dot text-[#B8860B]"></i> Islamabad
                                 </span>
-                                <button type="button" onclick="copyRoomCode()" id="detail-code-pill" class="inline-flex items-center gap-1.5 bg-slate-900 hover:bg-[#C5A059] text-white hover:text-slate-950 text-[10px] font-mono font-bold px-2.5 py-1 rounded-lg border border-[#C5A059]/30 transition-all shadow-sm cursor-pointer group" title="Click to copy Property ID">
-                                    <i class="fa-solid fa-fingerprint text-[#C5A059] group-hover:text-slate-950"></i>
+                                <button type="button" onclick="copyRoomCode()" id="detail-code-pill" class="inline-flex items-center gap-1.5 bg-slate-900 hover:bg-[#C5A059] text-white hover:text-slate-950 text-[10px] font-mono font-bold px-2.5 py-1 rounded-lg border border-slate-700 transition-all shadow-sm cursor-pointer group" title="Click to copy Property ID">
+                                    <i class="fa-solid fa-fingerprint text-[#C5A059]"></i>
                                     <span id="detail-code-text">ID: KPH-RM-001</span>
                                     <i class="fa-regular fa-copy text-[9px] opacity-70 group-hover:opacity-100 ml-0.5"></i>
                                 </button>
                             </div>
                             <div class="flex items-center gap-3">
-                                <h1 id="detail-title" class="text-2xl md:text-4xl font-bold outfit text-[#0B0F19]">Luxury Service Suite</h1>
+                                <h1 id="detail-title" class="text-2xl md:text-4xl font-extrabold outfit text-slate-900">Luxury Service Suite</h1>
                                 <div class="flex items-center gap-2 shrink-0">
                                     <button type="button" id="pdp-wishlist-btn" class="wishlist-btn !relative !top-0 !right-0 shrink-0" aria-label="Save to Wishlist">
                                         <i class="fa-regular fa-heart"></i>
                                     </button>
-                                    <button type="button" onclick="shareCurrentRoom()" class="w-10 h-10 rounded-full bg-slate-100 hover:bg-[#C5A059] hover:text-white text-slate-700 flex items-center justify-center transition-all shadow-sm shrink-0" title="Share Suite Listing">
+                                    <button type="button" onclick="shareCurrentRoom()" class="w-10 h-10 rounded-xl bg-slate-100 hover:bg-[#C5A059] hover:text-white text-slate-700 flex items-center justify-center transition-all shadow-sm shrink-0 border border-slate-200" title="Share Suite Listing">
                                         <i class="fa-solid fa-share-nodes text-sm"></i>
                                     </button>
                                 </div>
@@ -229,26 +229,26 @@
                         </div>
 
                         <!-- Price Breakdown Card -->
-                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 text-right shrink-0">
-                            <span class="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">Starting Rate</span>
-                            <span id="detail-price-daily" class="text-2xl font-black text-[#C5A059] outfit">PKR 0</span>
-                            <span class="text-xs text-slate-400 font-normal">/ night</span>
+                        <div class="bg-slate-50 p-4 rounded-xl border-2 border-slate-200 text-right shrink-0">
+                            <span class="text-[10px] uppercase font-bold text-slate-500 block tracking-wider">Starting Rate</span>
+                            <span id="detail-price-daily" class="text-2xl font-black text-[#B8860B] outfit">PKR 0</span>
+                            <span class="text-xs text-slate-600 font-semibold">/ night</span>
                         </div>
                     </div>
 
                     <!-- Stay Duration Rates Bar -->
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        <div class="p-3.5 rounded-2xl bg-blue-50/60 border border-blue-100 text-blue-950 flex flex-col justify-center">
-                            <span class="text-[9px] uppercase font-bold tracking-widest text-blue-600">Daily Stay</span>
-                            <span id="detail-rate-daily" class="text-sm font-bold mt-0.5">PKR 0 / night</span>
+                        <div class="p-3.5 rounded-xl bg-blue-50 border-2 border-blue-200 text-blue-950 flex flex-col justify-center">
+                            <span class="text-[10px] uppercase font-extrabold tracking-wider text-blue-700">Daily Stay</span>
+                            <span id="detail-rate-daily" class="text-sm font-extrabold mt-0.5">PKR 0 / night</span>
                         </div>
-                        <div class="p-3.5 rounded-2xl bg-emerald-50/60 border border-emerald-100 text-emerald-950 flex flex-col justify-center">
-                            <span class="text-[9px] uppercase font-bold tracking-widest text-emerald-600">Weekly Stay (-15%)</span>
-                            <span id="detail-rate-weekly" class="text-sm font-bold mt-0.5">PKR 0 / week</span>
+                        <div class="p-3.5 rounded-xl bg-emerald-50 border-2 border-emerald-200 text-emerald-950 flex flex-col justify-center">
+                            <span class="text-[10px] uppercase font-extrabold tracking-wider text-emerald-700">Weekly Stay (-15%)</span>
+                            <span id="detail-rate-weekly" class="text-sm font-extrabold mt-0.5">PKR 0 / week</span>
                         </div>
-                        <div class="p-3.5 rounded-2xl bg-amber-50/60 border border-amber-100 text-amber-950 flex flex-col justify-center">
-                            <span class="text-[9px] uppercase font-bold tracking-widest text-amber-700">Monthly Stay (-35%)</span>
-                            <span id="detail-rate-monthly" class="text-sm font-bold mt-0.5">PKR 0 / month</span>
+                        <div class="p-3.5 rounded-xl bg-amber-50 border-2 border-amber-200 text-amber-950 flex flex-col justify-center">
+                            <span class="text-[10px] uppercase font-extrabold tracking-wider text-amber-800">Monthly Stay (-35%)</span>
+                            <span id="detail-rate-monthly" class="text-sm font-extrabold mt-0.5">PKR 0 / month</span>
                         </div>
                     </div>
 
@@ -258,40 +258,40 @@
                     </div>
 
                     <!-- Key Specs Row -->
-                    <div class="flex flex-wrap gap-6 text-xs text-slate-600 border-t border-b border-slate-100 py-4 font-semibold items-center">
-                        <div class="flex items-center gap-2"><i class="fa-solid fa-fingerprint text-[#C5A059] text-base"></i> <span id="detail-specs-code" class="font-mono uppercase font-bold text-slate-900">KPH-RM-001</span></div>
-                        <div class="flex items-center gap-2"><i class="fa-solid fa-users text-[#C5A059] text-base"></i> <span id="detail-guests">Max 2 Guests</span></div>
-                        <div class="flex items-center gap-2"><i class="fa-solid fa-bed text-[#C5A059] text-base"></i> <span id="detail-bedrooms">1 Bedroom</span></div>
-                        <div class="flex items-center gap-2"><i class="fa-solid fa-bath text-[#C5A059] text-base"></i> <span id="detail-bathrooms">1 Bathroom</span></div>
-                        <div id="detail-area-box" class="flex items-center gap-2 hidden"><i class="fa-solid fa-ruler-combined text-[#C5A059] text-base"></i> <span id="detail-area">1,800 sq ft</span></div>
-                        <div id="detail-beds-box" class="flex items-center gap-2 hidden"><i class="fa-solid fa-mattress-pillow text-[#C5A059] text-base"></i> <span id="detail-beds-config">1 King Bed</span></div>
-                        <div class="flex items-center gap-2"><i class="fa-solid fa-wifi text-[#C5A059] text-base"></i> High-Speed Wi-Fi</div>
+                    <div class="flex flex-wrap gap-4 md:gap-6 text-xs text-slate-800 border-t-2 border-b-2 border-slate-100 py-4 font-bold items-center">
+                        <div class="flex items-center gap-2"><i class="fa-solid fa-fingerprint text-[#B8860B] text-base"></i> <span id="detail-specs-code" class="font-mono uppercase font-bold text-slate-900">KPH-RM-001</span></div>
+                        <div class="flex items-center gap-2"><i class="fa-solid fa-users text-[#B8860B] text-base"></i> <span id="detail-guests">Max 2 Guests</span></div>
+                        <div class="flex items-center gap-2"><i class="fa-solid fa-bed text-[#B8860B] text-base"></i> <span id="detail-bedrooms">1 Bedroom</span></div>
+                        <div class="flex items-center gap-2"><i class="fa-solid fa-bath text-[#B8860B] text-base"></i> <span id="detail-bathrooms">1 Bathroom</span></div>
+                        <div id="detail-area-box" class="flex items-center gap-2 hidden"><i class="fa-solid fa-ruler-combined text-[#B8860B] text-base"></i> <span id="detail-area">1,800 sq ft</span></div>
+                        <div id="detail-beds-box" class="flex items-center gap-2 hidden"><i class="fa-solid fa-mattress-pillow text-[#B8860B] text-base"></i> <span id="detail-beds-config">1 King Bed</span></div>
+                        <div class="flex items-center gap-2"><i class="fa-solid fa-wifi text-[#B8860B] text-base"></i> High-Speed Wi-Fi</div>
                     </div>
                 </div>
 
                 <!-- OverviewSection Component -->
-                <div class="bg-white/80 backdrop-blur-md rounded-[2.5rem] border border-[#C5A059]/10 shadow-[0_12px_40px_-15px_rgba(11,15,25,0.05)] hover:border-[#C5A059]/30 transition-all duration-500 p-6 md:p-8 space-y-6">
-                    <h3 class="text-xl font-bold outfit text-[#0B0F19] flex items-center gap-2">
-                        <i class="fa-solid fa-align-left text-[#C5A059]"></i>
+                <div class="bg-white rounded-2xl border-2 border-slate-200 shadow-md p-6 md:p-8 space-y-6">
+                    <h3 class="text-xl font-extrabold outfit text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-align-left text-[#B8860B]"></i>
                         Apartment Overview & Highlights
                     </h3>
-                    <div id="detail-description" class="text-slate-600 text-sm leading-relaxed font-light space-y-3">
+                    <div id="detail-description" class="text-slate-700 text-sm md:text-base leading-relaxed font-normal space-y-3">
                         Loading suite description from Firestore...
                     </div>
 
                     <!-- Key Bullet Highlights (Loaded Dynamically) -->
-                    <div id="detail-bullet-highlights-box" class="pt-4 border-t border-slate-100 space-y-3 hidden">
-                        <h4 class="text-xs uppercase font-bold tracking-widest text-slate-400">Suite Highlights</h4>
-                        <div id="detail-bullet-highlights" class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs text-slate-700 font-medium">
+                    <div id="detail-bullet-highlights-box" class="pt-4 border-t-2 border-slate-100 space-y-3 hidden">
+                        <h4 class="text-xs uppercase font-extrabold tracking-wider text-slate-900">Suite Highlights</h4>
+                        <div id="detail-bullet-highlights" class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs text-slate-800 font-semibold">
                             <!-- Populated dynamically -->
                         </div>
                     </div>
                 </div>
 
                 <!-- AmenitiesGrid Component (Loaded Dynamically from Firestore) -->
-                <div class="bg-white/80 backdrop-blur-md rounded-[2.5rem] border border-[#C5A059]/10 shadow-[0_12px_40px_-15px_rgba(11,15,25,0.05)] hover:border-[#C5A059]/30 transition-all duration-500 p-6 md:p-8 space-y-6">
-                    <h3 class="text-xl font-bold outfit text-[#0B0F19] flex items-center gap-2">
-                        <i class="fa-solid fa-concierge-bell text-[#C5A059]"></i>
+                <div class="bg-white rounded-2xl border-2 border-slate-200 shadow-md p-6 md:p-8 space-y-6">
+                    <h3 class="text-xl font-extrabold outfit text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-concierge-bell text-[#B8860B]"></i>
                         Suite Amenities & Comforts
                     </h3>
                     
@@ -301,187 +301,187 @@
                 </div>
 
                 <!-- RulesSection Component -->
-                <div class="bg-white/80 backdrop-blur-md rounded-[2.5rem] border border-[#C5A059]/10 shadow-[0_12px_40px_-15px_rgba(11,15,25,0.05)] hover:border-[#C5A059]/30 transition-all duration-500 p-6 md:p-8 space-y-6">
-                    <h3 class="text-xl font-bold outfit text-[#0B0F19] flex items-center gap-2">
-                        <i class="fa-solid fa-clipboard-check text-[#C5A059]"></i>
+                <div class="bg-white rounded-2xl border-2 border-slate-200 shadow-md p-6 md:p-8 space-y-6">
+                    <h3 class="text-xl font-extrabold outfit text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-clipboard-check text-[#B8860B]"></i>
                         House Rules & Payment Policies
                     </h3>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-xs text-slate-600">
-                        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100 space-y-2">
-                            <span class="font-bold text-slate-900 block flex items-center gap-1.5">
-                                <i class="fa-solid fa-clock text-[#C5A059]"></i> Check-in & Out Times
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-xs text-slate-700">
+                        <div class="p-4 bg-slate-50 rounded-xl border-2 border-slate-200 space-y-2">
+                            <span class="font-extrabold text-slate-900 block flex items-center gap-1.5 text-sm">
+                                <i class="fa-solid fa-clock text-[#B8860B]"></i> Check-in & Out Times
                             </span>
-                            <p class="font-light">Standard Check-in: <strong>2:00 PM</strong></p>
-                            <p class="font-light">Standard Check-out: <strong>12:00 PM</strong></p>
-                            <p class="text-[10px] text-slate-400">Early check-in subject to availability.</p>
+                            <p class="font-normal">Standard Check-in: <strong>2:00 PM</strong></p>
+                            <p class="font-normal">Standard Check-out: <strong>12:00 PM</strong></p>
+                            <p class="text-[11px] text-slate-500 font-medium">Early check-in subject to availability.</p>
                         </div>
-                        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100 space-y-2">
-                            <span class="font-bold text-slate-900 block flex items-center gap-1.5">
-                                <i class="fa-solid fa-shield text-[#C5A059]"></i> Cancellation & Refund
+                        <div class="p-4 bg-slate-50 rounded-xl border-2 border-slate-200 space-y-2">
+                            <span class="font-extrabold text-slate-900 block flex items-center gap-1.5 text-sm">
+                                <i class="fa-solid fa-shield text-[#B8860B]"></i> Cancellation & Refund
                             </span>
-                            <p class="font-light">Free cancellation up to 48 hours before check-in.</p>
-                            <p class="font-light">100% full refund guarantee to original payment method.</p>
+                            <p class="font-normal">Free cancellation up to 48 hours before check-in.</p>
+                            <p class="font-normal">100% full refund guarantee to original payment method.</p>
                         </div>
-                        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100 space-y-2">
-                            <span class="font-bold text-slate-900 block flex items-center gap-1.5">
-                                <i class="fa-solid fa-credit-card text-[#C5A059]"></i> Payment Terms
+                        <div class="p-4 bg-slate-50 rounded-xl border-2 border-slate-200 space-y-2">
+                            <span class="font-extrabold text-slate-900 block flex items-center gap-1.5 text-sm">
+                                <i class="fa-solid fa-credit-card text-[#B8860B]"></i> Payment Terms
                             </span>
-                            <p class="font-light">Online Credit/Debit Card or Cash at Lobby Desk.</p>
-                            <p class="font-light">No security deposit fee required for registered stays.</p>
+                            <p class="font-normal">Online Credit/Debit Card or Cash at Lobby Desk.</p>
+                            <p class="font-normal">No security deposit fee required for registered stays.</p>
                         </div>
-                        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100 space-y-2">
-                            <span class="font-bold text-slate-900 block flex items-center gap-1.5">
-                                <i class="fa-solid fa-ban text-[#C5A059]"></i> Suite Guidelines
+                        <div class="p-4 bg-slate-50 rounded-xl border-2 border-slate-200 space-y-2">
+                            <span class="font-extrabold text-slate-900 block flex items-center gap-1.5 text-sm">
+                                <i class="fa-solid fa-ban text-[#B8860B]"></i> Suite Guidelines
                             </span>
-                            <p class="font-light">No loud parties or unregistered overnight visitors.</p>
-                            <p class="font-light">Quiet hours enforced after 11:00 PM. No smoking indoors.</p>
+                            <p class="font-normal">No loud parties or unregistered overnight visitors.</p>
+                            <p class="font-normal">Quiet hours enforced after 11:00 PM. No smoking indoors.</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- LocationSection Component -->
-                <div class="bg-white/80 backdrop-blur-md rounded-[2.5rem] border border-[#C5A059]/10 shadow-[0_12px_40px_-15px_rgba(11,15,25,0.05)] hover:border-[#C5A059]/30 transition-all duration-500 p-6 md:p-8 space-y-6">
+                <div class="bg-white rounded-2xl border-2 border-slate-200 shadow-md p-6 md:p-8 space-y-6">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                        <h3 class="text-xl font-bold outfit text-[#0B0F19] flex items-center gap-2">
-                            <i class="fa-solid fa-map-location-dot text-[#C5A059]"></i>
-                            Google Maps Location & Access
+                        <h3 class="text-xl font-extrabold outfit text-slate-900 flex items-center gap-2">
+                            <i class="fa-solid fa-map-location-dot text-[#B8860B]"></i>
+                            Location & Access
                         </h3>
-                        <span id="pdp-address-text" class="text-xs text-slate-500 font-medium flex items-center gap-1.5 bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200/80">
-                            <i class="fa-solid fa-location-dot text-[#C5A059]"></i> Loading location...
+                        <span id="pdp-address-text" class="text-xs text-slate-700 font-bold flex items-center gap-1.5 bg-slate-100 px-3 py-1.5 rounded-xl border-2 border-slate-200">
+                            <i class="fa-solid fa-location-dot text-[#B8860B]"></i> Loading location...
                         </span>
                     </div>
 
                     <!-- Map Container with Google Controls -->
                     <div class="relative">
-                        <div class="absolute top-3 right-3 z-20 bg-white/95 backdrop-blur-md p-1 rounded-xl shadow-md border border-slate-200/80 flex gap-1 text-[10px] font-bold">
+                        <div class="absolute top-3 right-3 z-20 bg-white/95 backdrop-blur-md p-1 rounded-xl shadow-md border-2 border-slate-200 flex gap-1 text-[10px] font-bold">
                             <button type="button" id="pdp-map-style-roadmap" onclick="switchPDPMapStyle('roadmap')" class="px-2.5 py-1 rounded-lg bg-[#0B0F19] text-white transition-all shadow-sm">Map</button>
-                            <button type="button" id="pdp-map-style-satellite" onclick="switchPDPMapStyle('satellite')" class="px-2.5 py-1 rounded-lg text-slate-600 hover:bg-slate-100 transition-all">Satellite</button>
+                            <button type="button" id="pdp-map-style-satellite" onclick="switchPDPMapStyle('satellite')" class="px-2.5 py-1 rounded-lg text-slate-700 hover:bg-slate-100 transition-all font-semibold">Satellite</button>
                         </div>
-                        <div id="room-detail-map" class="w-full h-72 rounded-2xl border border-slate-200 overflow-hidden z-10 shadow-inner"></div>
+                        <div id="room-detail-map" class="w-full h-72 rounded-xl border-2 border-slate-200 overflow-hidden z-10 shadow-inner"></div>
                     </div>
                     
                     <!-- Google Maps Direct Links -->
                     <div class="flex flex-col sm:flex-row gap-3 pt-2">
-                        <a id="pdp-gmaps-link" href="#" target="_blank" class="flex-1 bg-[#0B0F19] hover:bg-[#C5A059] text-white text-xs font-bold py-3 px-5 rounded-xl flex items-center justify-center gap-2 transition-all shadow-md">
+                        <a id="pdp-gmaps-link" href="#" target="_blank" class="flex-1 bg-slate-900 hover:bg-[#C5A059] text-white text-xs font-bold py-3 px-5 rounded-xl flex items-center justify-center gap-2 transition-all shadow-md">
                             <i class="fa-solid fa-map-location-dot text-[#C5A059]"></i>
                             <span>View Pinned Location on Google Maps</span>
                         </a>
-                        <a id="pdp-gmaps-dir-link" href="#" target="_blank" class="bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold py-3 px-5 rounded-xl flex items-center justify-center gap-2 transition-all border border-slate-200">
-                            <i class="fa-solid fa-diamond-turn-right text-[#C5A059]"></i>
+                        <a id="pdp-gmaps-dir-link" href="#" target="_blank" class="bg-slate-100 hover:bg-slate-200 text-slate-900 text-xs font-bold py-3 px-5 rounded-xl flex items-center justify-center gap-2 transition-all border-2 border-slate-200">
+                            <i class="fa-solid fa-diamond-turn-right text-[#B8860B]"></i>
                             <span>Get Directions</span>
                         </a>
                     </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs text-slate-600 border-t border-slate-100 pt-4">
-                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
-                            <span class="font-bold text-slate-900 block mb-0.5"><i class="fa-solid fa-car text-[#C5A059] mr-1"></i> City Center</span>
-                            <span>15 Mins to Blue Area & Centaurus Mall</span>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs text-slate-700 border-t-2 border-slate-100 pt-4">
+                        <div class="p-3 bg-slate-50 rounded-xl border-2 border-slate-200">
+                            <span class="font-extrabold text-slate-900 block mb-0.5"><i class="fa-solid fa-car text-[#B8860B] mr-1"></i> City Center</span>
+                            <span class="font-normal">15 Mins to Blue Area & Centaurus Mall</span>
                         </div>
-                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
-                            <span class="font-bold text-slate-900 block mb-0.5"><i class="fa-solid fa-plane text-[#C5A059] mr-1"></i> Airport Access</span>
-                            <span>35 Mins via Islamabad Highway</span>
+                        <div class="p-3 bg-slate-50 rounded-xl border-2 border-slate-200">
+                            <span class="font-extrabold text-slate-900 block mb-0.5"><i class="fa-solid fa-plane text-[#B8860B] mr-1"></i> Airport Access</span>
+                            <span class="font-normal">35 Mins via Islamabad Highway</span>
                         </div>
-                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
-                            <span class="font-bold text-slate-900 block mb-0.5"><i class="fa-solid fa-bag-shopping text-[#C5A059] mr-1"></i> Supermarket</span>
-                            <span>2 Mins walk to Sector C Commercial Hub</span>
+                        <div class="p-3 bg-slate-50 rounded-xl border-2 border-slate-200">
+                            <span class="font-extrabold text-slate-900 block mb-0.5"><i class="fa-solid fa-bag-shopping text-[#B8860B] mr-1"></i> Supermarket</span>
+                            <span class="font-normal">2 Mins walk to Sector C Commercial Hub</span>
                         </div>
                     </div>
 
                     <!-- Google Places Nearby Attractions -->
-                    <div class="mt-6 border-t border-slate-100 pt-6 space-y-3">
+                    <div class="mt-6 border-t-2 border-slate-100 pt-6 space-y-3">
                         <div class="flex items-center justify-between">
-                            <h4 class="text-sm font-bold outfit text-slate-900 flex items-center gap-2">
-                                <i class="fa-solid fa-compass text-[#C5A059]"></i>
-                                Nearby Attractions & Dining (Google Places)
+                            <h4 class="text-sm font-extrabold outfit text-slate-900 flex items-center gap-2">
+                                <i class="fa-solid fa-compass text-[#B8860B]"></i>
+                                Nearby Attractions & Dining
                             </h4>
-                            <span class="text-[10px] text-slate-400 font-medium">5 km Radius</span>
+                            <span class="text-[11px] text-slate-600 font-bold bg-slate-100 px-2 py-0.5 rounded-lg border border-slate-200">5 km Radius</span>
                         </div>
                         <div id="pdp-nearby-attractions-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <p class="text-xs text-slate-400 py-4 col-span-full text-center">Loading nearby attractions via Google Places API...</p>
+                            <p class="text-xs text-slate-500 py-4 col-span-full text-center font-medium">Loading nearby attractions...</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- Availability Calendar Card -->
-                <div class="bg-white/80 backdrop-blur-md rounded-[2.5rem] border border-[#C5A059]/10 shadow-[0_12px_40px_-15px_rgba(11,15,25,0.05)] hover:border-[#C5A059]/30 transition-all duration-500 p-6 md:p-8 space-y-6">
+                <div class="bg-white rounded-2xl border-2 border-slate-200 shadow-md p-6 md:p-8 space-y-6">
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div>
-                            <h3 class="text-xl font-bold outfit text-[#0B0F19] flex items-center gap-2">
-                                <i class="fa-solid fa-calendar-days text-[#C5A059]"></i>
+                            <h3 class="text-xl font-extrabold outfit text-slate-900 flex items-center gap-2">
+                                <i class="fa-solid fa-calendar-days text-[#B8860B]"></i>
                                 Suite Availability & Reserved Dates
                             </h3>
-                            <p class="text-xs text-slate-500 font-light mt-1">
+                            <p class="text-xs text-slate-600 font-normal mt-1">
                                 Check real-time date availability for this suite. Dates marked in red or strikethrough are reserved or unavailable.
                             </p>
                         </div>
                         <!-- Legend -->
-                        <div class="flex flex-wrap items-center gap-3 text-xs font-semibold bg-white px-3.5 py-2 rounded-xl border border-slate-200 shadow-sm max-w-full">
-                            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-slate-300"></span> Available</span>
-                            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-rose-400"></span> Booked/Blocked</span>
-                            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#C5A059]"></span> Selected</span>
+                        <div class="flex flex-wrap items-center gap-3 text-xs font-bold bg-slate-50 px-3.5 py-2 rounded-xl border-2 border-slate-200 shadow-sm max-w-full">
+                            <span class="flex items-center gap-1.5 text-slate-700"><span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span> Available</span>
+                            <span class="flex items-center gap-1.5 text-rose-600"><span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span> Booked</span>
+                            <span class="flex items-center gap-1.5 text-[#B8860B]"><span class="w-2.5 h-2.5 rounded-full bg-[#B8860B]"></span> Selected</span>
                         </div>
                     </div>
 
                     <!-- PDP Calendar Grid -->
-                    <div id="pdp-calendar-container" class="bg-slate-50 rounded-2xl p-4 md:p-6 border border-slate-100 min-h-[300px]">
+                    <div id="pdp-calendar-container" class="bg-slate-50 rounded-xl p-4 md:p-6 border-2 border-slate-200 min-h-[300px]">
                         <!-- Rendered dynamically -->
                     </div>
                 </div>
 
                 <!-- Book Now Callout Banner (Above Reviews) -->
-                <div class="bg-gradient-to-r from-[#0B0F19] via-[#1E293B] to-[#0B0F19] text-white p-6 md:p-8 rounded-[2.5rem] border-2 border-[#C5A059]/40 shadow-2xl flex flex-col sm:flex-row items-center justify-between gap-6 relative overflow-hidden group">
+                <div class="bg-gradient-to-r from-[#0B0F19] via-[#1E293B] to-[#0B0F19] text-white p-6 md:p-8 rounded-2xl border-2 border-[#C5A059] shadow-2xl flex flex-col sm:flex-row items-center justify-between gap-6 relative overflow-hidden group">
                     <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-[#C5A059]/10 rounded-full blur-2xl pointer-events-none"></div>
                     <div class="space-y-2 text-center sm:text-left z-10">
-                        <span class="text-[10px] uppercase font-extrabold tracking-widest text-[#C5A059] flex items-center justify-center sm:justify-start gap-1.5">
+                        <span class="text-[10px] uppercase font-extrabold tracking-wider text-[#C5A059] flex items-center justify-center sm:justify-start gap-1.5">
                             <i class="fa-solid fa-crown"></i> Exclusive Accommodation Guarantee
                         </span>
-                        <h3 class="text-xl md:text-2xl font-bold outfit tracking-tight">Ready to Book Your Luxury Stay?</h3>
-                        <p class="text-slate-300 text-xs font-light max-w-md">
+                        <h3 class="text-xl md:text-2xl font-extrabold outfit tracking-tight">Ready to Book Your Luxury Stay?</h3>
+                        <p class="text-slate-300 text-xs font-normal max-w-md">
                             Lock in your preferred dates today with instant confirmation, 100% price guarantee, and 48-hour free cancellation policy.
                         </p>
                     </div>
-                    <button type="button" onclick="scrollToBookingCard()" class="shrink-0 bg-gradient-to-r from-[#C5A059] to-[#9A7B38] hover:from-white hover:to-white hover:text-slate-900 text-white font-black px-8 py-4 rounded-2xl text-xs uppercase tracking-wider transition-all duration-300 shadow-xl flex items-center gap-2 group-hover:scale-105 btn-shimmer z-10 cursor-pointer">
+                    <button type="button" onclick="scrollToBookingCard()" class="shrink-0 bg-[#C5A059] hover:bg-white hover:text-slate-900 text-slate-950 font-black px-8 py-4 rounded-xl text-xs uppercase tracking-wider transition-all duration-300 shadow-xl flex items-center gap-2 cursor-pointer border border-amber-300">
                         <i class="fa-solid fa-calendar-check text-sm"></i>
                         <span>Book This Suite Now</span>
                     </button>
                 </div>
 
                 <!-- ReviewsSection Component (Dynamically Loaded from Firestore) -->
-                <div class="bg-white/80 backdrop-blur-md rounded-[2.5rem] border border-[#C5A059]/10 shadow-[0_12px_40px_-15px_rgba(11,15,25,0.05)] hover:border-[#C5A059]/30 transition-all duration-500 p-6 md:p-8 space-y-6">
+                <div class="bg-white rounded-2xl border-2 border-slate-200 shadow-md p-6 md:p-8 space-y-6">
                     <div class="flex items-center justify-between">
-                        <h3 class="text-xl font-bold outfit text-[#0B0F19] flex items-center gap-2">
-                            <i class="fa-solid fa-star text-[#C5A059]"></i>
+                        <h3 class="text-xl font-extrabold outfit text-slate-900 flex items-center gap-2">
+                            <i class="fa-solid fa-star text-[#B8860B]"></i>
                             Guest Reviews & Rating
                         </h3>
-                        <span id="reviews-count-badge" class="bg-[#C5A059]/10 text-[#C5A059] text-xs font-bold px-3 py-1 rounded-full">
+                        <span id="reviews-count-badge" class="bg-amber-50 text-amber-900 border border-amber-200 text-xs font-extrabold px-3 py-1 rounded-xl">
                             Loading Reviews...
                         </span>
                     </div>
 
                     <!-- 6-Category Rating Breakdown Grid -->
-                    <div id="sub-ratings-breakdown-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100 text-xs">
+                    <div id="sub-ratings-breakdown-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-4 p-4 bg-slate-50 rounded-xl border-2 border-slate-200 text-xs text-slate-800 font-semibold">
                         <div>
-                            <div class="flex justify-between font-semibold mb-1"><span>Cleanliness</span> <span id="rating-val-cleanliness">5.0</span></div>
+                            <div class="flex justify-between font-bold mb-1"><span>Cleanliness</span> <span id="rating-val-cleanliness">5.0</span></div>
                             <div class="sub-rating-bar"><div id="rating-bar-cleanliness" class="sub-rating-fill" style="width: 100%;"></div></div>
                         </div>
                         <div>
-                            <div class="flex justify-between font-semibold mb-1"><span>Accuracy</span> <span id="rating-val-accuracy">5.0</span></div>
+                            <div class="flex justify-between font-bold mb-1"><span>Accuracy</span> <span id="rating-val-accuracy">5.0</span></div>
                             <div class="sub-rating-bar"><div id="rating-bar-accuracy" class="sub-rating-fill" style="width: 100%;"></div></div>
                         </div>
                         <div>
-                            <div class="flex justify-between font-semibold mb-1"><span>Check-in</span> <span id="rating-val-checkin">5.0</span></div>
+                            <div class="flex justify-between font-bold mb-1"><span>Check-in</span> <span id="rating-val-checkin">5.0</span></div>
                             <div class="sub-rating-bar"><div id="rating-bar-checkin" class="sub-rating-fill" style="width: 100%;"></div></div>
                         </div>
                         <div>
-                            <div class="flex justify-between font-semibold mb-1"><span>Communication</span> <span id="rating-val-communication">5.0</span></div>
+                            <div class="flex justify-between font-bold mb-1"><span>Communication</span> <span id="rating-val-communication">5.0</span></div>
                             <div class="sub-rating-bar"><div id="rating-bar-communication" class="sub-rating-fill" style="width: 100%;"></div></div>
                         </div>
                         <div>
-                            <div class="flex justify-between font-semibold mb-1"><span>Location</span> <span id="rating-val-location">5.0</span></div>
+                            <div class="flex justify-between font-bold mb-1"><span>Location</span> <span id="rating-val-location">5.0</span></div>
                             <div class="sub-rating-bar"><div id="rating-bar-location" class="sub-rating-fill" style="width: 100%;"></div></div>
                         </div>
                         <div>
-                            <div class="flex justify-between font-semibold mb-1"><span>Value</span> <span id="rating-val-value">5.0</span></div>
+                            <div class="flex justify-between font-bold mb-1"><span>Value</span> <span id="rating-val-value">5.0</span></div>
                             <div class="sub-rating-bar"><div id="rating-bar-value" class="sub-rating-fill" style="width: 100%;"></div></div>
                         </div>
                     </div>
@@ -491,7 +491,7 @@
                     </div>
 
                     <!-- Verified Review Form Section (Blocked for anonymous users) -->
-                    <div id="add-review-section" class="pt-6 border-t border-slate-100">
+                    <div id="add-review-section" class="pt-6 border-t-2 border-slate-100">
                         <!-- Rendered dynamically depending on user login state -->
                     </div>
                 </div>
@@ -499,41 +499,41 @@
             </div>
 
             <!-- RIGHT COLUMN: BookingCard Module & Explore Listings Sidebar (32% Desktop Width) -->
-            <div class="w-full lg:w-1/3 space-y-8 lg:sticky lg:top-28 z-30">
+            <div class="w-full lg:w-1/3 space-y-6 lg:sticky lg:top-28 z-30">
                 
                 <!-- Interactive BookingCard Module -->
-                <div id="booking-card-module" class="bg-white/90 backdrop-blur-md rounded-[2.5rem] border border-[#C5A059]/20 shadow-[0_20px_50px_-15px_rgba(11,15,25,0.1)] p-6 md:p-8 space-y-6">
+                <div id="booking-card-module" class="bg-white rounded-2xl border-2 border-slate-300 shadow-xl p-6 md:p-8 space-y-6">
                     <div>
-                        <span class="text-[10px] uppercase font-bold tracking-widest text-[#C5A059] block mb-1">Instant Reservation</span>
-                        <h3 class="text-2xl font-bold outfit text-[#0B0F19]">Reserve</h3>
-                        <p class="text-xs text-slate-400 font-light mt-1">Best rate guaranteed &bull; Free cancellation</p>
+                        <span class="text-[11px] uppercase font-extrabold tracking-wider text-[#B8860B] block mb-1">Instant Reservation</span>
+                        <h3 class="text-2xl font-extrabold outfit text-slate-900">Reserve Suite</h3>
+                        <p class="text-xs text-slate-600 font-semibold mt-1">Best rate guaranteed &bull; Free cancellation</p>
                     </div>
 
                     <!-- Stay Type Tab Selector -->
                     <div>
-                        <label class="block text-[10px] uppercase font-bold tracking-widest text-slate-400 mb-2">Select Duration Type</label>
-                        <div class="grid grid-cols-3 gap-1.5 p-1 bg-slate-100 rounded-xl text-xs font-bold text-center">
+                        <label class="block text-[10px] uppercase font-bold tracking-wider text-slate-600 mb-2">Select Duration Type</label>
+                        <div class="grid grid-cols-3 gap-1.5 p-1 bg-slate-100 border border-slate-200 rounded-xl text-xs font-bold text-center">
                             <button type="button" onclick="setStayType('daily')" id="stay-type-daily" class="py-2 rounded-lg bg-[#0B0F19] text-white transition-all font-bold">Daily</button>
-                            <button type="button" onclick="setStayType('weekly')" id="stay-type-weekly" class="py-2 rounded-lg text-slate-600 hover:text-slate-900 transition-all font-medium">Weekly (-15%)</button>
-                            <button type="button" onclick="setStayType('monthly')" id="stay-type-monthly" class="py-2 rounded-lg text-slate-600 hover:text-slate-900 transition-all font-medium">Monthly (-35%)</button>
+                            <button type="button" onclick="setStayType('weekly')" id="stay-type-weekly" class="py-2 rounded-lg text-slate-700 hover:text-slate-900 transition-all font-semibold">Weekly (-15%)</button>
+                            <button type="button" onclick="setStayType('monthly')" id="stay-type-monthly" class="py-2 rounded-lg text-slate-700 hover:text-slate-900 transition-all font-semibold">Monthly (-35%)</button>
                         </div>
                     </div>
 
                     <!-- Booking Input Form -->
                     <form id="booking-card-form" onsubmit="handleConfirmBooking(event)" class="space-y-4">
                         <div>
-                            <label class="block text-[10px] uppercase font-bold tracking-widest text-slate-400 mb-1">Stay Dates</label>
-                            <button type="button" onclick="openPDPDateCalendarModal()" class="w-full bg-slate-50 border border-slate-200 hover:border-[#C5A059] rounded-xl px-3 py-2.5 text-xs text-left flex items-center justify-between font-medium text-slate-800 cursor-pointer">
+                            <label class="block text-[10px] uppercase font-bold tracking-wider text-slate-600 mb-1">Stay Dates</label>
+                            <button type="button" onclick="openPDPDateCalendarModal()" class="w-full bg-slate-50 border-2 border-slate-300 hover:border-[#C5A059] rounded-xl px-3.5 py-3 text-xs text-left flex items-center justify-between font-bold text-slate-900 cursor-pointer shadow-sm">
                                 <span id="search-date-trigger-text">Select check-in & check-out</span>
-                                <i class="fa-solid fa-calendar-alt text-[#C5A059]"></i>
+                                <i class="fa-solid fa-calendar-alt text-[#B8860B] text-sm"></i>
                             </button>
                             <input type="hidden" id="card-checkin" required>
                             <input type="hidden" id="card-checkout" required>
                         </div>
 
                         <div>
-                            <label class="block text-[10px] uppercase font-bold tracking-widest text-slate-400 mb-1">Guests Count</label>
-                            <select id="card-guests" onchange="calculateCardTotal()" class="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs outline-none focus:border-[#C5A059] bg-slate-50 font-medium text-slate-800 cursor-pointer">
+                            <label class="block text-[10px] uppercase font-bold tracking-wider text-slate-600 mb-1">Guests Count</label>
+                            <select id="card-guests" onchange="calculateCardTotal()" class="w-full border-2 border-slate-300 rounded-xl px-3.5 py-3 text-xs outline-none focus:border-[#C5A059] bg-slate-50 font-bold text-slate-900 cursor-pointer shadow-sm">
                                 <option value="1">1 Guest</option>
                                 <option value="2" selected>2 Guests</option>
                                 <option value="3">3 Guests</option>
@@ -543,57 +543,57 @@
                         </div>
 
                         <!-- Price Breakdown Calculations Block -->
-                        <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100 space-y-2.5 text-xs text-slate-600">
+                        <div class="bg-slate-50 rounded-xl p-4 border-2 border-slate-200 space-y-2.5 text-xs text-slate-700">
                             <div class="flex justify-between items-center">
-                                <span>Base Rate (<span id="calc-nights-lbl">1 night</span>)</span>
+                                <span class="font-medium">Base Rate (<span id="calc-nights-lbl">1 night</span>)</span>
                                 <span id="calc-base-subtotal" class="font-bold text-slate-900">PKR 0</span>
                             </div>
-                            <div id="calc-discount-row" class="flex justify-between items-center text-emerald-600 hidden font-semibold">
+                            <div id="calc-discount-row" class="flex justify-between items-center text-emerald-700 hidden font-bold">
                                 <span>Stay Discount (<span id="calc-discount-pct">0%</span>)</span>
                                 <span id="calc-discount-val">- PKR 0</span>
                             </div>
-                            <div class="flex justify-between items-center text-slate-400 text-[10px]">
+                            <div class="flex justify-between items-center text-slate-600 text-[11px] font-semibold">
                                 <span>Cleaning & Service Fee</span>
-                                <span class="text-emerald-600 font-bold">FREE</span>
+                                <span class="text-emerald-700 font-extrabold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">FREE</span>
                             </div>
-                            <div class="border-t border-slate-200 pt-2.5 flex justify-between items-center font-bold text-slate-900 text-sm">
-                                <span>Estimated Total</span>
-                                <span id="calc-total-price" class="text-xl font-black text-[#C5A059] outfit">PKR 0</span>
+                            <div class="border-t-2 border-slate-200 pt-2.5 flex justify-between items-center font-bold text-slate-900 text-sm">
+                                <span class="font-extrabold">Estimated Total</span>
+                                <span id="calc-total-price" class="text-2xl font-black text-[#B8860B] outfit">PKR 0</span>
                             </div>
                         </div>
 
                         <!-- Primary CTA Button -->
-                        <button type="submit" id="card-submit-btn" class="w-full bg-gradient-to-r from-[#C5A059] to-[#9A7B38] text-white py-4 rounded-2xl text-xs font-bold uppercase tracking-wider hover:bg-[#0B0F19] transition-all shadow-md flex items-center justify-center gap-2 btn-shimmer">
-                            <i class="fa-solid fa-calendar-check"></i>
+                        <button type="submit" id="card-submit-btn" class="w-full bg-[#C5A059] text-white hover:bg-[#B8860B] py-4 rounded-xl text-xs font-extrabold uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer border border-[#B8860B]">
+                            <i class="fa-solid fa-calendar-check text-sm"></i>
                             Confirm Booking
                         </button>
                     </form>
 
                     <!-- Secondary Contact Actions -->
-                    <div class="grid grid-cols-3 gap-2 pt-2 border-t border-slate-100">
-                        <button type="button" onclick="openPDPGuestChat()" class="bg-[#0B0F19] hover:bg-[#C5A059] text-white text-center py-2.5 rounded-xl font-bold text-xs transition-colors flex items-center justify-center gap-1 shadow-sm">
+                    <div class="grid grid-cols-3 gap-2 pt-2 border-t-2 border-slate-100">
+                        <button type="button" onclick="openPDPGuestChat()" class="bg-slate-900 hover:bg-[#C5A059] text-white text-center py-2.5 rounded-xl font-bold text-xs transition-colors flex items-center justify-center gap-1 shadow-sm border border-slate-900">
                             <i class="fa-solid fa-comments text-xs"></i> Chat
                         </button>
-                        <a href="https://wa.me/923340091127" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white text-center py-2.5 rounded-xl font-bold text-xs transition-colors flex items-center justify-center gap-1 shadow-sm">
+                        <a href="https://wa.me/923340091127" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white text-center py-2.5 rounded-xl font-bold text-xs transition-colors flex items-center justify-center gap-1 shadow-sm border border-emerald-700">
                             <i class="fa-brands fa-whatsapp text-xs"></i> WhatsApp
                         </a>
-                        <a href="tel:+92518461975" class="border border-slate-200 hover:bg-slate-100 text-slate-800 text-center py-2.5 rounded-xl font-bold text-xs transition-colors flex items-center justify-center gap-1">
+                        <a href="tel:+92518461975" class="border-2 border-slate-200 hover:bg-slate-100 text-slate-800 text-center py-2.5 rounded-xl font-bold text-xs transition-colors flex items-center justify-center gap-1">
                             <i class="fa-solid fa-phone text-xs"></i> Call
                         </a>
                     </div>
                 </div>
 
                 <!-- Explore More Listings Feed -->
-                <div class="bg-white/80 backdrop-blur-md rounded-[2.5rem] border border-[#C5A059]/10 shadow-[0_12px_40px_-15px_rgba(11,15,25,0.05)] hover:border-[#C5A059]/30 transition-all duration-500 p-6 md:p-8">
-                    <h3 class="font-bold text-lg outfit text-[#0B0F19] mb-5 flex items-center justify-between">
+                <div class="bg-white rounded-2xl border-2 border-slate-200 shadow-md p-6 space-y-4">
+                    <h3 class="font-extrabold text-lg outfit text-slate-900 flex items-center justify-between">
                         <span>Explore More Listings</span>
-                        <a href="/rooms" class="text-xs text-[#C5A059] font-bold hover:underline">View All</a>
+                        <a href="/rooms" class="text-xs text-[#B8860B] font-bold hover:underline">View All</a>
                     </h3>
 
-                    <div id="more-listings-container" class="space-y-4">
+                    <div id="more-listings-container" class="space-y-3">
                         <!-- Dynamic room cards populate here -->
-                        <div class="skeleton h-24 w-full rounded-2xl animate-pulse"></div>
-                        <div class="skeleton h-24 w-full rounded-2xl animate-pulse"></div>
+                        <div class="skeleton h-20 w-full rounded-xl animate-pulse bg-slate-100 border border-slate-200"></div>
+                        <div class="skeleton h-20 w-full rounded-xl animate-pulse bg-slate-100 border border-slate-200"></div>
                     </div>
                 </div>
 
@@ -873,13 +873,91 @@
                     return;
                 }
 
-                // Breadcrumb & Title
-                document.getElementById('breadcrumb-room-name').innerText = currentRoom.name || 'Room Details';
-                document.getElementById('detail-title').innerText = currentRoom.name || 'Luxury Suite';
+                // Resolve Location Context & Type
+                const rawLoc = (currentRoom.location || currentRoom.locationName || '').toLowerCase();
+                const rawName = (currentRoom.name || '').toLowerCase();
 
-                // Dynamic SEO Title & Meta Description & Social Share Cards Update
-                const roomTitleText = currentRoom.seoTitle || `${currentRoom.name} | KPH Stay Luxury Apartments & Resorts`;
-                const roomDescText = currentRoom.seoDescription || (currentRoom.description ? currentRoom.description.replace(/<[^>]*>?/gm, '').trim().slice(0, 160) : `Book ${currentRoom.name} at KPH Stay.`);
+                let city = 'Islamabad';
+                let cityPath = '/furnished-apartments-islamabad';
+                let addressLocality = 'Islamabad';
+                let addressRegion = 'Federal Capital Territory';
+                let postalCode = '44000';
+                let streetAddress = currentRoom.address || 'Sector C, Bahria Enclave';
+                let defaultLat = 33.7294;
+                let defaultLng = 73.0931;
+
+                const isExplicitIslamabad = rawLoc.includes('islamabad') || rawLoc.includes('bahria') || rawLoc.includes('sector') || rawLoc.includes('cube') || rawLoc.includes('usmania') || rawLoc.includes('royal');
+                const isNathiaGali = rawLoc.includes('nathia') || rawLoc.includes('gali') || rawLoc.includes('ayubia') || rawName.includes('nathia') || rawName.includes('ayubia') || (rawName.includes('gali') && !rawLoc.includes('islamabad'));
+                const isMurree = (rawLoc.includes('murree') || rawLoc.includes('bhurban') || rawName.includes('murree') || rawName.includes('bhurban')) && !isExplicitIslamabad && !rawName.includes('murree view');
+
+                if (isNathiaGali) {
+                    city = 'Nathia Gali';
+                    cityPath = '/furnished-apartments-nathia-gali';
+                    addressLocality = 'Nathia Gali';
+                    addressRegion = 'Khyber Pakhtunkhwa';
+                    postalCode = '22550';
+                    streetAddress = currentRoom.address || 'Main Abbottabad Road, Nathia Gali';
+                    defaultLat = 34.0722;
+                    defaultLng = 73.3858;
+                } else if (isMurree) {
+                    city = 'Murree';
+                    cityPath = '/furnished-apartments-murree';
+                    addressLocality = 'Murree';
+                    addressRegion = 'Punjab';
+                    postalCode = '47150';
+                    streetAddress = currentRoom.address || 'Pine Valley Corridor, Murree Hills';
+                    defaultLat = 33.9070;
+                    defaultLng = 73.3943;
+                }
+
+                let bedsCount = Number(currentRoom.bedrooms) || 0;
+                if (bedsCount === 0) {
+                    const bedMatch = (currentRoom.name || '').match(/(\d+)\s*[-]?\s*(?:bed|bhk|bedroom)/i);
+                    bedsCount = bedMatch ? parseInt(bedMatch[1], 10) : 1;
+                }
+
+                let typeName = currentRoom.type || 'Furnished Apartment';
+                if (rawName.includes('studio') || (currentRoom.type && currentRoom.type.toLowerCase().includes('studio'))) {
+                    typeName = 'Furnished Studio Apartment';
+                    bedsCount = 1;
+                } else if (rawName.includes('penthouse') || (currentRoom.type && currentRoom.type.toLowerCase().includes('penthouse'))) {
+                    typeName = `${bedsCount > 1 ? bedsCount + ' Bed ' : ''}Luxury Penthouse`;
+                } else if (rawName.includes('villa') || rawName.includes('house') || rawName.includes('farmhouse')) {
+                    typeName = `${bedsCount} Bed Luxury Villa & Chalet`;
+                } else if (bedsCount > 1) {
+                    typeName = `${bedsCount} Bed Furnished Apartment`;
+                } else {
+                    typeName = '1 Bed Furnished Apartment';
+                }
+
+                let cleanRoomName = currentRoom.name ? currentRoom.name
+                    .replace(/\s*[–—-]\s*by\s+Nook\s+House/gi, '')
+                    .replace(/\s*[–—-]\s*Book\s+Your\s+Stay.*/gi, '')
+                    .replace(/\s*[–—-]\s*Your\s+Perfect\s+Mountain\s+Getaway/gi, '')
+                    .replace(/\s*[–—-]\s*Your\s+Private\s+Mountain\s+Escape.*/gi, '')
+                    .trim() : typeName;
+
+                // Breadcrumb & Title
+                document.getElementById('breadcrumb-room-name').innerText = cleanRoomName;
+                document.getElementById('detail-title').innerText = cleanRoomName;
+
+                // Dynamic SEO Title & Meta Description
+                let roomTitleText = '';
+                if (currentRoom.seoTitle && currentRoom.seoTitle.trim() && currentRoom.seoTitle.length > 20) {
+                    let baseSeoTitle = currentRoom.seoTitle.trim().replace(/\s*\|\s*(KP|KPH|Kaghan)\s*Stay/gi, '').trim();
+                    roomTitleText = `${baseSeoTitle} | KPH Stay`;
+                } else {
+                    roomTitleText = `${cleanRoomName} | ${typeName} in ${city} | KPH Stay`;
+                }
+
+                let roomDescText = '';
+                if (currentRoom.seoDescription && currentRoom.seoDescription.trim() && currentRoom.seoDescription.length > 50) {
+                    roomDescText = currentRoom.seoDescription.trim().slice(0, 160);
+                } else {
+                    const baseRate = Number(currentRoom.priceDaily || currentRoom.price || 0);
+                    roomDescText = `Book ${cleanRoomName}, a fully furnished ${typeName.toLowerCase()} in ${city}. Features equipped kitchen, 24/7 generator backup, fast Wi-Fi, heating/AC, and private parking. Rates from ${KaghanUI.formatPKR(baseRate)}/night with KPH Stay.`.slice(0, 160);
+                }
+
                 const primaryImage = currentRoom.image || (currentRoom.images && currentRoom.images.length ? currentRoom.images[0] : 'https://kphstay.com/assets/images/logo.png');
 
                 document.title = roomTitleText;
@@ -898,7 +976,50 @@
                 }
                 canonicalEl.setAttribute('href', canonicalUrl);
 
-                // Update OpenGraph & Twitter Meta Tags dynamically
+                // Dynamic Keywords Assembly
+                const keywordSet = new Set();
+                keywordSet.add(`furnished apartments in ${city.toLowerCase()}`);
+                keywordSet.add(`furnished apartment ${city.toLowerCase()}`);
+                keywordSet.add(`${typeName.toLowerCase()} in ${city.toLowerCase()}`);
+                keywordSet.add(`${typeName.toLowerCase()} ${city.toLowerCase()}`);
+                keywordSet.add(`luxury serviced apartments ${city.toLowerCase()}`);
+                keywordSet.add(`short stay apartments ${city.toLowerCase()}`);
+                keywordSet.add(`monthly furnished apartment ${city.toLowerCase()}`);
+                keywordSet.add(`vacation rentals ${city.toLowerCase()}`);
+
+                if (city === 'Islamabad') {
+                    keywordSet.add('bahria enclave furnished apartments');
+                    keywordSet.add('royal mall islamabad apartment');
+                    keywordSet.add('cube apartments islamabad');
+                    keywordSet.add('1 bed furnished apartment islamabad');
+                    keywordSet.add('2 bed furnished apartment islamabad');
+                    keywordSet.add('furnished flats for rent in islamabad');
+                    if (rawName.includes('murree view')) {
+                        keywordSet.add('murree view studio islamabad');
+                        keywordSet.add('murree view apartment islamabad');
+                    }
+                } else if (city === 'Murree') {
+                    keywordSet.add('mountain view chalets murree');
+                    keywordSet.add('murree vacation rentals');
+                    keywordSet.add('bhurban furnished apartments');
+                    keywordSet.add('heated apartments murree');
+                    keywordSet.add('holiday homes murree');
+                } else if (city === 'Nathia Gali') {
+                    keywordSet.add('luxury chalets nathia gali');
+                    keywordSet.add('pine forest cottages nathia gali');
+                    keywordSet.add('galiyat vacation homes');
+                    keywordSet.add('ayubia family suites');
+                    keywordSet.add('4 bedroom cottage nathia gali');
+                }
+
+                if (currentRoom.seoKeywords) {
+                    currentRoom.seoKeywords.split(',').forEach(k => {
+                        if (k.trim()) keywordSet.add(k.trim().toLowerCase());
+                    });
+                }
+                const dynamicKeywords = Array.from(keywordSet).join(', ');
+
+                // Update OpenGraph, Twitter & Keywords Meta Tags
                 const setMetaTag = (property, value, isName = false) => {
                     const selector = isName ? `meta[name="${property}"]` : `meta[property="${property}"]`;
                     let el = document.querySelector(selector);
@@ -910,13 +1031,14 @@
                     el.setAttribute('content', value);
                 };
 
+                setMetaTag('keywords', dynamicKeywords, true);
                 setMetaTag('og:title', roomTitleText);
                 setMetaTag('og:description', roomDescText);
                 setMetaTag('og:image', primaryImage);
                 setMetaTag('og:image:width', '1200');
                 setMetaTag('og:image:height', '630');
                 setMetaTag('og:type', 'website');
-                setMetaTag('og:url', window.location.href);
+                setMetaTag('og:url', canonicalUrl);
 
                 setMetaTag('twitter:card', 'summary_large_image', true);
                 setMetaTag('twitter:title', roomTitleText, true);
@@ -945,10 +1067,10 @@
                         navigator.share({
                             title: roomTitleText,
                             text: `Check out ${roomTitleText} (ID: ${roomCode}) on KPH Stay!`,
-                            url: window.location.href
+                            url: canonicalUrl
                         }).catch(() => {});
                     } else if (navigator.clipboard && navigator.clipboard.writeText) {
-                        navigator.clipboard.writeText(window.location.href).then(() => {
+                        navigator.clipboard.writeText(canonicalUrl).then(() => {
                             if (window.KaghanUI && window.KaghanUI.showToast) {
                                 KaghanUI.showToast('Listing URL copied to clipboard!', 'success');
                             }
@@ -956,173 +1078,150 @@
                     }
                 };
 
-                // Location & Address Mapping
-                const locStr = (currentRoom.location || currentRoom.locationName || 'Islamabad').toLowerCase();
-                let addressLocality = 'Islamabad';
-                let addressRegion = 'Federal Capital Territory';
-                let postalCode = '44000';
-                let streetAddress = currentRoom.address || 'Sector C, Bahria Enclave';
-
-                if (locStr.includes('murree') || (currentRoom.name && currentRoom.name.toLowerCase().includes('murree'))) {
-                    addressLocality = 'Murree';
-                    addressRegion = 'Punjab';
-                    postalCode = '47150';
-                    streetAddress = currentRoom.address || 'Pine Valley Corridor, Murree Hills';
-                } else if (locStr.includes('nathia') || (currentRoom.name && currentRoom.name.toLowerCase().includes('nathia'))) {
-                    addressLocality = 'Nathia Gali';
-                    addressRegion = 'Khyber Pakhtunkhwa';
-                    postalCode = '22550';
-                    streetAddress = currentRoom.address || 'Main Abbottabad Road, Nathia Gali';
-                }
-
-                // Inject Specialized VacationRental, HotelRoom & Product JSON-LD Schema
+                // Inject Specialized VacationRental, Apartment & FAQ JSON-LD Schema
                 let dynamicPdpSchema = document.getElementById('dynamic-vacation-rental-schema');
                 if (dynamicPdpSchema) dynamicPdpSchema.remove();
+
+                const hasRealReviews = currentRoom.reviewsCount && Number(currentRoom.reviewsCount) > 0;
+                const schemaGraph = {
+                    "@context": "https://schema.org",
+                    "@graph": [
+                        {
+                            "@type": "BreadcrumbList",
+                            "itemListElement": [
+                                { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://kphstay.com/" },
+                                { "@type": "ListItem", "position": 2, "name": `Furnished Apartments in ${city}`, "item": `https://kphstay.com${cityPath}` },
+                                { "@type": "ListItem", "position": 3, "name": cleanRoomName, "item": canonicalUrl }
+                            ]
+                        },
+                        {
+                            "@type": ["Apartment", "VacationRental", "HotelRoom", "Product"],
+                            "@id": canonicalUrl,
+                            "identifier": roomCode,
+                            "name": roomTitleText,
+                            "description": roomDescText,
+                            "image": currentRoom.images && currentRoom.images.length ? currentRoom.images : [primaryImage],
+                            "category": typeName,
+                            "url": canonicalUrl,
+                            "occupancy": {
+                                "@type": "QuantitativeValue",
+                                "value": currentRoom.maxGuests || (bedsCount * 2),
+                                "unitText": "guests"
+                            },
+                            "numberOfRooms": bedsCount,
+                            "numberOfBathroomsTotal": currentRoom.bathrooms || 1,
+                            "floorSize": {
+                                "@type": "QuantitativeValue",
+                                "value": currentRoom.area ? String(currentRoom.area).replace(/[^0-9,]/g, '') || "1000" : "1000",
+                                "unitCode": "FTK",
+                                "unitText": "sq ft"
+                            },
+                            "bed": {
+                                "@type": "BedDetails",
+                                "numberOfBeds": bedsCount,
+                                "typeOfBed": currentRoom.bedsConfig || (bedsCount > 1 ? `${bedsCount} King/Double Beds` : "King Bed")
+                            },
+                            "address": {
+                                "@type": "PostalAddress",
+                                "streetAddress": streetAddress,
+                                "addressLocality": addressLocality,
+                                "addressRegion": addressRegion,
+                                "postalCode": postalCode,
+                                "addressCountry": "PK"
+                            },
+                            "geo": {
+                                "@type": "GeoCoordinates",
+                                "latitude": currentRoom.lat || defaultLat,
+                                "longitude": currentRoom.lng || defaultLng
+                            },
+                            "containedInPlace": {
+                                "@type": "LodgingBusiness",
+                                "name": "KPH Stay - Luxury Furnished Apartments",
+                                "url": "https://kphstay.com",
+                                "telephone": "+923340091127",
+                                "priceRange": "$$"
+                            },
+                            "amenityFeature": (currentRoom.amenities || [
+                                "Fully Furnished", "Equipped Kitchen", "High-Speed Wi-Fi", "24/7 Power Backup", "Heating & AC", "Private Parking"
+                            ]).map(a => ({
+                                "@type": "LocationFeatureSpecification",
+                                "name": a,
+                                "value": true
+                            })),
+                            ...(hasRealReviews ? {
+                                "aggregateRating": {
+                                    "@type": "AggregateRating",
+                                    "ratingValue": String(currentRoom.rating || 5.0),
+                                    "reviewCount": String(currentRoom.reviewsCount),
+                                    "bestRating": "5",
+                                    "worstRating": "1"
+                                }
+                            } : {}),
+                            "brand": {
+                                "@type": "Brand",
+                                "name": "KPH Stay"
+                            },
+                            "sku": roomCode,
+                            "mpn": roomCode,
+                            "offers": {
+                                "@type": "Offer",
+                                "name": `Direct Reservation: ${roomTitleText}`,
+                                "price": Number(currentRoom.priceDaily || currentRoom.price || 0),
+                                "priceCurrency": "PKR",
+                                "itemCondition": "https://schema.org/NewCondition",
+                                "availability": currentRoom.status === "maintenance" ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
+                                "url": canonicalUrl,
+                                "seller": {
+                                    "@type": "LodgingBusiness",
+                                    "name": "KPH Stay - Luxury Furnished Apartments",
+                                    "url": "https://kphstay.com"
+                                }
+                            }
+                        },
+                        {
+                            "@type": "FAQPage",
+                            "mainEntity": [
+                                {
+                                    "@type": "Question",
+                                    "name": `Is ${cleanRoomName} in ${city} fully furnished?`,
+                                    "acceptedAnswer": {
+                                        "@type": "Answer",
+                                        "text": `Yes, this property in ${city} is 100% fully furnished with plush bedding, living lounge sofas, Smart LED TV, dining furniture, and a private equipped kitchen.`
+                                    }
+                                },
+                                {
+                                    "@type": "Question",
+                                    "name": `What amenities are included with this ${city} apartment?`,
+                                    "acceptedAnswer": {
+                                        "@type": "Answer",
+                                        "text": `Guests enjoy complimentary high-speed optical fiber Wi-Fi, 24/7 generator power backup, climate heating/cooling, microwave, refrigerator, hot water geyser, and dedicated parking.`
+                                    }
+                                },
+                                {
+                                    "@type": "Question",
+                                    "name": `Can I book this furnished apartment in ${city} for weekly or monthly stays?`,
+                                    "acceptedAnswer": {
+                                        "@type": "Answer",
+                                        "text": `Yes, KPH Stay provides tiered extended stay discounts with 15% off for 7+ nights (weekly) and up to 35% off for 30+ nights (monthly reservations).`
+                                    }
+                                },
+                                {
+                                    "@type": "Question",
+                                    "name": `How do I book and what payment options are accepted?`,
+                                    "acceptedAnswer": {
+                                        "@type": "Answer",
+                                        "text": `You can reserve instantly online or via WhatsApp. We offer 'Pay on Check-in' with Cash, Credit/Debit Cards, or Bank Transfer at arrival.`
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                };
 
                 dynamicPdpSchema = document.createElement('script');
                 dynamicPdpSchema.id = 'dynamic-vacation-rental-schema';
                 dynamicPdpSchema.type = 'application/ld+json';
-                dynamicPdpSchema.text = JSON.stringify({
-                    "@context": "https://schema.org",
-                    "@type": ["VacationRental", "HotelRoom", "Product"],
-                    "@id": canonicalUrl,
-                    "identifier": roomCode,
-                    "name": roomTitleText,
-                    "description": roomDescText,
-                    "image": currentRoom.images && currentRoom.images.length ? currentRoom.images : [primaryImage],
-                    "url": canonicalUrl,
-                    "additionalType": [
-                        "https://schema.org/VacationRental",
-                        "https://schema.org/Apartment",
-                        "https://schema.org/HotelRoom"
-                    ],
-                    "occupancy": {
-                        "@type": "QuantitativeValue",
-                        "value": currentRoom.maxGuests || 2,
-                        "unitText": "guests"
-                    },
-                    "numberOfRooms": currentRoom.bedrooms || 1,
-                    "numberOfBathroomsTotal": currentRoom.bathrooms || 1,
-                    "floorSize": {
-                        "@type": "QuantitativeValue",
-                        "value": currentRoom.area ? String(currentRoom.area).replace(/[^0-9,]/g, '') || "1200" : "1200",
-                        "unitCode": "FTK",
-                        "unitText": "sq ft"
-                    },
-                    "bed": {
-                        "@type": "BedDetails",
-                        "numberOfBeds": currentRoom.bedrooms || 1,
-                        "typeOfBed": currentRoom.bedsConfig || (currentRoom.bedrooms && currentRoom.bedrooms > 1 ? `${currentRoom.bedrooms} Double/King Beds` : "King Bed")
-                    },
-                    "address": {
-                        "@type": "PostalAddress",
-                        "streetAddress": streetAddress,
-                        "addressLocality": addressLocality,
-                        "addressRegion": addressRegion,
-                        "postalCode": postalCode,
-                        "addressCountry": "PK"
-                    },
-                    "geo": {
-                        "@type": "GeoCoordinates",
-                        "latitude": currentRoom.lat || (addressLocality === 'Murree' ? 33.9070 : (addressLocality === 'Nathia Gali' ? 34.0722 : 33.7294)),
-                        "longitude": currentRoom.lng || (addressLocality === 'Murree' ? 73.3943 : (addressLocality === 'Nathia Gali' ? 73.3858 : 73.0931))
-                    },
-                    "containsPlace": [
-                        {
-                            "@type": "Accommodation",
-                            "name": `${currentRoom.name || 'Suite'} - Main Suite`,
-                            "numberOfRooms": currentRoom.bedrooms || 1,
-                            "numberOfBathroomsTotal": currentRoom.bathrooms || 1,
-                            "occupancy": {
-                                "@type": "QuantitativeValue",
-                                "value": currentRoom.maxGuests || 2,
-                                "unitText": "guests"
-                            },
-                            "bed": {
-                                "@type": "BedDetails",
-                                "numberOfBeds": currentRoom.bedrooms || 1,
-                                "typeOfBed": currentRoom.bedsConfig || (currentRoom.bedrooms && currentRoom.bedrooms > 1 ? `${currentRoom.bedrooms} Double/King Beds` : "King Bed")
-                            }
-                        }
-                    ],
-                    "containedInPlace": {
-                        "@type": "LodgingBusiness",
-                        "name": "KPH Stay Resorts & Executive Suites",
-                        "url": "https://kphstay.com",
-                        "telephone": "+923340091127",
-                        "priceRange": "$$"
-                    },
-                    "amenityFeature": (currentRoom.amenities || []).map(a => ({
-                        "@type": "LocationFeatureSpecification",
-                        "name": a,
-                        "value": true
-                    })),
-                    "aggregateRating": {
-                        "@type": "AggregateRating",
-                        "ratingValue": String(currentRoom.rating || 5.0),
-                        "reviewCount": currentRoom.reviewsCount ? String(currentRoom.reviewsCount) : "18",
-                        "bestRating": "5",
-                        "worstRating": "1"
-                    },
-                    "brand": {
-                        "@type": "Brand",
-                        "name": "KPH Stay"
-                    },
-                    "sku": roomCode,
-                    "mpn": roomCode,
-                    "offers": {
-                        "@type": "Offer",
-                        "name": `Direct Booking: ${currentRoom.name}`,
-                        "price": Number(currentRoom.price) || 0,
-                        "priceCurrency": "PKR",
-                        "itemCondition": "https://schema.org/NewCondition",
-                        "availability": currentRoom.status === "maintenance" ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
-                        "priceValidUntil": new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-                        "url": canonicalUrl,
-                        "seller": {
-                            "@type": "LodgingBusiness",
-                            "name": "KPH Stay Resorts & Executive Suites",
-                            "url": "https://kphstay.com"
-                        },
-                        "hasMerchantReturnPolicy": {
-                            "@type": "MerchantReturnPolicy",
-                            "applicableCountry": "PK",
-                            "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
-                            "merchantReturnDays": 7,
-                            "returnMethod": "https://schema.org/ReturnOnline",
-                            "returnFees": "https://schema.org/FreeReturn",
-                            "refundType": "https://schema.org/FullRefund",
-                            "url": "https://kphstay.com/refund"
-                        },
-                        "shippingDetails": {
-                            "@type": "OfferShippingDetails",
-                            "shippingRate": {
-                                "@type": "MonetaryAmount",
-                                "value": "0",
-                                "currency": "PKR"
-                            },
-                            "shippingDestination": {
-                                "@type": "DefinedRegion",
-                                "addressCountry": "PK"
-                            },
-                            "deliveryTime": {
-                                "@type": "ShippingDeliveryTime",
-                                "handlingTime": {
-                                    "@type": "QuantitativeValue",
-                                    "minValue": 0,
-                                    "maxValue": 0,
-                                    "unitCode": "DAY"
-                                },
-                                "transitTime": {
-                                    "@type": "QuantitativeValue",
-                                    "minValue": 0,
-                                    "maxValue": 0,
-                                    "unitCode": "DAY"
-                                }
-                            }
-                        }
-                    }
-                });
+                dynamicPdpSchema.text = JSON.stringify(schemaGraph);
                 document.head.appendChild(dynamicPdpSchema);
 
                 // Category & Location (Fetched dynamically from Firestore collections)
@@ -1724,15 +1823,15 @@
             if (!container) return;
 
             if (!amenities || amenities.length === 0) {
-                container.innerHTML = `<p class="text-xs text-slate-400 italic">No amenities specified for this room style.</p>`;
+                container.innerHTML = `<p class="text-xs text-slate-500 italic font-medium">No amenities specified for this room style.</p>`;
                 return;
             }
 
             container.innerHTML = `
                 <div class="flex flex-wrap gap-2.5">
                     ${amenities.map(a => `
-                        <div class="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200/80 text-xs font-semibold text-slate-800 shadow-sm">
-                            <div class="w-5 h-5 rounded-md bg-[#C5A059]/10 text-[#C5A059] flex items-center justify-center shrink-0">
+                        <div class="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-50 border-2 border-slate-200 text-xs font-bold text-slate-800 shadow-sm">
+                            <div class="w-5 h-5 rounded-md bg-amber-50 text-emerald-600 flex items-center justify-center shrink-0 border border-amber-200">
                                 <i class="fa-solid fa-check text-[10px]"></i>
                             </div>
                             <span>${KaghanSafe.escapeHTML(a)}</span>
@@ -1753,38 +1852,38 @@
                 if (reviews && reviews.length > 0) {
                     if (badge) badge.innerText = `5.0 (${reviews.length} Review${reviews.length > 1 ? 's' : ''})`;
                     container.innerHTML = reviews.map(r => `
-                        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100 space-y-2 flex flex-col justify-between">
+                        <div class="p-4 bg-slate-50 rounded-xl border-2 border-slate-200 space-y-2 flex flex-col justify-between">
                             <div class="space-y-2">
                                 <div class="flex justify-between items-center">
                                     <div class="flex items-center gap-2">
-                                        <div class="w-8 h-8 rounded-full bg-[#C5A059] text-white flex items-center justify-center font-bold text-xs">
+                                        <div class="w-8 h-8 rounded-full bg-[#B8860B] text-white flex items-center justify-center font-bold text-xs border border-amber-300">
                                             ${KaghanSafe.escapeHTML((r.userName || r.guestName || 'G').charAt(0).toUpperCase())}
                                         </div>
                                         <span class="font-bold text-xs text-slate-900">${KaghanSafe.escapeHTML(r.userName || r.guestName || 'Verified Guest')}</span>
                                     </div>
-                                    <div class="text-[#C5A059] text-xs"><i class="fa-solid fa-star"></i> ${r.rating || '5.0'}</div>
+                                    <div class="text-amber-900 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-lg text-xs font-bold flex items-center gap-1"><i class="fa-solid fa-star text-amber-500"></i> ${r.rating || '5.0'}</div>
                                 </div>
-                                <p class="text-xs text-slate-600 italic">"${KaghanSafe.escapeHTML(r.comment || r.reviewText || 'Verified stay review.')}"</p>
+                                <p class="text-xs text-slate-700 italic font-medium">"${KaghanSafe.escapeHTML(r.comment || r.reviewText || 'Verified stay review.')}"</p>
                                 ${r.adminReply ? `
-                                    <div class="mt-2.5 p-3 rounded-xl bg-[#0B0F19] text-white text-[11px] space-y-1">
+                                    <div class="mt-2.5 p-3 rounded-xl bg-slate-900 text-white text-[11px] space-y-1 border border-slate-700">
                                         <div class="flex items-center gap-1.5 text-[#C5A059] font-bold">
                                             <i class="fa-solid fa-reply"></i> Response from Management:
                                         </div>
-                                        <p class="text-slate-300 font-light">${KaghanSafe.escapeHTML(r.adminReply)}</p>
+                                        <p class="text-slate-200 font-normal">${KaghanSafe.escapeHTML(r.adminReply)}</p>
                                     </div>
                                 ` : ''}
                             </div>
-                            <span class="text-[9px] text-slate-400 block pt-1">${KaghanUI.formatDate(r.createdAt || new Date())}</span>
+                            <span class="text-[10px] text-slate-500 font-bold block pt-1">${KaghanUI.formatDate(r.createdAt || new Date())}</span>
                         </div>
                     `).join('');
                 } else {
                     if (badge) badge.innerText = `5.0 (0 Reviews)`;
-                    container.innerHTML = `<div class="col-span-2 p-6 bg-slate-50 rounded-2xl border border-slate-100 text-center text-xs text-slate-400 font-medium italic">No verified guest reviews submitted for this suite yet.</div>`;
+                    container.innerHTML = `<div class="col-span-2 p-6 bg-slate-50 rounded-xl border-2 border-slate-200 text-center text-xs text-slate-600 font-semibold italic">No verified guest reviews submitted for this suite yet.</div>`;
                 }
             } catch (err) {
                 console.warn("Reviews load error:", err);
                 if (badge) badge.innerText = `5.0 (0 Reviews)`;
-                container.innerHTML = `<div class="col-span-2 p-6 bg-slate-50 rounded-2xl border border-slate-100 text-center text-xs text-slate-400 font-medium italic">No verified guest reviews submitted for this suite yet.</div>`;
+                container.innerHTML = `<div class="col-span-2 p-6 bg-slate-50 rounded-xl border-2 border-slate-200 text-center text-xs text-slate-600 font-semibold italic">No verified guest reviews submitted for this suite yet.</div>`;
             }
 
             renderReviewForm();
@@ -1798,19 +1897,19 @@
             const user = KaghanDB.getCurrentUser();
             if (!user) {
                 section.innerHTML = `
-                    <div class="bg-slate-50 border border-slate-200/80 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+                    <div class="bg-slate-50 border-2 border-slate-200 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-[#C5A059]/10 text-[#C5A059] flex items-center justify-center text-lg shrink-0">
+                            <div class="w-10 h-10 rounded-xl bg-amber-50 text-[#B8860B] border border-amber-200 flex items-center justify-center text-lg shrink-0">
                                 <i class="fa-solid fa-user-lock"></i>
                             </div>
                             <div>
-                                <span class="font-bold text-slate-900 block">Want to review your stay?</span>
-                                <span class="text-slate-500 font-light">Only logged-in verified guests can submit reviews. Anonymous reviews are not permitted.</span>
+                                <span class="font-extrabold text-slate-900 block text-sm">Want to review your stay?</span>
+                                <span class="text-slate-600 font-medium">Only logged-in verified guests can submit reviews. Anonymous reviews are not permitted.</span>
                             </div>
                         </div>
                         <div class="flex items-center gap-2 shrink-0">
-                            <a href="/login.html" class="bg-[#0B0F19] text-white px-4 py-2 rounded-xl font-bold hover:bg-[#C5A059] transition-all">Login</a>
-                            <a href="/login.html?register=true" class="border border-slate-300 text-slate-700 px-4 py-2 rounded-xl font-bold hover:bg-slate-100 transition-all">Register</a>
+                            <a href="/login.html" class="bg-slate-900 text-white px-4 py-2 rounded-xl font-bold hover:bg-[#C5A059] transition-all">Login</a>
+                            <a href="/login.html?register=true" class="border-2 border-slate-300 text-slate-800 px-4 py-2 rounded-xl font-bold hover:bg-slate-100 transition-all">Register</a>
                         </div>
                     </div>
                 `;
@@ -1819,13 +1918,13 @@
 
             section.innerHTML = `
                 <div class="space-y-3">
-                    <h4 class="font-bold text-xs uppercase tracking-wider text-slate-900 flex items-center gap-2">
-                        <i class="fa-solid fa-pen text-[#C5A059]"></i> Write a Guest Review
+                    <h4 class="font-extrabold text-xs uppercase tracking-wider text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-pen text-[#B8860B]"></i> Write a Guest Review
                     </h4>
                     <form id="submit-review-form" onsubmit="handleUserSubmitReview(event)" class="space-y-3">
                         <div class="flex items-center gap-4">
-                            <label class="text-xs text-slate-600 font-semibold">Rating:</label>
-                            <select id="review-rating" class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs outline-none focus:border-[#C5A059] bg-white font-bold text-[#C5A059]">
+                            <label class="text-xs text-slate-700 font-bold">Rating:</label>
+                            <select id="review-rating" class="border-2 border-slate-300 rounded-xl px-3 py-1.5 text-xs outline-none focus:border-[#C5A059] bg-white font-bold text-[#B8860B]">
                                 <option value="5">&#9733;&#9733;&#9733;&#9733;&#9733; 5.0 - Excellent</option>
                                 <option value="4">&#9733;&#9733;&#9733;&#9733;&#9734; 4.0 - Very Good</option>
                                 <option value="3">&#9733;&#9733;&#9733;&#9734;&#9734; 3.0 - Average</option>
@@ -1833,8 +1932,8 @@
                                 <option value="1">&#9733;&#9734;&#9734;&#9734;&#9734; 1.0 - Terrible</option>
                             </select>
                         </div>
-                        <textarea id="review-comment" required placeholder="Share your stay experience in this suite..." rows="3" class="w-full border border-slate-200 rounded-xl p-3 text-xs outline-none focus:border-[#C5A059] bg-white leading-relaxed"></textarea>
-                        <button type="submit" id="submit-review-btn" class="bg-[#0B0F19] text-white px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-[#C5A059] transition-all shadow-md flex items-center gap-2">
+                        <textarea id="review-comment" required placeholder="Share your stay experience in this suite..." rows="3" class="w-full border-2 border-slate-300 rounded-xl p-3 text-xs outline-none focus:border-[#C5A059] bg-white leading-relaxed text-slate-900"></textarea>
+                        <button type="submit" id="submit-review-btn" class="bg-slate-900 text-white px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-[#C5A059] transition-all shadow-md flex items-center gap-2">
                             <i class="fa-solid fa-paper-plane text-xs"></i> Submit Review
                         </button>
                     </form>
@@ -1851,44 +1950,36 @@
                 return;
             }
 
-            if (!currentRoom) return;
-
-            const rating = parseInt(document.getElementById('review-rating').value);
+            const rating = Number(document.getElementById('review-rating').value) || 5;
             const comment = document.getElementById('review-comment').value.trim();
 
             if (!comment) {
-                KaghanUI.showToast("Please write a review message.", "error");
+                KaghanUI.showToast("Please write a comment.", "error");
                 return;
             }
 
             const btn = document.getElementById('submit-review-btn');
             btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xs"></i> Submitting...`;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Submitting...`;
 
             try {
-                const reviewData = {
-                    id: 'rev-' + Date.now(),
-                    roomId: currentRoom.id,
-                    roomName: currentRoom.name,
-                    userId: user.id || user.uid,
-                    userName: user.name || user.displayName || user.email.split('@')[0],
+                await KaghanDB.addReview({
+                    roomId: currentRoom ? currentRoom.id : 'global',
+                    roomName: currentRoom ? currentRoom.name : 'General Stay',
                     rating: rating,
                     comment: comment,
+                    userName: user.name || user.email || 'Verified Guest',
+                    userEmail: user.email,
                     createdAt: new Date().toISOString()
-                };
+                });
 
-                await KaghanDB.addReview(reviewData);
-                KaghanUI.showToast("Thank you! Your review has been published.", "success");
-                document.getElementById('review-comment').value = '';
-                await loadReviews(currentRoom.id);
+                KaghanUI.showToast("Review submitted successfully!", "success");
+                await loadReviews(currentRoom ? currentRoom.id : null);
             } catch (err) {
-                console.error("Review submit error:", err);
-                KaghanUI.showToast("Failed to submit review: " + err.message, "error");
-            } finally {
-                if (btn) {
-                    btn.disabled = false;
-                    btn.innerHTML = `<i class="fa-solid fa-paper-plane text-xs"></i> Submit Review`;
-                }
+                console.error("Submit review error:", err);
+                KaghanUI.showToast("Failed to submit review.", "error");
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fa-solid fa-paper-plane text-xs"></i> Submit Review`;
             }
         }
 

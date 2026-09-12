@@ -125,9 +125,10 @@ async function fetchListingsFromFirestore() {
                     const id = doc.name.split('/').pop();
                     const fields = doc.fields || {};
                     const slug = fields.slug ? fields.slug.stringValue : null;
-                    listingUrls.push(`https://www.kphstay.com/room-details.html?id=${id}`);
                     if (slug && slug !== id) {
-                        listingUrls.push(`https://www.kphstay.com/room/${slug}`);
+                        listingUrls.push(`https://kphstay.com/room/${slug}`);
+                    } else {
+                        listingUrls.push(`https://kphstay.com/room-details.html?id=${id}`);
                     }
                 });
             }
@@ -143,9 +144,10 @@ async function fetchListingsFromFirestore() {
                     const id = doc.name.split('/').pop();
                     const fields = doc.fields || {};
                     const slug = fields.slug ? fields.slug.stringValue : null;
-                    listingUrls.push(`https://www.kphstay.com/blog-details.html?id=${id}`);
                     if (slug && slug !== id) {
-                        listingUrls.push(`https://www.kphstay.com/blog/${slug}`);
+                        listingUrls.push(`https://kphstay.com/blog/${slug}`);
+                    } else {
+                        listingUrls.push(`https://kphstay.com/blog-details.html?id=${id}`);
                     }
                 });
             }
@@ -230,16 +232,20 @@ async function main() {
         // 4. URL Inspection API
         console.log("--- 3. DETAILED URL INSPECTION ---");
         const baseUrls = [
-            'https://www.kphstay.com/',
-            'https://www.kphstay.com/rooms.html',
-            'https://www.kphstay.com/blog.html',
-            'https://www.kphstay.com/contact.html',
-            'https://www.kphstay.com/booking.html',
-            'https://www.kphstay.com/login.html',
-            'https://www.kphstay.com/privacy.html',
-            'https://www.kphstay.com/terms.html',
-            'https://www.kphstay.com/refund.html',
-            'https://www.kphstay.com/pricing.html'
+            'https://kphstay.com/',
+            'https://kphstay.com/rooms',
+            'https://kphstay.com/furnished-apartments-islamabad',
+            'https://kphstay.com/furnished-apartments-murree',
+            'https://kphstay.com/furnished-apartments-nathia-gali',
+            'https://kphstay.com/serviced-apartments-islamabad',
+            'https://kphstay.com/luxury-apartments-murree',
+            'https://kphstay.com/vacation-rentals-nathia-gali',
+            'https://kphstay.com/blog',
+            'https://kphstay.com/contact',
+            'https://kphstay.com/privacy',
+            'https://kphstay.com/terms',
+            'https://kphstay.com/refund',
+            'https://kphstay.com/cookies'
         ];
 
         const listings = await fetchListingsFromFirestore();

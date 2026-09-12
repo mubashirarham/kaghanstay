@@ -39,163 +39,199 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/style.css?v=5">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/style.css?v=6">
 
     <style>
         body { font-family: 'Inter', sans-serif; }
         .outfit { font-family: 'Outfit', sans-serif; }
     </style>
 </head>
-<body class="bg-[#F8FAFC] text-[#0F172A] pt-24 min-h-screen flex flex-col justify-between">
+<body class="bg-[#F8FAFC] text-slate-900 pt-24 min-h-screen flex flex-col justify-between selection:bg-[#C5A059] selection:text-slate-900">
 
     <!-- Navigation Header -->
-    <nav id="hotel-navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-5 px-6 md:px-12 flex justify-between items-center text-white bg-[#0F172A]/90 backdrop-blur-md border-b border-white/10">
+    <nav id="hotel-navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-4 px-6 md:px-12 flex justify-between items-center text-white bg-[#0F172A]/95 backdrop-blur-md border-b border-white/10 shadow-lg">
         <a href="/" class="flex items-center gap-3 hover:opacity-90 transition-opacity">
             <img src="/assets/images/logo.png" alt="KPH Stay Logo" class="h-10 w-auto object-contain" onerror="this.src='/assets/images/logo.png'">
             <div class="flex flex-col">
-                <span class="text-lg font-bold tracking-wider uppercase outfit leading-none">KPH</span>
-                <span class="text-xs text-[#D4AF37] tracking-[0.2em] uppercase font-semibold">Stay</span>
+                <span class="text-lg font-black tracking-wider uppercase outfit leading-none text-white">KPH</span>
+                <span class="text-xs text-[#C5A059] tracking-[0.2em] uppercase font-extrabold">Stay</span>
             </div>
         </a>
 
         <!-- Navigation Links -->
-        <div class="hidden md:flex gap-8 items-center font-medium">
-            <a href="index.html" class="hover:text-[#D4AF37] transition-colors">Home</a>
-            <a href="rooms.html" class="hover:text-[#D4AF37] transition-colors">Rooms</a>
-            <a href="blog.html" class="hover:text-[#D4AF37] transition-colors">Blog</a>
-            <a href="contact.html" class="hover:text-[#D4AF37] transition-colors">Contact</a>
-            <div id="auth-links" class="flex gap-4 items-center">
-                <a href="login.html" class="border border-[#D4AF37] text-white px-5 py-2 rounded-full hover:bg-[#D4AF37] hover:text-white transition-all text-sm font-semibold">Login</a>
-                <a href="login.html?register=true" class="bg-[#D4AF37] text-white px-5 py-2 rounded-full hover:bg-white hover:text-slate-900 transition-all text-sm font-semibold luxury-shadow">Register</a>
+        <div class="hidden md:flex gap-8 items-center font-bold text-xs uppercase tracking-wider">
+            <a href="index.html" class="text-slate-300 hover:text-[#C5A059] transition-colors">Home</a>
+            <a href="rooms.html" class="text-slate-300 hover:text-[#C5A059] transition-colors">Rooms</a>
+            <a href="blog.html" class="text-slate-300 hover:text-[#C5A059] transition-colors">Blog</a>
+            <a href="track.html" class="text-slate-300 hover:text-[#C5A059] transition-colors">Track Stay</a>
+            <a href="contact.html" class="text-slate-300 hover:text-[#C5A059] transition-colors">Contact</a>
+            <div id="auth-links" class="flex gap-3 items-center ml-4">
+                <a href="login.html" class="border-2 border-slate-600 hover:border-[#C5A059] text-white px-5 py-2.5 rounded-xl hover:text-[#C5A059] transition-all text-xs font-black">Login</a>
+                <a href="login.html?register=true" class="bg-[#C5A059] text-slate-900 border-2 border-amber-300 hover:bg-white hover:border-white px-5 py-2.5 rounded-xl transition-all text-xs font-black shadow-md">Register</a>
             </div>
         </div>
 
         <!-- Mobile Menu Toggle Button -->
-        <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
-            <i class="fa-solid fa-bars text-2xl"></i>
+        <button id="menu-toggle" class="md:hidden text-white focus:outline-none p-2 rounded-xl bg-white/5 border border-white/10" aria-label="Toggle Navigation Menu">
+            <i class="fa-solid fa-bars text-xl"></i>
         </button>
     </nav>
 
     <!-- Mobile Drawer -->
-    <div id="mobile-drawer" class="fixed inset-0 bg-[#0F172A]/95 z-[60] flex flex-col items-center justify-center gap-8 text-white text-xl font-semibold">
+    <div id="mobile-drawer" class="fixed inset-0 bg-[#0F172A]/98 z-[60] flex flex-col items-center justify-center gap-8 text-white text-xl font-bold hidden">
         <button id="menu-close" class="absolute top-8 right-6 text-white text-3xl w-12 h-12 flex items-center justify-center focus:outline-none active:scale-90 transition-transform" aria-label="Close Menu">
             <i class="fa-solid fa-xmark"></i>
         </button>
-        <a href="index.html" class="hover:text-[#D4AF37]" onclick="toggleDrawer()">Home</a>
-        <a href="rooms.html" class="hover:text-[#D4AF37]" onclick="toggleDrawer()">Rooms</a>
-        <a href="blog.html" class="hover:text-[#D4AF37]" onclick="toggleDrawer()">Blog</a>
-        <a href="contact.html" class="hover:text-[#D4AF37]" onclick="toggleDrawer()">Contact</a>
-        <div id="auth-links-mobile" class="flex flex-col gap-4 w-64 text-center">
-            <a href="login.html" class="border border-[#D4AF37] text-white py-3 rounded-full hover:bg-[#D4AF37] transition-all text-base" onclick="toggleDrawer()">Login</a>
-            <a href="login.html?register=true" class="bg-[#D4AF37] text-white py-3 rounded-full hover:bg-white hover:text-slate-900 transition-all text-base shadow-lg" onclick="toggleDrawer()">Register</a>
+        <a href="index.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Home</a>
+        <a href="rooms.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Rooms</a>
+        <a href="blog.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Blog</a>
+        <a href="track.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Track Stay</a>
+        <a href="contact.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Contact</a>
+        <div id="auth-links-mobile" class="flex flex-col gap-3 w-64 text-center mt-4">
+            <a href="login.html" class="border-2 border-[#C5A059] text-white py-3.5 rounded-xl hover:bg-[#C5A059] hover:text-slate-900 transition-all text-sm font-black" onclick="toggleDrawer()">Login</a>
+            <a href="login.html?register=true" class="bg-[#C5A059] text-slate-900 py-3.5 rounded-xl hover:bg-white transition-all text-sm font-black shadow-lg" onclick="toggleDrawer()">Register</a>
         </div>
     </div>
 
     <!-- Main Content -->
-    <main class="flex-grow py-16 px-6 md:px-12 max-w-4xl mx-auto w-full text-left">
-        <span class="text-xs text-[#D4AF37] uppercase tracking-[0.3em] font-bold block text-center">Resort Guide</span>
-        <h1 class="text-3xl md:text-5xl font-extrabold outfit mt-3 mb-4 text-center tracking-tight text-slate-900">Privacy Policy</h1>
-        <p class="text-center text-slate-400 text-xs font-semibold mb-10"><i class="fa-solid fa-clock mr-1"></i> Last Updated: July 2026 &nbsp;|&nbsp; <a href="contact.html" class="text-[#D4AF37] hover:underline">Questions? Contact Us</a></p>
+    <main class="flex-grow py-14 px-6 md:px-12 max-w-4xl mx-auto w-full text-left">
+        <div class="text-center mb-10">
+            <div class="inline-flex items-center gap-2 bg-amber-50 border-2 border-amber-300 text-amber-900 text-xs font-black uppercase tracking-widest px-4 py-1.5 rounded-xl shadow-xs mb-3">
+                <i class="fa-solid fa-shield-halved text-[#C5A059]"></i> Data Privacy & Security
+            </div>
+            <h1 class="text-3xl md:text-5xl font-extrabold outfit tracking-tight text-slate-900">Privacy Policy</h1>
+            <p class="text-slate-600 text-xs md:text-sm font-bold mt-2">
+                <i class="fa-solid fa-clock text-[#C5A059] mr-1"></i> Effective Date: January 2026 &nbsp;|&nbsp; Last Updated: August 2026 &nbsp;|&nbsp; <a href="contact.html" class="text-[#C5A059] hover:underline font-extrabold">Contact Legal Desk</a>
+            </p>
+        </div>
         
-        <div class="bg-white p-8 md:p-12 rounded-[2.5rem] border border-slate-200/60 shadow-sm space-y-8 text-sm text-slate-600 leading-relaxed font-light">
+        <div class="bg-white p-8 md:p-12 rounded-3xl border-2 border-slate-200 shadow-md space-y-8 text-sm md:text-base text-slate-700 leading-relaxed font-normal">
             
-            <section>
-                <h3 class="text-lg font-bold outfit text-slate-800 mb-3">1. Information Collection</h3>
+            <section class="border-b-2 border-slate-100 pb-6">
+                <h3 class="text-lg md:text-xl font-extrabold outfit text-slate-900 mb-3 flex items-center gap-2">
+                    <span class="w-8 h-8 rounded-xl bg-amber-50 border-2 border-amber-200 text-[#C5A059] text-xs font-black flex items-center justify-center">1</span>
+                    Information Collection & Scope
+                </h3>
                 <p>
-                    When you perform a reservation or access guest portals at KPH Stay, we collect standard user details to confirm check-ins. This includes: name, contact email address, telephone numbers, and check-in/out schedules. If you consult our AI Concierge Chatbot, dialogue history is recorded to help answer reservation queries.
+                    When you reserve a suite, create an account, or access guest services at <strong>KPH Stay</strong> (https://kphstay.com), we collect essential personal information required to confirm your booking and ensure guest security. This includes: your full name, email address, contact telephone number, government-issued CNIC / Passport identification (required by local hospitality regulations), and check-in/out schedules.
+                </p>
+                <p class="mt-3">
+                    If you interact with our AI Concierge Assistant, conversation dialogue is logged securely to assist in fulfilling your immediate inquiries and preferences.
                 </p>
             </section>
 
-            <section>
-                <h3 class="text-lg font-bold outfit text-slate-800 mb-3">2. Data Security & Storage</h3>
+            <section class="border-b-2 border-slate-100 pb-6">
+                <h3 class="text-lg md:text-xl font-extrabold outfit text-slate-900 mb-3 flex items-center gap-2">
+                    <span class="w-8 h-8 rounded-xl bg-amber-50 border-2 border-amber-200 text-[#C5A059] text-xs font-black flex items-center justify-center">2</span>
+                    Data Storage & Cloud Database Security
+                </h3>
                 <p>
-                    All guest listings and room ledger documents are securely stored in **Google Cloud Firebase Firestore** databases. We apply custom rules to ensure guests can only view bookings mapped directly to their own account IDs, preventing cross-profile data leakage.
+                    All guest records, reservation ledgers, and transaction histories are securely stored using <strong>Google Cloud Firebase Firestore</strong> infrastructure with granular partition rules:
                 </p>
+                <div class="mt-3 p-5 bg-slate-50 rounded-2xl border-2 border-slate-200 text-xs md:text-sm font-medium text-slate-800 space-y-2">
+                    <p><i class="fa-solid fa-lock text-emerald-600 mr-2"></i><strong>Zero Client Database Writes:</strong> All database mutations and sensitive operations execute exclusively through verified serverless functions.</p>
+                    <p><i class="fa-solid fa-user-shield text-[#C5A059] mr-2"></i><strong>Strict Role-Based Access:</strong> Guests can only query reservations belonging to their authenticated Firebase UID.</p>
+                    <p><i class="fa-solid fa-shield text-blue-600 mr-2"></i><strong>End-to-End Encryption:</strong> Data in transit is secured with HTTPS TLS 1.3 / 256-bit encryption.</p>
+                </div>
             </section>
 
-            <section>
-                <h3 class="text-lg font-bold outfit text-slate-800 mb-3">3. Use of Information</h3>
+            <section class="border-b-2 border-slate-100 pb-6">
+                <h3 class="text-lg md:text-xl font-extrabold outfit text-slate-900 mb-3 flex items-center gap-2">
+                    <span class="w-8 h-8 rounded-xl bg-amber-50 border-2 border-amber-200 text-[#C5A059] text-xs font-black flex items-center justify-center">3</span>
+                    How We Use Collected Information
+                </h3>
                 <p>
-                    Collected guest profiles are exclusively used for:
+                    Collected guest profiles and booking details are used solely for:
                 </p>
-                <ul class="list-disc pl-5 mt-2 space-y-1">
-                    <li>Confirming and logging cabin reservations.</li>
-                    <li>Updating loyalty points balances in the Guest Dashboard.</li>
-                    <li>Analyzing general analytics metrics on the Admin Dashboard.</li>
-                    <li>Answering customer inquiries submitted via contact forms.</li>
+                <ul class="list-disc pl-6 mt-2 space-y-1.5 font-medium text-slate-800">
+                    <li>Confirming luxury suite reservations and sending digital booking vouchers.</li>
+                    <li>Issuing digital boarding passes and Wi-Fi access codes upon verified check-in.</li>
+                    <li>Updating loyalty points balances in your guest profile.</li>
+                    <li>Processing secure refund requests via our authorized payment provider (PayFast).</li>
+                    <li>Communicating critical itinerary alerts and front desk support.</li>
                 </ul>
-                <p class="mt-2">
-                    We will never lease, sell, or distribute your email or profile information to third-party advertising companies.
+                <p class="mt-3 font-semibold text-slate-900">
+                    We do not sell, rent, or lease your personal information to third-party advertisers under any circumstances.
                 </p>
             </section>
 
-            <section>
-                <h3 class="text-lg font-bold outfit text-slate-800 mb-3">4. Cookie & Local Storage Usage</h3>
+            <section class="border-b-2 border-slate-100 pb-6">
+                <h3 class="text-lg md:text-xl font-extrabold outfit text-slate-900 mb-3 flex items-center gap-2">
+                    <span class="w-8 h-8 rounded-xl bg-amber-50 border-2 border-amber-200 text-[#C5A059] text-xs font-black flex items-center justify-center">4</span>
+                    Cookies & Local Browser Storage
+                </h3>
                 <p>
-                    We store data locally on your device to enhance your user experience:
+                    We utilize local storage and cookies strictly to enhance system reliability and user security:
                 </p>
-                <ul class="list-disc pl-5 mt-2 space-y-1">
-                    <li><strong>localStorage:</strong> Retains active login sessions (`kaghan_hotel_session`) and Concierge AI conversation transcripts to save progress on page transitions.</li>
-                    <li><strong>Service Worker Cache:</strong> Saves core styles and navigation templates locally to enable offline reading in mountain resort areas.</li>
+                <ul class="list-disc pl-6 mt-2 space-y-1.5 text-slate-800 font-medium">
+                    <li><strong>Authentication Session:</strong> Retains active login state to prevent repetitive sign-ins.</li>
+                    <li><strong>AI Concierge Dialogue:</strong> Keeps active query memory during your browsing session.</li>
+                    <li><strong>Service Worker Cache:</strong> Caches core styles for fast page load times across mountain mobile networks.</li>
                 </ul>
             </section>
 
             <section>
-                <h3 class="text-lg font-bold outfit text-slate-800 mb-3">5. Guest Rights</h3>
+                <h3 class="text-lg md:text-xl font-extrabold outfit text-slate-900 mb-3 flex items-center gap-2">
+                    <span class="w-8 h-8 rounded-xl bg-amber-50 border-2 border-amber-200 text-[#C5A059] text-xs font-black flex items-center justify-center">5</span>
+                    Your Data Rights & Deletion Inquiries
+                </h3>
                 <p>
-                    You retain the right to query our lobby desk to inspect, edit, or request permanent deletion of your logged profile and historical check-in records from our databases. Contact us at `lobby@kphstay.com` to initiate modifications.
+                    You have the right to request a full copy of your registered personal information or request permanent deletion of your profile history. To submit a data request, please email our privacy officer at <a href="mailto:info@kphstay.com" class="text-[#C5A059] font-black hover:underline">info@kphstay.com</a> with your registered account credentials.
                 </p>
             </section>
         </div>
     </main>
 
     <!-- Footer -->
-    <footer class="bg-[#0F172A] text-white pt-16 pb-8 border-t border-white/5 mt-16">
-        <div class="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 text-left mb-12">
+    <footer class="bg-[#0F172A] text-white pt-16 pb-8 border-t border-white/10 mt-12">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 text-left mb-12">
             <div>
                 <div class="flex items-center gap-3 mb-4">
                     <img src="/assets/images/logo.png" alt="KPH Stay" class="h-8 w-auto">
-                    <span class="font-bold tracking-wider outfit text-lg uppercase">KPH <span class="text-[#D4AF37] text-xs">Stay</span></span>
+                    <span class="font-black tracking-wider outfit text-lg uppercase text-white">KPH <span class="text-[#C5A059]">Stay</span></span>
                 </div>
-                <p class="text-xs text-slate-400 font-light leading-relaxed">
-                    Premium serviced apartments, cabins, and suites in Nathia Gali and Islamabad.
+                <p class="text-xs text-slate-300 font-normal leading-relaxed">
+                    Premium serviced apartments, luxury suites, and mountain chalets across Islamabad and Nathia Gali.
                 </p>
             </div>
             <div>
-                <h5 class="text-xs uppercase tracking-widest font-bold text-[#D4AF37] mb-4">Quick Links</h5>
-                <ul class="space-y-2 text-xs font-light text-slate-300">
-                    <li><a href="rooms.html" class="hover:text-white">Suites Catalog</a></li>
-                    <li><a href="blog.html" class="hover:text-white">Resort Journal</a></li>
-                    <li><a href="contact.html" class="hover:text-white">Contact Lobby</a></li>
+                <h5 class="text-xs uppercase tracking-widest font-black text-[#C5A059] mb-4">Quick Links</h5>
+                <ul class="space-y-2.5 text-xs font-medium text-slate-300">
+                    <li><a href="rooms.html" class="hover:text-white transition-colors">Suites Catalog</a></li>
+                    <li><a href="blog.html" class="hover:text-white transition-colors">Resort Journal</a></li>
+                    <li><a href="track.html" class="hover:text-white transition-colors">Track Stay</a></li>
+                    <li><a href="contact.html" class="hover:text-white transition-colors">Contact Lobby</a></li>
                 </ul>
             </div>
             <div>
-                <h5 class="text-xs uppercase tracking-widest font-bold text-[#D4AF37] mb-4">Legal Guides</h5>
-                <ul class="space-y-2 text-xs font-light text-slate-300">
-                    <li><a href="pricing.html" class="hover:text-white">Pricing & Payment Policy</a></li>
-                    <li><a href="terms.html" class="hover:text-white">Terms & Conditions</a></li>
-                    <li><a href="privacy.html" class="hover:text-white">Privacy Policy</a></li>
-                    <li><a href="refund.html" class="hover:text-white">Refund Policy</a></li>
-                    <li><a href="cookies.html" class="hover:text-white">Cookie Policy</a></li>
+                <h5 class="text-xs uppercase tracking-widest font-black text-[#C5A059] mb-4">Legal Guides</h5>
+                <ul class="space-y-2.5 text-xs font-medium text-slate-300">
+                    <li><a href="pricing.html" class="hover:text-white transition-colors">Pricing & Payment Policy</a></li>
+                    <li><a href="terms.html" class="hover:text-white transition-colors">Terms & Conditions</a></li>
+                    <li><a href="privacy.html" class="hover:text-white transition-colors">Privacy Policy</a></li>
+                    <li><a href="refund.html" class="hover:text-white transition-colors">Refund Policy</a></li>
+                    <li><a href="cookies.html" class="hover:text-white transition-colors">Cookie Policy</a></li>
                 </ul>
             </div>
             <div>
-                <h5 class="text-xs uppercase tracking-widest font-bold text-[#D4AF37] mb-4">Contact Info</h5>
-                <p class="text-xs text-slate-300 font-light leading-relaxed">
-                    +92 51 8461975<br>
-                    lobby@kphstay.com
+                <h5 class="text-xs uppercase tracking-widest font-black text-[#C5A059] mb-4">Front Desk Hotline</h5>
+                <p class="text-xs text-slate-300 font-normal leading-relaxed">
+                    Asian Arcade, Sector C, Bahria Enclave, Islamabad<br>
+                    <strong class="text-white">+92 334 009 1127</strong> | +92 51 8461975<br>
+                    info@kphstay.com
                 </p>
             </div>
         </div>
-        <div class="border-t border-white/5 pt-8 text-center text-xs text-slate-500 font-semibold tracking-wider uppercase">
-            &copy; 2026 KPH Stay. All Rights Reserved.
+        <div class="border-t border-white/10 pt-8 text-center text-xs text-slate-400 font-bold tracking-wider uppercase max-w-7xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <span>&copy; 2026 KPH Stay. All Rights Reserved. SECP Registered.</span>
+            <span>Secured via 256-Bit SSL Encryption</span>
         </div>
     </footer>
 
     <!-- Scripts -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <script src="/assets/js/shared.js?v=5"></script>
+    <script src="/assets/js/shared.js?v=6"></script>
 </body>
 </html>

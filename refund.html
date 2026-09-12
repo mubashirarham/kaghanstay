@@ -12,7 +12,7 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
-    <title>Refund & Return Policy | KPH Stay</title>
+    <title>Refund & Cancellation Policy | KPH Stay</title>
     <meta name="description" content="Read KPH Stay's refund and cancellation policy. Transparent 48-hour cancellation refund policy, 5-7 business day PayFast refund processing, and double-payment resolution for stays in Nathia Gali and Islamabad.">
     <link rel="canonical" href="https://kphstay.com/refund">
     <link rel="manifest" href="/manifest.json">
@@ -28,8 +28,8 @@
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
       "itemListElement": [
-        {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.kphstay.com/"},
-        {"@type": "ListItem", "position": 2, "name": "Refund Policy", "item": "https://www.kphstay.com/refund"}
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://kphstay.com/"},
+        {"@type": "ListItem", "position": 2, "name": "Refund Policy", "item": "https://kphstay.com/refund"}
       ]
     }
     </script>
@@ -39,180 +39,192 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/style.css?v=5">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/style.css?v=6">
 
     <style>
         body { font-family: 'Inter', sans-serif; }
         .outfit { font-family: 'Outfit', sans-serif; }
     </style>
 </head>
-<body class="bg-[#F8FAFC] text-[#0F172A] pt-24 min-h-screen flex flex-col justify-between">
+<body class="bg-[#F8FAFC] text-slate-900 pt-24 min-h-screen flex flex-col justify-between selection:bg-[#C5A059] selection:text-slate-900">
 
     <!-- Navigation Header -->
-    <nav id="hotel-navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-5 px-6 md:px-12 flex justify-between items-center text-white bg-[#0F172A]/90 backdrop-blur-md border-b border-white/10">
+    <nav id="hotel-navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-4 px-6 md:px-12 flex justify-between items-center text-white bg-[#0F172A]/95 backdrop-blur-md border-b border-white/10 shadow-lg">
         <a href="/" class="flex items-center gap-3 hover:opacity-90 transition-opacity">
             <img src="/assets/images/logo.png" alt="KPH Stay Logo" class="h-10 w-auto object-contain" onerror="this.src='/assets/images/logo.png'">
             <div class="flex flex-col">
-                <span class="text-lg font-bold tracking-wider uppercase outfit leading-none">KPH</span>
-                <span class="text-xs text-[#D4AF37] tracking-[0.2em] uppercase font-semibold">Stay</span>
+                <span class="text-lg font-black tracking-wider uppercase outfit leading-none text-white">KPH</span>
+                <span class="text-xs text-[#C5A059] tracking-[0.2em] uppercase font-extrabold">Stay</span>
             </div>
         </a>
 
         <!-- Navigation Links -->
-        <div class="hidden md:flex gap-8 items-center font-medium">
-            <a href="index.html" class="hover:text-[#D4AF37] transition-colors">Home</a>
-            <a href="rooms.html" class="hover:text-[#D4AF37] transition-colors">Rooms</a>
-            <a href="blog.html" class="hover:text-[#D4AF37] transition-colors">Blog</a>
-            <a href="contact.html" class="hover:text-[#D4AF37] transition-colors">Contact</a>
-            <div id="auth-links" class="flex gap-4 items-center">
-                <a href="login.html" class="border border-[#D4AF37] text-white px-5 py-2 rounded-full hover:bg-[#D4AF37] hover:text-white transition-all text-sm font-semibold">Login</a>
-                <a href="login.html?register=true" class="bg-[#D4AF37] text-white px-5 py-2 rounded-full hover:bg-white hover:text-slate-900 transition-all text-sm font-semibold luxury-shadow">Register</a>
+        <div class="hidden md:flex gap-8 items-center font-bold text-xs uppercase tracking-wider">
+            <a href="index.html" class="text-slate-300 hover:text-[#C5A059] transition-colors">Home</a>
+            <a href="rooms.html" class="text-slate-300 hover:text-[#C5A059] transition-colors">Rooms</a>
+            <a href="blog.html" class="text-slate-300 hover:text-[#C5A059] transition-colors">Blog</a>
+            <a href="track.html" class="text-slate-300 hover:text-[#C5A059] transition-colors">Track Stay</a>
+            <a href="contact.html" class="text-slate-300 hover:text-[#C5A059] transition-colors">Contact</a>
+            <div id="auth-links" class="flex gap-3 items-center ml-4">
+                <a href="login.html" class="border-2 border-slate-600 hover:border-[#C5A059] text-white px-5 py-2.5 rounded-xl hover:text-[#C5A059] transition-all text-xs font-black">Login</a>
+                <a href="login.html?register=true" class="bg-[#C5A059] text-slate-900 border-2 border-amber-300 hover:bg-white hover:border-white px-5 py-2.5 rounded-xl transition-all text-xs font-black shadow-md">Register</a>
             </div>
         </div>
 
         <!-- Mobile Menu Toggle Button -->
-        <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
-            <i class="fa-solid fa-bars text-2xl"></i>
+        <button id="menu-toggle" class="md:hidden text-white focus:outline-none p-2 rounded-xl bg-white/5 border border-white/10" aria-label="Toggle Navigation Menu">
+            <i class="fa-solid fa-bars text-xl"></i>
         </button>
     </nav>
 
     <!-- Mobile Drawer -->
-    <div id="mobile-drawer" class="fixed inset-0 bg-[#0F172A]/95 z-[60] flex flex-col items-center justify-center gap-8 text-white text-xl font-semibold hidden">
+    <div id="mobile-drawer" class="fixed inset-0 bg-[#0F172A]/98 z-[60] flex flex-col items-center justify-center gap-8 text-white text-xl font-bold hidden">
         <button id="menu-close" class="absolute top-8 right-6 text-white text-3xl w-12 h-12 flex items-center justify-center focus:outline-none active:scale-90 transition-transform" aria-label="Close Menu">
             <i class="fa-solid fa-xmark"></i>
         </button>
-        <a href="index.html" class="hover:text-[#D4AF37]">Home</a>
-        <a href="rooms.html" class="hover:text-[#D4AF37]">Rooms</a>
-        <a href="blog.html" class="hover:text-[#D4AF37]">Blog</a>
-        <a href="contact.html" class="hover:text-[#D4AF37]">Contact</a>
-        <div id="auth-links-mobile" class="flex flex-col gap-4 w-64 text-center">
-            <a href="login.html" class="border border-[#D4AF37] text-white py-3 rounded-full hover:bg-[#D4AF37] transition-all text-base">Login</a>
-            <a href="login.html?register=true" class="bg-[#D4AF37] text-white py-3 rounded-full hover:bg-white hover:text-slate-900 transition-all text-base shadow-lg">Register</a>
+        <a href="index.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Home</a>
+        <a href="rooms.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Rooms</a>
+        <a href="blog.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Blog</a>
+        <a href="track.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Track Stay</a>
+        <a href="contact.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Contact</a>
+        <div id="auth-links-mobile" class="flex flex-col gap-3 w-64 text-center mt-4">
+            <a href="login.html" class="border-2 border-[#C5A059] text-white py-3.5 rounded-xl hover:bg-[#C5A059] hover:text-slate-900 transition-all text-sm font-black" onclick="toggleDrawer()">Login</a>
+            <a href="login.html?register=true" class="bg-[#C5A059] text-slate-900 py-3.5 rounded-xl hover:bg-white transition-all text-sm font-black shadow-lg" onclick="toggleDrawer()">Register</a>
         </div>
     </div>
 
     <!-- Main Content -->
-    <main class="flex-grow py-16 px-6 md:px-12 max-w-4xl mx-auto w-full text-left">
-        <span class="text-xs text-[#D4AF37] uppercase tracking-[0.3em] font-bold block text-center">Resort Policy</span>
-        <h1 class="text-3xl md:text-5xl font-extrabold outfit mt-3 mb-4 text-center tracking-tight text-slate-900">Refund & Cancellation Policy</h1>
-        <p class="text-center text-slate-400 text-xs font-semibold mb-10"><i class="fa-solid fa-clock mr-1"></i> Last Updated: August 2026 &nbsp;|&nbsp; <a href="contact.html" class="text-[#D4AF37] hover:underline">Questions? Contact Us</a></p>
+    <main class="flex-grow py-14 px-6 md:px-12 max-w-4xl mx-auto w-full text-left">
+        <div class="text-center mb-10">
+            <div class="inline-flex items-center gap-2 bg-amber-50 border-2 border-amber-300 text-amber-900 text-xs font-black uppercase tracking-widest px-4 py-1.5 rounded-xl shadow-xs mb-3">
+                <i class="fa-solid fa-rotate-left text-[#C5A059]"></i> Transparent Guarantee
+            </div>
+            <h1 class="text-3xl md:text-5xl font-extrabold outfit tracking-tight text-slate-900">Refund & Cancellation Policy</h1>
+            <p class="text-slate-600 text-xs md:text-sm font-bold mt-2">
+                <i class="fa-solid fa-clock text-[#C5A059] mr-1"></i> Effective Date: January 2026 &nbsp;|&nbsp; Last Updated: August 2026 &nbsp;|&nbsp; <a href="contact.html" class="text-[#C5A059] hover:underline font-extrabold">Helpline Desk</a>
+            </p>
+        </div>
         
-        <div class="bg-white p-8 md:p-12 rounded-[2.5rem] border border-slate-200/60 shadow-sm space-y-8 text-sm text-slate-600 leading-relaxed font-light">
+        <div class="bg-white p-8 md:p-12 rounded-3xl border-2 border-slate-200 shadow-md space-y-8 text-sm md:text-base text-slate-700 leading-relaxed font-normal">
             
-            <section>
-                <h3 class="text-lg font-bold outfit text-slate-800 mb-3">1. 48-Hour Cancellation & Refund Policy</h3>
+            <section class="border-b-2 border-slate-100 pb-6">
+                <h3 class="text-lg md:text-xl font-extrabold outfit text-slate-900 mb-3 flex items-center gap-2">
+                    <span class="w-8 h-8 rounded-xl bg-amber-50 border-2 border-amber-200 text-[#C5A059] text-xs font-black flex items-center justify-center">1</span>
+                    48-Hour Full Refund Policy
+                </h3>
                 <p>
-                    At <strong>KPH Stay</strong>, we strive to offer clear and transparent cancellation terms. We provide a <strong>48-Hour Refund Policy</strong> on all online room reservations made through our website (https://www.kphstay.com).
-                </p>
-                <p class="mt-2">
-                    If you cancel your booking within <strong>48 hours of original booking confirmation</strong> and at least 72 hours prior to scheduled check-in, you are eligible for a <strong>100% full refund</strong> of the paid amount in Pakistani Rupees (PKR).
+                    At <strong>KPH Stay</strong>, we are committed to transparent booking terms. We offer a <strong>100% Full Refund</strong> on all online room reservations made via our website (https://kphstay.com) if the cancellation is submitted within <strong>48 hours of original booking confirmation</strong>, provided that check-in is at least 72 hours away.
                 </p>
             </section>
 
-            <section>
-                <h3 class="text-lg font-bold outfit text-slate-800 mb-3">2. Refund Processing Timeframe (PayFast Gateway)</h3>
+            <section class="border-b-2 border-slate-100 pb-6">
+                <h3 class="text-lg md:text-xl font-extrabold outfit text-slate-900 mb-3 flex items-center gap-2">
+                    <span class="w-8 h-8 rounded-xl bg-amber-50 border-2 border-amber-200 text-[#C5A059] text-xs font-black flex items-center justify-center">2</span>
+                    Refund Processing via PayFast (5-7 Business Days)
+                </h3>
                 <p>
-                    All eligible refunds are initiated through our official payment gateway provider, <strong>PayFast</strong>. 
+                    All refunds are executed through our authorized payment gateway provider, <strong>PayFast</strong>:
                 </p>
-                <ul class="list-disc pl-5 mt-2 space-y-1">
-                    <li>Approved refunds are processed back to the original bank account, debit card, credit card, or mobile wallet (JazzCash / EasyPaisa) used during booking.</li>
-                    <li>Refund processing typically takes <strong>5 to 7 business days</strong> to reflect in your bank or card statement, depending on your issuing bank's settlement cycle.</li>
-                    <li>KPH Stay does not charge administrative processing fees for valid, eligible refunds.</li>
+                <ul class="list-disc pl-6 mt-2 space-y-1.5 font-medium text-slate-800">
+                    <li>Approved refunds are credited directly back to the original funding source (debit card, credit card, bank account, JazzCash, or EasyPaisa).</li>
+                    <li>Refunds typically post to your bank account or card balance within <strong>5 to 7 business days</strong>.</li>
+                    <li>KPH Stay does not deduct arbitrary cancellation or administrative fees on eligible refunds.</li>
+                </ul>
+            </section>
+
+            <section class="border-b-2 border-slate-100 pb-6">
+                <h3 class="text-lg md:text-xl font-extrabold outfit text-slate-900 mb-3 flex items-center gap-2">
+                    <span class="w-8 h-8 rounded-xl bg-amber-50 border-2 border-amber-200 text-[#C5A059] text-xs font-black flex items-center justify-center">3</span>
+                    How to Request a Cancellation or Refund
+                </h3>
+                <p>
+                    To submit an official refund request:
+                </p>
+                <div class="mt-3 p-5 bg-slate-50 rounded-2xl border-2 border-slate-200 text-xs md:text-sm font-medium text-slate-800 space-y-2">
+                    <p><i class="fa-solid fa-envelope text-[#C5A059] mr-2"></i><strong>Email:</strong> Send a message to <strong>info@kphstay.com</strong> with subject <em>"Refund Request - [Your Booking ID]"</em>.</p>
+                    <p><i class="fa-solid fa-phone text-emerald-600 mr-2"></i><strong>Helpline:</strong> Call our reservations desk at <strong>+92 334 009 1127</strong> or <strong>+92 51 8461975</strong>.</p>
+                    <p><i class="fa-solid fa-compass text-blue-600 mr-2"></i><strong>Track Portal:</strong> Enter your reference on the <a href="track.html" class="text-[#C5A059] font-bold hover:underline">Track Stay</a> page to request reschedule or cancellation.</p>
+                </div>
+            </section>
+
+            <section class="border-b-2 border-slate-100 pb-6">
+                <h3 class="text-lg md:text-xl font-extrabold outfit text-slate-900 mb-3 flex items-center gap-2">
+                    <span class="w-8 h-8 rounded-xl bg-amber-50 border-2 border-amber-200 text-[#C5A059] text-xs font-black flex items-center justify-center">4</span>
+                    Non-Refundable Scenarios
+                </h3>
+                <p>
+                    Refunds are not granted under the following circumstances:
+                </p>
+                <ul class="list-disc pl-6 mt-2 space-y-1.5 font-medium text-slate-800">
+                    <li>Cancellations requested after the 48-hour free cancellation window has elapsed.</li>
+                    <li>Cancellations requested less than 72 hours prior to scheduled check-in time.</li>
+                    <li>Guest "No-Shows" (failure to arrive on the confirmed check-in date without prior approved cancellation).</li>
+                    <li>Early check-outs after taking physical possession of the suite.</li>
                 </ul>
             </section>
 
             <section>
-                <h3 class="text-lg font-bold outfit text-slate-800 mb-3">3. How to Request a Refund</h3>
+                <h3 class="text-lg md:text-xl font-extrabold outfit text-slate-900 mb-3 flex items-center gap-2">
+                    <span class="w-8 h-8 rounded-xl bg-amber-50 border-2 border-amber-200 text-[#C5A059] text-xs font-black flex items-center justify-center">5</span>
+                    Duplicate Payment Resolution
+                </h3>
                 <p>
-                    To submit a cancellation or refund request, please follow these steps:
-                </p>
-                <ol class="list-decimal pl-5 mt-2 space-y-1">
-                    <li>Send an email to <strong>lobby@kphstay.com</strong> with the subject line <em>"Refund Request - [Your Booking ID]"</em>.</li>
-                    <li>Include your full name, registered contact number, Booking ID (`BK-XXXX`), and reason for cancellation.</li>
-                    <li>Alternatively, call our helpline at <strong>+92 334 009 1127</strong> or <strong>+92 51 8461975</strong> for immediate assistance.</li>
-                </ol>
-            </section>
-
-            <section>
-                <h3 class="text-lg font-bold outfit text-slate-800 mb-3">4. Non-Refundable Scenarios & Late Cancellations</h3>
-                <p>
-                    Refund requests will not be provided under the following conditions:
-                </p>
-                <ul class="list-disc pl-5 mt-2 space-y-1">
-                    <li>Cancellations requested after the 48-hour window has elapsed or less than 72 hours before check-in time.</li>
-                    <li>Guest "No-Shows" (failure to arrive on the scheduled check-in date without prior approved cancellation).</li>
-                    <li>Early departures after checking into the suite or apartment.</li>
-                    <li>Weather-related disruptions or personal schedule changes past the free cancellation period.</li>
-                </ul>
-            </section>
-
-            <section>
-                <h3 class="text-lg font-bold outfit text-slate-800 mb-3">5. Double Payments & Technical Transaction Glitches</h3>
-                <p>
-                    If an Internet connectivity issue or technical glitch leads to a duplicate charge or double payment via PayFast for the exact same reservation:
-                </p>
-                <p class="mt-2">
-                    Please notify us immediately at <strong>lobby@kphstay.com</strong> with payment receipts or transaction IDs. Upon verification, the duplicate payment will be <strong>100% refunded within 5 to 7 business days</strong> to your original payment card.
-                </p>
-            </section>
-
-            <section>
-                <h3 class="text-lg font-bold outfit text-slate-800 mb-3">6. Booking Date Modifications</h3>
-                <p>
-                    If your booking is past the 48-hour free cancellation window, you may request date modifications at least 72 hours prior to scheduled check-in. Modifications are subject to room availability and room rate differences. If the new dates have a higher rate, the guest pays the difference; if lower, no partial cash refunds are issued.
+                    In the event of an internet disruption resulting in a duplicate debit by PayFast for the identical reservation, notify us at <strong>info@kphstay.com</strong>. Upon instantaneous verification in our payment dashboard, the duplicate transaction will be <strong>100% refunded within 5 to 7 business days</strong>.
                 </p>
             </section>
         </div>
     </main>
 
     <!-- Footer -->
-    <footer class="bg-[#0F172A] text-white pt-16 pb-8 border-t border-white/5 mt-16">
-        <div class="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 text-left mb-12">
+    <footer class="bg-[#0F172A] text-white pt-16 pb-8 border-t border-white/10 mt-12">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 text-left mb-12">
             <div>
                 <div class="flex items-center gap-3 mb-4">
                     <img src="/assets/images/logo.png" alt="KPH Stay" class="h-8 w-auto">
-                    <span class="font-bold tracking-wider outfit text-lg uppercase">KPH <span class="text-[#D4AF37] text-xs">Stay</span></span>
+                    <span class="font-black tracking-wider outfit text-lg uppercase text-white">KPH <span class="text-[#C5A059]">Stay</span></span>
                 </div>
-                <p class="text-xs text-slate-400 font-light leading-relaxed">
-                    Premium serviced apartments, cabins, and suites in Nathia Gali and Islamabad.
+                <p class="text-xs text-slate-300 font-normal leading-relaxed">
+                    Premium serviced apartments, luxury suites, and mountain chalets across Islamabad and Nathia Gali.
                 </p>
             </div>
             <div>
-                <h5 class="text-xs uppercase tracking-widest font-bold text-[#D4AF37] mb-4">Quick Links</h5>
-                <ul class="space-y-2 text-xs font-light text-slate-300">
-                    <li><a href="rooms.html" class="hover:text-white">Suites Catalog</a></li>
-                    <li><a href="blog.html" class="hover:text-white">Resort Journal</a></li>
-                    <li><a href="contact.html" class="hover:text-white">Contact Lobby</a></li>
+                <h5 class="text-xs uppercase tracking-widest font-black text-[#C5A059] mb-4">Quick Links</h5>
+                <ul class="space-y-2.5 text-xs font-medium text-slate-300">
+                    <li><a href="rooms.html" class="hover:text-white transition-colors">Suites Catalog</a></li>
+                    <li><a href="blog.html" class="hover:text-white transition-colors">Resort Journal</a></li>
+                    <li><a href="track.html" class="hover:text-white transition-colors">Track Stay</a></li>
+                    <li><a href="contact.html" class="hover:text-white transition-colors">Contact Lobby</a></li>
                 </ul>
             </div>
             <div>
-                <h5 class="text-xs uppercase tracking-widest font-bold text-[#D4AF37] mb-4">Legal Guides</h5>
-                <ul class="space-y-2 text-xs font-light text-slate-300">
-                    <li><a href="pricing.html" class="hover:text-white">Pricing & Payment Policy</a></li>
-                    <li><a href="terms.html" class="hover:text-white">Terms & Conditions</a></li>
-                    <li><a href="privacy.html" class="hover:text-white">Privacy Policy</a></li>
-                    <li><a href="refund.html" class="hover:text-white">Refund Policy</a></li>
-                    <li><a href="cookies.html" class="hover:text-white">Cookie Policy</a></li>
+                <h5 class="text-xs uppercase tracking-widest font-black text-[#C5A059] mb-4">Legal Guides</h5>
+                <ul class="space-y-2.5 text-xs font-medium text-slate-300">
+                    <li><a href="pricing.html" class="hover:text-white transition-colors">Pricing & Payment Policy</a></li>
+                    <li><a href="terms.html" class="hover:text-white transition-colors">Terms & Conditions</a></li>
+                    <li><a href="privacy.html" class="hover:text-white transition-colors">Privacy Policy</a></li>
+                    <li><a href="refund.html" class="hover:text-white transition-colors">Refund Policy</a></li>
+                    <li><a href="cookies.html" class="hover:text-white transition-colors">Cookie Policy</a></li>
                 </ul>
             </div>
             <div>
-                <h5 class="text-xs uppercase tracking-widest font-bold text-[#D4AF37] mb-4">Contact Info</h5>
-                <p class="text-xs text-slate-300 font-light leading-relaxed">
+                <h5 class="text-xs uppercase tracking-widest font-black text-[#C5A059] mb-4">Front Desk Hotline</h5>
+                <p class="text-xs text-slate-300 font-normal leading-relaxed">
                     Asian Arcade, Sector C, Bahria Enclave, Islamabad<br>
-                    +92 334 009 1127 | +92 51 8461975<br>
-                    lobby@kphstay.com
+                    <strong class="text-white">+92 334 009 1127</strong> | +92 51 8461975<br>
+                    info@kphstay.com
                 </p>
             </div>
         </div>
-        <div class="border-t border-white/5 pt-8 text-center text-xs text-slate-500 font-semibold tracking-wider uppercase">
-            &copy; 2026 KPH Stay. All Rights Reserved.
+        <div class="border-t border-white/10 pt-8 text-center text-xs text-slate-400 font-bold tracking-wider uppercase max-w-7xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <span>&copy; 2026 KPH Stay. All Rights Reserved. SECP Registered.</span>
+            <span>Secured via 256-Bit SSL Encryption</span>
         </div>
     </footer>
 
     <!-- Scripts -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <script src="/assets/js/shared.js?v=5"></script>
+    <script src="/assets/js/shared.js?v=6"></script>
 </body>
 </html>

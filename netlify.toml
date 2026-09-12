@@ -62,6 +62,36 @@
   status = 200
 
 [[redirects]]
+  from = "/furnished-apartments-islamabad"
+  to = "/serviced-apartments-islamabad.html"
+  status = 200
+
+[[redirects]]
+  from = "/serviced-apartments-islamabad"
+  to = "/serviced-apartments-islamabad.html"
+  status = 200
+
+[[redirects]]
+  from = "/furnished-apartments-murree"
+  to = "/luxury-apartments-murree.html"
+  status = 200
+
+[[redirects]]
+  from = "/luxury-apartments-murree"
+  to = "/luxury-apartments-murree.html"
+  status = 200
+
+[[redirects]]
+  from = "/furnished-apartments-nathia-gali"
+  to = "/vacation-rentals-nathia-gali.html"
+  status = 200
+
+[[redirects]]
+  from = "/vacation-rentals-nathia-gali"
+  to = "/vacation-rentals-nathia-gali.html"
+  status = 200
+
+[[redirects]]
   from = "/room-details"
   to = "/room-details.html"
   status = 200

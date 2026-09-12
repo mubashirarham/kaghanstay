@@ -546,7 +546,11 @@ window.openDigitalPassModal = async function(bookingId) {
     document.getElementById('pass-room-name').innerText = room.name;
     document.getElementById('pass-location').innerText = room.location || 'Islamabad';
     document.getElementById('pass-dates').innerText = `${KaghanUI.formatDate(booking.checkIn)} - ${KaghanUI.formatDate(booking.checkOut)}`;
-    document.getElementById('pass-guest-name').innerText = booking.guestName || 'Valued Guest';
+    const wifiPassEl = document.getElementById('pass-wifi-pass');
+    if (wifiPassEl) {
+        const isCheckedIn = booking.status === 'confirmed' || booking.status === 'checked-in' || booking.status === 'paid';
+        wifiPassEl.innerText = isCheckedIn ? (room.wifiPassword || `KPH-${(room.unitCode || 'GUEST').toUpperCase()}-WIFI`) : 'Available at Check-in';
+    }
 
     modal.classList.remove('hidden');
     document.body.classList.add('modal-open');
@@ -568,6 +572,12 @@ window.closeDigitalPassModal = function() {
 };
 
 window.copyWifiPassword = function() {
-    navigator.clipboard.writeText('KPH-Resort-5G!2026');
-    KaghanUI.showToast('Wi-Fi Password copied to clipboard!', 'success');
+    const wifiEl = document.getElementById('pass-wifi-pass');
+    const pwd = wifiEl ? wifiEl.innerText.trim() : '';
+    if (pwd && pwd !== 'Available at Check-in') {
+        navigator.clipboard.writeText(pwd);
+        KaghanUI.showToast('Wi-Fi Password copied to clipboard!', 'success');
+    } else {
+        KaghanUI.showToast('Wi-Fi credentials will activate upon check-in.', 'info');
+    }
 };

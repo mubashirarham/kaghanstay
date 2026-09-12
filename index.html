@@ -14,7 +14,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
     <title>KPH Stay | Luxury Furnished Apartments in Islamabad, Murree & Nathia Gali</title>
     <meta name="description" content="Book premium furnished apartments in Islamabad, furnished apartments in Murree, and furnished apartments in Nathia Gali with KPH Stay. 1BHK to 4BHK fully furnished luxury suites with equipped kitchens, 24/7 concierge, power backup, and best rates guaranteed.">
-    <meta name="keywords" content="furnished apartments, furnished apartment in islamabad, furnished apartment in murree, furnished apartment in nathia gali, furnished appartment in islamabad, furnished appartment in muree, furnish appartment in nathia gali, service apartments islamabad, luxury furnished apartments islamabad, 1 bed furnished apartment islamabad, 2 bed furnished apartment islamabad, 3 bed furnished apartment islamabad, 4 bed furnished apartment islamabad, furnished flats in islamabad, holiday apartments murree, vacation rentals nathia gali, short stay apartments islamabad, KPH Stay">
+    <meta name="keywords" content="furnished apartments islamabad, furnished apartments murree, vacation rentals nathia gali, serviced apartments islamabad, luxury apartments islamabad, 1 bed furnished apartment islamabad, 2 bed furnished apartment islamabad, 3 bed furnished apartment islamabad, 4 bed furnished apartment islamabad, holiday apartments murree, short stay apartments islamabad, KPH Stay">
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
     <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
     <meta name="bingbot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
@@ -258,415 +258,443 @@
 <body class="bg-[#F8FAFC] text-[#0F172A] overflow-x-hidden font-sans">
 
     <!-- Header / Navigation -->
-    <nav id="hotel-navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-5 px-6 md:px-12 flex justify-between items-center text-white bg-[#0F172A]/90 backdrop-blur-md border-b border-white/10">
+    <nav id="hotel-navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-4 px-6 md:px-12 flex justify-between items-center text-white bg-[#0F172A]/95 backdrop-blur-md border-b border-slate-700/80 shadow-lg">
         <a href="/" class="flex items-center gap-3 hover:opacity-90 transition-opacity shrink-0">
-            <img src="/assets/images/logo.png" alt="KPH Stay Logo" class="h-10 w-auto object-contain">
+            <img src="/assets/images/logo.png" alt="Kaghan Stay Logo" class="h-10 w-auto object-contain">
             <div class="flex flex-col">
-                <span class="text-lg font-bold tracking-wider uppercase outfit leading-none">KPH</span>
-                <span class="text-xs text-[#D4AF37] tracking-[0.2em] uppercase font-semibold">Stay</span>
+                <span class="text-xl font-extrabold tracking-wider uppercase outfit leading-none text-white">Kaghan</span>
+                <span class="text-[11px] text-[#C5A059] tracking-[0.25em] uppercase font-bold">Stay</span>
             </div>
         </a>
 
         <!-- Navigation Links -->
-        <div class="hidden md:flex gap-8 items-center font-medium">
-            <a href="index.html" class="text-[#D4AF37] hover:text-[#D4AF37] transition-colors">Home</a>
-            <a href="rooms.html" class="hover:text-[#D4AF37] transition-colors">Rooms</a>
-            <a href="blog.html" class="hover:text-[#D4AF37] transition-colors">Journal</a>
-            <a href="track.html" class="hover:text-[#D4AF37] transition-colors">Track Stay</a>
-            <div id="auth-links" class="flex gap-4 items-center">
+        <div class="hidden md:flex gap-8 items-center font-semibold text-sm">
+            <a href="index.html" class="text-[#C5A059] border-b-2 border-[#C5A059] pb-0.5 transition-colors">Home</a>
+            <a href="rooms.html" class="text-slate-200 hover:text-[#C5A059] transition-colors">Accommodations</a>
+            <a href="blog.html" class="text-slate-200 hover:text-[#C5A059] transition-colors">Travel Journal</a>
+            <a href="track.html" class="text-slate-200 hover:text-[#C5A059] transition-colors">Track Stay</a>
+            
+            <!-- WhatsApp Direct Action -->
+            <a href="https://wa.me/923340091127?text=Hello%20Kaghan%20Stay,%20I%20would%20like%20to%20inquire%20about%20booking%20a%20furnished%20apartment." 
+               target="_blank" rel="noopener" 
+               class="hidden lg:inline-flex items-center gap-2 border border-emerald-500/60 bg-emerald-950/70 hover:bg-emerald-600 text-emerald-300 hover:text-white px-3.5 py-1.5 rounded-full transition-all text-xs font-bold shadow-sm">
+                <i class="fa-brands fa-whatsapp text-sm text-emerald-400"></i>
+                <span>Direct WhatsApp</span>
+            </a>
+
+            <div id="auth-links" class="flex gap-3 items-center">
                 <!-- Dynamically updated by shared JS -->
-                <a href="login.html" class="border border-[#D4AF37] text-white px-5 py-2 rounded-full hover:bg-[#D4AF37] hover:text-white transition-all text-sm font-semibold">Login</a>
-                <a href="login.html?register=true" class="bg-[#D4AF37] text-white px-5 py-2 rounded-full hover:bg-white hover:text-slate-900 transition-all text-sm font-semibold luxury-shadow">Register</a>
+                <a href="login.html" class="border border-slate-600 text-slate-200 px-4 py-1.5 rounded-full hover:border-[#C5A059] hover:text-white transition-all text-xs font-bold">Login</a>
+                <a href="login.html?register=true" class="bg-[#C5A059] text-slate-950 px-4 py-1.5 rounded-full hover:bg-white hover:text-slate-900 transition-all text-xs font-extrabold shadow-md">Register</a>
             </div>
         </div>
 
         <!-- Mobile Menu Toggle Button -->
-        <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
-            <i class="fa-solid fa-bars text-2xl"></i>
+        <button id="menu-toggle" class="md:hidden text-white border border-slate-700 bg-slate-800/80 w-10 h-10 rounded-xl flex items-center justify-center focus:outline-none" aria-label="Open Navigation Menu">
+            <i class="fa-solid fa-bars text-lg"></i>
         </button>
     </nav>
 
     <!-- Mobile Drawer Navigation -->
-    <div id="mobile-drawer" class="fixed inset-0 bg-[#0F172A]/95 z-[60] flex flex-col items-center justify-center gap-8 text-white text-xl font-semibold">
-        <button id="menu-close" class="absolute top-8 right-6 text-white text-3xl w-12 h-12 flex items-center justify-center focus:outline-none active:scale-90 transition-transform" aria-label="Close Menu">
+    <div id="mobile-drawer" class="fixed inset-0 bg-[#0F172A]/98 z-[60] flex flex-col items-center justify-center gap-6 text-white text-xl font-bold border-l border-slate-800">
+        <button id="menu-close" class="absolute top-6 right-6 text-white text-2xl w-11 h-11 rounded-full border border-slate-700 bg-slate-800 flex items-center justify-center focus:outline-none active:scale-90 transition-transform" aria-label="Close Menu">
             <i class="fa-solid fa-xmark"></i>
         </button>
-        <a href="index.html" class="text-[#D4AF37]" onclick="toggleDrawer()">Home</a>
-        <a href="rooms.html" class="hover:text-[#D4AF37]" onclick="toggleDrawer()">Rooms</a>
-        <a href="blog.html" class="hover:text-[#D4AF37]" onclick="toggleDrawer()">Blog</a>
-        <a href="track.html" class="hover:text-[#D4AF37]" onclick="toggleDrawer()">Track Stay</a>
-        <div id="auth-links-mobile" class="flex flex-col gap-4 w-64 text-center">
-            <a href="login.html" class="border border-[#D4AF37] text-white py-3 rounded-full hover:bg-[#D4AF37] transition-all text-base" onclick="toggleDrawer()">Login</a>
-            <a href="login.html?register=true" class="bg-[#D4AF37] text-white py-3 rounded-full hover:bg-white hover:text-slate-900 transition-all text-base shadow-lg" onclick="toggleDrawer()">Register</a>
+        <a href="index.html" class="text-[#C5A059] text-2xl font-extrabold" onclick="toggleDrawer()">Home</a>
+        <a href="rooms.html" class="hover:text-[#C5A059] text-slate-200" onclick="toggleDrawer()">Accommodations</a>
+        <a href="blog.html" class="hover:text-[#C5A059] text-slate-200" onclick="toggleDrawer()">Travel Journal</a>
+        <a href="track.html" class="hover:text-[#C5A059] text-slate-200" onclick="toggleDrawer()">Track Stay</a>
+        <a href="https://wa.me/923340091127" target="_blank" rel="noopener" class="border border-emerald-500/60 bg-emerald-950/80 text-emerald-300 px-6 py-2.5 rounded-full text-base font-bold flex items-center gap-2" onclick="toggleDrawer()">
+            <i class="fa-brands fa-whatsapp text-lg text-emerald-400"></i> WhatsApp Concierge
+        </a>
+        <div id="auth-links-mobile" class="flex flex-col gap-3 w-64 text-center mt-2">
+            <a href="login.html" class="border border-slate-600 text-white py-2.5 rounded-full hover:bg-slate-800 transition-all text-sm font-bold" onclick="toggleDrawer()">Login</a>
+            <a href="login.html?register=true" class="bg-[#C5A059] text-slate-950 py-2.5 rounded-full hover:bg-white transition-all text-sm font-extrabold shadow-lg" onclick="toggleDrawer()">Register</a>
         </div>
     </div>
 
-    <!-- Hero Section -->
-    <header class="relative pt-24 pb-16 sm:pt-36 sm:pb-32 overflow-hidden bg-slate-900">
-        <!-- Bright & Eye-Catching Authentic Room Image -->
-        <div class="absolute inset-0 z-0">
-            <img src="/assets/images/hero-apartment-raw.webp" alt="KPH Stay Luxury Service Apartment living room" class="w-full h-full object-cover object-center scale-100 transition-transform duration-1000">
-            <!-- Left-focused subtle gradient overlay to keep text 100% readable without any box background -->
-            <div class="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/50 to-transparent md:w-3/5"></div>
-            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-slate-950/40"></div>
+    <!-- Hero Section (Clean, Modern, Simple & Intuitive) -->
+    <header id="hero-slider-header" class="relative pt-32 pb-16 sm:pt-36 sm:pb-20 lg:pt-40 lg:pb-24 overflow-hidden bg-[#0A0F1D] border-b border-slate-800">
+        
+        <!-- Dynamic Room Background Slider (Smooth 5s room cross-fade) -->
+        <div id="hero-slider-bg" class="absolute inset-0 z-0 overflow-hidden cursor-pointer" onclick="KaghanHeroSlider.goToCurrentRoom()" title="Click to view this suite">
+            <!-- Initial Default Slide -->
+            <div class="hero-bg-slide active absolute inset-0 transition-opacity duration-1000 ease-in-out opacity-100">
+                <img src="/assets/images/hero-apartment-raw.webp" alt="Kaghan Stay Luxury Serviced Apartments" class="w-full h-full object-cover object-center transform scale-100 hero-ken-burns">
+            </div>
+            <!-- Soft Contrast Gradient Mask (Crystal clear text & vibrant room imagery) -->
+            <div class="absolute inset-0 bg-gradient-to-t from-[#0A0F1D] via-[#0A0F1D]/80 to-[#0A0F1D]/75 pointer-events-none"></div>
+            <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-transparent via-[#0A0F1D]/60 to-[#0A0F1D]/90 pointer-events-none"></div>
         </div>
 
-        <div class="relative z-10 max-w-[90rem] mx-auto px-4 sm:px-8 w-full">
-            <div class="max-w-xl text-left animate-fade-in pl-0 sm:pl-4">
-                <!-- Golootlo Partner Deal Banner -->
-                <div class="mb-4" data-animate="fade-down">
-                    <a href="booking.html" class="inline-flex items-center gap-2 border border-emerald-400/40 bg-emerald-950/70 hover:bg-emerald-900/90 backdrop-blur-md text-emerald-200 text-[11px] sm:text-xs font-semibold px-3.5 sm:px-4 py-1.5 rounded-full shadow-lg transition-all group">
-                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                        <span><strong>Golootlo Deal:</strong> Download Golootlo app for exclusive stay discounts</span>
-                        <i class="fa-solid fa-arrow-right text-[10px] text-emerald-400 group-hover:translate-x-1 transition-transform ml-1"></i>
-                    </a>
+        <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            
+            <!-- Category & Live Availability Badge -->
+            <div class="inline-flex items-center gap-2 border border-amber-400/40 bg-slate-900/85 backdrop-blur-md text-[#FFDF9E] text-xs font-extrabold uppercase tracking-widest px-4 py-1.5 rounded-full mb-5 shadow-md" data-animate="fade-down">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>Luxury Serviced Living across Pakistan</span>
+            </div>
+
+            <!-- Clean Master Headline -->
+            <h1 class="text-3xl sm:text-5xl lg:text-6xl text-white font-extrabold outfit tracking-tight leading-tight mb-4 drop-shadow-md" data-animate="fade-up">
+                Find Your Sanctuary in <br class="hidden sm:inline">
+                <span class="text-[#C5A059] font-serif italic font-normal">Islamabad, Murree & Nathia Gali</span>
+            </h1>
+
+            <!-- High-Clarity Subtitle -->
+            <p class="text-slate-300 text-sm sm:text-base md:text-lg font-normal max-w-2xl mx-auto mb-7 leading-relaxed" data-animate="fade-up">
+                Curated 1BHK, 2BHK & 3BHK serviced apartments, penthouses & alpine chalets with 24/7 heavy generator backup and fully equipped kitchens.
+            </p>
+
+            <!-- Quick 1-Tap Destination Filters (Fast & Simple Navigation) -->
+            <div class="flex flex-wrap items-center justify-center gap-2 mb-7" data-animate="fade-up">
+                <button type="button" onclick="selectHeroDestination('all', this)" class="hero-dest-pill active px-4 py-2 rounded-full text-xs font-extrabold bg-[#C5A059] text-slate-950 border border-amber-400 shadow-md cursor-pointer transition-all">
+                    <i class="fa-solid fa-globe mr-1"></i> All Suites
+                </button>
+                <button type="button" onclick="selectHeroDestination('islamabad', this)" class="hero-dest-pill px-4 py-2 rounded-full text-xs font-bold bg-slate-900/85 hover:bg-slate-800 text-slate-200 border border-slate-700 hover:border-[#C5A059] hover:text-white cursor-pointer transition-all">
+                    <i class="fa-solid fa-city text-amber-400 mr-1"></i> Islamabad
+                </button>
+                <button type="button" onclick="selectHeroDestination('murree', this)" class="hero-dest-pill px-4 py-2 rounded-full text-xs font-bold bg-slate-900/85 hover:bg-slate-800 text-slate-200 border border-slate-700 hover:border-[#C5A059] hover:text-white cursor-pointer transition-all">
+                    <i class="fa-solid fa-tree text-emerald-400 mr-1"></i> Murree Hills
+                </button>
+                <button type="button" onclick="selectHeroDestination('nathiagali', this)" class="hero-dest-pill px-4 py-2 rounded-full text-xs font-bold bg-slate-900/85 hover:bg-slate-800 text-slate-200 border border-slate-700 hover:border-[#C5A059] hover:text-white cursor-pointer transition-all">
+                    <i class="fa-solid fa-mountain-sun text-cyan-400 mr-1"></i> Nathia Gali
+                </button>
+            </div>
+
+            <!-- Unified Luxury Booking & Search Card -->
+            <div id="hero-search-card" class="relative z-50 backdrop-blur-xl bg-[#0F172A]/95 rounded-3xl p-4 sm:p-6 md:p-7 border border-[#C5A059]/40 shadow-[0_24px_50px_-12px_rgba(0,0,0,0.8)] text-left text-white max-w-5xl mx-auto" style="position: relative; z-index: 50;">
+                
+                <!-- Stay Duration Tag Selector -->
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mb-5 border-b border-slate-700/80 pb-4">
+                    <span class="text-xs uppercase tracking-widest text-[#FFDF9E] font-extrabold flex items-center gap-2">
+                        <i class="fa-solid fa-sliders text-[#C5A059]"></i> Select Stay Duration
+                    </span>
+                    <div class="grid grid-cols-3 sm:flex gap-2 w-full sm:w-auto" id="hero-stay-type-tags">
+                        <button type="button" onclick="selectHeroStayType('daily')" id="stay-tag-daily" class="px-4 py-1.5 rounded-full text-xs font-extrabold transition-all bg-[#C5A059] text-slate-950 border border-amber-400 shadow-md cursor-pointer text-center whitespace-nowrap">Daily Stay</button>
+                        <button type="button" onclick="selectHeroStayType('weekly')" id="stay-tag-weekly" class="px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-slate-800/90 text-slate-200 border border-slate-600 hover:border-[#C5A059] hover:text-white cursor-pointer text-center whitespace-nowrap">Weekly (-15%)</button>
+                        <button type="button" onclick="selectHeroStayType('monthly')" id="stay-tag-monthly" class="px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-slate-800/90 text-slate-200 border border-slate-600 hover:border-[#C5A059] hover:text-white cursor-pointer text-center whitespace-nowrap">Monthly (-35%)</button>
+                    </div>
+                    <input type="hidden" id="hero-stay-type" value="daily">
                 </div>
 
-                <!-- Gilded Subtitle Badge -->
-                <span class="inline-flex items-center gap-2 border border-[#C5A059]/60 bg-[#C5A059]/20 backdrop-blur-md text-[#EBD3A3] uppercase tracking-[0.2em] sm:tracking-[0.25em] text-[10px] sm:text-[11px] font-bold px-3.5 sm:px-4 py-1.5 rounded-full mb-4 sm:mb-5 shadow-lg" data-animate="fade-down">
-                    <span class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-[#C5A059] animate-ping"></span>
-                    MAKE EVERY MOMENT UNFORGETTABLE
-                </span>
-                
-                <!-- Main Headline -->
-                <h1 class="text-3xl sm:text-5xl md:text-6xl text-white font-extrabold leading-[1.15] sm:leading-[1.1] mb-4 sm:mb-5 outfit tracking-tight drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)]" data-animate="fade-up">
-                    Feel Right <br>
-                    <span class="bg-gradient-to-r from-[#C5A059] via-[#EBD3A3] to-[#C5A059] bg-clip-text text-transparent font-serif italic font-normal">at Home.</span>
-                </h1>
-                
-                <!-- Short, SEO-Optimized Subtitle -->
-                <p class="text-slate-200 text-xs sm:text-base md:text-lg mb-6 sm:mb-8 font-normal leading-relaxed max-w-lg drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]" data-animate="fade-up">
-                    Luxury <span class="text-white font-bold">furnished apartments</span> & serviced suites in <span class="text-white font-bold">Islamabad</span>, <span class="text-[#EBD3A3] font-bold">Murree</span>, and <span class="text-white font-bold">Nathia Gali</span>. Fully equipped kitchens, 24/7 concierge, fast Wi-Fi, and 5-star comfort crafted around you.
-                </p>
+                <form id="hero-search-form" onsubmit="handleHeroSearchSubmit(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3.5 items-end">
+                    <!-- Location Custom Dropdown -->
+                    <div class="sm:col-span-1 lg:col-span-3">
+                        <label class="block text-xs uppercase tracking-widest text-[#FFDF9E] font-extrabold mb-1.5 ml-1">Destination</label>
+                        <div class="relative custom-dropdown" id="dropdown-location">
+                            <button type="button" onclick="toggleCustomDropdown('dropdown-location')" class="w-full bg-slate-900/90 border border-slate-700 hover:border-[#C5A059] focus:border-[#C5A059] rounded-2xl pl-11 pr-8 py-3.5 outline-none transition-all text-white text-xs md:text-sm text-left flex items-center justify-between cursor-pointer relative shadow-inner">
+                                <i class="fa-solid fa-location-dot absolute left-4 text-[#C5A059] pointer-events-none text-base"></i>
+                                <span class="dropdown-selected font-bold whitespace-nowrap overflow-hidden text-ellipsis">All Locations</span>
+                                <i class="fa-solid fa-chevron-down text-slate-400 text-xs ml-1 shrink-0 transition-transform duration-300"></i>
+                            </button>
+                            <div class="dropdown-menu border border-slate-700 bg-[#0F172A] shadow-2xl">
+                                <div class="dropdown-item selected" data-value="all">
+                                    <div class="icon-wrapper"><i class="fa-solid fa-globe"></i></div>
+                                    <div class="flex flex-col min-w-0">
+                                        <span class="font-bold text-white text-xs">All Locations</span>
+                                        <span class="text-[10px] text-slate-300 font-normal leading-tight">Explore all destinations in Pakistan</span>
+                                    </div>
+                                </div>
+                                <div class="dropdown-item" data-value="islamabad">
+                                    <div class="icon-wrapper"><i class="fa-solid fa-city"></i></div>
+                                    <div class="flex flex-col min-w-0">
+                                        <span class="font-bold text-white text-xs">Islamabad</span>
+                                        <span class="text-[10px] text-slate-300 font-normal leading-tight">Margalla Hills & Bahria Enclave</span>
+                                    </div>
+                                </div>
+                                <div class="dropdown-item" data-value="nathiagali">
+                                    <div class="icon-wrapper"><i class="fa-solid fa-mountain-sun"></i></div>
+                                    <div class="flex flex-col min-w-0">
+                                        <span class="font-bold text-white text-xs">Nathia Gali</span>
+                                        <span class="text-[10px] text-slate-300 font-normal leading-tight">Pine Trails & Alpine Resorts</span>
+                                    </div>
+                                </div>
+                                <div class="dropdown-item" data-value="murree">
+                                    <div class="icon-wrapper"><i class="fa-solid fa-tree"></i></div>
+                                    <div class="flex flex-col min-w-0">
+                                        <span class="font-bold text-white text-xs">Murree & Bhurban</span>
+                                        <span class="text-[10px] text-slate-300 font-normal leading-tight">Mall Road & Golf Resorts</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="hidden" id="search-location" value="all">
+                        </div>
+                    </div>
 
-                <!-- Action Button (Explore Collection Only) -->
-                <div class="flex items-center gap-4 mb-8 sm:mb-10" data-animate="fade-up">
-                    <a href="rooms.html" class="w-full sm:w-auto bg-gradient-to-r from-[#C5A059] to-[#B08940] hover:from-white hover:to-white hover:text-slate-900 text-white font-bold px-7 sm:px-8 py-3.5 sm:py-4 rounded-2xl shadow-2xl hover:shadow-[0_10px_30px_rgba(197,160,89,0.5)] transition-all duration-300 flex items-center justify-center gap-3 group text-sm md:text-base cursor-pointer">
-                        <span>Explore Collection</span>
-                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
-                    </a>
-                </div>
+                    <!-- Suite Style Custom Dropdown -->
+                    <div class="sm:col-span-1 lg:col-span-3">
+                        <label class="block text-xs uppercase tracking-widest text-[#FFDF9E] font-extrabold mb-1.5 ml-1">Suite Type</label>
+                        <div class="relative custom-dropdown" id="dropdown-type">
+                            <button type="button" onclick="toggleCustomDropdown('dropdown-type')" class="w-full bg-slate-900/90 border border-slate-700 hover:border-[#C5A059] focus:border-[#C5A059] rounded-2xl pl-11 pr-8 py-3.5 outline-none transition-all text-white text-xs md:text-sm text-left flex items-center justify-between cursor-pointer relative shadow-inner">
+                                <i class="fa-solid fa-bed absolute left-4 text-[#C5A059] pointer-events-none text-base"></i>
+                                <span class="dropdown-selected font-bold whitespace-nowrap overflow-hidden text-ellipsis">All Suite Types</span>
+                                <i class="fa-solid fa-chevron-down text-slate-400 text-xs ml-1 shrink-0 transition-transform duration-300"></i>
+                            </button>
+                            <div class="dropdown-menu border border-slate-700 bg-[#0F172A] shadow-2xl">
+                                <div class="dropdown-item selected" data-value="all">
+                                    <div class="icon-wrapper"><i class="fa-solid fa-border-all"></i></div>
+                                    <div class="flex flex-col min-w-0">
+                                        <span class="font-bold text-white text-xs">All Types</span>
+                                        <span class="text-[10px] text-slate-300 font-normal leading-tight">Browse Studio to 4BHK & Farmhouses</span>
+                                    </div>
+                                </div>
+                                <div class="dropdown-item" data-value="studio">
+                                    <div class="icon-wrapper"><i class="fa-solid fa-cube"></i></div>
+                                    <div class="flex flex-col min-w-0">
+                                        <span class="font-bold text-white text-xs">Studio Furnished</span>
+                                        <span class="text-[10px] text-slate-300 font-normal leading-tight">Compact Luxury Suite (1-2 Guests)</span>
+                                    </div>
+                                </div>
+                                <div class="dropdown-item" data-value="1bed">
+                                    <div class="icon-wrapper"><i class="fa-solid fa-bed"></i></div>
+                                    <div class="flex flex-col min-w-0">
+                                        <span class="font-bold text-white text-xs">1 Bed Furnished</span>
+                                        <span class="text-[10px] text-slate-300 font-normal leading-tight">Executive Couple Suite (2 Guests)</span>
+                                    </div>
+                                </div>
+                                <div class="dropdown-item" data-value="2bed">
+                                    <div class="icon-wrapper"><i class="fa-solid fa-door-open"></i></div>
+                                    <div class="flex flex-col min-w-0">
+                                        <span class="font-bold text-white text-xs">2 Bed Furnished</span>
+                                        <span class="text-[10px] text-slate-300 font-normal leading-tight">Family Apartment Suite (4 Guests)</span>
+                                    </div>
+                                </div>
+                                <div class="dropdown-item" data-value="3bed">
+                                    <div class="icon-wrapper"><i class="fa-solid fa-house-chimney"></i></div>
+                                    <div class="flex flex-col min-w-0">
+                                        <span class="font-bold text-white text-xs">3 Bed Furnished</span>
+                                        <span class="text-[10px] text-slate-300 font-normal leading-tight">Spacious Family Suite (6 Guests)</span>
+                                    </div>
+                                </div>
+                                <div class="dropdown-item" data-value="4bed">
+                                    <div class="icon-wrapper"><i class="fa-solid fa-building"></i></div>
+                                    <div class="flex flex-col min-w-0">
+                                        <span class="font-bold text-white text-xs">4 Bed Furnished</span>
+                                        <span class="text-[10px] text-slate-300 font-normal leading-tight">Luxury Penthouse Suite (8 Guests)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="hidden" id="search-type" value="all">
+                        </div>
+                    </div>
 
-                <!-- Storytelling Key Feature Highlights -->
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 pt-5 sm:pt-6 border-t border-white/20 max-w-lg" data-animate="fade-up">
-                    <div class="flex items-center gap-2.5">
-                        <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-slate-900/60 border border-white/20 flex items-center justify-center text-[#EBD3A3] text-xs sm:text-sm shrink-0 shadow-lg">
-                            <i class="fa-solid fa-house-laptop"></i>
-                        </div>
-                        <div>
-                            <h4 class="text-white text-xs md:text-sm font-bold leading-tight drop-shadow">Modern Design</h4>
-                            <p class="text-slate-300 text-[10px] md:text-xs">Smart features</p>
+                    <!-- Dates Picker Trigger -->
+                    <div class="sm:col-span-1 lg:col-span-2">
+                        <label class="block text-xs uppercase tracking-widest text-[#FFDF9E] font-extrabold mb-1.5 ml-1">Dates</label>
+                        <button type="button" onclick="KaghanSearchWidget.openCalendarModal()" class="w-full bg-slate-900/90 border border-slate-700 hover:border-[#C5A059] focus:border-[#C5A059] rounded-2xl pl-11 pr-4 py-3.5 outline-none transition-all text-white text-xs md:text-sm text-left flex items-center justify-between cursor-pointer relative group shadow-inner">
+                            <i class="fa-solid fa-calendar-days absolute left-4 text-[#C5A059] pointer-events-none text-base group-hover:scale-110 transition-transform"></i>
+                            <span id="search-date-trigger-text" class="font-bold whitespace-nowrap overflow-hidden text-ellipsis">Add dates</span>
+                            <i class="fa-solid fa-chevron-down text-slate-400 text-xs shrink-0"></i>
+                        </button>
+                        <input type="hidden" id="search-check-in">
+                        <input type="hidden" id="search-check-out">
+                    </div>
+
+                    <!-- Guests Count Stepper Trigger -->
+                    <div class="sm:col-span-1 lg:col-span-2 relative">
+                        <label class="block text-xs uppercase tracking-widest text-[#FFDF9E] font-extrabold mb-1.5 ml-1">Guests</label>
+                        <button type="button" onclick="KaghanSearchWidget.toggleGuestStepperPopover()" class="w-full bg-slate-900/90 border border-slate-700 hover:border-[#C5A059] focus:border-[#C5A059] rounded-2xl pl-11 pr-4 py-3.5 outline-none transition-all text-white text-xs md:text-sm text-left flex items-center justify-between cursor-pointer relative group shadow-inner">
+                            <i class="fa-solid fa-users absolute left-4 text-[#C5A059] pointer-events-none text-base group-hover:scale-110 transition-transform"></i>
+                            <span id="search-guest-trigger-text" class="font-bold whitespace-nowrap overflow-hidden text-ellipsis">2 Guests</span>
+                            <i class="fa-solid fa-chevron-down text-slate-400 text-xs shrink-0"></i>
+                        </button>
+                        <input type="hidden" id="search-guests" value="2">
+
+                        <!-- Mobile-Optimized Screen-Safe Guest Stepper Dropdown Popover -->
+                        <div id="guest-stepper-popover" class="hidden absolute top-full left-0 sm:left-auto right-0 mt-2 sm:mt-3 bg-[#0F172A] border-2 border-[#C5A059]/50 rounded-2xl p-4 sm:p-5 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.95)] z-[100] text-white space-y-3 sm:space-y-4 w-full sm:w-80 max-w-[calc(100vw-2.5rem)]">
+                            <div class="text-[10px] uppercase font-extrabold tracking-widest text-[#FFDF9E] mb-1">Quick Presets</div>
+                            <div class="grid grid-cols-4 gap-1.5 pb-3 border-b border-slate-700">
+                                <button type="button" onclick="KaghanSearchWidget.setGuestPreset(1,0,0)" data-adults="1" data-children="0" data-infants="0" class="preset-btn py-1.5 px-1 rounded-lg bg-slate-800 hover:bg-[#C5A059] hover:text-slate-950 border border-slate-600 text-[10px] font-bold transition-all text-center cursor-pointer">Solo (1)</button>
+                                <button type="button" onclick="KaghanSearchWidget.setGuestPreset(2,0,0)" data-adults="2" data-children="0" data-infants="0" class="preset-btn py-1.5 px-1 rounded-lg bg-[#C5A059] text-slate-950 border-amber-400 text-[10px] font-extrabold transition-all text-center cursor-pointer">Couple (2)</button>
+                                <button type="button" onclick="KaghanSearchWidget.setGuestPreset(2,2,0)" data-adults="2" data-children="2" data-infants="0" class="preset-btn py-1.5 px-1 rounded-lg bg-slate-800 hover:bg-[#C5A059] hover:text-slate-950 border border-slate-600 text-[10px] font-bold transition-all text-center cursor-pointer">Family (4)</button>
+                                <button type="button" onclick="KaghanSearchWidget.setGuestPreset(4,2,0)" data-adults="4" data-children="2" data-infants="0" class="preset-btn py-1.5 px-1 rounded-lg bg-slate-800 hover:bg-[#C5A059] hover:text-slate-950 border border-slate-600 text-[10px] font-bold transition-all text-center cursor-pointer">Group (6)</button>
+                            </div>
+                            <!-- Adults -->
+                            <div class="flex items-center justify-between pt-1">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-[#FFDF9E] text-xs"><i class="fa-solid fa-user-tie"></i></div>
+                                    <div>
+                                        <div class="text-xs font-bold text-white">Adults</div>
+                                        <div class="text-[10px] text-slate-300">Ages 13+</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2.5">
+                                    <button type="button" onclick="KaghanSearchWidget.changeGuests('adults', -1)" class="w-8 h-8 rounded-full border border-slate-600 bg-slate-800 flex items-center justify-center text-xs hover:bg-[#C5A059] hover:text-slate-950 hover:border-amber-400 active:scale-95 transition-all font-bold text-white cursor-pointer">-</button>
+                                    <span id="stepper-adults-count" class="w-5 text-center text-xs font-extrabold text-[#FFDF9E]">2</span>
+                                    <button type="button" onclick="KaghanSearchWidget.changeGuests('adults', 1)" class="w-8 h-8 rounded-full border border-slate-600 bg-slate-800 flex items-center justify-center text-xs hover:bg-[#C5A059] hover:text-slate-950 hover:border-amber-400 active:scale-95 transition-all font-bold text-white cursor-pointer">+</button>
+                                </div>
+                            </div>
+                            <!-- Children -->
+                            <div class="flex items-center justify-between border-t border-slate-700/80 pt-3">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-[#FFDF9E] text-xs"><i class="fa-solid fa-child"></i></div>
+                                    <div>
+                                        <div class="text-xs font-bold text-white">Children</div>
+                                        <div class="text-[10px] text-slate-300">Ages 2–12</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2.5">
+                                    <button type="button" onclick="KaghanSearchWidget.changeGuests('children', -1)" class="w-8 h-8 rounded-full border border-slate-600 bg-slate-800 flex items-center justify-center text-xs hover:bg-[#C5A059] hover:text-slate-950 hover:border-amber-400 active:scale-95 transition-all font-bold text-white cursor-pointer">-</button>
+                                    <span id="stepper-children-count" class="w-5 text-center text-xs font-extrabold text-[#FFDF9E]">0</span>
+                                    <button type="button" onclick="KaghanSearchWidget.changeGuests('children', 1)" class="w-8 h-8 rounded-full border border-slate-600 bg-slate-800 flex items-center justify-center text-xs hover:bg-[#C5A059] hover:text-slate-950 hover:border-amber-400 active:scale-95 transition-all font-bold text-white cursor-pointer">+</button>
+                                </div>
+                            </div>
+                            <!-- Infants -->
+                            <div class="flex items-center justify-between border-t border-slate-700/80 pt-3">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-[#FFDF9E] text-xs"><i class="fa-solid fa-baby"></i></div>
+                                    <div>
+                                        <div class="text-xs font-bold text-white">Infants</div>
+                                        <div class="text-[10px] text-slate-300">Under 2</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2.5">
+                                    <button type="button" onclick="KaghanSearchWidget.changeGuests('infants', -1)" class="w-8 h-8 rounded-full border border-slate-600 bg-slate-800 flex items-center justify-center text-xs hover:bg-[#C5A059] hover:text-slate-950 hover:border-amber-400 active:scale-95 transition-all font-bold text-white cursor-pointer">-</button>
+                                    <span id="stepper-infants-count" class="w-5 text-center text-xs font-extrabold text-[#FFDF9E]">0</span>
+                                    <button type="button" onclick="KaghanSearchWidget.changeGuests('infants', 1)" class="w-8 h-8 rounded-full border border-slate-600 bg-slate-800 flex items-center justify-center text-xs hover:bg-[#C5A059] hover:text-slate-950 hover:border-amber-400 active:scale-95 transition-all font-bold text-white cursor-pointer">+</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="flex items-center gap-2.5">
-                        <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-slate-900/60 border border-white/20 flex items-center justify-center text-[#EBD3A3] text-xs sm:text-sm shrink-0 shadow-lg">
-                            <i class="fa-solid fa-shield-halved"></i>
-                        </div>
-                        <div>
-                            <h4 class="text-white text-xs md:text-sm font-bold leading-tight drop-shadow">Premium Quality</h4>
-                            <p class="text-slate-300 text-[10px] md:text-xs">5-Star luxury</p>
-                        </div>
+
+                    <!-- Submit Search Button -->
+                    <div class="sm:col-span-2 lg:col-span-2">
+                        <button type="submit" id="hero-search-submit" class="w-full bg-[#C5A059] hover:bg-white hover:text-slate-950 text-slate-950 font-black py-3.5 rounded-2xl transition-all shadow-lg flex items-center justify-center gap-2 text-xs md:text-sm cursor-pointer min-h-[52px] border-2 border-amber-300">
+                            <i class="fa-solid fa-magnifying-glass text-base"></i>
+                            <span>Find Suites</span>
+                        </button>
                     </div>
-                    <div class="flex items-center gap-2.5">
-                        <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-slate-900/60 border border-white/20 flex items-center justify-center text-[#EBD3A3] text-xs sm:text-sm shrink-0 shadow-lg">
-                            <i class="fa-solid fa-headset"></i>
-                        </div>
-                        <div>
-                            <h4 class="text-white text-xs md:text-sm font-bold leading-tight drop-shadow">Dedicated Support</h4>
-                            <p class="text-slate-300 text-[10px] md:text-xs">24/7 Concierge</p>
-                        </div>
+                </form>
+            </div>
+
+            <!-- Key Hospitality Guarantees (Clean, simple trust row) -->
+            <div class="relative z-0 flex flex-wrap items-center justify-center gap-4 sm:gap-8 mt-7 text-xs text-slate-300 font-semibold" style="position: relative; z-index: 1;">
+                <span class="flex items-center gap-1.5"><i class="fa-solid fa-bolt text-amber-400"></i> 100% Generator Backup</span>
+                <span class="flex items-center gap-1.5"><i class="fa-solid fa-kitchen-set text-[#C5A059]"></i> Fully Equipped Kitchens</span>
+                <span class="flex items-center gap-1.5"><i class="fa-solid fa-star text-amber-400"></i> 4.98/5 Star Rating</span>
+                <a href="https://wa.me/923340091127" target="_blank" rel="noopener" class="flex items-center gap-1.5 text-emerald-400 hover:text-emerald-300 transition-colors">
+                    <i class="fa-brands fa-whatsapp"></i> VIP WhatsApp Booking
+                </a>
+            </div>
+
+            <!-- Subtle Minimalist Bottom Suite Preview & Controls -->
+            <div class="relative z-0 mt-8 sm:mt-12 flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-800/80 max-w-5xl mx-auto" style="position: relative; z-index: 1;">
+                <!-- Clickable Live Suite Tag -->
+                <a id="hero-current-suite-link" href="rooms.html" class="flex items-center gap-2.5 backdrop-blur-md bg-slate-900/80 hover:bg-slate-800 border border-slate-700 hover:border-[#C5A059] px-4 py-2 rounded-full text-xs text-slate-200 transition-all group cursor-pointer">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
+                    <span class="text-slate-400 font-normal">Now Viewing:</span>
+                    <span id="hero-current-suite-name" class="font-bold text-white group-hover:text-[#C5A059] transition-colors truncate max-w-[200px] sm:max-w-xs">Featured Luxury Suite</span>
+                    <span id="hero-current-suite-price" class="text-[#FFDF9E] font-extrabold ml-1">PKR --</span>
+                    <i class="fa-solid fa-arrow-right text-[10px] text-[#C5A059] group-hover:translate-x-1 transition-transform"></i>
+                </a>
+
+                <!-- Clean Slide Controls & Indicators -->
+                <div class="flex items-center gap-2">
+                    <button type="button" onclick="KaghanHeroSlider.prev(true)" class="w-8 h-8 rounded-full bg-slate-900/80 hover:bg-[#C5A059] hover:text-slate-950 text-slate-300 flex items-center justify-center text-xs transition-all border border-slate-700 cursor-pointer" title="Previous Suite">
+                        <i class="fa-solid fa-chevron-left text-[10px]"></i>
+                    </button>
+                    <div id="hero-slider-dots" class="flex items-center gap-1.5 px-2">
+                        <!-- Minimal dots -->
                     </div>
+                    <button type="button" onclick="KaghanHeroSlider.next(true)" class="w-8 h-8 rounded-full bg-slate-900/80 hover:bg-[#C5A059] hover:text-slate-950 text-slate-300 flex items-center justify-center text-xs transition-all border border-slate-700 cursor-pointer" title="Next Suite">
+                        <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                    </button>
                 </div>
             </div>
+
         </div>
     </header>
 
-    <!-- Search Widget Section (Positioned directly under the Hero Section) -->
-    <section id="hero-search-section" class="relative z-30 -mt-6 sm:-mt-12 md:-mt-16 px-3 sm:px-4 max-w-6xl mx-auto mb-12 sm:mb-16" data-animate="fade-up">
-        <div class="backdrop-blur-2xl bg-[#0F172A]/95 rounded-2xl sm:rounded-[2.5rem] p-4 sm:p-6 md:p-8 border border-[#C5A059]/30 shadow-[0_32px_64px_-15px_rgba(0,0,0,0.8)] text-white">
-            
-            <!-- Stay Duration Tag Selector -->
-            <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 sm:gap-3 mb-4 sm:mb-5 border-b border-white/10 pb-3 sm:pb-4">
-                <span class="text-[11px] sm:text-xs uppercase tracking-widest text-[#C5A059] font-bold flex items-center gap-2">
-                    <i class="fa-solid fa-sliders"></i> Select Stay Type
-                </span>
-                <div class="grid grid-cols-3 sm:flex gap-1.5 sm:gap-2 w-full sm:w-auto" id="hero-stay-type-tags">
-                    <button type="button" onclick="selectHeroStayType('daily')" id="stay-tag-daily" class="px-2 sm:px-4 py-2 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-bold transition-all bg-[#C5A059] text-white shadow-md cursor-pointer text-center whitespace-nowrap">Daily Stay</button>
-                    <button type="button" onclick="selectHeroStayType('weekly')" id="stay-tag-weekly" class="px-2 sm:px-4 py-2 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-bold transition-all bg-white/10 text-white/80 hover:bg-white/20 cursor-pointer text-center whitespace-nowrap">Weekly (-15%)</button>
-                    <button type="button" onclick="selectHeroStayType('monthly')" id="stay-tag-monthly" class="px-2 sm:px-4 py-2 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-bold transition-all bg-white/10 text-white/80 hover:bg-white/20 cursor-pointer text-center whitespace-nowrap">Monthly (-35%)</button>
-                </div>
-                <input type="hidden" id="hero-stay-type" value="daily">
-            </div>
-
-            <form id="hero-search-form" onsubmit="handleHeroSearchSubmit(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 items-end">
-                <!-- Location Custom Dropdown -->
-                <div class="sm:col-span-1 lg:col-span-3">
-                    <label class="block text-[11px] sm:text-xs uppercase tracking-widest text-[#C5A059] font-bold mb-1.5 sm:mb-2 ml-1">Location</label>
-                    <div class="relative custom-dropdown" id="dropdown-location">
-                        <button type="button" onclick="toggleCustomDropdown('dropdown-location')" class="w-full bg-white/5 border border-white/15 hover:bg-white/10 hover:border-[#C5A059] rounded-2xl pl-11 pr-8 py-3.5 outline-none transition-all text-white text-xs md:text-sm text-left flex items-center justify-between cursor-pointer relative">
-                            <i class="fa-solid fa-location-dot absolute left-4 text-[#C5A059] pointer-events-none text-base"></i>
-                            <span class="dropdown-selected font-semibold whitespace-nowrap overflow-hidden text-ellipsis">All Locations</span>
-                            <i class="fa-solid fa-chevron-down text-white/50 text-xs ml-1 shrink-0 transition-transform duration-300"></i>
-                        </button>
-                        <div class="dropdown-menu">
-                            <div class="dropdown-item selected" data-value="all">
-                                <div class="icon-wrapper"><i class="fa-solid fa-globe"></i></div>
-                                <div class="flex flex-col min-w-0">
-                                    <span class="font-bold text-white text-xs">All Locations</span>
-                                    <span class="text-[10px] text-slate-300 font-normal leading-tight">Explore all destinations in Pakistan</span>
-                                </div>
-                            </div>
-                            <div class="dropdown-item" data-value="islamabad">
-                                <div class="icon-wrapper"><i class="fa-solid fa-city"></i></div>
-                                <div class="flex flex-col min-w-0">
-                                    <span class="font-bold text-white text-xs">Islamabad</span>
-                                    <span class="text-[10px] text-slate-300 font-normal leading-tight">Margalla Hills & Bahria Enclave</span>
-                                </div>
-                            </div>
-                            <div class="dropdown-item" data-value="nathiagali">
-                                <div class="icon-wrapper"><i class="fa-solid fa-mountain-sun"></i></div>
-                                <div class="flex flex-col min-w-0">
-                                    <span class="font-bold text-white text-xs">Nathia Gali</span>
-                                    <span class="text-[10px] text-slate-300 font-normal leading-tight">Pine Trails & Alpine Resorts</span>
-                                </div>
-                            </div>
-                            <div class="dropdown-item" data-value="murree">
-                                <div class="icon-wrapper"><i class="fa-solid fa-tree"></i></div>
-                                <div class="flex flex-col min-w-0">
-                                    <span class="font-bold text-white text-xs">Murree & Bhurban</span>
-                                    <span class="text-[10px] text-slate-300 font-normal leading-tight">Mall Road & Golf Resorts</span>
-                                </div>
-                            </div>
-                        </div>
-                        <input type="hidden" id="search-location" value="all">
-                    </div>
-                </div>
-
-                <!-- Suite Style Custom Dropdown -->
-                <div class="sm:col-span-1 lg:col-span-3">
-                    <label class="block text-[11px] sm:text-xs uppercase tracking-widest text-[#C5A059] font-bold mb-1.5 sm:mb-2 ml-1">Suite Style</label>
-                    <div class="relative custom-dropdown" id="dropdown-type">
-                        <button type="button" onclick="toggleCustomDropdown('dropdown-type')" class="w-full bg-white/5 border border-white/15 hover:bg-white/10 hover:border-[#C5A059] rounded-2xl pl-11 pr-8 py-3.5 outline-none transition-all text-white text-xs md:text-sm text-left flex items-center justify-between cursor-pointer relative">
-                            <i class="fa-solid fa-bed absolute left-4 text-[#C5A059] pointer-events-none text-base"></i>
-                            <span class="dropdown-selected font-semibold whitespace-nowrap overflow-hidden text-ellipsis">All Styles</span>
-                            <i class="fa-solid fa-chevron-down text-white/50 text-xs ml-1 shrink-0 transition-transform duration-300"></i>
-                        </button>
-                        <div class="dropdown-menu">
-                            <div class="dropdown-item selected" data-value="all">
-                                <div class="icon-wrapper"><i class="fa-solid fa-border-all"></i></div>
-                                <div class="flex flex-col min-w-0">
-                                    <span class="font-bold text-white text-xs">All Styles</span>
-                                    <span class="text-[10px] text-slate-300 font-normal leading-tight">Browse Studio to 4BHK & Farmhouses</span>
-                                </div>
-                            </div>
-                            <div class="dropdown-item" data-value="studio">
-                                <div class="icon-wrapper"><i class="fa-solid fa-cube"></i></div>
-                                <div class="flex flex-col min-w-0">
-                                    <span class="font-bold text-white text-xs">Studio Furnished</span>
-                                    <span class="text-[10px] text-slate-300 font-normal leading-tight">Compact Luxury Suite (1-2 Guests)</span>
-                                </div>
-                            </div>
-                            <div class="dropdown-item" data-value="1bed">
-                                <div class="icon-wrapper"><i class="fa-solid fa-bed"></i></div>
-                                <div class="flex flex-col min-w-0">
-                                    <span class="font-bold text-white text-xs">1 Bed Furnished</span>
-                                    <span class="text-[10px] text-slate-300 font-normal leading-tight">Executive Couple Suite (2 Guests)</span>
-                                </div>
-                            </div>
-                            <div class="dropdown-item" data-value="2bed">
-                                <div class="icon-wrapper"><i class="fa-solid fa-door-open"></i></div>
-                                <div class="flex flex-col min-w-0">
-                                    <span class="font-bold text-white text-xs">2 Bed Furnished</span>
-                                    <span class="text-[10px] text-slate-300 font-normal leading-tight">Family Apartment Suite (4 Guests)</span>
-                                </div>
-                            </div>
-                            <div class="dropdown-item" data-value="3bed">
-                                <div class="icon-wrapper"><i class="fa-solid fa-house-chimney"></i></div>
-                                <div class="flex flex-col min-w-0">
-                                    <span class="font-bold text-white text-xs">3 Bed Furnished</span>
-                                    <span class="text-[10px] text-slate-300 font-normal leading-tight">Spacious Family Suite (6 Guests)</span>
-                                </div>
-                            </div>
-                            <div class="dropdown-item" data-value="4bed">
-                                <div class="icon-wrapper"><i class="fa-solid fa-building"></i></div>
-                                <div class="flex flex-col min-w-0">
-                                    <span class="font-bold text-white text-xs">4 Bed Furnished</span>
-                                    <span class="text-[10px] text-slate-300 font-normal leading-tight">Luxury Penthouse Suite (8 Guests)</span>
-                                </div>
-                            </div>
-                            <div class="dropdown-item" data-value="farmhouse">
-                                <div class="icon-wrapper"><i class="fa-solid fa-tree"></i></div>
-                                <div class="flex flex-col min-w-0">
-                                    <span class="font-bold text-white text-xs">Furnished Farmhouse</span>
-                                    <span class="text-[10px] text-slate-300 font-normal leading-tight">Grand Alpine Estate (10+ Guests)</span>
-                                </div>
-                            </div>
-                        </div>
-                        <input type="hidden" id="search-type" value="all">
-                    </div>
-                </div>
-
-                <!-- Dates Picker Trigger -->
-                <div class="sm:col-span-1 lg:col-span-2">
-                    <label class="block text-[11px] sm:text-xs uppercase tracking-widest text-[#C5A059] font-bold mb-1.5 sm:mb-2 ml-1">Dates</label>
-                    <button type="button" onclick="KaghanSearchWidget.openCalendarModal()" class="w-full bg-white/5 border border-white/15 hover:bg-white/10 focus:border-[#C5A059] hover:border-[#C5A059] rounded-2xl pl-11 pr-4 py-3.5 outline-none transition-all text-white text-xs md:text-sm text-left flex items-center justify-between cursor-pointer relative group">
-                        <i class="fa-solid fa-calendar-days absolute left-4 text-[#C5A059] pointer-events-none text-base group-hover:scale-110 transition-transform"></i>
-                        <span id="search-date-trigger-text" class="font-semibold whitespace-nowrap overflow-hidden text-ellipsis">Add dates</span>
-                        <i class="fa-solid fa-chevron-down text-white/50 text-xs shrink-0"></i>
-                    </button>
-                    <input type="hidden" id="search-check-in">
-                    <input type="hidden" id="search-check-out">
-                </div>
-
-                <!-- Guests Count Stepper Trigger -->
-                <div class="sm:col-span-1 lg:col-span-2 relative">
-                    <label class="block text-[11px] sm:text-xs uppercase tracking-widest text-[#C5A059] font-bold mb-1.5 sm:mb-2 ml-1">Guests</label>
-                    <button type="button" onclick="KaghanSearchWidget.toggleGuestStepperPopover()" class="w-full bg-white/5 border border-white/15 hover:bg-white/10 hover:border-[#C5A059] rounded-2xl pl-11 pr-4 py-3.5 outline-none transition-all text-white text-xs md:text-sm text-left flex items-center justify-between cursor-pointer relative group">
-                        <i class="fa-solid fa-users absolute left-4 text-[#C5A059] pointer-events-none text-base group-hover:scale-110 transition-transform"></i>
-                        <span id="search-guest-trigger-text" class="font-semibold whitespace-nowrap overflow-hidden text-ellipsis">2 Guests</span>
-                        <i class="fa-solid fa-chevron-down text-white/50 text-xs shrink-0"></i>
-                    </button>
-                    <input type="hidden" id="search-guests" value="2">
-
-                    <!-- Mobile-Optimized Screen-Safe Guest Stepper Dropdown Popover -->
-                    <div id="guest-stepper-popover" class="hidden absolute top-full left-0 sm:left-auto right-0 mt-2 sm:mt-3 bg-[#0F172A] border border-[#C5A059]/50 rounded-2xl p-4 sm:p-5 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.95)] z-[100] text-white space-y-3 sm:space-y-4 w-full sm:w-80 max-w-[calc(100vw-2.5rem)]">
-                        <!-- Quick Guest Presets -->
-                        <div class="text-[10px] uppercase font-bold tracking-widest text-[#C5A059] mb-1">Quick Presets</div>
-                        <div class="grid grid-cols-4 gap-1 sm:gap-1.5 pb-3 border-b border-white/10">
-                            <button type="button" onclick="KaghanSearchWidget.setGuestPreset(1,0,0)" data-adults="1" data-children="0" data-infants="0" class="preset-btn py-1.5 px-1 rounded-lg bg-white/5 hover:bg-[#C5A059] hover:text-white border border-white/10 text-[10px] font-bold transition-all text-center cursor-pointer">Solo (1)</button>
-                            <button type="button" onclick="KaghanSearchWidget.setGuestPreset(2,0,0)" data-adults="2" data-children="0" data-infants="0" class="preset-btn py-1.5 px-1 rounded-lg bg-[#C5A059] text-white border-[#C5A059] text-[10px] font-bold transition-all text-center cursor-pointer">Couple (2)</button>
-                            <button type="button" onclick="KaghanSearchWidget.setGuestPreset(2,2,0)" data-adults="2" data-children="2" data-infants="0" class="preset-btn py-1.5 px-1 rounded-lg bg-white/5 hover:bg-[#C5A059] hover:text-white border border-white/10 text-[10px] font-bold transition-all text-center cursor-pointer">Family (4)</button>
-                            <button type="button" onclick="KaghanSearchWidget.setGuestPreset(4,2,0)" data-adults="4" data-children="2" data-infants="0" class="preset-btn py-1.5 px-1 rounded-lg bg-white/5 hover:bg-[#C5A059] hover:text-white border border-white/10 text-[10px] font-bold transition-all text-center cursor-pointer">Group (6)</button>
-                        </div>
-
-                        <!-- Adults -->
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-2">
-                                <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#C5A059]/15 border border-[#C5A059]/30 flex items-center justify-center text-[#C5A059] text-xs"><i class="fa-solid fa-user-tie"></i></div>
-                                <div>
-                                    <div class="text-xs font-bold text-white">Adults</div>
-                                    <div class="text-[10px] text-slate-300">Ages 13+</div>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-2.5">
-                                <button type="button" onclick="KaghanSearchWidget.changeGuests('adults', -1)" class="w-7 h-7 rounded-full border border-white/20 flex items-center justify-center text-xs hover:bg-[#C5A059] hover:border-[#C5A059] active:scale-95 transition-all font-bold text-white cursor-pointer">-</button>
-                                <span id="stepper-adults-count" class="w-5 text-center text-xs font-bold text-[#FFDF9E]">2</span>
-                                <button type="button" onclick="KaghanSearchWidget.changeGuests('adults', 1)" class="w-7 h-7 rounded-full border border-white/20 flex items-center justify-center text-xs hover:bg-[#C5A059] hover:border-[#C5A059] active:scale-95 transition-all font-bold text-white cursor-pointer">+</button>
-                            </div>
-                        </div>
-                        <!-- Children -->
-                        <div class="flex items-center justify-between border-t border-white/10 pt-2.5 sm:pt-3">
-                            <div class="flex items-center gap-2">
-                                <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#C5A059]/15 border border-[#C5A059]/30 flex items-center justify-center text-[#C5A059] text-xs"><i class="fa-solid fa-child"></i></div>
-                                <div>
-                                    <div class="text-xs font-bold text-white">Children</div>
-                                    <div class="text-[10px] text-slate-300">Ages 2–12</div>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-2.5">
-                                <button type="button" onclick="KaghanSearchWidget.changeGuests('children', -1)" class="w-7 h-7 rounded-full border border-white/20 flex items-center justify-center text-xs hover:bg-[#C5A059] hover:border-[#C5A059] active:scale-95 transition-all font-bold text-white cursor-pointer">-</button>
-                                <span id="stepper-children-count" class="w-5 text-center text-xs font-bold text-[#FFDF9E]">0</span>
-                                <button type="button" onclick="KaghanSearchWidget.changeGuests('children', 1)" class="w-7 h-7 rounded-full border border-white/20 flex items-center justify-center text-xs hover:bg-[#C5A059] hover:border-[#C5A059] active:scale-95 transition-all font-bold text-white cursor-pointer">+</button>
-                            </div>
-                        </div>
-                        <!-- Infants -->
-                        <div class="flex items-center justify-between border-t border-white/10 pt-2.5 sm:pt-3">
-                            <div class="flex items-center gap-2">
-                                <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#C5A059]/15 border border-[#C5A059]/30 flex items-center justify-center text-[#C5A059] text-xs"><i class="fa-solid fa-baby"></i></div>
-                                <div>
-                                    <div class="text-xs font-bold text-white">Infants</div>
-                                    <div class="text-[10px] text-slate-300">Under 2</div>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-2.5">
-                                <button type="button" onclick="KaghanSearchWidget.changeGuests('infants', -1)" class="w-7 h-7 rounded-full border border-white/20 flex items-center justify-center text-xs hover:bg-[#C5A059] hover:border-[#C5A059] active:scale-95 transition-all font-bold text-white cursor-pointer">-</button>
-                                <span id="stepper-infants-count" class="w-5 text-center text-xs font-bold text-[#FFDF9E]">0</span>
-                                <button type="button" onclick="KaghanSearchWidget.changeGuests('infants', 1)" class="w-7 h-7 rounded-full border border-white/20 flex items-center justify-center text-xs hover:bg-[#C5A059] hover:border-[#C5A059] active:scale-95 transition-all font-bold text-white cursor-pointer">+</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Submit Search Button -->
-                <div class="sm:col-span-2 lg:col-span-2">
-                    <button type="submit" id="hero-search-submit" class="w-full bg-[#C5A059] text-white py-3.5 rounded-2xl font-bold hover:bg-white hover:text-[#0B0F19] transition-all shadow-lg flex items-center justify-center gap-2 btn-shimmer text-xs md:text-sm cursor-pointer min-h-[52px]">
-                        <i class="fa-solid fa-magnifying-glass text-base"></i>
-                        <span>Search Stays</span>
-                    </button>
-                </div>
-            </form>
-        </div>
-    </section>
-
     <!-- Featured Suites Section -->
-    <section class="pt-12 pb-24 px-6 md:px-12 bg-slate-50">
+    <section class="pt-12 pb-24 px-4 sm:px-6 md:px-12 bg-slate-50 border-t border-slate-200">
         <div class="max-w-7xl mx-auto">
             <div data-animate="fade-up" class="flex flex-col md:flex-row md:items-end justify-between mb-10">
                 <div>
-                    <span class="text-[#D4AF37] font-bold uppercase tracking-widest text-xs mb-3 block">Luxurious Suites</span>
-                    <h2 class="text-3xl md:text-5xl font-bold outfit text-[#0F172A]">Featured <span class="text-[#D4AF37]">Accommodations</span></h2>
+                    <span class="text-[#B8860B] font-extrabold uppercase tracking-widest text-xs mb-2 block flex items-center gap-1.5">
+                        <i class="fa-solid fa-gem text-amber-600"></i> Luxurious Suites & Apartments
+                    </span>
+                    <h2 class="text-3xl md:text-5xl font-extrabold outfit text-slate-900 tracking-tight">Featured <span class="text-[#C5A059]">Accommodations</span></h2>
                 </div>
-                <a href="rooms.html" class="text-slate-900 border-b-2 border-[#D4AF37] font-bold py-2 flex items-center gap-2 hover:text-[#D4AF37] transition-all mt-4 md:mt-0">
+                <a href="rooms.html" class="text-slate-900 border-b-2 border-[#C5A059] font-extrabold py-2 flex items-center gap-2 hover:text-[#C5A059] transition-all mt-4 md:mt-0 text-sm">
                     Explore All Rooms
                     <i class="fa-solid fa-arrow-right text-sm"></i>
                 </a>
             </div>
 
             <!-- Category Filter Bar (Airbnb Style) -->
-            <div data-animate="fade-up" class="relative max-w-7xl mx-auto mt-10 z-20 bg-white rounded-[2.5rem] shadow-2xl p-6 md:p-8 mb-20 border border-slate-100">
-                <div class="flex items-center justify-between mb-6">
-                    <h3 class="text-xs uppercase tracking-widest text-slate-400 font-bold">Sort by Signature Style</h3>
+            <div data-animate="fade-up" class="relative max-w-7xl mx-auto mt-8 z-20 bg-white rounded-3xl sm:rounded-[2.5rem] shadow-lg p-5 sm:p-7 md:p-8 mb-16 border border-slate-200">
+                <div class="flex items-center justify-between mb-6 pb-3 border-b border-slate-100">
+                    <h3 class="text-xs uppercase tracking-widest text-slate-600 font-extrabold flex items-center gap-2">
+                        <i class="fa-solid fa-filter text-[#C5A059]"></i> Filter by Suite Type
+                    </h3>
                     <div class="flex gap-2">
-                        <button class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-800 hover:border-slate-800 transition-colors"><i class="fa-solid fa-chevron-left text-[10px]"></i></button>
-                        <button class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-800 hover:border-slate-800 transition-colors"><i class="fa-solid fa-chevron-right text-[10px]"></i></button>
+                        <button type="button" aria-label="Scroll left" onclick="document.getElementById('index-categories-container').scrollBy({left: -200, behavior: 'smooth'})" class="w-8 h-8 rounded-full border border-slate-300 flex items-center justify-center text-slate-700 hover:text-slate-950 hover:border-slate-800 hover:bg-slate-100 transition-colors cursor-pointer"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                        <button type="button" aria-label="Scroll right" onclick="document.getElementById('index-categories-container').scrollBy({left: 200, behavior: 'smooth'})" class="w-8 h-8 rounded-full border border-slate-300 flex items-center justify-center text-slate-700 hover:text-slate-950 hover:border-slate-800 hover:bg-slate-100 transition-colors cursor-pointer"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                     </div>
                 </div>
 
-                <div id="index-categories-container" class="flex overflow-x-auto gap-8 pb-4 hide-scrollbar snap-x px-4 md:px-0">
+                <div id="index-categories-container" class="flex overflow-x-auto gap-8 pb-3 hide-scrollbar snap-x px-2">
                     <!-- Category skeletons -->
                     <div class="flex gap-8">
-                        <div class="w-16 h-10 skeleton rounded-full animate-pulse"></div>
-                        <div class="w-16 h-10 skeleton rounded-full animate-pulse"></div>
-                        <div class="w-16 h-10 skeleton rounded-full animate-pulse"></div>
-                        <div class="w-16 h-10 skeleton rounded-full animate-pulse"></div>
+                        <div class="w-20 h-12 bg-slate-100 rounded-2xl animate-pulse border border-slate-200"></div>
+                        <div class="w-20 h-12 bg-slate-100 rounded-2xl animate-pulse border border-slate-200"></div>
+                        <div class="w-20 h-12 bg-slate-100 rounded-2xl animate-pulse border border-slate-200"></div>
+                        <div class="w-20 h-12 bg-slate-100 rounded-2xl animate-pulse border border-slate-200"></div>
+                    </div>
+                </div>
+
+                <!-- 3 Stay Duration Selector Buttons (Daily / Weekly / Monthly) -->
+                <div class="mt-6 pt-5 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-2 text-xs font-extrabold text-slate-700 uppercase tracking-wider">
+                        <i class="fa-solid fa-tags text-[#C5A059] text-sm"></i>
+                        <span>Select Rate Plan:</span>
+                    </div>
+                    <div class="grid grid-cols-3 sm:flex items-center gap-2 bg-slate-100 p-1.5 rounded-2xl border border-slate-200 w-full sm:w-auto" id="featured-stay-plans">
+                        <button type="button" onclick="setFeaturedStayType('daily', this)" id="featured-plan-daily" class="featured-plan-btn active px-4 sm:px-5 py-2 rounded-xl text-xs font-black transition-all bg-slate-900 text-white shadow-md cursor-pointer text-center">
+                            <i class="fa-solid fa-calendar-day mr-1"></i> Daily Stay
+                        </button>
+                        <button type="button" onclick="setFeaturedStayType('weekly', this)" id="featured-plan-weekly" class="featured-plan-btn px-4 sm:px-5 py-2 rounded-xl text-xs font-bold transition-all text-slate-600 hover:text-slate-900 hover:bg-white cursor-pointer text-center">
+                            <i class="fa-solid fa-calendar-week mr-1"></i> Weekly <span class="text-emerald-700 font-black text-[10px] bg-emerald-100 border border-emerald-200 px-1.5 py-0.5 rounded-full ml-1">-15%</span>
+                        </button>
+                        <button type="button" onclick="setFeaturedStayType('monthly', this)" id="featured-plan-monthly" class="featured-plan-btn px-4 sm:px-5 py-2 rounded-xl text-xs font-bold transition-all text-slate-600 hover:text-slate-900 hover:bg-white cursor-pointer text-center">
+                            <i class="fa-solid fa-calendar-days mr-1"></i> Monthly <span class="text-amber-800 font-black text-[10px] bg-amber-100 border border-amber-300 px-1.5 py-0.5 rounded-full ml-1">-35%</span>
+                        </button>
                     </div>
                 </div>
             </div>
 
             <!-- Dynamic Room Container -->
-            <div id="featured-rooms" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            <div id="featured-rooms" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10">
                 <!-- Room skeletons -->
-                <div class="bg-white rounded-[2.5rem] border border-slate-100 p-8 shadow-sm flex flex-col justify-between h-[450px]">
+                <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-md flex flex-col justify-between h-[450px]">
                     <div class="skeleton h-48 w-full rounded-2xl mb-6"></div>
                     <div class="skeleton h-6 w-3/4 rounded mb-3"></div>
                     <div class="skeleton h-4 w-1/2 rounded mb-6"></div>
                     <div class="skeleton h-4 w-full rounded mb-3"></div>
-                    <div class="skeleton h-4 w-5/6 rounded mb-8"></div>
-                    <div class="flex justify-between items-center mt-auto">
-                        <div class="skeleton h-10 w-24 rounded"></div>
-                        <div class="skeleton h-10 w-24 rounded"></div>
+                    <div class="flex justify-between items-center mt-auto pt-4 border-t border-slate-100">
+                        <div class="skeleton h-10 w-24 rounded-xl"></div>
+                        <div class="skeleton h-10 w-24 rounded-xl"></div>
                     </div>
                 </div>
-                <div class="bg-white rounded-[2.5rem] border border-slate-100 p-8 shadow-sm flex flex-col justify-between h-[450px]">
+                <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-md flex flex-col justify-between h-[450px]">
                     <div class="skeleton h-48 w-full rounded-2xl mb-6"></div>
                     <div class="skeleton h-6 w-3/4 rounded mb-3"></div>
                     <div class="skeleton h-4 w-1/2 rounded mb-6"></div>
                     <div class="skeleton h-4 w-full rounded mb-3"></div>
-                    <div class="skeleton h-4 w-5/6 rounded mb-8"></div>
-                    <div class="flex justify-between items-center mt-auto">
-                        <div class="skeleton h-10 w-24 rounded"></div>
-                        <div class="skeleton h-10 w-24 rounded"></div>
+                    <div class="flex justify-between items-center mt-auto pt-4 border-t border-slate-100">
+                        <div class="skeleton h-10 w-24 rounded-xl"></div>
+                        <div class="skeleton h-10 w-24 rounded-xl"></div>
                     </div>
                 </div>
-                <div class="bg-white rounded-[2.5rem] border border-slate-100 p-8 shadow-sm flex flex-col justify-between h-[450px]">
+                <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-md flex flex-col justify-between h-[450px]">
                     <div class="skeleton h-48 w-full rounded-2xl mb-6"></div>
                     <div class="skeleton h-6 w-3/4 rounded mb-3"></div>
                     <div class="skeleton h-4 w-1/2 rounded mb-6"></div>
                     <div class="skeleton h-4 w-full rounded mb-3"></div>
-                    <div class="skeleton h-4 w-5/6 rounded mb-8"></div>
-                    <div class="flex justify-between items-center mt-auto">
-                        <div class="skeleton h-10 w-24 rounded"></div>
-                        <div class="skeleton h-10 w-24 rounded"></div>
+                    <div class="flex justify-between items-center mt-auto pt-4 border-t border-slate-100">
+                        <div class="skeleton h-10 w-24 rounded-xl"></div>
+                        <div class="skeleton h-10 w-24 rounded-xl"></div>
                     </div>
                 </div>
             </div>
@@ -674,61 +702,63 @@
     </section>
 
     <!-- Amenities Grid -->
-    <section class="py-24 px-6 md:px-12 bg-white">
+    <section class="py-24 px-4 sm:px-6 md:px-12 bg-white border-t border-slate-200">
         <div class="max-w-7xl mx-auto">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
                 <!-- Text Content -->
                 <div class="lg:col-span-5" data-animate="fade-right">
-                    <span class="text-[#D4AF37] font-bold uppercase tracking-widest text-xs mb-3 block">World Class Services</span>
-                    <h2 class="text-3xl md:text-5xl font-bold outfit text-[#0F172A] mb-6">The KPH <span class="text-[#D4AF37]">Experience</span></h2>
-                    <div class="w-20 h-1 bg-[#D4AF37] mb-8"></div>
-                    <p class="text-slate-600 text-base leading-relaxed font-light mb-8">
-                        Service apartments offer fully furnished, home-like living spaces equipped with kitchens and living areas, paired with hotel-style amenities like housekeeping, 24/7 security, and Wi-Fi. They are ideal for extended stays, business trips, or family travel.
+                    <span class="text-[#B8860B] font-extrabold uppercase tracking-widest text-xs mb-3 block flex items-center gap-1.5">
+                        <i class="fa-solid fa-crown text-amber-600"></i> World-Class Hospitality
+                    </span>
+                    <h2 class="text-3xl md:text-5xl font-extrabold outfit text-slate-900 mb-6 tracking-tight">The KPH <span class="text-[#C5A059]">Experience</span></h2>
+                    <div class="w-20 h-1 bg-[#C5A059] mb-8 rounded-full"></div>
+                    <p class="text-slate-700 text-base leading-relaxed font-normal mb-8">
+                        Our service apartments combine the privacy and spaciousness of fully furnished luxury homes with five-star hotel conveniences — including daily housekeeping, round-the-clock security, ultra-fast fiber Wi-Fi, and 24/7 concierge assistance.
                     </p>
-                    <a href="rooms.html" class="inline-flex items-center justify-center bg-[#0F172A] text-white font-bold px-8 py-4 rounded-xl hover:bg-[#D4AF37] hover:shadow-lg transition-all gap-2 text-sm shadow-md">
-                        Book Your Stay
+                    <a href="rooms.html" class="inline-flex items-center justify-center bg-slate-900 text-white font-extrabold px-8 py-4 rounded-xl hover:bg-[#C5A059] hover:text-slate-950 transition-all gap-2.5 text-sm shadow-md border border-slate-800 hover:border-[#C5A059]">
+                        <span>Book Your Suite</span>
                         <i class="fa-solid fa-arrow-right"></i>
                     </a>
                 </div>
                 
                 <!-- Cards Grid -->
-                <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-8" data-animate-group data-animate="fade-left">
+                <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8" data-animate-group data-animate="fade-left">
                     <!-- Card 1: Home-like Spaces -->
-                    <div data-animate="fade-up" class="p-8 border border-slate-100 rounded-3xl hover-lift bg-slate-50 shadow-sm flex flex-col justify-between">
+                    <div data-animate="fade-up" class="p-8 border-2 border-slate-200 rounded-3xl hover-lift bg-slate-50/90 hover:bg-white hover:border-[#C5A059] shadow-sm hover:shadow-lg flex flex-col justify-between transition-all">
                         <div>
-                            <div class="w-14 h-14 bg-[#D4AF37]/10 text-[#D4AF37] rounded-2xl flex items-center justify-center mb-6">
+                            <div class="w-14 h-14 bg-amber-500/15 border border-amber-400/30 text-[#B8860B] rounded-2xl flex items-center justify-center mb-6 shadow-sm">
                                 <i class="fa-solid fa-house-chimney text-xl"></i>
                             </div>
-                            <h3 class="text-lg font-bold mb-3 outfit text-[#0F172A]">Home-Like Comfort</h3>
-                            <p class="text-slate-500 text-sm leading-relaxed font-light">
-                                Fully furnished living spaces featuring equipped kitchens, spacious dining zones, and cozy lounge areas.
+                            <h3 class="text-xl font-bold mb-3 outfit text-slate-900">Home-Like Comfort</h3>
+                            <p class="text-slate-600 text-sm leading-relaxed font-normal">
+                                Fully furnished living spaces featuring equipped kitchens, spacious dining zones, and cozy lounge areas for total relaxation.
                             </p>
                         </div>
                     </div>
 
                     <!-- Card 2: Hotel-Style Care -->
-                    <div data-animate="fade-up" class="p-8 border border-slate-100 rounded-3xl hover-lift bg-slate-50 shadow-sm flex flex-col justify-between">
+                    <div data-animate="fade-up" class="p-8 border-2 border-slate-200 rounded-3xl hover-lift bg-slate-50/90 hover:bg-white hover:border-[#C5A059] shadow-sm hover:shadow-lg flex flex-col justify-between transition-all">
                         <div>
-                            <div class="w-14 h-14 bg-[#D4AF37]/10 text-[#D4AF37] rounded-2xl flex items-center justify-center mb-6">
-                                <i class="fa-solid fa-bell text-xl"></i>
+                            <div class="w-14 h-14 bg-amber-500/15 border border-amber-400/30 text-[#B8860B] rounded-2xl flex items-center justify-center mb-6 shadow-sm">
+                                <i class="fa-solid fa-bell-concierge text-xl"></i>
                             </div>
-                            <h3 class="text-lg font-bold mb-3 outfit text-[#0F172A]">Hotel Services</h3>
-                            <p class="text-slate-500 text-sm leading-relaxed font-light">
-                                Regular professional housekeeping, high-speed Wi-Fi connectivity, and around-the-clock 24/7 elite security.
+                            <h3 class="text-xl font-bold mb-3 outfit text-slate-900">Hotel Services</h3>
+                            <p class="text-slate-600 text-sm leading-relaxed font-normal">
+                                Regular professional housekeeping, high-speed Wi-Fi connectivity, and around-the-clock 24/7 elite security protection.
                             </p>
                         </div>
                     </div>
 
                     <!-- Card 3: Extended Travel -->
-                    <div data-animate="fade-up" class="p-8 border border-slate-100 rounded-3xl hover-lift bg-slate-50 shadow-sm flex flex-col justify-between sm:col-span-2">
+                    <div data-animate="fade-up" class="p-8 border-2 border-slate-200 rounded-3xl hover-lift bg-slate-50/90 hover:bg-white hover:border-[#C5A059] shadow-sm hover:shadow-lg flex flex-col justify-between sm:col-span-2 transition-all">
                         <div class="flex flex-col sm:flex-row sm:items-center gap-6">
-                            <div class="w-14 h-14 bg-[#D4AF37]/10 text-[#D4AF37] rounded-2xl flex items-center justify-center mb-0 shrink-0">
+                            <div class="w-14 h-14 bg-amber-500/15 border border-amber-400/30 text-[#B8860B] rounded-2xl flex items-center justify-center mb-0 shrink-0 shadow-sm">
                                 <i class="fa-solid fa-briefcase text-xl"></i>
                             </div>
                             <div>
-                                <h3 class="text-lg font-bold mb-2 outfit text-[#0F172A]">Tailored for Long Stays</h3>
-                                <p class="text-slate-500 text-sm leading-relaxed font-light">
-                                    The perfect home-away-from-home setup designed specifically for business travel, family relocations, and extended leisure stays.
+                                <h3 class="text-xl font-bold mb-2 outfit text-slate-900">Tailored for Long & Short Stays</h3>
+                                <p class="text-slate-600 text-sm leading-relaxed font-normal">
+                                    The perfect home-away-from-home setup designed specifically for business travel, family relocations, and extended holiday vacations.
                                 </p>
                             </div>
                         </div>
@@ -739,174 +769,190 @@
     </section>
 
     <!-- Testimonials Slider -->
-    <section class="py-24 bg-[#0F172A] text-white">
-        <div class="max-w-7xl mx-auto px-6">
+    <section class="py-24 bg-[#0F172A] text-white border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-12">
             <div class="text-center mb-16" data-animate="fade-up">
-                <span class="text-[#D4AF37] font-bold uppercase tracking-widest text-xs mb-3 block">Guest Stories</span>
-                <h2 class="text-3xl md:text-5xl font-bold outfit mb-4">Reviews of <span class="text-[#D4AF37]">Distinction</span></h2>
+                <span class="text-[#FFDF9E] font-extrabold uppercase tracking-widest text-xs mb-3 block flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-star text-amber-400"></i> Guest Reviews & Stories
+                </span>
+                <h2 class="text-3xl md:text-5xl font-extrabold outfit mb-4 tracking-tight">Reviews of <span class="text-[#C5A059]">Distinction</span></h2>
+                <p class="text-slate-300 text-sm max-w-xl mx-auto">Verified experiences from our valued residents across Islamabad, Murree, and Nathia Gali.</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" data-animate-group data-animate="fade-up">
-                <div data-animate="fade-up" class="bg-slate-800/40 border border-slate-700/50 p-8 rounded-3xl">
-                    <div class="flex gap-1 text-[#D4AF37] mb-6 text-sm">
-                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                <div data-animate="fade-up" class="bg-slate-800/80 border-2 border-slate-700/80 p-8 rounded-3xl shadow-xl hover:border-amber-400/60 transition-all flex flex-col justify-between">
+                    <div>
+                        <div class="flex gap-1 text-amber-400 mb-6 text-sm">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                        </div>
+                        <p class="text-slate-200 italic mb-8 font-normal leading-relaxed text-sm sm:text-base">
+                            "The Presidential Penthouse exceeded every expectation. The views are unmatched, and having a private heated pool overlooking the hills made our anniversary unforgettable. An absolute masterpiece!"
+                        </p>
                     </div>
-                    <p class="text-slate-300 italic mb-8 font-light leading-relaxed">
-                        "The Presidential Penthouse exceeded every expectation. The views are unmatched, and having a private heated pool overlooking the hills made our anniversary unforgettable. An absolute masterpiece!"
-                    </p>
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 bg-[#D4AF37] rounded-full flex items-center justify-center font-bold text-slate-900">AS</div>
+                    <div class="flex items-center gap-4 pt-4 border-t border-slate-700/60">
+                        <div class="w-12 h-12 bg-gradient-to-br from-[#C5A059] to-[#8F6B20] text-slate-950 font-extrabold rounded-full flex items-center justify-center shadow-md border-2 border-amber-300">AS</div>
                         <div>
-                            <h4 class="font-bold">Asad Siddiqui</h4>
-                            <p class="text-xs text-slate-500">Corporate Executive</p>
+                            <h4 class="font-bold text-white text-base">Asad Siddiqui</h4>
+                            <p class="text-xs text-amber-300 font-semibold">Corporate Executive</p>
                         </div>
                     </div>
                 </div>
 
-                <div data-animate="fade-up" class="bg-slate-800/40 border border-slate-700/50 p-8 rounded-3xl">
-                    <div class="flex gap-1 text-[#D4AF37] mb-6 text-sm">
-                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                <div data-animate="fade-up" class="bg-slate-800/80 border-2 border-slate-700/80 p-8 rounded-3xl shadow-xl hover:border-amber-400/60 transition-all flex flex-col justify-between">
+                    <div>
+                        <div class="flex gap-1 text-amber-400 mb-6 text-sm">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                        </div>
+                        <p class="text-slate-200 italic mb-8 font-normal leading-relaxed text-sm sm:text-base">
+                            "Service here is art. The custom concierge team arranged a private mountain dinner with just 3 hours notice. The Executive Suite is clean, luxurious, and spacious."
+                        </p>
                     </div>
-                    <p class="text-slate-300 italic mb-8 font-light leading-relaxed">
-                        "Service here is art. The custom concierge team arranged a private mountain dinner with just 3 hours notice. The Executive Suite is clean, luxurious, and spacious."
-                    </p>
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 bg-[#D4AF37] rounded-full flex items-center justify-center font-bold text-slate-900">ZM</div>
+                    <div class="flex items-center gap-4 pt-4 border-t border-slate-700/60">
+                        <div class="w-12 h-12 bg-gradient-to-br from-[#C5A059] to-[#8F6B20] text-slate-950 font-extrabold rounded-full flex items-center justify-center shadow-md border-2 border-amber-300">ZM</div>
                         <div>
-                            <h4 class="font-bold">Zainab Malik</h4>
-                            <p class="text-xs text-slate-500">Diplomat (EU Delegation)</p>
+                            <h4 class="font-bold text-white text-base">Zainab Malik</h4>
+                            <p class="text-xs text-amber-300 font-semibold">Diplomat (EU Delegation)</p>
                         </div>
                     </div>
                 </div>
 
-                <div data-animate="fade-up" class="bg-slate-800/40 border border-slate-700/50 p-8 rounded-3xl">
-                    <div class="flex gap-1 text-[#D4AF37] mb-6 text-sm">
-                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                <div data-animate="fade-up" class="bg-slate-800/80 border-2 border-slate-700/80 p-8 rounded-3xl shadow-xl hover:border-amber-400/60 transition-all flex flex-col justify-between">
+                    <div>
+                        <div class="flex gap-1 text-amber-400 mb-6 text-sm">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                        </div>
+                        <p class="text-slate-200 italic mb-8 font-normal leading-relaxed text-sm sm:text-base">
+                            "Everything from booking on the web portal to the express checkout was completely seamless. Highly recommend the Loyalty point system, already saved 20,000 PKR on my next reservation!"
+                        </p>
                     </div>
-                    <p class="text-slate-300 italic mb-8 font-light leading-relaxed">
-                        "Everything from booking on the web portal to the express checkout was completely seamless. Highly recommend the Loyalty point system, already saved 20,000 PKR on my next reservation!"
-                    </p>
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 bg-[#D4AF37] rounded-full flex items-center justify-center font-bold text-slate-900">RK</div>
+                    <div class="flex items-center gap-4 pt-4 border-t border-slate-700/60">
+                        <div class="w-12 h-12 bg-gradient-to-br from-[#C5A059] to-[#8F6B20] text-slate-950 font-extrabold rounded-full flex items-center justify-center shadow-md border-2 border-amber-300">RK</div>
                         <div>
-                            <h4 class="font-bold">Raja Kamran</h4>
-                            <p class="text-xs text-slate-500">Overseas Client (UK)</p>
+                            <h4 class="font-bold text-white text-base">Raja Kamran</h4>
+                            <p class="text-xs text-amber-300 font-semibold">Overseas Client (UK)</p>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
     </section>
 
     <!-- Dynamic Resort News & Alpine Insights Section -->
-    <section class="py-24 px-6 md:px-12 bg-white relative border-t border-slate-100">
+    <section class="py-24 px-4 sm:px-6 md:px-12 bg-white relative border-t border-slate-200">
         <div class="max-w-7xl mx-auto">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-16">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 pb-4 border-b border-slate-100">
                 <div>
-                    <span class="text-[#D4AF37] font-bold uppercase tracking-widest text-sm mb-3 block">Resort Journal</span>
-                    <h2 class="text-4xl font-bold outfit text-slate-900">Alpine Insights & <span class="text-[#D4AF37]">Attractions Guide</span></h2>
+                    <span class="text-[#B8860B] font-extrabold uppercase tracking-widest text-xs mb-3 block flex items-center gap-1.5">
+                        <i class="fa-solid fa-newspaper text-amber-600"></i> Resort Journal
+                    </span>
+                    <h2 class="text-3xl md:text-5xl font-extrabold outfit text-slate-900 tracking-tight">Alpine Insights & <span class="text-[#C5A059]">Attractions Guide</span></h2>
                 </div>
-                <a href="blog.html" class="text-[#D4AF37] font-bold hover:underline uppercase tracking-wider text-xs flex items-center gap-1.5 mt-4 md:mt-0">Read All Articles <i class="fa-solid fa-arrow-right text-[10px]"></i></a>
+                <a href="blog.html" class="text-slate-900 border-b-2 border-[#C5A059] font-extrabold py-2 flex items-center gap-2 hover:text-[#C5A059] transition-all mt-4 md:mt-0 text-sm">
+                    Read All Articles <i class="fa-solid fa-arrow-right text-xs"></i>
+                </a>
             </div>
 
             <!-- Dynamic Blogs Grid -->
             <div id="resort-blog-feed-container" class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <!-- Dynamically populated via JS -->
-                <div class="col-span-2 text-center text-slate-400 py-12">
-                    <i class="fa-solid fa-spinner animate-spin text-2xl text-[#D4AF37] mb-3"></i>
-                    <p class="text-xs uppercase font-semibold tracking-wider">Syncing resort feeds...</p>
+                <div class="col-span-2 text-center text-slate-500 py-12">
+                    <i class="fa-solid fa-spinner animate-spin text-2xl text-[#C5A059] mb-3"></i>
+                    <p class="text-xs uppercase font-bold tracking-wider">Syncing resort feeds...</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Locations Showcase — Prime Destinations for Furnished Apartments -->
-    <section class="py-24 px-6 md:px-12 bg-slate-50 border-t border-slate-100">
+    <section class="py-24 px-4 sm:px-6 md:px-12 bg-slate-50 border-t border-slate-200">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-16">
-                <span class="text-[#D4AF37] font-bold uppercase tracking-widest text-xs mb-3 block">Prime Destinations</span>
-                <h2 class="text-3xl md:text-5xl font-bold outfit text-[#0F172A]">Luxury Furnished Apartments in <span class="text-[#D4AF37]">Top Locations</span></h2>
-                <p class="text-slate-500 text-sm mt-4 max-w-2xl mx-auto font-light">Experience the ultimate in comfort with our fully furnished apartments and holiday suites across Pakistan's most sought-after cities and hill stations.</p>
+                <span class="text-[#B8860B] font-extrabold uppercase tracking-widest text-xs mb-3 block flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-map-pin text-amber-600"></i> Prime Destinations
+                </span>
+                <h2 class="text-3xl md:text-5xl font-extrabold outfit text-slate-900 tracking-tight">Luxury Furnished Apartments in <span class="text-[#C5A059]">Top Locations</span></h2>
+                <p class="text-slate-700 text-sm sm:text-base mt-4 max-w-2xl mx-auto font-normal">Experience the ultimate in comfort with our fully furnished apartments and holiday suites across Pakistan's most sought-after cities and hill stations.</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <!-- Islamabad -->
-                <div class="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-lg hover-lift group flex flex-col justify-between">
+                <div class="bg-white rounded-3xl overflow-hidden border-2 border-slate-200 shadow-md hover:border-[#C5A059] hover-lift group flex flex-col justify-between transition-all">
                     <div>
-                        <div class="relative h-56 overflow-hidden">
+                        <div class="relative h-56 overflow-hidden border-b border-slate-200">
                             <img src="https://images.unsplash.com/photo-1567449303078-57ad995bd329?auto=format&fit=crop&w=800&q=80" alt="Furnished apartment in Islamabad" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                            <div class="absolute inset-0 bg-gradient-to-t from-[#0F172A]/70 to-transparent"></div>
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/30 to-transparent"></div>
                             <div class="absolute bottom-4 left-5 text-white">
-                                <h3 class="text-xl font-bold outfit">Islamabad</h3>
-                                <p class="text-slate-300 text-xs flex items-center gap-1"><i class="fa-solid fa-location-dot text-[#D4AF37]"></i> Bahria Enclave & Margalla Hills</p>
+                                <h3 class="text-2xl font-extrabold outfit">Islamabad</h3>
+                                <p class="text-amber-300 text-xs font-semibold flex items-center gap-1.5 mt-0.5"><i class="fa-solid fa-location-dot text-[#FFDF9E]"></i> Bahria Enclave & Margalla Hills</p>
                             </div>
                         </div>
                         <div class="p-6">
-                            <h4 class="font-bold text-slate-800 text-sm mb-2">Furnished Apartments in Islamabad</h4>
-                            <p class="text-slate-600 text-xs leading-relaxed font-light mb-4">
+                            <h4 class="font-bold text-slate-900 text-base mb-2">Furnished Apartments in Islamabad</h4>
+                            <p class="text-slate-600 text-xs leading-relaxed font-normal mb-4">
                                 Premium 1BHK, 2BHK, 3BHK, and 4BHK fully furnished service apartments in Islamabad with equipped modern kitchens, fiber Wi-Fi, 24/7 security, generator backup, and scenic views of the Margalla Hills.
                             </p>
                             <div class="flex flex-wrap gap-1.5 mb-4">
-                                <span class="bg-slate-50 text-slate-600 text-[10px] font-bold px-2.5 py-1 rounded-full border border-slate-100"><i class="fa-solid fa-kitchen-set text-[#D4AF37] mr-1"></i> Full Kitchen</span>
-                                <span class="bg-slate-50 text-slate-600 text-[10px] font-bold px-2.5 py-1 rounded-full border border-slate-100"><i class="fa-solid fa-bolt text-[#D4AF37] mr-1"></i> Power Backup</span>
+                                <span class="bg-slate-100 text-slate-800 text-[11px] font-semibold px-3 py-1 rounded-full border border-slate-200"><i class="fa-solid fa-kitchen-set text-[#C5A059] mr-1"></i> Full Kitchen</span>
+                                <span class="bg-slate-100 text-slate-800 text-[11px] font-semibold px-3 py-1 rounded-full border border-slate-200"><i class="fa-solid fa-bolt text-[#C5A059] mr-1"></i> Power Backup</span>
                             </div>
                         </div>
                     </div>
-                    <div class="px-6 pb-6">
-                        <a href="rooms.html?location=Islamabad" class="w-full text-center bg-slate-900 hover:bg-[#D4AF37] text-white text-xs font-bold py-2.5 rounded-xl block transition-all">View Islamabad Apartments</a>
+                    <div class="px-6 pb-6 pt-2 border-t border-slate-100">
+                        <a href="rooms.html?location=Islamabad" class="w-full text-center bg-slate-900 hover:bg-[#C5A059] hover:text-slate-950 text-white text-xs font-extrabold py-3 rounded-xl block transition-all shadow-sm border border-slate-800 hover:border-[#C5A059]">View Islamabad Apartments</a>
                     </div>
                 </div>
 
                 <!-- Murree -->
-                <div class="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-lg hover-lift group flex flex-col justify-between">
+                <div class="bg-white rounded-3xl overflow-hidden border-2 border-slate-200 shadow-md hover:border-[#C5A059] hover-lift group flex flex-col justify-between transition-all">
                     <div>
-                        <div class="relative h-56 overflow-hidden">
+                        <div class="relative h-56 overflow-hidden border-b border-slate-200">
                             <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=800&q=80" alt="Furnished apartment in Murree" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                            <div class="absolute inset-0 bg-gradient-to-t from-[#0F172A]/70 to-transparent"></div>
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/30 to-transparent"></div>
                             <div class="absolute bottom-4 left-5 text-white">
-                                <h3 class="text-xl font-bold outfit">Murree</h3>
-                                <p class="text-slate-300 text-xs flex items-center gap-1"><i class="fa-solid fa-location-dot text-[#D4AF37]"></i> Bhurban & Mall Road Corridor</p>
+                                <h3 class="text-2xl font-extrabold outfit">Murree</h3>
+                                <p class="text-amber-300 text-xs font-semibold flex items-center gap-1.5 mt-0.5"><i class="fa-solid fa-location-dot text-[#FFDF9E]"></i> Bhurban & Mall Road Corridor</p>
                             </div>
                         </div>
                         <div class="p-6">
-                            <h4 class="font-bold text-slate-800 text-sm mb-2">Furnished Apartments in Murree</h4>
-                            <p class="text-slate-600 text-xs leading-relaxed font-light mb-4">
+                            <h4 class="font-bold text-slate-900 text-base mb-2">Furnished Apartments in Murree</h4>
+                            <p class="text-slate-600 text-xs leading-relaxed font-normal mb-4">
                                 Cozy, mountain-view furnished apartments and holiday suites in Murree. Fitted with climate heating, private balconies overlooking lush valleys, warm furnishings, and 24/7 concierge.
                             </p>
                             <div class="flex flex-wrap gap-1.5 mb-4">
-                                <span class="bg-slate-50 text-slate-600 text-[10px] font-bold px-2.5 py-1 rounded-full border border-slate-100"><i class="fa-solid fa-mountain text-[#D4AF37] mr-1"></i> Valley View</span>
-                                <span class="bg-slate-50 text-slate-600 text-[10px] font-bold px-2.5 py-1 rounded-full border border-slate-100"><i class="fa-solid fa-temperature-arrow-up text-[#D4AF37] mr-1"></i> Heating</span>
+                                <span class="bg-slate-100 text-slate-800 text-[11px] font-semibold px-3 py-1 rounded-full border border-slate-200"><i class="fa-solid fa-mountain text-[#C5A059] mr-1"></i> Valley View</span>
+                                <span class="bg-slate-100 text-slate-800 text-[11px] font-semibold px-3 py-1 rounded-full border border-slate-200"><i class="fa-solid fa-temperature-arrow-up text-[#C5A059] mr-1"></i> Heating</span>
                             </div>
                         </div>
                     </div>
-                    <div class="px-6 pb-6">
-                        <a href="rooms.html?location=Murree" class="w-full text-center bg-slate-900 hover:bg-[#D4AF37] text-white text-xs font-bold py-2.5 rounded-xl block transition-all">View Murree Apartments</a>
+                    <div class="px-6 pb-6 pt-2 border-t border-slate-100">
+                        <a href="rooms.html?location=Murree" class="w-full text-center bg-slate-900 hover:bg-[#C5A059] hover:text-slate-950 text-white text-xs font-extrabold py-3 rounded-xl block transition-all shadow-sm border border-slate-800 hover:border-[#C5A059]">View Murree Apartments</a>
                     </div>
                 </div>
 
                 <!-- Nathia Gali -->
-                <div class="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-lg hover-lift group flex flex-col justify-between">
+                <div class="bg-white rounded-3xl overflow-hidden border-2 border-slate-200 shadow-md hover:border-[#C5A059] hover-lift group flex flex-col justify-between transition-all">
                     <div>
-                        <div class="relative h-56 overflow-hidden">
+                        <div class="relative h-56 overflow-hidden border-b border-slate-200">
                             <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=800&q=80" alt="Furnished apartment in Nathia Gali" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                            <div class="absolute inset-0 bg-gradient-to-t from-[#0F172A]/70 to-transparent"></div>
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/30 to-transparent"></div>
                             <div class="absolute bottom-4 left-5 text-white">
-                                <h3 class="text-xl font-bold outfit">Nathia Gali</h3>
-                                <p class="text-slate-300 text-xs flex items-center gap-1"><i class="fa-solid fa-location-dot text-[#D4AF37]"></i> Ayubia National Park & Galyat</p>
+                                <h3 class="text-2xl font-extrabold outfit">Nathia Gali</h3>
+                                <p class="text-amber-300 text-xs font-semibold flex items-center gap-1.5 mt-0.5"><i class="fa-solid fa-location-dot text-[#FFDF9E]"></i> Ayubia National Park & Galyat</p>
                             </div>
                         </div>
                         <div class="p-6">
-                            <h4 class="font-bold text-slate-800 text-sm mb-2">Furnished Apartments in Nathia Gali</h4>
-                            <p class="text-slate-600 text-xs leading-relaxed font-light mb-4">
+                            <h4 class="font-bold text-slate-900 text-base mb-2">Furnished Apartments in Nathia Gali</h4>
+                            <p class="text-slate-600 text-xs leading-relaxed font-normal mb-4">
                                 Luxury pine forest chalets and spacious furnished family apartments in Nathia Gali at 8,200 ft elevation. Minutes from hiking trails, Ayubia chairlift, and scenic viewpoints.
                             </p>
                             <div class="flex flex-wrap gap-1.5 mb-4">
-                                <span class="bg-slate-50 text-slate-600 text-[10px] font-bold px-2.5 py-1 rounded-full border border-slate-100"><i class="fa-solid fa-tree text-[#D4AF37] mr-1"></i> Pine Forests</span>
-                                <span class="bg-slate-50 text-slate-600 text-[10px] font-bold px-2.5 py-1 rounded-full border border-slate-100"><i class="fa-solid fa-person-hiking text-[#D4AF37] mr-1"></i> Trails</span>
+                                <span class="bg-slate-100 text-slate-800 text-[11px] font-semibold px-3 py-1 rounded-full border border-slate-200"><i class="fa-solid fa-tree text-[#C5A059] mr-1"></i> Pine Forests</span>
+                                <span class="bg-slate-100 text-slate-800 text-[11px] font-semibold px-3 py-1 rounded-full border border-slate-200"><i class="fa-solid fa-person-hiking text-[#C5A059] mr-1"></i> Trails</span>
                             </div>
                         </div>
                     </div>
-                    <div class="px-6 pb-6">
-                        <a href="rooms.html?location=Nathia%20Gali" class="w-full text-center bg-slate-900 hover:bg-[#D4AF37] text-white text-xs font-bold py-2.5 rounded-xl block transition-all">View Nathia Gali Apartments</a>
+                    <div class="px-6 pb-6 pt-2 border-t border-slate-100">
+                        <a href="rooms.html?location=Nathia%20Gali" class="w-full text-center bg-slate-900 hover:bg-[#C5A059] hover:text-slate-950 text-white text-xs font-extrabold py-3 rounded-xl block transition-all shadow-sm border border-slate-800 hover:border-[#C5A059]">View Nathia Gali Apartments</a>
                     </div>
                 </div>
             </div>
@@ -914,132 +960,136 @@
     </section>
 
     <!-- Why Choose KPH Stay — Stats Counter & Trust Section -->
-    <section class="py-24 px-6 md:px-12 bg-[#0F172A] text-white relative overflow-hidden">
-        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[#D4AF37]/5 via-transparent to-transparent"></div>
+    <section class="py-24 px-4 sm:px-6 md:px-12 bg-[#0F172A] text-white relative overflow-hidden border-t border-slate-800">
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-amber-500/10 via-transparent to-transparent"></div>
         <div class="max-w-7xl mx-auto relative z-10">
             <div class="text-center mb-16">
-                <span class="text-[#D4AF37] font-bold uppercase tracking-widest text-xs mb-3 block">Why Guests Choose Us</span>
-                <h2 class="text-3xl md:text-5xl font-bold outfit mb-4">The KPH Stay <span class="text-[#D4AF37]">Difference</span></h2>
-                <p class="text-slate-400 text-sm max-w-2xl mx-auto font-light">We don't just provide rooms — we deliver curated living experiences that blend the warmth of home with the precision of five-star hospitality.</p>
+                <span class="text-[#FFDF9E] font-extrabold uppercase tracking-widest text-xs mb-3 block flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-shield-heart text-amber-400"></i> Why Guests Choose Us
+                </span>
+                <h2 class="text-3xl md:text-5xl font-extrabold outfit mb-4 tracking-tight">The KPH Stay <span class="text-[#C5A059]">Difference</span></h2>
+                <p class="text-slate-300 text-sm sm:text-base max-w-2xl mx-auto font-normal">We don't just provide rooms — we deliver curated living experiences that blend the warmth of home with the precision of five-star hospitality.</p>
             </div>
 
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16">
-                <div class="text-center p-6 bg-slate-800/30 border border-slate-700/30 rounded-3xl">
-                    <div class="w-14 h-14 bg-[#D4AF37]/10 text-[#D4AF37] rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-8 mb-16">
+                <div class="text-center p-6 bg-slate-800/80 border-2 border-slate-700/80 rounded-3xl shadow-lg hover:border-amber-400/40 transition-all">
+                    <div class="w-14 h-14 bg-amber-500/20 border border-amber-400/30 text-[#FFDF9E] rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
                         <i class="fa-solid fa-users text-xl"></i>
                     </div>
-                    <span class="text-3xl md:text-4xl font-extrabold text-[#D4AF37] outfit block">500+</span>
-                    <p class="text-xs uppercase text-slate-400 tracking-wider font-semibold mt-2">Happy Guests Served</p>
+                    <span class="text-3xl md:text-4xl font-extrabold text-[#FFDF9E] outfit block">500+</span>
+                    <p class="text-xs uppercase text-slate-300 tracking-wider font-extrabold mt-2">Happy Guests Served</p>
                 </div>
-                <div class="text-center p-6 bg-slate-800/30 border border-slate-700/30 rounded-3xl">
-                    <div class="w-14 h-14 bg-[#D4AF37]/10 text-[#D4AF37] rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <div class="text-center p-6 bg-slate-800/80 border-2 border-slate-700/80 rounded-3xl shadow-lg hover:border-amber-400/40 transition-all">
+                    <div class="w-14 h-14 bg-amber-500/20 border border-amber-400/30 text-[#FFDF9E] rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
                         <i class="fa-solid fa-map-location-dot text-xl"></i>
                     </div>
-                    <span class="text-3xl md:text-4xl font-extrabold text-[#D4AF37] outfit block">2</span>
-                    <p class="text-xs uppercase text-slate-400 tracking-wider font-semibold mt-2">Premium Locations</p>
+                    <span class="text-3xl md:text-4xl font-extrabold text-[#FFDF9E] outfit block">3</span>
+                    <p class="text-xs uppercase text-slate-300 tracking-wider font-extrabold mt-2">Prime Destinations</p>
                 </div>
-                <div class="text-center p-6 bg-slate-800/30 border border-slate-700/30 rounded-3xl">
-                    <div class="w-14 h-14 bg-[#D4AF37]/10 text-[#D4AF37] rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <div class="text-center p-6 bg-slate-800/80 border-2 border-slate-700/80 rounded-3xl shadow-lg hover:border-amber-400/40 transition-all">
+                    <div class="w-14 h-14 bg-amber-500/20 border border-amber-400/30 text-[#FFDF9E] rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
                         <i class="fa-solid fa-star text-xl"></i>
                     </div>
-                    <span class="text-3xl md:text-4xl font-extrabold text-[#D4AF37] outfit block">4.9</span>
-                    <p class="text-xs uppercase text-slate-400 tracking-wider font-semibold mt-2">Average Guest Rating</p>
+                    <span class="text-3xl md:text-4xl font-extrabold text-[#FFDF9E] outfit block">4.9/5</span>
+                    <p class="text-xs uppercase text-slate-300 tracking-wider font-extrabold mt-2">Average Guest Rating</p>
                 </div>
-                <div class="text-center p-6 bg-slate-800/30 border border-slate-700/30 rounded-3xl">
-                    <div class="w-14 h-14 bg-[#D4AF37]/10 text-[#D4AF37] rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <div class="text-center p-6 bg-slate-800/80 border-2 border-slate-700/80 rounded-3xl shadow-lg hover:border-amber-400/40 transition-all">
+                    <div class="w-14 h-14 bg-amber-500/20 border border-amber-400/30 text-[#FFDF9E] rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
                         <i class="fa-solid fa-headset text-xl"></i>
                     </div>
-                    <span class="text-3xl md:text-4xl font-extrabold text-[#D4AF37] outfit block">24/7</span>
-                    <p class="text-xs uppercase text-slate-400 tracking-wider font-semibold mt-2">Concierge Support</p>
+                    <span class="text-3xl md:text-4xl font-extrabold text-[#FFDF9E] outfit block">24/7</span>
+                    <p class="text-xs uppercase text-slate-300 tracking-wider font-extrabold mt-2">Concierge Support</p>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="p-8 bg-slate-800/20 border border-slate-700/30 rounded-3xl">
-                    <i class="fa-solid fa-shield-check text-[#D4AF37] text-2xl mb-4"></i>
-                    <h3 class="text-lg font-bold outfit mb-3">Best Rate Guarantee</h3>
-                    <p class="text-slate-400 text-sm leading-relaxed font-light">Book directly through our website for the lowest available rate on every room and apartment. If you find a lower price elsewhere, we will match it.</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+                <div class="p-8 bg-slate-800/80 border-2 border-slate-700/80 rounded-3xl shadow-lg">
+                    <i class="fa-solid fa-shield-halved text-[#FFDF9E] text-3xl mb-4 block"></i>
+                    <h3 class="text-xl font-bold outfit text-white mb-3">Best Rate Guarantee</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed font-normal">Book directly through our website for the lowest available rate on every room and apartment. If you find a lower price elsewhere, we will match it.</p>
                 </div>
-                <div class="p-8 bg-slate-800/20 border border-slate-700/30 rounded-3xl">
-                    <i class="fa-solid fa-calendar-xmark text-[#D4AF37] text-2xl mb-4"></i>
-                    <h3 class="text-lg font-bold outfit mb-3">Free Cancellation</h3>
-                    <p class="text-slate-400 text-sm leading-relaxed font-light">Plans changed? Cancel up to 48 hours before check-in at no charge. We value your flexibility and understand that travel plans can shift unexpectedly.</p>
+                <div class="p-8 bg-slate-800/80 border-2 border-slate-700/80 rounded-3xl shadow-lg">
+                    <i class="fa-solid fa-calendar-xmark text-[#FFDF9E] text-3xl mb-4 block"></i>
+                    <h3 class="text-xl font-bold outfit text-white mb-3">Free Cancellation</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed font-normal">Plans changed? Cancel up to 48 hours before check-in at no charge. We value your flexibility and understand that travel plans can shift unexpectedly.</p>
                 </div>
-                <div class="p-8 bg-slate-800/20 border border-slate-700/30 rounded-3xl">
-                    <i class="fa-solid fa-bolt text-[#D4AF37] text-2xl mb-4"></i>
-                    <h3 class="text-lg font-bold outfit mb-3">Instant Confirmation</h3>
-                    <p class="text-slate-400 text-sm leading-relaxed font-light">Receive your booking confirmation immediately via email after completing your reservation. No waiting, no phone calls — your suite is secured in seconds.</p>
+                <div class="p-8 bg-slate-800/80 border-2 border-slate-700/80 rounded-3xl shadow-lg">
+                    <i class="fa-solid fa-bolt text-[#FFDF9E] text-3xl mb-4 block"></i>
+                    <h3 class="text-xl font-bold outfit text-white mb-3">Instant Confirmation</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed font-normal">Receive your booking confirmation immediately via email after completing your reservation. No waiting, no phone calls — your suite is secured in seconds.</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- FAQ Section — Rich Snippet Eligible -->
-    <section class="py-24 px-6 md:px-12 bg-white border-t border-slate-100">
+    <section class="py-24 px-4 sm:px-6 md:px-12 bg-white border-t border-slate-200">
         <div class="max-w-4xl mx-auto">
             <div class="text-center mb-16">
-                <span class="text-[#D4AF37] font-bold uppercase tracking-widest text-xs mb-3 block">Common Questions</span>
-                <h2 class="text-3xl md:text-5xl font-bold outfit text-[#0F172A]">Frequently Asked <span class="text-[#D4AF37]">Questions</span></h2>
-                <p class="text-slate-500 text-sm mt-4 max-w-xl mx-auto font-light">Everything you need to know before booking your stay at KPH Stay resort and service apartments.</p>
+                <span class="text-[#B8860B] font-extrabold uppercase tracking-widest text-xs mb-3 block flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-circle-question text-amber-600"></i> Common Inquiries
+                </span>
+                <h2 class="text-3xl md:text-5xl font-extrabold outfit text-slate-900 tracking-tight">Frequently Asked <span class="text-[#C5A059]">Questions</span></h2>
+                <p class="text-slate-700 text-sm sm:text-base mt-4 max-w-xl mx-auto font-normal">Everything you need to know before booking your stay at KPH Stay resort and service apartments.</p>
             </div>
 
             <div class="space-y-4" id="faq-container">
-                <div class="border border-slate-200 rounded-2xl overflow-hidden bg-slate-50 transition-all duration-300">
-                    <button onclick="toggleFAQ(this)" class="w-full flex justify-between items-center p-6 text-left hover:bg-slate-100 transition-colors">
-                        <span class="font-bold text-[#0F172A] text-sm outfit pr-4">Where can I book luxury furnished apartments in Islamabad?</span>
-                        <i class="fa-solid fa-chevron-down text-[#D4AF37] text-xs shrink-0 transition-transform duration-300"></i>
+                <div class="border-2 border-slate-200 rounded-2xl overflow-hidden bg-slate-50 transition-all duration-300 shadow-sm hover:border-slate-300">
+                    <button onclick="toggleFAQ(this)" class="w-full flex justify-between items-center p-5 sm:p-6 text-left hover:bg-slate-100 transition-colors cursor-pointer">
+                        <span class="font-bold text-slate-900 text-base sm:text-lg outfit pr-4">Where can I book luxury furnished apartments in Islamabad?</span>
+                        <i class="fa-solid fa-chevron-down text-[#C5A059] text-sm shrink-0 transition-transform duration-300"></i>
                     </button>
-                    <div class="accordion-content text-slate-600 text-sm leading-relaxed font-light">
-                        <div class="px-6 pb-6">
+                    <div class="accordion-content text-slate-700 text-sm leading-relaxed font-normal">
+                        <div class="px-5 sm:px-6 pb-6 pt-2 border-t border-slate-200/80">
                             KPH Stay provides luxury 1BHK, 2BHK, 3BHK, and 4BHK <strong>furnished apartments in Islamabad</strong> across prime sectors including Bahria Enclave and near Margalla Foothills. Each furnished apartment includes an equipped kitchen with cookware, a spacious designer lounge, high-speed Wi-Fi, 24/7 security, and regular professional housekeeping.
                         </div>
                     </div>
                 </div>
 
-                <div class="border border-slate-200 rounded-2xl overflow-hidden bg-slate-50 transition-all duration-300">
-                    <button onclick="toggleFAQ(this)" class="w-full flex justify-between items-center p-6 text-left hover:bg-slate-100 transition-colors">
-                        <span class="font-bold text-[#0F172A] text-sm outfit pr-4">Are furnished apartments available in Murree and Nathia Gali?</span>
-                        <i class="fa-solid fa-chevron-down text-[#D4AF37] text-xs shrink-0 transition-transform duration-300"></i>
+                <div class="border-2 border-slate-200 rounded-2xl overflow-hidden bg-slate-50 transition-all duration-300 shadow-sm hover:border-slate-300">
+                    <button onclick="toggleFAQ(this)" class="w-full flex justify-between items-center p-5 sm:p-6 text-left hover:bg-slate-100 transition-colors cursor-pointer">
+                        <span class="font-bold text-slate-900 text-base sm:text-lg outfit pr-4">Are furnished apartments available in Murree and Nathia Gali?</span>
+                        <i class="fa-solid fa-chevron-down text-[#C5A059] text-sm shrink-0 transition-transform duration-300"></i>
                     </button>
-                    <div class="accordion-content text-slate-600 text-sm leading-relaxed font-light">
-                        <div class="px-6 pb-6">
+                    <div class="accordion-content text-slate-700 text-sm leading-relaxed font-normal">
+                        <div class="px-5 sm:px-6 pb-6 pt-2 border-t border-slate-200/80">
                             Yes! We offer mountain-view <strong>furnished apartments in Murree</strong> and serene pine-valley <strong>furnished apartments in Nathia Gali</strong> near Ayubia National Park. Available in 1 Bed to 4 Bed configurations with central heating, private balconies, equipped kitchens, and 24/7 concierge support.
                         </div>
                     </div>
                 </div>
 
-                <div class="border border-slate-200 rounded-2xl overflow-hidden bg-slate-50 transition-all duration-300">
-                    <button onclick="toggleFAQ(this)" class="w-full flex justify-between items-center p-6 text-left hover:bg-slate-100 transition-colors">
-                        <span class="font-bold text-[#0F172A] text-sm outfit pr-4">What amenities are included in KPH Stay furnished apartments?</span>
-                        <i class="fa-solid fa-chevron-down text-[#D4AF37] text-xs shrink-0 transition-transform duration-300"></i>
+                <div class="border-2 border-slate-200 rounded-2xl overflow-hidden bg-slate-50 transition-all duration-300 shadow-sm hover:border-slate-300">
+                    <button onclick="toggleFAQ(this)" class="w-full flex justify-between items-center p-5 sm:p-6 text-left hover:bg-slate-100 transition-colors cursor-pointer">
+                        <span class="font-bold text-slate-900 text-base sm:text-lg outfit pr-4">What amenities are included in KPH Stay furnished apartments?</span>
+                        <i class="fa-solid fa-chevron-down text-[#C5A059] text-sm shrink-0 transition-transform duration-300"></i>
                     </button>
-                    <div class="accordion-content text-slate-600 text-sm leading-relaxed font-light">
-                        <div class="px-6 pb-6">
+                    <div class="accordion-content text-slate-700 text-sm leading-relaxed font-normal">
+                        <div class="px-5 sm:px-6 pb-6 pt-2 border-t border-slate-200/80">
                             All KPH Stay <strong>furnished apartments</strong> include fully equipped kitchens (microwave, stove, cookware, refrigerator), optical fiber Wi-Fi, inverter air conditioning and heating, Smart HD TVs with streaming apps, 24/7 security, uninterrupted generator power backup, and free dedicated parking.
                         </div>
                     </div>
                 </div>
 
-                <div class="border border-slate-200 rounded-2xl overflow-hidden bg-slate-50 transition-all duration-300">
-                    <button onclick="toggleFAQ(this)" class="w-full flex justify-between items-center p-6 text-left hover:bg-slate-100 transition-colors">
-                        <span class="font-bold text-[#0F172A] text-sm outfit pr-4">Can I rent furnished apartments in Islamabad for daily, weekly, or monthly stays?</span>
-                        <i class="fa-solid fa-chevron-down text-[#D4AF37] text-xs shrink-0 transition-transform duration-300"></i>
+                <div class="border-2 border-slate-200 rounded-2xl overflow-hidden bg-slate-50 transition-all duration-300 shadow-sm hover:border-slate-300">
+                    <button onclick="toggleFAQ(this)" class="w-full flex justify-between items-center p-5 sm:p-6 text-left hover:bg-slate-100 transition-colors cursor-pointer">
+                        <span class="font-bold text-slate-900 text-base sm:text-lg outfit pr-4">Can I rent furnished apartments in Islamabad for daily, weekly, or monthly stays?</span>
+                        <i class="fa-solid fa-chevron-down text-[#C5A059] text-sm shrink-0 transition-transform duration-300"></i>
                     </button>
-                    <div class="accordion-content text-slate-600 text-sm leading-relaxed font-light">
-                        <div class="px-6 pb-6">
+                    <div class="accordion-content text-slate-700 text-sm leading-relaxed font-normal">
+                        <div class="px-5 sm:px-6 pb-6 pt-2 border-t border-slate-200/80">
                             Yes, KPH Stay offers flexible booking plans for <strong>furnished apartments in Islamabad</strong>, Murree, and Nathia Gali. Whether you need a short stay for a weekend getaway or a monthly corporate rental, you can book directly online with our best rate guarantee.
                         </div>
                     </div>
                 </div>
 
-                <div class="border border-slate-200 rounded-2xl overflow-hidden bg-slate-50 transition-all duration-300">
-                    <button onclick="toggleFAQ(this)" class="w-full flex justify-between items-center p-6 text-left hover:bg-slate-100 transition-colors">
-                        <span class="font-bold text-[#0F172A] text-sm outfit pr-4">What is KPH Stay's cancellation policy?</span>
-                        <i class="fa-solid fa-chevron-down text-[#D4AF37] text-xs shrink-0 transition-transform duration-300"></i>
+                <div class="border-2 border-slate-200 rounded-2xl overflow-hidden bg-slate-50 transition-all duration-300 shadow-sm hover:border-slate-300">
+                    <button onclick="toggleFAQ(this)" class="w-full flex justify-between items-center p-5 sm:p-6 text-left hover:bg-slate-100 transition-colors cursor-pointer">
+                        <span class="font-bold text-slate-900 text-base sm:text-lg outfit pr-4">What is KPH Stay's cancellation policy?</span>
+                        <i class="fa-solid fa-chevron-down text-[#C5A059] text-sm shrink-0 transition-transform duration-300"></i>
                     </button>
-                    <div class="accordion-content text-slate-600 text-sm leading-relaxed font-light">
-                        <div class="px-6 pb-6">
-                            We offer <strong>free cancellation up to 48 hours</strong> before the check-in date. Cancellations made within 48 hours may be subject to a one-night charge. Refunds are processed within 5–7 business days. Please refer to our <a href="terms.html" class="text-[#D4AF37] font-semibold hover:underline">Terms of Stay</a> for full details.
+                    <div class="accordion-content text-slate-700 text-sm leading-relaxed font-normal">
+                        <div class="px-5 sm:px-6 pb-6 pt-2 border-t border-slate-200/80">
+                            We offer <strong>free cancellation up to 48 hours</strong> before the check-in date. Cancellations made within 48 hours may be subject to a one-night charge. Refunds are processed within 5–7 business days. Please refer to our <a href="terms.html" class="text-[#B8860B] font-bold hover:underline">Terms of Stay</a> for full details.
                         </div>
                     </div>
                 </div>
@@ -1048,51 +1098,66 @@
     </section>
 
     <!-- Footer -->
-    <footer class="bg-[#0b111e] text-slate-400 pt-20 pb-10 px-6 md:px-12 border-t border-slate-900">
+    <footer class="bg-[#0B0F19] text-slate-300 pt-20 pb-10 px-4 sm:px-6 md:px-12 border-t-2 border-slate-800">
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
             <div>
                 <div class="flex items-center gap-3 mb-6 text-white">
-                    <img src="/assets/images/logo.png" alt="KPH Stay Logo" class="h-8 w-auto object-contain">
-                    <span class="text-base font-bold tracking-wider outfit font-semibold">KAGHAN PROPERTIES HOSPITALITY STAY</span>
+                    <img src="/assets/images/logo.png" alt="KPH Stay Logo" class="h-9 w-auto object-contain">
+                    <span class="text-sm sm:text-base font-extrabold tracking-wider outfit text-white">KAGHAN PROPERTIES HOSPITALITY</span>
                 </div>
-                <p class="text-sm leading-relaxed mb-6">
+                <p class="text-sm leading-relaxed mb-6 text-slate-300">
                     A subsidiary of Kaghan Properties Hospitality (KPH) Stay Pvt. Ltd., bringing world-class ultra-luxury hospitality experiences and smart booking infrastructure to Pakistan.
                 </p>
+                <div class="flex items-center gap-3">
+                    <a href="https://wa.me/923340091127" target="_blank" rel="noopener" class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 text-emerald-400 hover:bg-emerald-600 hover:text-white flex items-center justify-center transition-all" aria-label="WhatsApp Support">
+                        <i class="fa-brands fa-whatsapp text-lg"></i>
+                    </a>
+                    <a href="https://facebook.com" target="_blank" rel="noopener" class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 text-blue-400 hover:bg-blue-600 hover:text-white flex items-center justify-center transition-all" aria-label="Facebook">
+                        <i class="fa-brands fa-facebook-f text-base"></i>
+                    </a>
+                    <a href="https://instagram.com" target="_blank" rel="noopener" class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 text-pink-400 hover:bg-pink-600 hover:text-white flex items-center justify-center transition-all" aria-label="Instagram">
+                        <i class="fa-brands fa-instagram text-lg"></i>
+                    </a>
+                </div>
             </div>
             <div>
-                <h4 class="text-white font-bold mb-6 uppercase tracking-wider text-xs outfit">Resort Nav</h4>
+                <h4 class="text-white font-extrabold mb-6 uppercase tracking-wider text-xs outfit">Luxury Stays</h4>
                 <ul class="space-y-3 text-sm">
-                    <li><a href="rooms.html" class="hover:text-[#D4AF37] transition-colors">Our Suites</a></li>
-                    <li><a href="blog.html" class="hover:text-[#D4AF37] transition-colors">Resort Journal</a></li>
-                    <li><a href="blog.html" class="hover:text-[#D4AF37] transition-colors">Resort Journal</a></li>
-                    <li><a href="contact.html" class="hover:text-[#D4AF37] transition-colors">Contact Lobby</a></li>
-                    <li><a href="login.html" class="hover:text-[#D4AF37] transition-colors">Guest Portal</a></li>
+                    <li><a href="/furnished-apartments-islamabad" class="hover:text-[#FFDF9E] transition-colors flex items-center gap-2"><i class="fa-solid fa-chevron-right text-[10px] text-amber-400"></i> Furnished Apartments in Islamabad</a></li>
+                    <li><a href="/furnished-apartments-murree" class="hover:text-[#FFDF9E] transition-colors flex items-center gap-2"><i class="fa-solid fa-chevron-right text-[10px] text-amber-400"></i> Furnished Apartments in Murree</a></li>
+                    <li><a href="/furnished-apartments-nathia-gali" class="hover:text-[#FFDF9E] transition-colors flex items-center gap-2"><i class="fa-solid fa-chevron-right text-[10px] text-amber-400"></i> Furnished Apartments in Nathia Gali</a></li>
+                    <li><a href="/rooms" class="hover:text-[#FFDF9E] transition-colors flex items-center gap-2"><i class="fa-solid fa-chevron-right text-[10px] text-amber-400"></i> All Suites & Chalets</a></li>
+                    <li><a href="/blog" class="hover:text-[#FFDF9E] transition-colors flex items-center gap-2"><i class="fa-solid fa-chevron-right text-[10px] text-amber-400"></i> Travel Journal</a></li>
                 </ul>
             </div>
             <div>
-                <h4 class="text-white font-bold mb-6 uppercase tracking-wider text-xs outfit">Contact Front Desk</h4>
-                <p class="text-xs leading-relaxed mb-4">
+                <h4 class="text-white font-extrabold mb-6 uppercase tracking-wider text-xs outfit">Contact Front Desk</h4>
+                <p class="text-xs leading-relaxed mb-4 text-slate-300">
                     Office 203, 2nd Floor, Asian Arcade, opposite Zoo, C Avenue, Sector C, Bahria Enclave, Islamabad, Pakistan
                 </p>
-                <p class="text-sm text-[#D4AF37] font-bold"><i class="fa-solid fa-phone mr-2"></i>+92 51 8461975</p>
-            </div>
-            <div>
-                <h4 class="text-white font-bold mb-6 uppercase tracking-wider text-xs outfit">Newsletter</h4>
-                <div class="flex mt-3">
-                    <input type="email" placeholder="Email Address" class="bg-slate-900 border-none rounded-l-xl px-4 py-2.5 text-sm w-full outline-none text-white focus:ring-1 focus:ring-[#D4AF37]">
-                    <button class="bg-[#D4AF37] text-white px-4 rounded-r-xl hover:bg-white hover:text-slate-900 transition-all font-semibold text-sm">Join</button>
+                <div class="space-y-2">
+                    <p class="text-sm text-[#FFDF9E] font-bold"><i class="fa-solid fa-phone mr-2 text-[#C5A059]"></i>+92 51 8461975</p>
+                    <p class="text-sm text-slate-300 font-medium"><i class="fa-solid fa-envelope mr-2 text-[#C5A059]"></i>info@kphstay.com</p>
                 </div>
             </div>
+            <div>
+                <h4 class="text-white font-extrabold mb-6 uppercase tracking-wider text-xs outfit">Stay Updated</h4>
+                <p class="text-xs text-slate-300 mb-3">Subscribe to receive exclusive seasonal discounts and priority booking access.</p>
+                <form id="footer-newsletter-form" onsubmit="handleNewsletterSubmit(event)" class="flex mt-3">
+                    <input type="email" placeholder="Your email address" required class="bg-slate-900 border border-slate-700 rounded-l-xl px-4 py-3 text-sm w-full outline-none text-white focus:border-[#C5A059] placeholder:text-slate-500">
+                    <button type="submit" class="bg-[#C5A059] hover:bg-[#D4AF37] text-slate-950 px-5 rounded-r-xl transition-all font-extrabold text-sm border border-[#C5A059]">Join</button>
+                </form>
+            </div>
         </div>
-        <div class="max-w-7xl mx-auto pt-8 border-t border-slate-900 flex flex-col md:flex-row justify-between items-center gap-4 text-xs">
+        <div class="max-w-7xl mx-auto pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-400">
             <p>&copy; 2026 Kaghan Properties Hospitality Stay (kphstay.com). All Rights Reserved. SECP Registered.</p>
             <div class="flex flex-wrap gap-x-6 gap-y-2">
-                <a href="pricing.html" class="hover:text-[#D4AF37]">Pricing Policy</a>
-                <a href="privacy.html" class="hover:text-[#D4AF37]">Privacy Policy</a>
-                <a href="terms.html" class="hover:text-[#D4AF37]">Terms of Stay</a>
-                <a href="refund.html" class="hover:text-[#D4AF37]">Refund Policy</a>
-                <a href="cookies.html" class="hover:text-[#D4AF37]">Cookie Policy</a>
-                <a href="contact.html" class="hover:text-[#D4AF37]">Contact</a>
+                <a href="pricing.html" class="hover:text-[#FFDF9E] transition-colors">Pricing Policy</a>
+                <a href="privacy.html" class="hover:text-[#FFDF9E] transition-colors">Privacy Policy</a>
+                <a href="terms.html" class="hover:text-[#FFDF9E] transition-colors">Terms of Stay</a>
+                <a href="refund.html" class="hover:text-[#FFDF9E] transition-colors">Refund Policy</a>
+                <a href="cookies.html" class="hover:text-[#FFDF9E] transition-colors">Cookie Policy</a>
+                <a href="contact.html" class="hover:text-[#FFDF9E] transition-colors">Contact</a>
             </div>
         </div>
     </footer>
@@ -1109,17 +1174,273 @@
     <script src="/assets/js/newsletter.js"></script>
     <script>
         /* ============================================================
-           KAGHAN STAY — HOME PAGE SCRIPT
-           Handles hero search, featured rooms, category filters, blogs
+           KAGHAN STAY — CLEAN MINIMALIST HERO ROOM SLIDER CONTROLLER
            ============================================================ */
+        const KaghanHeroSlider = {
+            allRooms: [],
+            rooms: [],
+            currentIndex: 0,
+            autoTimer: null,
+            duration: 5000, // 5 seconds
+            isPaused: false,
+            touchStartX: 0,
+            touchEndX: 0,
+            isInitialized: false,
+
+            init(roomsList) {
+                if (!roomsList || !roomsList.length) return;
+                
+                // Filter available rooms with valid image
+                const validRooms = roomsList.filter(r => (!r.status || r.status === 'available') && (r.image || (r.images && r.images.length)));
+                this.allRooms = validRooms.length ? validRooms : roomsList;
+                this.rooms = [...this.allRooms];
+
+                this.renderBgSlides();
+                this.renderDots();
+                this.goToSlide(0, false);
+                this.startTimer();
+
+                if (!this.isInitialized) {
+                    this.attachEventListeners();
+                    this.isInitialized = true;
+                }
+            },
+
+            filterLocation(locationKey) {
+                if (!locationKey || locationKey === 'all') {
+                    this.rooms = [...this.allRooms];
+                } else {
+                    const key = locationKey.toLowerCase();
+                    const filtered = this.allRooms.filter(r => {
+                        const loc = (r.location || r.locationName || '').toLowerCase();
+                        const title = (r.name || '').toLowerCase();
+                        const desc = (r.description || '').toLowerCase();
+                        return loc.includes(key) || title.includes(key) || desc.includes(key);
+                    });
+                    this.rooms = filtered.length ? filtered : [...this.allRooms];
+                }
+
+                this.renderBgSlides();
+                this.renderDots();
+                this.goToSlide(0, true);
+            },
+
+            renderBgSlides() {
+                const bgContainer = document.getElementById('hero-slider-bg');
+                if (!bgContainer) return;
+
+                let slidesHtml = this.rooms.map((room, idx) => {
+                    const img = room.image || (room.images && room.images.length ? room.images[0] : '/assets/images/hero-apartment-raw.webp');
+                    return `
+                    <div class="hero-bg-slide ${idx === 0 ? 'active' : ''}" data-index="${idx}">
+                        <img src="${KaghanSafe.escapeHTML(img)}" 
+                             alt="${KaghanSafe.escapeHTML(room.name || 'Kaghan Stay Luxury Suite')}" 
+                             class="w-full h-full object-cover object-center transform scale-100 hero-ken-burns">
+                    </div>`;
+                }).join('');
+
+                slidesHtml += `
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#0A0F1D] via-[#0A0F1D]/80 to-[#0A0F1D]/75 pointer-events-none"></div>
+                    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-transparent via-[#0A0F1D]/60 to-[#0A0F1D]/90 pointer-events-none"></div>
+                `;
+                bgContainer.innerHTML = slidesHtml;
+            },
+
+            renderDots() {
+                const dotsContainer = document.getElementById('hero-slider-dots');
+                if (!dotsContainer) return;
+
+                // Render up to 8 clean dots
+                const visibleCount = Math.min(this.rooms.length, 8);
+                dotsContainer.innerHTML = Array.from({ length: visibleCount }).map((_, idx) => `
+                    <button type="button" 
+                            class="w-2 h-2 rounded-full transition-all duration-300 cursor-pointer ${idx === 0 ? 'bg-[#C5A059] w-5' : 'bg-slate-600 hover:bg-slate-400'}" 
+                            onclick="KaghanHeroSlider.goToSlide(${idx}, true)" 
+                            aria-label="Go to slide ${idx + 1}" 
+                            title="Slide ${idx + 1}"></button>
+                `).join('');
+            },
+
+            goToSlide(index, manual = false) {
+                if (!this.rooms.length) return;
+                if (index < 0) index = this.rooms.length - 1;
+                if (index >= this.rooms.length) index = 0;
+
+                this.currentIndex = index;
+                const room = this.rooms[index];
+
+                // Update Background Slides
+                const slides = document.querySelectorAll('#hero-slider-bg .hero-bg-slide');
+                slides.forEach((s, idx) => {
+                    if (idx === index) {
+                        s.classList.add('active');
+                    } else {
+                        s.classList.remove('active');
+                    }
+                });
+
+                // Update Dot indicators
+                const dots = document.querySelectorAll('#hero-slider-dots button');
+                dots.forEach((d, idx) => {
+                    if (idx === (index % (dots.length || 1))) {
+                        d.className = 'w-5 h-2 rounded-full bg-[#C5A059] transition-all duration-300 cursor-pointer';
+                    } else {
+                        d.className = 'w-2 h-2 rounded-full bg-slate-600 hover:bg-slate-400 transition-all duration-300 cursor-pointer';
+                    }
+                });
+
+                // Update Minimal Live Suite Tag Info
+                this.updateLiveSuitePill(room);
+
+                if (manual && !this.isPaused) {
+                    this.startTimer();
+                }
+            },
+
+            updateLiveSuitePill(room) {
+                if (!room) return;
+
+                const nameEl = document.getElementById('hero-current-suite-name');
+                if (nameEl) nameEl.textContent = room.name || 'Luxury Serviced Suite';
+
+                const priceEl = document.getElementById('hero-current-suite-price');
+                if (priceEl) priceEl.textContent = KaghanUI.formatPKR(room.price || 0) + ' / night';
+
+                const linkEl = document.getElementById('hero-current-suite-link');
+                if (linkEl) {
+                    const link = window.KaghanDB && window.KaghanDB.getRoomLink ? window.KaghanDB.getRoomLink(room) : `room-details.html?id=${room.id}`;
+                    linkEl.href = link;
+                }
+            },
+
+            next(manual = false) {
+                this.goToSlide(this.currentIndex + 1, manual);
+            },
+
+            prev(manual = false) {
+                this.goToSlide(this.currentIndex - 1, manual);
+            },
+
+            startTimer() {
+                this.stopTimer();
+                this.autoTimer = setInterval(() => {
+                    if (!this.isPaused) {
+                        this.next(false);
+                    }
+                }, this.duration);
+            },
+
+            stopTimer() {
+                if (this.autoTimer) {
+                    clearInterval(this.autoTimer);
+                    this.autoTimer = null;
+                }
+            },
+
+            pause() {
+                this.isPaused = true;
+            },
+
+            resume() {
+                this.isPaused = false;
+            },
+
+            goToCurrentRoom() {
+                if (!this.rooms.length) {
+                    window.location.href = 'rooms.html';
+                    return;
+                }
+                const room = this.rooms[this.currentIndex];
+                if (!room) return;
+                const link = window.KaghanDB && window.KaghanDB.getRoomLink ? window.KaghanDB.getRoomLink(room) : `room-details.html?id=${room.id}`;
+                window.location.href = link;
+            },
+
+            attachEventListeners() {
+                const heroSection = document.getElementById('hero-slider-header');
+                if (heroSection) {
+                    heroSection.addEventListener('mouseenter', () => this.pause());
+                    heroSection.addEventListener('mouseleave', () => this.resume());
+
+                    // Touch Swipe Gestures
+                    heroSection.addEventListener('touchstart', (e) => {
+                        this.touchStartX = e.changedTouches[0].screenX;
+                    }, { passive: true });
+
+                    heroSection.addEventListener('touchend', (e) => {
+                        this.touchEndX = e.changedTouches[0].screenX;
+                        const diff = this.touchEndX - this.touchStartX;
+                        if (Math.abs(diff) > 45) {
+                            if (diff < 0) this.next(true);
+                            else this.prev(true);
+                        }
+                    }, { passive: true });
+                }
+
+                // Keyboard controls
+                document.addEventListener('keydown', (e) => {
+                    if (document.activeElement && ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
+                    if (e.key === 'ArrowLeft') this.prev(true);
+                    if (e.key === 'ArrowRight') this.next(true);
+                });
+            }
+        };
+
+        // 1-Click Destination Selector Helper
+        window.selectHeroDestination = function(locationKey, btnElement) {
+            document.querySelectorAll('.hero-dest-pill').forEach(btn => {
+                btn.className = 'hero-dest-pill px-4 py-2 rounded-full text-xs font-bold bg-slate-900/85 hover:bg-slate-800 text-slate-200 border border-slate-700 hover:border-[#C5A059] hover:text-white cursor-pointer transition-all';
+            });
+
+            if (btnElement) {
+                btnElement.className = 'hero-dest-pill active px-4 py-2 rounded-full text-xs font-extrabold bg-[#C5A059] text-slate-950 border border-amber-400 shadow-md cursor-pointer transition-all';
+            }
+
+            // Sync with Search Dropdown
+            const locInput = document.getElementById('search-location');
+            if (locInput) locInput.value = locationKey || 'all';
+
+            const dd = document.getElementById('dropdown-location');
+            if (dd) {
+                const label = dd.querySelector('.dropdown-selected');
+                const titles = {
+                    all: 'All Locations',
+                    islamabad: 'Islamabad',
+                    murree: 'Murree & Bhurban',
+                    nathiagali: 'Nathia Gali'
+                };
+                if (label) label.textContent = titles[locationKey] || 'All Locations';
+                dd.querySelectorAll('.dropdown-item').forEach(item => {
+                    if (item.dataset.value === locationKey) item.classList.add('selected');
+                    else item.classList.remove('selected');
+                });
+            }
+
+            // Filter the hero slider rooms
+            if (window.KaghanHeroSlider) {
+                KaghanHeroSlider.filterLocation(locationKey);
+            }
+        };
+
+        let currentFeaturedCategory = 'all';
+        let currentFeaturedStayType = 'daily';
 
         // FEATURED ROOMS
-        async function loadFeaturedRooms(category = 'all') {
+        async function loadFeaturedRooms(category = currentFeaturedCategory, stayType = currentFeaturedStayType) {
+            currentFeaturedCategory = category;
+            currentFeaturedStayType = stayType;
+
             const container = document.getElementById('featured-rooms');
             if (!container) return;
 
             try {
                 const rooms = await KaghanDB.getRooms();
+                
+                // Initialize Dynamic Hero Slider with all rooms
+                if (window.KaghanHeroSlider) {
+                    KaghanHeroSlider.init(rooms);
+                }
+
                 let savedWishlist = [];
                 try {
                     savedWishlist = KaghanDB.getWishlistSync ? KaghanDB.getWishlistSync() : [];
@@ -1134,34 +1455,90 @@
                 list.sort((a, b) => (b.isPinned ? 1 : 0) - (a.isPinned ? 1 : 0));
 
                 if (!list.length) {
-                    container.innerHTML = `<div class="col-span-3 text-center text-slate-400 py-16 font-light">No suites available for this category.</div>`;
+                    container.innerHTML = `<div class="col-span-3 text-center text-slate-500 py-16 font-semibold bg-white rounded-3xl border-2 border-slate-200">No suites available in this category at the moment.</div>`;
                     return;
                 }
 
                 const typeLabels = {
-                    studio: '<i class="fa-solid fa-cube"></i> Studio Furnished',
-                    '1bed': '<i class="fa-solid fa-bed"></i> 1 Bed Furnished',
-                    '2bed': '<i class="fa-solid fa-door-open"></i> 2 Bed Furnished',
-                    '3bed': '<i class="fa-solid fa-house-chimney"></i> 3 Bed Furnished',
-                    '4bed': '<i class="fa-solid fa-building"></i> 4 Bed Furnished',
-                    '5marla': '<i class="fa-solid fa-house"></i> 5 Marla Furnished',
-                    '10marla': '<i class="fa-solid fa-house-user"></i> 10 Marla Furnished',
-                    '1kanal': '<i class="fa-solid fa-hotel"></i> 1 Kanal Furnished',
-                    farmhouse: '<i class="fa-solid fa-tree"></i> Furnished Farmhouse'
+                    studio: '<i class="fa-solid fa-cube text-[#FFDF9E]"></i> Studio Furnished',
+                    '1bed': '<i class="fa-solid fa-bed text-[#FFDF9E]"></i> 1 Bed Furnished',
+                    '2bed': '<i class="fa-solid fa-door-open text-[#FFDF9E]"></i> 2 Bed Furnished',
+                    '3bed': '<i class="fa-solid fa-house-chimney text-[#FFDF9E]"></i> 3 Bed Furnished',
+                    '4bed': '<i class="fa-solid fa-building text-[#FFDF9E]"></i> 4 Bed Furnished',
+                    '5marla': '<i class="fa-solid fa-house text-[#FFDF9E]"></i> 5 Marla Furnished',
+                    '10marla': '<i class="fa-solid fa-house-user text-[#FFDF9E]"></i> 10 Marla Furnished',
+                    '1kanal': '<i class="fa-solid fa-hotel text-[#FFDF9E]"></i> 1 Kanal Furnished',
+                    farmhouse: '<i class="fa-solid fa-tree text-[#FFDF9E]"></i> Furnished Farmhouse'
                 };
 
                 container.innerHTML = list.map((room, idx) => {
                     const isSaved = savedWishlist.includes(room.id);
+                    const baseDaily = Number(room.price) || 0;
+                    let priceHtml = '';
+
+                    if (currentFeaturedStayType === 'weekly') {
+                        const weeklyTotal = (room.priceWeekly && Number(room.priceWeekly) > 0) 
+                            ? Number(room.priceWeekly) 
+                            : Math.round(baseDaily * 7 * 0.85);
+                        const weeklyPerNight = Math.round(weeklyTotal / 7);
+                        priceHtml = `
+                            <div>
+                                <span class="text-slate-500 text-[10px] uppercase tracking-wider block font-extrabold flex items-center gap-1">
+                                    <i class="fa-solid fa-calendar-week text-emerald-600"></i> Weekly Rate (7 Nights)
+                                </span>
+                                <div class="flex items-baseline gap-2 mt-0.5">
+                                    <span class="line-through text-slate-400 font-semibold text-xs">${KaghanUI.formatPKR(baseDaily * 7)}</span>
+                                    <span class="text-xl font-extrabold text-slate-900 outfit tracking-tight">${KaghanUI.formatPKR(weeklyTotal)}</span>
+                                    <span class="text-xs text-slate-500 font-bold">/ week</span>
+                                </div>
+                                <div class="mt-1 inline-flex items-center gap-1 text-[10px] font-extrabold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+                                    <i class="fa-solid fa-sparkles text-emerald-600"></i> Save 15% (~${KaghanUI.formatPKR(weeklyPerNight)}/nt)
+                                </div>
+                            </div>
+                        `;
+                    } else if (currentFeaturedStayType === 'monthly') {
+                        const monthlyTotal = (room.priceMonthly && Number(room.priceMonthly) > 0) 
+                            ? Number(room.priceMonthly) 
+                            : Math.round(baseDaily * 30 * 0.65);
+                        const monthlyPerNight = Math.round(monthlyTotal / 30);
+                        priceHtml = `
+                            <div>
+                                <span class="text-slate-500 text-[10px] uppercase tracking-wider block font-extrabold flex items-center gap-1">
+                                    <i class="fa-solid fa-calendar-days text-amber-600"></i> Monthly Rate (30 Nights)
+                                </span>
+                                <div class="flex items-baseline gap-2 mt-0.5">
+                                    <span class="line-through text-slate-400 font-semibold text-xs">${KaghanUI.formatPKR(baseDaily * 30)}</span>
+                                    <span class="text-xl font-extrabold text-slate-900 outfit tracking-tight">${KaghanUI.formatPKR(monthlyTotal)}</span>
+                                    <span class="text-xs text-slate-500 font-bold">/ month</span>
+                                </div>
+                                <div class="mt-1 inline-flex items-center gap-1 text-[10px] font-extrabold text-amber-800 bg-amber-50 border border-amber-300 px-2 py-0.5 rounded-full">
+                                    <i class="fa-solid fa-crown text-amber-600"></i> Save 35% (~${KaghanUI.formatPKR(monthlyPerNight)}/nt)
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        priceHtml = `
+                            <div>
+                                <span class="text-slate-500 text-[10px] uppercase tracking-wider block font-extrabold">${room.isApartment ? 'Rates starting from' : 'Rate Per Night'}</span>
+                                <div class="flex items-baseline gap-2 mt-0.5">
+                                    ${room.originalPrice ? `<span class="line-through text-slate-400 font-semibold text-xs">${KaghanUI.formatPKR(room.originalPrice)}</span>` : ''}
+                                    <span class="text-xl font-extrabold text-slate-900 outfit tracking-tight">${KaghanUI.formatPKR(baseDaily)}</span>
+                                    <span class="text-xs text-slate-500 font-bold">/ night</span>
+                                </div>
+                            </div>
+                        `;
+                    }
+
                     return `
                     <div onclick="KaghanUI.openRoomDetailModal('${room.id}')"
-                         class="bg-white/80 backdrop-blur-md rounded-[2.5rem] overflow-hidden border border-[#C5A059]/10 shadow-[0_12px_40px_-15px_rgba(11,15,25,0.05)] hover:border-[#C5A059]/30 transition-all duration-500 group cursor-pointer flex flex-col justify-between h-full hover-lift relative">
-                        <div class="relative h-64 overflow-hidden shrink-0">
+                         class="bg-white rounded-3xl overflow-hidden border-2 border-slate-200 shadow-md hover:border-[#C5A059] hover:shadow-2xl transition-all duration-300 group cursor-pointer flex flex-col justify-between h-full hover-lift relative">
+                        <div class="relative h-64 overflow-hidden shrink-0 border-b border-slate-200">
                             <img src="${KaghanSafe.escapeHTML(room.image || '')}" alt="${KaghanSafe.escapeHTML(room.name)}" loading="lazy"
                                  onerror="this.src='/assets/images/logo.png'"
                                  class="w-full h-full object-cover group-hover:scale-105 group-hover:brightness-95 transition-all duration-700">
                             ${room.isPinned ? `
-                            <div class="absolute bottom-4 left-4 bg-gradient-to-r from-[#D4AF37] to-[#B8860B] text-white text-[9px] font-extrabold uppercase tracking-widest px-3 py-1 rounded-full shadow-md flex items-center gap-1.5 z-10">
-                                <i class="fa-solid fa-thumbtack text-[8px]"></i> Pinned
+                            <div class="absolute bottom-3 left-3 bg-gradient-to-r from-[#C5A059] to-[#8F6B20] text-slate-950 text-[10px] font-extrabold uppercase tracking-widest px-3 py-1 rounded-full shadow-md flex items-center gap-1.5 z-10 border border-amber-300">
+                                <i class="fa-solid fa-thumbtack text-[9px]"></i> Pinned
                             </div>
                             ` : ''}
                             <button type="button" class="wishlist-btn ${isSaved ? 'active' : ''}"
@@ -1169,38 +1546,32 @@
                                     aria-label="Save to Wishlist">
                                 <i class="${isSaved ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
                             </button>
-                            <div class="absolute top-4 left-4 backdrop-blur-md bg-[#0B0F19]/65 px-3.5 py-1.5 rounded-full text-[9px] font-bold text-[#C5A059] border border-white/10 uppercase tracking-widest flex items-center gap-1.5 shadow-lg">
+                            <div class="absolute top-3 left-3 backdrop-blur-md bg-slate-950/85 px-3.5 py-1.5 rounded-full text-[10px] font-extrabold text-[#FFDF9E] border border-amber-400/40 uppercase tracking-wider flex items-center gap-1.5 shadow-lg">
                                 ${typeLabels[room.type] || room.type}
                             </div>
                         </div>
-                        <div class="p-8 flex-grow flex flex-col justify-between">
+                        <div class="p-6 sm:p-7 flex-grow flex flex-col justify-between">
                             <div>
-                                <div class="flex justify-between items-start mb-1.5">
-                                    <h3 class="text-xl font-medium outfit text-[#0B0F19] tracking-tight group-hover:text-[#C5A059] transition-colors duration-300">${KaghanSafe.escapeHTML(room.name)}</h3>
-                                    <div class="flex items-center gap-1 text-[#C5A059] font-bold text-xs">
-                                        <i class="fa-solid fa-star"></i><span>${room.rating || '5.0'}</span>
+                                <div class="flex justify-between items-start mb-1 gap-2">
+                                    <h3 class="text-xl font-extrabold outfit text-slate-900 tracking-tight group-hover:text-[#C5A059] transition-colors duration-300 leading-snug">${KaghanSafe.escapeHTML(room.name)}</h3>
+                                    <div class="flex items-center gap-1 text-amber-500 font-extrabold text-xs shrink-0 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">
+                                        <i class="fa-solid fa-star text-amber-400"></i><span>${room.rating || '5.0'}</span>
                                     </div>
                                 </div>
-                                <div class="text-[9px] text-slate-400 font-bold mb-4 flex items-center gap-1.5 uppercase tracking-widest">
-                                    <i class="fa-solid fa-location-dot text-[#C5A059] text-[9px]"></i>
+                                <div class="text-[11px] text-slate-500 font-extrabold mb-3 flex items-center gap-1.5 uppercase tracking-wide">
+                                    <i class="fa-solid fa-location-dot text-[#C5A059] text-xs"></i>
                                     <span>${KaghanSafe.escapeHTML(room.location || 'Islamabad')}</span>
                                 </div>
-                                <p class="text-slate-500 text-xs line-clamp-3 mb-6 leading-relaxed font-light">${KaghanSafe.escapeHTML(KaghanSafe.stripTags(room.description || ''))}</p>
-                                <div class="flex flex-wrap gap-2 mb-6">
-                                    ${(room.amenities || []).slice(0, 3).map(a => `<span class="bg-slate-50/50 text-slate-600 text-[9px] uppercase font-bold tracking-wider px-3.5 py-1 rounded-full border border-slate-100/50">${KaghanSafe.escapeHTML(a)}</span>`).join('')}
-                                    ${(room.amenities || []).length > 3 ? `<span class="bg-slate-50/50 text-[#C5A059] text-[9px] uppercase font-bold px-2.5 py-1 rounded-full border border-slate-100/50">+${room.amenities.length - 3}</span>` : ''}
+                                <p class="text-slate-600 text-xs line-clamp-2 mb-4 leading-relaxed font-normal">${KaghanSafe.escapeHTML(KaghanSafe.stripTags(room.description || ''))}</p>
+                                <div class="flex flex-wrap gap-1.5 mb-5">
+                                    ${(room.amenities || []).slice(0, 3).map(a => `<span class="bg-slate-100 text-slate-700 text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 rounded-full border border-slate-200">${KaghanSafe.escapeHTML(a)}</span>`).join('')}
+                                    ${(room.amenities || []).length > 3 ? `<span class="bg-amber-50 text-[#B8860B] text-[10px] uppercase font-extrabold px-2 py-1 rounded-full border border-amber-200">+${room.amenities.length - 3}</span>` : ''}
                                 </div>
                             </div>
-                            <div class="border-t border-slate-100/70 pt-6 flex justify-between items-center mt-auto">
-                                <div>
-                                    <span class="text-slate-400 text-[9px] uppercase tracking-widest block font-bold">${room.isApartment ? 'Rates starting from' : 'Rate Per Night'}</span>
-                                    <div class="flex items-center gap-1.5 mt-1">
-                                        ${room.originalPrice ? `<span class="line-through text-slate-400 font-semibold text-[10px]">${KaghanUI.formatPKR(room.originalPrice)}</span>` : ''}
-                                        <span class="text-xl font-bold text-[#C5A059] outfit tracking-tight">${KaghanUI.formatPKR(room.price)}</span>
-                                    </div>
-                                </div>
-                                <button onclick="event.stopPropagation(); window.location.href='booking.html?room=${room.id}'"
-                                        class="bg-[#0B0F19] text-white text-[10px] uppercase tracking-wider font-bold px-5 py-3 rounded-xl hover:bg-[#C5A059] transition-all shadow-sm">
+                            <div class="border-t border-slate-200 pt-4 flex justify-between items-center mt-auto gap-2">
+                                ${priceHtml}
+                                <button onclick="event.stopPropagation(); window.location.href='booking.html?room=${room.id}&plan=${currentFeaturedStayType}'"
+                                        class="bg-slate-900 hover:bg-[#C5A059] hover:text-slate-950 text-white text-xs uppercase tracking-wider font-extrabold px-5 py-2.5 rounded-xl transition-all shadow-md border border-slate-800 hover:border-[#C5A059] shrink-0">
                                     Reserve
                                 </button>
                             </div>
@@ -1222,25 +1593,43 @@
             });
             btnElement.classList.add('active-category', 'opacity-100');
             btnElement.classList.remove('opacity-60');
-            loadFeaturedRooms(category);
+            loadFeaturedRooms(category, currentFeaturedStayType);
         }
 
-        // ── STAY TYPE SELECTOR ──
-        window.selectHeroStayType = function(type) {
-            const hiddenInput = document.getElementById('hero-stay-type');
-            if (hiddenInput) hiddenInput.value = type;
-
+        // ── STAY TYPE SELECTOR (Featured Section 3 Buttons) ──
+        window.setFeaturedStayType = function(type, btnElement) {
+            currentFeaturedStayType = type;
+            
             ['daily', 'weekly', 'monthly'].forEach(t => {
-                const btn = document.getElementById(`stay-tag-${t}`);
+                const btn = document.getElementById(`featured-plan-${t}`);
                 if (!btn) return;
                 if (t === type) {
-                    btn.classList.remove('bg-white/10', 'text-white/80', 'hover:bg-white/20');
-                    btn.classList.add('bg-[#C5A059]', 'text-white', 'shadow-md');
+                    btn.className = 'featured-plan-btn active px-4 sm:px-5 py-2 rounded-xl text-xs font-black transition-all bg-slate-900 text-white shadow-md cursor-pointer text-center';
                 } else {
-                    btn.classList.remove('bg-[#C5A059]', 'text-white', 'shadow-md');
-                    btn.classList.add('bg-white/10', 'text-white/80', 'hover:bg-white/20');
+                    btn.className = 'featured-plan-btn px-4 sm:px-5 py-2 rounded-xl text-xs font-bold transition-all text-slate-600 hover:text-slate-900 hover:bg-white cursor-pointer text-center';
                 }
             });
+
+            // Re-render rooms with newly selected stay plan
+            loadFeaturedRooms(currentFeaturedCategory, currentFeaturedStayType);
+
+            // Sync with hero tag if present
+            const hiddenHeroInput = document.getElementById('hero-stay-type');
+            if (hiddenHeroInput) hiddenHeroInput.value = type;
+            ['daily', 'weekly', 'monthly'].forEach(t => {
+                const heroBtn = document.getElementById(`stay-tag-${t}`);
+                if (!heroBtn) return;
+                if (t === type) {
+                    heroBtn.className = 'px-3 sm:px-4 py-2 rounded-full text-xs font-extrabold transition-all bg-[#C5A059] text-slate-950 border border-amber-400 shadow-md cursor-pointer text-center whitespace-nowrap';
+                } else {
+                    heroBtn.className = 'px-3 sm:px-4 py-2 rounded-full text-xs font-bold transition-all bg-slate-800/90 text-slate-200 border border-slate-600 hover:border-[#C5A059] hover:text-white cursor-pointer text-center whitespace-nowrap';
+                }
+            });
+        };
+
+        // ── HERO STAY TYPE SELECTOR ──
+        window.selectHeroStayType = function(type) {
+            setFeaturedStayType(type);
         };
 
         // ── CUSTOM DROPDOWN TOGGLE ──
@@ -1248,12 +1637,16 @@
             const target = document.getElementById(id);
             if (!target) return;
 
-            // Close others
+            const wasOpen = target.classList.contains('open');
+
+            // Close all
             document.querySelectorAll('.custom-dropdown.open').forEach(d => {
-                if (d.id !== id) d.classList.remove('open');
+                d.classList.remove('open');
             });
 
-            target.classList.toggle('open');
+            if (!wasOpen) {
+                target.classList.add('open');
+            }
         };
 
         // Global click: close dropdowns when clicking outside + handle item selection
@@ -1343,9 +1736,9 @@
                     let locHtml = `
                         <div class="dropdown-item selected" data-value="all">
                             <div class="icon-wrapper"><i class="fa-solid fa-globe"></i></div>
-                            <div class="flex flex-col">
-                                <span class="font-bold text-white">All Locations</span>
-                                <span class="text-[9px] text-slate-400 font-normal">Explore all destinations in Pakistan</span>
+                            <div class="flex flex-col min-w-0">
+                                <span class="font-bold text-white text-xs">All Locations</span>
+                                <span class="text-[10px] text-slate-300 font-normal leading-tight">Explore all destinations in Pakistan</span>
                             </div>
                         </div>`;
 
@@ -1357,9 +1750,9 @@
                         return `
                             <div class="dropdown-item" data-value="${val}">
                                 <div class="icon-wrapper"><i class="fa-solid ${icon}"></i></div>
-                                <div class="flex flex-col">
-                                    <span class="font-bold text-white">${name}</span>
-                                    <span class="text-[9px] text-slate-400 font-normal">${subtext}</span>
+                                <div class="flex flex-col min-w-0">
+                                    <span class="font-bold text-white text-xs">${name}</span>
+                                    <span class="text-[10px] text-slate-300 font-normal leading-tight">${subtext}</span>
                                 </div>
                             </div>`;
                     }).join('');
@@ -1382,22 +1775,22 @@
 
                 let html = `
                     <button data-category="all" type="button"
-                        class="category-filter-btn flex flex-col items-center gap-2 group transition-opacity min-w-[64px] active-category opacity-100"
+                        class="category-filter-btn flex flex-col items-center gap-2 group transition-opacity min-w-[70px] active-category opacity-100 cursor-pointer"
                         onclick="filterIndexRooms('all', this)">
-                        <div class="w-8 h-8 flex items-center justify-center text-slate-800 text-2xl group-[.active-category]:text-[#D4AF37]"><i class="fa-solid fa-border-all"></i></div>
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 group-[.active-category]:text-slate-900 group-[.active-category]:border-b-2 group-[.active-category]:border-[#D4AF37] pb-1">All</span>
+                        <div class="w-10 h-10 rounded-2xl bg-amber-500/15 border border-amber-400/40 flex items-center justify-center text-amber-700 text-xl group-[.active-category]:bg-[#C5A059] group-[.active-category]:text-slate-950 group-[.active-category]:border-amber-400 shadow-sm transition-all"><i class="fa-solid fa-border-all"></i></div>
+                        <span class="text-xs font-extrabold uppercase tracking-wider text-slate-600 group-[.active-category]:text-slate-900 group-[.active-category]:border-b-2 group-[.active-category]:border-[#C5A059] pb-0.5">All</span>
                     </button>`;
 
                 categoriesToRender.forEach(cat => {
                     const iconOrImg = cat.image
-                        ? `<img src="${KaghanSafe.escapeHTML(cat.image)}" alt="${KaghanSafe.escapeHTML(cat.label || 'Category')}" class="w-full h-full object-cover rounded-lg group-[.active-category]:ring-2 ring-[#D4AF37] ring-offset-2" loading="lazy">`
+                        ? `<img src="${KaghanSafe.escapeHTML(cat.image)}" alt="${KaghanSafe.escapeHTML(cat.label || 'Category')}" class="w-full h-full object-cover rounded-xl" loading="lazy">`
                         : `<i class="fa-solid ${KaghanSafe.escapeHTML(cat.icon || 'fa-home')}"></i>`;
                     html += `
                         <button data-category="${KaghanSafe.escapeHTML(cat.id)}" type="button"
-                            class="category-filter-btn flex flex-col items-center gap-2 group opacity-60 hover:opacity-100 transition-opacity min-w-[64px]"
+                            class="category-filter-btn flex flex-col items-center gap-2 group opacity-70 hover:opacity-100 transition-opacity min-w-[70px] cursor-pointer"
                             onclick="filterIndexRooms('${KaghanSafe.escapeHTML(cat.id)}', this)">
-                            <div class="w-8 h-8 flex items-center justify-center text-slate-800 text-2xl group-[.active-category]:text-[#D4AF37]">${iconOrImg}</div>
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 group-[.active-category]:text-slate-900 group-[.active-category]:border-b-2 group-[.active-category]:border-[#D4AF37] pb-1">${KaghanSafe.escapeHTML(cat.label || cat.name || '')}</span>
+                            <div class="w-10 h-10 rounded-2xl bg-slate-100 border border-slate-300 flex items-center justify-center text-slate-700 text-xl group-[.active-category]:bg-[#C5A059] group-[.active-category]:text-slate-950 group-[.active-category]:border-amber-400 shadow-sm transition-all">${iconOrImg}</div>
+                            <span class="text-xs font-extrabold uppercase tracking-wider text-slate-600 group-[.active-category]:text-slate-900 group-[.active-category]:border-b-2 group-[.active-category]:border-[#C5A059] pb-0.5">${KaghanSafe.escapeHTML(cat.label || cat.name || '')}</span>
                         </button>`;
                 });
 
@@ -1417,7 +1810,7 @@
                 const stayBlogs = blogs.filter(b => b.portal === 'stay');
 
                 if (!stayBlogs.length) {
-                    container.innerHTML = `<div class="col-span-2 text-center text-slate-500 py-12">No updates published yet.</div>`;
+                    container.innerHTML = `<div class="col-span-2 text-center text-slate-500 py-12 font-semibold">No updates published yet.</div>`;
                     return;
                 }
 
@@ -1425,18 +1818,18 @@
                     const img = b.imageUrl || '/assets/images/logo.png';
                     const blogUrl = window.KaghanDB && window.KaghanDB.getBlogLink ? window.KaghanDB.getBlogLink(b) : `/blog-details.html?id=${b.id}`;
                     return `
-                        <div class="bg-white rounded-[2.5rem] border border-slate-100 p-8 shadow-md hover-lift hover:border-[#D4AF37] transition-all duration-300 flex flex-col md:flex-row gap-6 items-center">
-                            <div class="w-full md:w-1/3 aspect-video md:aspect-square rounded-2xl overflow-hidden shrink-0 border border-slate-100">
+                        <div class="bg-white rounded-3xl border-2 border-slate-200 p-6 md:p-8 shadow-md hover-lift hover:border-[#C5A059] transition-all duration-300 flex flex-col md:flex-row gap-6 items-center">
+                            <div class="w-full md:w-1/3 aspect-video md:aspect-square rounded-2xl overflow-hidden shrink-0 border border-slate-200 shadow-inner">
                                 <img src="${KaghanSafe.escapeHTML(img)}" alt="${KaghanSafe.escapeHTML(b.title)}"
                                      class="w-full h-full object-cover" loading="lazy"
                                      onerror="this.src='/assets/images/logo.png'">
                             </div>
                             <div class="flex-grow">
-                                <span class="text-[#D4AF37] font-bold text-[9px] uppercase tracking-widest block mb-2">${KaghanSafe.escapeHTML(b.category || '')}</span>
-                                <h4 class="text-lg font-bold outfit text-slate-900 mb-3 leading-snug">${KaghanSafe.escapeHTML(b.title || '')}</h4>
-                                <p class="text-slate-500 text-xs leading-relaxed mb-4 line-clamp-2">${KaghanSafe.escapeHTML(b.excerpt || '')}</p>
+                                <span class="text-[#B8860B] font-extrabold text-[10px] uppercase tracking-widest block mb-2 flex items-center gap-1.5"><i class="fa-solid fa-tag text-amber-500"></i> ${KaghanSafe.escapeHTML(b.category || 'Article')}</span>
+                                <h4 class="text-xl font-extrabold outfit text-slate-900 mb-2 leading-snug">${KaghanSafe.escapeHTML(b.title || '')}</h4>
+                                <p class="text-slate-600 text-xs sm:text-sm leading-relaxed mb-4 line-clamp-2 font-normal">${KaghanSafe.escapeHTML(b.excerpt || '')}</p>
                                 <a href="${blogUrl}"
-                                   class="text-slate-950 hover:text-[#D4AF37] text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 self-start">
+                                   class="text-slate-900 hover:text-[#C5A059] text-xs font-extrabold uppercase tracking-wider flex items-center gap-1.5 self-start border-b-2 border-slate-900 hover:border-[#C5A059] pb-0.5 transition-colors">
                                     Read Article <i class="fa-solid fa-arrow-right text-[10px]"></i>
                                 </a>
                             </div>
@@ -1446,7 +1839,7 @@
                 if (window.setupScrollAnimations) window.setupScrollAnimations();
             } catch (err) {
                 console.error('loadResortBlogs error:', err);
-                container.innerHTML = `<div class="col-span-2 text-center text-rose-500 py-12">Failed to load resort news.</div>`;
+                container.innerHTML = `<div class="col-span-2 text-center text-rose-500 py-12 font-semibold">Failed to load resort news.</div>`;
             }
         }
 

@@ -13,7 +13,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://maps.googleapis.com https://*.googleapis.com https://www.googletagmanager.com https://*.googletagmanager.com https://challenges.cloudflare.com https://*.cloudflare.com https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://www.gstatic.com https://apis.google.com https://cdn.jsdelivr.net https://*.cloudinary.com https://unpkg.com https://*.tiny.cloud https://*.tinymce.com; style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://fonts.googleapis.com https://cdn.jsdelivr.net https://unpkg.com https://*.tiny.cloud https://*.tinymce.com; font-src 'self' data: https://cdnjs.cloudflare.com https://fonts.gstatic.com https://*.tiny.cloud; img-src 'self' data: blob: https://images.unsplash.com https://res.cloudinary.com https://*.googleapis.com https://*.googleusercontent.com https://*.gstatic.com https://maps.gstatic.com https://*.basemaps.cartocdn.com https://*.tiny.cloud https://*.tinymce.com https://unpkg.com; connect-src 'self' https://images.unsplash.com https://res.cloudinary.com https://apis.google.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://cdn.tailwindcss.com https://unpkg.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com https://fonts.gstatic.com https://www.gstatic.com https://*.googleapis.com https://maps.googleapis.com https://*.firebaseapp.com wss://*.firebaseio.com https://*.firebaseio.com https://*.cloudinary.com https://kphstay.com https://*.tiny.cloud https://*.tinymce.com https://*.basemaps.cartocdn.com https://challenges.cloudflare.com https://*.cloudflare.com https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com; frame-src 'self' https://*.firebaseapp.com https://*.cloudinary.com https://*.tiny.cloud https://*.tinymce.com https://maps.googleapis.com https://*.google.com https://challenges.cloudflare.com https://*.cloudflare.com;">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
-    <title>Guest Portal Login | KPH Stay</title>
+    <title>Guest Portal Login & Registration | KPH Stay</title>
     <meta name="description" content="Access your KPH Guest Portal to manage active reservations, view loyalty points balance, and update profile settings.">
     <link rel="canonical" href="https://kphstay.com/login">
     <link rel="manifest" href="/manifest.json">
@@ -44,127 +44,152 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <!-- Global CSS -->
-    <link rel="stylesheet" href="/assets/css/style.css?v=5">
+    <link rel="stylesheet" href="/assets/css/style.css?v=6">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .outfit { font-family: 'Outfit', sans-serif; }
+    </style>
 </head>
-<body class="bg-[#0F172A] text-white font-sans overflow-x-hidden pt-24 min-h-screen flex flex-col justify-between relative">
+<body class="bg-[#0F172A] text-slate-900 font-sans overflow-x-hidden pt-24 min-h-screen flex flex-col justify-between relative selection:bg-[#C5A059] selection:text-slate-900">
 
     <!-- Background Image with Overlay Blur -->
     <div class="absolute inset-0 z-0">
-        <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1920&q=80" alt="Resort Stay Background" class="w-full h-full object-cover filter blur-[2px] opacity-35">
-        <div class="absolute inset-0 bg-[#0F172A]/85"></div>
+        <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1920&q=80" alt="Resort Stay Background" class="w-full h-full object-cover filter blur-[2px] opacity-25">
+        <div class="absolute inset-0 bg-[#0F172A]/90"></div>
     </div>
 
     <!-- Header / Navigation -->
-    <nav id="hotel-navbar" class="fixed top-0 left-0 right-0 z-50 py-5 px-6 md:px-12 flex justify-between items-center text-white bg-[#0F172A] border-b border-white/10">
+    <nav id="hotel-navbar" class="fixed top-0 left-0 right-0 z-50 py-4 px-6 md:px-12 flex justify-between items-center text-white bg-[#0F172A]/95 backdrop-blur-md border-b border-white/10 shadow-lg">
         <a href="/" class="flex items-center gap-3 hover:opacity-90 transition-opacity">
             <img src="/assets/images/logo.png" alt="KPH Stay Logo" class="h-10 w-auto object-contain">
             <div class="flex flex-col">
-                <span class="text-lg font-bold tracking-wider uppercase outfit leading-none">KPH</span>
-                <span class="text-xs text-[#D4AF37] tracking-[0.2em] uppercase font-semibold">Stay</span>
+                <span class="text-lg font-black tracking-wider uppercase outfit leading-none text-white">KPH</span>
+                <span class="text-xs text-[#C5A059] tracking-[0.2em] uppercase font-extrabold">Stay</span>
             </div>
         </a>
 
-        <div class="hidden md:flex gap-8 items-center font-medium">
-            <a href="index.html" class="hover:text-[#D4AF37] transition-colors">Home</a>
-            <a href="rooms.html" class="hover:text-[#D4AF37] transition-colors">Rooms</a>
-            <a href="blog.html" class="hover:text-[#D4AF37] transition-colors">Blog</a>
-            <div id="auth-links" class="flex gap-4 items-center">
-                <a href="login.html" class="border border-[#D4AF37] text-white px-5 py-2 rounded-full hover:bg-[#D4AF37] hover:text-white transition-all text-sm font-semibold bg-[#D4AF37]">Login</a>
-                <a href="login.html?register=true" class="bg-[#D4AF37] text-[#0F172A] font-bold px-5 py-2 rounded-full hover:bg-white hover:text-slate-900 transition-all text-sm luxury-shadow">Register</a>
+        <div class="hidden md:flex gap-8 items-center font-bold text-xs uppercase tracking-wider">
+            <a href="index.html" class="text-slate-300 hover:text-[#C5A059] transition-colors">Home</a>
+            <a href="rooms.html" class="text-slate-300 hover:text-[#C5A059] transition-colors">Rooms</a>
+            <a href="blog.html" class="text-slate-300 hover:text-[#C5A059] transition-colors">Blog</a>
+            <a href="track.html" class="text-slate-300 hover:text-[#C5A059] transition-colors">Track Stay</a>
+            <a href="contact.html" class="text-slate-300 hover:text-[#C5A059] transition-colors">Contact</a>
+            <div id="auth-links" class="flex gap-3 items-center ml-4">
+                <button onclick="toggleAuthMode(false)" class="border-2 border-[#C5A059] text-[#C5A059] hover:bg-[#C5A059] hover:text-slate-900 px-5 py-2.5 rounded-xl transition-all text-xs font-black">Login</button>
+                <button onclick="toggleAuthMode(true)" class="bg-[#C5A059] text-slate-900 border-2 border-amber-300 hover:bg-white hover:border-white px-5 py-2.5 rounded-xl transition-all text-xs font-black shadow-md">Register</button>
             </div>
         </div>
 
-        <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
-            <i class="fa-solid fa-bars text-2xl"></i>
+        <button id="menu-toggle" class="md:hidden text-white focus:outline-none p-2 rounded-xl bg-white/5 border border-white/10">
+            <i class="fa-solid fa-bars text-xl"></i>
         </button>
     </nav>
 
     <!-- Mobile Drawer -->
-    <div id="mobile-drawer" class="fixed inset-0 bg-[#0F172A]/95 z-[60] flex flex-col items-center justify-center gap-8 text-white text-xl font-semibold">
+    <div id="mobile-drawer" class="fixed inset-0 bg-[#0F172A]/98 z-[60] flex flex-col items-center justify-center gap-8 text-white text-xl font-bold hidden">
         <button id="menu-close" class="absolute top-8 right-6 text-white text-3xl w-12 h-12 flex items-center justify-center focus:outline-none active:scale-90 transition-transform" aria-label="Close Menu">
             <i class="fa-solid fa-xmark"></i>
         </button>
-        <a href="index.html" class="hover:text-[#D4AF37]" onclick="toggleDrawer()">Home</a>
-        <a href="rooms.html" class="hover:text-[#D4AF37]" onclick="toggleDrawer()">Rooms</a>
-        <a href="blog.html" class="hover:text-[#D4AF37]" onclick="toggleDrawer()">Blog</a>
-        <div id="auth-links-mobile" class="flex flex-col gap-4 w-64 text-center">
-            <a href="login.html" class="border border-[#D4AF37] text-white py-3 rounded-full hover:bg-[#D4AF37] transition-all text-base" onclick="toggleDrawer()">Login</a>
-            <a href="login.html?register=true" class="bg-[#D4AF37] text-white py-3 rounded-full hover:bg-white hover:text-slate-900 transition-all text-base" onclick="toggleDrawer()">Register</a>
+        <a href="index.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Home</a>
+        <a href="rooms.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Rooms</a>
+        <a href="blog.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Blog</a>
+        <a href="track.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Track Stay</a>
+        <a href="contact.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Contact</a>
+        <div id="auth-links-mobile" class="flex flex-col gap-3 w-64 text-center mt-4">
+            <button onclick="toggleAuthMode(false); toggleDrawer();" class="border-2 border-[#C5A059] text-white py-3.5 rounded-xl hover:bg-[#C5A059] hover:text-slate-900 transition-all text-sm font-black">Login</button>
+            <button onclick="toggleAuthMode(true); toggleDrawer();" class="bg-[#C5A059] text-slate-900 py-3.5 rounded-xl hover:bg-white transition-all text-sm font-black shadow-lg">Register</button>
         </div>
     </div>
 
     <!-- Portal Card container -->
-    <main class="relative z-10 flex-grow flex items-center justify-center px-6 py-12">
-        <div class="glass-dark max-w-md w-full rounded-3xl p-8 md:p-10 border border-white/10 shadow-2xl relative">
+    <main class="relative z-10 flex-grow flex items-center justify-center px-4 md:px-6 py-12">
+        <div class="bg-white max-w-lg w-full rounded-3xl p-8 md:p-10 border-2 border-slate-200 shadow-2xl relative text-slate-900">
             
+            <!-- Auth Mode Switcher Tab Header -->
+            <div class="flex rounded-2xl bg-slate-100 p-1.5 border-2 border-slate-200 mb-8">
+                <button type="button" id="tab-btn-login" onclick="toggleAuthMode(false)" class="w-1/2 py-3 rounded-xl font-extrabold text-xs uppercase tracking-wider transition-all bg-slate-900 text-white shadow-xs">
+                    <i class="fa-solid fa-lock text-[11px] mr-1.5"></i> Sign In
+                </button>
+                <button type="button" id="tab-btn-register" onclick="toggleAuthMode(true)" class="w-1/2 py-3 rounded-xl font-extrabold text-xs uppercase tracking-wider transition-all text-slate-700 hover:text-slate-900">
+                    <i class="fa-solid fa-user-plus text-[11px] mr-1.5"></i> Register
+                </button>
+            </div>
+
             <!-- Login Form Tab -->
             <div id="login-tab">
-                <div class="text-center mb-8">
-                    <span class="text-[#D4AF37] uppercase tracking-[0.2em] text-[10px] font-bold block mb-1">KPH Guest Portal</span>
-                    <h2 class="text-2xl font-bold outfit text-white">Sign In to Account</h2>
+                <div class="text-center mb-6">
+                    <div class="inline-flex items-center gap-1.5 bg-amber-50 border-2 border-amber-300 text-amber-900 text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-xl mb-2">
+                        <i class="fa-solid fa-hotel text-[10px] text-[#C5A059]"></i> KPH Guest Super Portal
+                    </div>
+                    <h2 class="text-2xl md:text-3xl font-extrabold outfit text-slate-900 tracking-tight">Sign In to Account</h2>
+                    <p class="text-xs text-slate-600 font-semibold mt-1">Access your active stays, mobile boarding passes, and rewards.</p>
                 </div>
 
-                <form id="login-form" onsubmit="handleLogin(event)" class="space-y-5">
+                <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
                     <div>
-                        <label for="login-email" class="block text-[10px] uppercase tracking-wider text-slate-400 font-semibold mb-2">Email Address</label>
+                        <label for="login-email" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-2">Email Address <span class="text-rose-500">*</span></label>
                         <div class="relative">
-                            <i class="fa-solid fa-envelope absolute left-4 top-3.5 text-slate-400 text-sm"></i>
-                            <input type="email" id="login-email" required class="w-full bg-slate-900/60 border border-slate-800 rounded-xl pl-11 pr-4 py-3 outline-none focus:border-[#D4AF37] text-sm text-white">
+                            <i class="fa-solid fa-envelope absolute left-4 top-4 text-slate-500 text-sm"></i>
+                            <input type="email" id="login-email" required placeholder="name@domain.com" class="w-full bg-white border-2 border-slate-300 rounded-xl pl-11 pr-4 py-3.5 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 text-sm font-bold text-slate-900 transition-all shadow-xs">
                         </div>
                     </div>
 
                     <div>
                         <div class="flex items-center justify-between mb-2">
-                            <label for="login-password" class="block text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Password</label>
-                            <button type="button" onclick="openForgotPasswordModal()" class="text-[10px] text-[#D4AF37] hover:underline font-semibold">Forgot Password?</button>
+                            <label for="login-password" class="block text-xs font-black uppercase tracking-wider text-slate-700">Password <span class="text-rose-500">*</span></label>
+                            <button type="button" onclick="openForgotPasswordModal()" class="text-xs text-[#C5A059] hover:underline font-extrabold">Forgot Password?</button>
                         </div>
                         <div class="relative">
-                            <i class="fa-solid fa-lock absolute left-4 top-3.5 text-slate-400 text-sm"></i>
-                            <input type="password" id="login-password" required class="w-full bg-slate-900/60 border border-slate-800 rounded-xl pl-11 pr-10 py-3 outline-none focus:border-[#D4AF37] text-sm text-white">
-                            <button type="button" onclick="togglePasswordVisibility('login-password', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white p-1" title="Toggle password visibility">
-                                <i class="fa-solid fa-eye text-xs"></i>
+                            <i class="fa-solid fa-lock absolute left-4 top-4 text-slate-500 text-sm"></i>
+                            <input type="password" id="login-password" required placeholder="••••••••" class="w-full bg-white border-2 border-slate-300 rounded-xl pl-11 pr-11 py-3.5 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 text-sm font-bold text-slate-900 transition-all shadow-xs">
+                            <button type="button" onclick="togglePasswordVisibility('login-password', this)" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-900 p-1" title="Toggle password visibility">
+                                <i class="fa-solid fa-eye text-sm"></i>
                             </button>
                         </div>
                     </div>
 
-                    <button type="submit" class="w-full bg-[#D4AF37] text-white py-3.5 rounded-xl font-bold hover:bg-white hover:text-slate-900 transition-all shadow-lg text-sm mt-8 btn-shimmer">
-                        Sign In
-                    </button>
+                    <div class="pt-2">
+                        <button type="submit" class="w-full bg-[#C5A059] hover:bg-slate-900 text-slate-900 hover:text-white border-2 border-amber-300 hover:border-slate-900 py-4 rounded-xl font-black text-xs uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer">
+                            <i class="fa-solid fa-right-to-bracket"></i> Sign In to Portal
+                        </button>
+                    </div>
                 </form>
 
                 <div class="relative my-6 flex items-center justify-center">
-                    <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-white/10"></div></div>
-                    <span class="relative bg-[#1A2338] px-3 text-[10px] uppercase text-slate-400 font-bold">Or</span>
+                    <div class="absolute inset-0 flex items-center"><div class="w-full border-t-2 border-slate-200"></div></div>
+                    <span class="relative bg-white px-3 text-[10px] uppercase text-slate-500 font-extrabold tracking-widest">Or Fast Sign In</span>
                 </div>
 
-                <button type="button" onclick="loginWithGoogle()" class="w-full border border-white/10 hover:border-white/20 bg-white/5 hover:bg-white/10 text-white py-3.5 rounded-xl font-bold transition-all text-xs flex items-center justify-center gap-3">
-                    <svg class="h-4 w-4" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <button type="button" onclick="loginWithGoogle()" class="w-full border-2 border-slate-200 hover:border-slate-400 bg-white hover:bg-slate-50 text-slate-900 py-3.5 rounded-xl font-black transition-all text-xs flex items-center justify-center gap-3 shadow-xs cursor-pointer">
+                    <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
                         <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
                         <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/>
                         <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/>
                     </svg>
-                    Continue with Google
+                    Continue with Google Account
                 </button>
-
-                <p class="text-xs text-center text-slate-400 mt-6 font-medium">
-                    New to KPH Stay? <button onclick="toggleAuthMode(true)" class="text-[#D4AF37] font-bold hover:underline">Create an Account</button>
-                </p>
             </div>
 
             <!-- Registration Form Tab -->
             <div id="register-tab" class="hidden">
                 <div class="text-center mb-6">
-                    <span class="text-[#D4AF37] uppercase tracking-[0.2em] text-[10px] font-bold block mb-1">Join the Loyalty Circle</span>
-                    <h2 class="text-2xl font-bold outfit text-white">Create Guest Account</h2>
+                    <div class="inline-flex items-center gap-1.5 bg-amber-50 border-2 border-amber-300 text-amber-900 text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-xl mb-2">
+                        <i class="fa-solid fa-crown text-[10px] text-[#C5A059]"></i> Join Loyalty Club
+                    </div>
+                    <h2 class="text-2xl md:text-3xl font-extrabold outfit text-slate-900 tracking-tight">Create Guest Account</h2>
+                    
                     <!-- Step Progress Indicator -->
-                    <div class="flex items-center justify-center gap-2 mt-3">
-                        <span id="reg-step-1-dot" class="w-2.5 h-2.5 rounded-full bg-[#D4AF37]"></span>
-                        <span id="reg-step-line-1" class="w-6 h-[2px] bg-slate-700"></span>
-                        <span id="reg-step-2-dot" class="w-2.5 h-2.5 rounded-full bg-slate-700"></span>
-                        <span id="reg-step-line-2" class="w-6 h-[2px] bg-slate-700"></span>
-                        <span id="reg-step-3-dot" class="w-2.5 h-2.5 rounded-full bg-slate-700"></span>
+                    <div class="flex items-center justify-center gap-2 mt-4">
+                        <span id="reg-step-1-dot" class="w-7 h-7 rounded-full bg-slate-900 text-white font-black text-xs flex items-center justify-center shadow-xs">1</span>
+                        <span id="reg-step-line-1" class="w-8 h-1 bg-slate-200 rounded-full"></span>
+                        <span id="reg-step-2-dot" class="w-7 h-7 rounded-full bg-slate-200 text-slate-600 font-black text-xs flex items-center justify-center">2</span>
+                        <span id="reg-step-line-2" class="w-8 h-1 bg-slate-200 rounded-full"></span>
+                        <span id="reg-step-3-dot" class="w-7 h-7 rounded-full bg-slate-200 text-slate-600 font-black text-xs flex items-center justify-center">3</span>
                     </div>
                 </div>
 
@@ -172,58 +197,58 @@
                     <!-- Step 1: Personal Details -->
                     <div id="reg-step-1-content" class="space-y-4">
                         <div>
-                            <label for="reg-name" class="block text-[10px] uppercase tracking-wider text-slate-400 font-semibold mb-1">Full Name</label>
+                            <label for="reg-name" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1.5">Full Name <span class="text-rose-500">*</span></label>
                             <div class="relative">
-                                <i class="fa-solid fa-user absolute left-4 top-3.5 text-slate-400 text-sm"></i>
-                                <input type="text" id="reg-name" required class="w-full bg-slate-900/60 border border-slate-800 rounded-xl pl-11 pr-4 py-3 outline-none focus:border-[#D4AF37] text-sm text-white">
+                                <i class="fa-solid fa-user absolute left-4 top-4 text-slate-500 text-sm"></i>
+                                <input type="text" id="reg-name" required placeholder="e.g. Tariq Mehmood" class="w-full bg-white border-2 border-slate-300 rounded-xl pl-11 pr-4 py-3.5 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 text-sm font-bold text-slate-900 transition-all shadow-xs">
                             </div>
                         </div>
 
                         <div>
-                            <label for="reg-email" class="block text-[10px] uppercase tracking-wider text-slate-400 font-semibold mb-1">Email Address</label>
+                            <label for="reg-email" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1.5">Email Address <span class="text-rose-500">*</span></label>
                             <div class="relative">
-                                <i class="fa-solid fa-envelope absolute left-4 top-3.5 text-slate-400 text-sm"></i>
-                                <input type="email" id="reg-email" required class="w-full bg-slate-900/60 border border-slate-800 rounded-xl pl-11 pr-4 py-3 outline-none focus:border-[#D4AF37] text-sm text-white">
+                                <i class="fa-solid fa-envelope absolute left-4 top-4 text-slate-500 text-sm"></i>
+                                <input type="email" id="reg-email" required placeholder="name@domain.com" class="w-full bg-white border-2 border-slate-300 rounded-xl pl-11 pr-4 py-3.5 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 text-sm font-bold text-slate-900 transition-all shadow-xs">
                             </div>
                         </div>
 
                         <div>
-                            <label for="reg-phone" class="block text-[10px] uppercase tracking-wider text-slate-400 font-semibold mb-1">Phone Number</label>
+                            <label for="reg-phone" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1.5">Mobile Number (WhatsApp) <span class="text-rose-500">*</span></label>
                             <div class="relative">
-                                <i class="fa-solid fa-phone absolute left-4 top-3.5 text-slate-400 text-sm"></i>
-                                <input type="tel" id="reg-phone" placeholder="0300-1234567" maxlength="12" class="w-full bg-slate-900/60 border border-slate-800 rounded-xl pl-11 pr-4 py-3 outline-none focus:border-[#C5A059] text-sm text-white font-mono">
+                                <i class="fa-solid fa-phone absolute left-4 top-4 text-slate-500 text-sm"></i>
+                                <input type="tel" id="reg-phone" placeholder="0300-1234567" maxlength="12" class="w-full bg-white border-2 border-slate-300 rounded-xl pl-11 pr-4 py-3.5 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 text-sm font-bold text-slate-900 font-mono transition-all shadow-xs">
                             </div>
                         </div>
 
-                        <button type="button" onclick="goToRegisterStep2()" class="w-full bg-[#D4AF37] text-white py-3.5 rounded-xl font-bold hover:bg-white hover:text-slate-900 transition-all shadow-lg text-sm mt-4 flex items-center justify-center gap-2">
-                            Continue <i class="fa-solid fa-arrow-right text-xs"></i>
+                        <button type="button" onclick="goToRegisterStep2()" class="w-full bg-[#C5A059] hover:bg-slate-900 text-slate-900 hover:text-white border-2 border-amber-300 hover:border-slate-900 py-4 rounded-xl font-black text-xs uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer mt-4">
+                            Continue to Security <i class="fa-solid fa-arrow-right text-xs"></i>
                         </button>
                     </div>
 
                     <!-- Step 2: Password Security -->
                     <div id="reg-step-2-content" class="space-y-4 hidden">
                         <div>
-                            <label for="reg-pass" class="block text-[10px] uppercase tracking-wider text-slate-400 font-semibold mb-1">Password</label>
-                            <input type="password" id="reg-pass" required oninput="checkPasswordStrength()" class="w-full bg-slate-900/60 border border-slate-800 rounded-xl px-4 py-3 outline-none focus:border-[#D4AF37] text-sm text-white">
-                            <div id="pass-strength-bar" class="w-full h-1 bg-slate-800 rounded-full mt-1.5 overflow-hidden hidden">
+                            <label for="reg-pass" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1.5">Create Secure Password <span class="text-rose-500">*</span></label>
+                            <input type="password" id="reg-pass" required placeholder="Minimum 6 characters" oninput="checkPasswordStrength()" class="w-full bg-white border-2 border-slate-300 rounded-xl px-4 py-3.5 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 text-sm font-bold text-slate-900 transition-all shadow-xs">
+                            <div id="pass-strength-bar" class="w-full h-1.5 bg-slate-200 rounded-full mt-2 overflow-hidden hidden">
                                 <div id="pass-strength-fill" class="h-full w-0 bg-rose-500 transition-all"></div>
                             </div>
                         </div>
 
                         <div>
-                            <label for="reg-pass-confirm" class="block text-[10px] uppercase tracking-wider text-slate-400 font-semibold mb-1">Confirm Password</label>
-                            <input type="password" id="reg-pass-confirm" required oninput="checkPasswordMatch()" class="w-full bg-slate-900/60 border border-slate-800 rounded-xl px-4 py-3 outline-none focus:border-[#D4AF37] text-sm text-white">
-                            <p id="pass-match-msg" class="text-[10px] mt-1 hidden"></p>
+                            <label for="reg-pass-confirm" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1.5">Confirm Password <span class="text-rose-500">*</span></label>
+                            <input type="password" id="reg-pass-confirm" required placeholder="Re-enter password" oninput="checkPasswordMatch()" class="w-full bg-white border-2 border-slate-300 rounded-xl px-4 py-3.5 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 text-sm font-bold text-slate-900 transition-all shadow-xs">
+                            <p id="pass-match-msg" class="text-xs font-bold mt-1.5 hidden"></p>
                         </div>
 
                         <!-- Cloudflare Turnstile Security Widget -->
-                        <div class="cf-turnstile my-3 flex justify-center" data-sitekey="0x4AAAAAAEM7eAWhEw0PDZb9" data-theme="dark"></div>
+                        <div class="cf-turnstile my-3 flex justify-center" data-sitekey="0x4AAAAAAEM7eAWhEw0PDZb9" data-theme="light"></div>
 
-                        <div class="flex items-center gap-2 pt-2">
-                            <button type="button" onclick="goToRegisterStep1()" class="w-1/3 border border-slate-700 text-slate-300 py-3.5 rounded-xl font-bold hover:bg-slate-800 transition-all text-xs flex items-center justify-center gap-1">
-                                <i class="fa-solid fa-arrow-left text-[10px]"></i> Back
+                        <div class="flex items-center gap-3 pt-2">
+                            <button type="button" onclick="goToRegisterStep1()" class="w-1/3 border-2 border-slate-300 text-slate-800 py-3.5 rounded-xl font-bold hover:bg-slate-100 transition-all text-xs flex items-center justify-center gap-1.5">
+                                <i class="fa-solid fa-arrow-left text-xs"></i> Back
                             </button>
-                            <button type="submit" id="btn-register" class="w-2/3 bg-[#D4AF37] text-white py-3.5 rounded-xl font-bold hover:bg-white hover:text-slate-900 transition-all shadow-lg text-sm flex items-center justify-center gap-2">
+                            <button type="submit" id="btn-register" class="w-2/3 bg-[#C5A059] hover:bg-slate-900 text-slate-900 hover:text-white border-2 border-amber-300 hover:border-slate-900 py-3.5 rounded-xl font-black text-xs uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-2">
                                 Send 2-Step Code
                             </button>
                         </div>
@@ -231,116 +256,132 @@
 
                     <!-- Step 3: Email OTP Verification -->
                     <div id="reg-step-3-content" class="space-y-4 hidden text-center">
-                        <div class="p-3 bg-[#D4AF37]/10 border border-[#D4AF37]/30 rounded-2xl">
-                            <i class="fa-solid fa-shield-halved text-[#D4AF37] text-2xl mb-1 block"></i>
-                            <p class="text-xs text-slate-300">Enter the 6-digit verification code sent to:</p>
-                            <p id="otp-target-email" class="text-sm font-bold text-[#D4AF37] font-mono mt-0.5"></p>
+                        <div class="p-4 bg-amber-50 border-2 border-amber-200 rounded-2xl">
+                            <i class="fa-solid fa-shield-halved text-[#C5A059] text-2xl mb-1.5 block"></i>
+                            <p class="text-xs text-slate-700 font-bold">Enter the 6-digit verification code sent to:</p>
+                            <p id="otp-target-email" class="text-sm font-black text-slate-900 font-mono mt-1"></p>
                         </div>
 
                         <div>
-                            <label class="block text-[10px] uppercase tracking-wider text-slate-400 font-semibold mb-2">6-Digit Verification Code</label>
+                            <label class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-2">6-Digit Verification Code</label>
                             <div class="flex justify-center gap-2" id="otp-inputs-container">
-                                <input type="text" maxlength="1" class="otp-box w-10 h-12 text-center text-xl font-bold bg-slate-950 border border-slate-700 rounded-xl focus:border-[#D4AF37] text-white outline-none" autofocus data-index="0">
-                                <input type="text" maxlength="1" class="otp-box w-10 h-12 text-center text-xl font-bold bg-slate-950 border border-slate-700 rounded-xl focus:border-[#D4AF37] text-white outline-none" data-index="1">
-                                <input type="text" maxlength="1" class="otp-box w-10 h-12 text-center text-xl font-bold bg-slate-950 border border-slate-700 rounded-xl focus:border-[#D4AF37] text-white outline-none" data-index="2">
-                                <input type="text" maxlength="1" class="otp-box w-10 h-12 text-center text-xl font-bold bg-slate-950 border border-slate-700 rounded-xl focus:border-[#D4AF37] text-white outline-none" data-index="3">
-                                <input type="text" maxlength="1" class="otp-box w-10 h-12 text-center text-xl font-bold bg-slate-950 border border-slate-700 rounded-xl focus:border-[#D4AF37] text-white outline-none" data-index="4">
-                                <input type="text" maxlength="1" class="otp-box w-10 h-12 text-center text-xl font-bold bg-slate-950 border border-slate-700 rounded-xl focus:border-[#D4AF37] text-white outline-none" data-index="5">
+                                <input type="text" maxlength="1" class="otp-box w-11 h-13 text-center text-2xl font-black bg-white border-2 border-slate-300 rounded-xl focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 text-slate-900 outline-none shadow-xs" autofocus data-index="0">
+                                <input type="text" maxlength="1" class="otp-box w-11 h-13 text-center text-2xl font-black bg-white border-2 border-slate-300 rounded-xl focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 text-slate-900 outline-none shadow-xs" data-index="1">
+                                <input type="text" maxlength="1" class="otp-box w-11 h-13 text-center text-2xl font-black bg-white border-2 border-slate-300 rounded-xl focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 text-slate-900 outline-none shadow-xs" data-index="2">
+                                <input type="text" maxlength="1" class="otp-box w-11 h-13 text-center text-2xl font-black bg-white border-2 border-slate-300 rounded-xl focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 text-slate-900 outline-none shadow-xs" data-index="3">
+                                <input type="text" maxlength="1" class="otp-box w-11 h-13 text-center text-2xl font-black bg-white border-2 border-slate-300 rounded-xl focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 text-slate-900 outline-none shadow-xs" data-index="4">
+                                <input type="text" maxlength="1" class="otp-box w-11 h-13 text-center text-2xl font-black bg-white border-2 border-slate-300 rounded-xl focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 text-slate-900 outline-none shadow-xs" data-index="5">
                             </div>
                         </div>
 
-                        <button type="button" onclick="submitOTPVerification()" id="btn-verify-otp" class="w-full bg-[#D4AF37] text-slate-950 py-3.5 rounded-xl font-bold hover:bg-white transition-all shadow-lg text-sm flex items-center justify-center gap-2 mt-4">
+                        <button type="button" onclick="submitOTPVerification()" id="btn-verify-otp" class="w-full bg-[#C5A059] hover:bg-slate-900 text-slate-900 hover:text-white border-2 border-amber-300 hover:border-slate-900 py-4 rounded-xl font-black text-xs uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-2 mt-4 cursor-pointer">
                             <i class="fa-solid fa-check-double"></i> Verify Code & Complete Sign Up
                         </button>
 
-                        <div class="flex justify-between items-center text-xs text-slate-400 mt-2 px-1">
-                            <button type="button" onclick="goToRegisterStep2()" class="hover:text-white flex items-center gap-1"><i class="fa-solid fa-arrow-left text-[10px]"></i> Change Password</button>
-                            <button type="button" onclick="resendOTPCode()" id="btn-resend-otp" class="text-[#D4AF37] font-semibold hover:underline">Resend Code</button>
+                        <div class="flex justify-between items-center text-xs text-slate-600 font-bold mt-2 px-1">
+                            <button type="button" onclick="goToRegisterStep2()" class="hover:text-slate-900 flex items-center gap-1"><i class="fa-solid fa-arrow-left text-[10px]"></i> Change Password</button>
+                            <button type="button" onclick="resendOTPCode()" id="btn-resend-otp" class="text-[#C5A059] hover:underline">Resend Code</button>
                         </div>
                     </div>
                 </form>
 
-                <div class="relative flex py-4 items-center">
-                    <div class="flex-grow border-t border-slate-800"></div>
-                    <span class="flex-shrink mx-4 text-slate-500 text-xs uppercase font-semibold">Or</span>
-                    <div class="flex-grow border-t border-slate-800"></div>
+                <div class="relative my-6 flex items-center justify-center">
+                    <div class="absolute inset-0 flex items-center"><div class="w-full border-t-2 border-slate-200"></div></div>
+                    <span class="relative bg-white px-3 text-[10px] uppercase text-slate-500 font-extrabold tracking-widest">Or Register With</span>
                 </div>
 
-                <button onclick="handleGoogleSignIn()" class="w-full border border-slate-800 hover:border-slate-700 bg-slate-900/40 text-slate-200 py-3 rounded-xl transition-all font-semibold text-xs flex items-center justify-center gap-3">
-                    <svg class="h-4 w-4" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <button onclick="handleGoogleSignIn()" class="w-full border-2 border-slate-200 hover:border-slate-400 bg-white hover:bg-slate-50 text-slate-900 py-3.5 rounded-xl font-black transition-all text-xs flex items-center justify-center gap-3 shadow-xs cursor-pointer">
+                    <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
                         <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
                         <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/>
                         <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/>
                     </svg>
-                    Continue with Google
+                    Continue with Google Account
                 </button>
-
-                <p class="text-xs text-center text-slate-400 mt-6 font-medium">
-                    Already registered? <button onclick="toggleAuthMode(false)" class="text-[#D4AF37] font-bold hover:underline">Sign In Instead</button>
-                </p>
             </div>
-
-
         </div>
     </main>
 
     <!-- Footer -->
-    <footer class="bg-[#0b111e] text-slate-400 pt-20 pb-10 px-6 md:px-12 border-t border-slate-900 mt-24 relative z-10">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+    <footer class="bg-[#0b111e] text-slate-300 pt-16 pb-8 px-6 md:px-12 border-t border-slate-800 mt-16 relative z-10">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
             <div>
-                <div class="flex items-center gap-3 mb-6 text-white">
+                <div class="flex items-center gap-3 mb-4 text-white">
                     <img src="/assets/images/logo.png" alt="KPH Stay Logo" class="h-8 w-auto object-contain">
-                    <span class="text-base font-bold tracking-wider outfit font-semibold">KAGHAN PROPERTIES HOSPITALITY STAY</span>
+                    <span class="text-base font-black tracking-wider outfit uppercase">KPH <span class="text-[#C5A059]">Stay</span></span>
                 </div>
-                <p class="text-sm leading-relaxed mb-6">
-                    Luxury staying and smart reservation system designed to deliver five-star hospitality directly to your viewport.
+                <p class="text-xs text-slate-400 font-normal leading-relaxed">
+                    Luxury serviced apartments, suites, and mountain stays across Islamabad and Nathia Gali.
                 </p>
             </div>
             <div>
-                <h4 class="text-white font-bold mb-6 uppercase tracking-wider text-xs outfit">Resort Nav</h4>
-                <ul class="space-y-3 text-sm">
-                    <li><a href="rooms.html" class="hover:text-[#D4AF37]">Our Suites</a></li>
-                    <li><a href="blog.html" class="hover:text-[#D4AF37]">Resort Journal</a></li>
-                    <li><a href="blog.html" class="hover:text-[#D4AF37]">Resort Journal</a></li>
-                    <li><a href="contact.html" class="hover:text-[#D4AF37]">Contact Lobby</a></li>
-                    <li><a href="login.html" class="hover:text-[#D4AF37]">Guest Portal</a></li>
+                <h4 class="text-[#C5A059] font-black mb-4 uppercase tracking-wider text-xs outfit">Resort Nav</h4>
+                <ul class="space-y-2.5 text-xs font-medium">
+                    <li><a href="rooms.html" class="hover:text-white transition-colors">Our Suites</a></li>
+                    <li><a href="blog.html" class="hover:text-white transition-colors">Resort Journal</a></li>
+                    <li><a href="track.html" class="hover:text-white transition-colors">Track Stay</a></li>
+                    <li><a href="contact.html" class="hover:text-white transition-colors">Contact Lobby</a></li>
                 </ul>
             </div>
             <div>
-                <h4 class="text-white font-bold mb-6 uppercase tracking-wider text-xs outfit">Contact Front Desk</h4>
-                <p class="text-xs leading-relaxed mb-4">
-                    Office 203, 2nd Floor, Asian Arcade, opposite Zoo, C Avenue, Sector C, Bahria Enclave, Islamabad, Pakistan
+                <h4 class="text-[#C5A059] font-black mb-4 uppercase tracking-wider text-xs outfit">Front Desk</h4>
+                <p class="text-xs text-slate-400 leading-relaxed mb-3">
+                    Office 203, 2nd Floor, Asian Arcade, Bahria Enclave, Islamabad, Pakistan
                 </p>
-                <p class="text-sm text-[#D4AF37] font-bold"><i class="fa-solid fa-phone mr-2"></i>+92 51 8461975</p>
+                <p class="text-xs text-white font-extrabold"><i class="fa-solid fa-phone mr-1.5 text-[#C5A059]"></i>+92 334 009 1127</p>
             </div>
             <div>
-                <h4 class="text-white font-bold mb-6 uppercase tracking-wider text-xs outfit">Newsletter</h4>
-                <div class="flex mt-3">
-                    <input type="email" placeholder="Email Address" class="bg-slate-900 border-none rounded-l-xl px-4 py-2.5 text-sm w-full outline-none text-white">
-                    <button class="bg-[#D4AF37] text-white px-4 rounded-r-xl hover:bg-white hover:text-slate-900 transition-all font-semibold text-sm">Join</button>
-                </div>
+                <h4 class="text-[#C5A059] font-black mb-4 uppercase tracking-wider text-xs outfit">Legal & Policies</h4>
+                <ul class="space-y-2.5 text-xs font-medium">
+                    <li><a href="pricing.html" class="hover:text-white transition-colors">Pricing & Payment Policy</a></li>
+                    <li><a href="terms.html" class="hover:text-white transition-colors">Terms of Stay</a></li>
+                    <li><a href="privacy.html" class="hover:text-white transition-colors">Privacy Policy</a></li>
+                    <li><a href="refund.html" class="hover:text-white transition-colors">Refund Policy</a></li>
+                </ul>
             </div>
         </div>
-        <div class="max-w-7xl mx-auto pt-8 border-t border-slate-900 flex flex-col md:flex-row justify-between items-center gap-4 text-xs">
-            <p>&copy; 2026 Kaghan Properties Hospitality Stay (kphstay.com). All Rights Reserved. SECP Registered.</p>
-            <div class="flex flex-wrap gap-x-6 gap-y-2">
-                <a href="pricing.html" class="hover:text-[#D4AF37]">Pricing Policy</a>
-                <a href="privacy.html" class="hover:text-[#D4AF37]">Privacy Policy</a>
-                <a href="terms.html" class="hover:text-[#D4AF37]">Terms of Stay</a>
-                <a href="refund.html" class="hover:text-[#D4AF37]">Refund Policy</a>
-                <a href="cookies.html" class="hover:text-[#D4AF37]">Cookie Policy</a>
-                <a href="contact.html" class="hover:text-[#D4AF37]">Contact</a>
-            </div>
+        <div class="max-w-7xl mx-auto pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-400 font-bold tracking-wider uppercase">
+            <p>&copy; 2026 Kaghan Properties Hospitality Stay (kphstay.com). All Rights Reserved.</p>
+            <span>Secured via 256-Bit SSL Encryption</span>
         </div>
     </footer>
+
+    <!-- Modal: Forgot Password -->
+    <div id="forgot-password-modal" class="fixed inset-0 bg-[#0F172A]/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white border-2 border-slate-200 rounded-3xl max-w-md w-full overflow-hidden shadow-2xl relative p-8 text-slate-900">
+            <button type="button" onclick="closeForgotPasswordModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-900 transition-colors">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
+                <div class="w-12 h-12 rounded-2xl bg-amber-50 border-2 border-amber-200 text-[#C5A059] flex items-center justify-center font-black text-lg shrink-0">
+                    <i class="fa-solid fa-key"></i>
+                </div>
+                <div>
+                    <h3 class="text-xl font-extrabold outfit text-slate-900">Reset Password</h3>
+                    <p class="text-xs text-slate-600 font-semibold">Receive a secure reset link via email</p>
+                </div>
+            </div>
+            
+            <form id="forgot-password-form" onsubmit="handleForgotPasswordSubmit(event)" class="space-y-4">
+                <div>
+                    <label for="forgot-email" class="block text-xs font-black uppercase tracking-wider text-slate-700 mb-2">Registered Email Address <span class="text-rose-500">*</span></label>
+                    <input type="email" id="forgot-email" required placeholder="name@domain.com" class="w-full bg-white border-2 border-slate-300 rounded-xl px-4 py-3.5 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 text-sm font-bold text-slate-900 transition-all shadow-xs">
+                </div>
+                <div class="flex gap-3 pt-2">
+                    <button type="button" onclick="closeForgotPasswordModal()" class="w-1/2 border-2 border-slate-300 text-slate-800 font-bold py-3.5 rounded-xl hover:bg-slate-100 transition-all text-xs">Cancel</button>
+                    <button type="submit" id="forgot-submit-btn" class="w-1/2 bg-[#C5A059] hover:bg-slate-900 text-slate-900 hover:text-white border-2 border-amber-300 hover:border-slate-900 font-black py-3.5 rounded-xl transition-all text-xs uppercase tracking-wider shadow-md">Send Link</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <!-- Scripts -->
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <script src="/assets/js/shared.js?v=5"></script>
+    <script src="/assets/js/shared.js?v=6"></script>
     <script src="/assets/js/users.js"></script>
     <script src="/assets/js/newsletter.js"></script>
     <script>
@@ -356,16 +397,28 @@
         function toggleAuthMode(isRegister) {
             const loginTab = document.getElementById('login-tab');
             const registerTab = document.getElementById('register-tab');
-            const welcomeTab = document.getElementById('welcome-tab');
+            const tabBtnLogin = document.getElementById('tab-btn-login');
+            const tabBtnRegister = document.getElementById('tab-btn-register');
             
-            if (welcomeTab) welcomeTab.classList.add('hidden');
             if (isRegister) {
-                loginTab.classList.add('hidden');
-                registerTab.classList.remove('hidden');
+                if (loginTab) loginTab.classList.add('hidden');
+                if (registerTab) registerTab.classList.remove('hidden');
+                if (tabBtnLogin) {
+                    tabBtnLogin.className = 'w-1/2 py-3 rounded-xl font-extrabold text-xs uppercase tracking-wider transition-all text-slate-700 hover:text-slate-900';
+                }
+                if (tabBtnRegister) {
+                    tabBtnRegister.className = 'w-1/2 py-3 rounded-xl font-extrabold text-xs uppercase tracking-wider transition-all bg-slate-900 text-white shadow-xs';
+                }
                 goToRegisterStep1();
             } else {
-                loginTab.classList.remove('hidden');
-                registerTab.classList.add('hidden');
+                if (loginTab) loginTab.classList.remove('hidden');
+                if (registerTab) registerTab.classList.add('hidden');
+                if (tabBtnLogin) {
+                    tabBtnLogin.className = 'w-1/2 py-3 rounded-xl font-extrabold text-xs uppercase tracking-wider transition-all bg-slate-900 text-white shadow-xs';
+                }
+                if (tabBtnRegister) {
+                    tabBtnRegister.className = 'w-1/2 py-3 rounded-xl font-extrabold text-xs uppercase tracking-wider transition-all text-slate-700 hover:text-slate-900';
+                }
             }
         }
 
@@ -385,11 +438,11 @@
             if (step2) step2.classList.add('hidden');
             if (step3) step3.classList.add('hidden');
 
-            if (dot1) dot1.className = 'w-2.5 h-2.5 rounded-full bg-[#D4AF37]';
-            if (dot2) dot2.className = 'w-2.5 h-2.5 rounded-full bg-slate-700';
-            if (dot3) dot3.className = 'w-2.5 h-2.5 rounded-full bg-slate-700';
-            if (line1) line1.className = 'w-6 h-[2px] bg-slate-700';
-            if (line2) line2.className = 'w-6 h-[2px] bg-slate-700';
+            if (dot1) dot1.className = 'w-7 h-7 rounded-full bg-slate-900 text-white font-black text-xs flex items-center justify-center shadow-xs';
+            if (dot2) dot2.className = 'w-7 h-7 rounded-full bg-slate-200 text-slate-600 font-black text-xs flex items-center justify-center';
+            if (dot3) dot3.className = 'w-7 h-7 rounded-full bg-slate-200 text-slate-600 font-black text-xs flex items-center justify-center';
+            if (line1) line1.className = 'w-8 h-1 bg-slate-200 rounded-full';
+            if (line2) line2.className = 'w-8 h-1 bg-slate-200 rounded-full';
         }
 
         function goToRegisterStep2() {
@@ -397,7 +450,7 @@
             const email = document.getElementById('reg-email')?.value.trim();
 
             if (!name || !email) {
-                KaghanUI.showToast('Please enter your name and email address.', 'warning');
+                if (window.KaghanUI) KaghanUI.showToast('Please enter your full name and email address.', 'warning');
                 return;
             }
 
@@ -414,11 +467,11 @@
             if (step2) step2.classList.remove('hidden');
             if (step3) step3.classList.add('hidden');
 
-            if (dot1) dot1.className = 'w-2.5 h-2.5 rounded-full bg-[#D4AF37]';
-            if (dot2) dot2.className = 'w-2.5 h-2.5 rounded-full bg-[#D4AF37]';
-            if (dot3) dot3.className = 'w-2.5 h-2.5 rounded-full bg-slate-700';
-            if (line1) line1.className = 'w-6 h-[2px] bg-[#D4AF37]';
-            if (line2) line2.className = 'w-6 h-[2px] bg-slate-700';
+            if (dot1) dot1.className = 'w-7 h-7 rounded-full bg-[#C5A059] text-slate-900 font-black text-xs flex items-center justify-center shadow-xs';
+            if (dot2) dot2.className = 'w-7 h-7 rounded-full bg-slate-900 text-white font-black text-xs flex items-center justify-center shadow-xs';
+            if (dot3) dot3.className = 'w-7 h-7 rounded-full bg-slate-200 text-slate-600 font-black text-xs flex items-center justify-center';
+            if (line1) line1.className = 'w-8 h-1 bg-[#C5A059] rounded-full';
+            if (line2) line2.className = 'w-8 h-1 bg-slate-200 rounded-full';
         }
 
         function goToRegisterStep3(targetEmail) {
@@ -439,11 +492,11 @@
             if (step2) step2.classList.add('hidden');
             if (step3) step3.classList.remove('hidden');
 
-            if (dot1) dot1.className = 'w-2.5 h-2.5 rounded-full bg-[#D4AF37]';
-            if (dot2) dot2.className = 'w-2.5 h-2.5 rounded-full bg-[#D4AF37]';
-            if (dot3) dot3.className = 'w-2.5 h-2.5 rounded-full bg-[#D4AF37]';
-            if (line1) line1.className = 'w-6 h-[2px] bg-[#D4AF37]';
-            if (line2) line2.className = 'w-6 h-[2px] bg-[#D4AF37]';
+            if (dot1) dot1.className = 'w-7 h-7 rounded-full bg-[#C5A059] text-slate-900 font-black text-xs flex items-center justify-center shadow-xs';
+            if (dot2) dot2.className = 'w-7 h-7 rounded-full bg-[#C5A059] text-slate-900 font-black text-xs flex items-center justify-center shadow-xs';
+            if (dot3) dot3.className = 'w-7 h-7 rounded-full bg-slate-900 text-white font-black text-xs flex items-center justify-center shadow-xs';
+            if (line1) line1.className = 'w-8 h-1 bg-[#C5A059] rounded-full';
+            if (line2) line2.className = 'w-8 h-1 bg-[#C5A059] rounded-full';
 
             setupOTPInputs();
         }
@@ -483,7 +536,7 @@
             inputs.forEach(inp => otp += (inp.value || '').trim());
 
             if (otp.length !== 6 || !/^\d{6}$/.test(otp)) {
-                KaghanUI.showToast('Please enter the complete 6-digit verification code.', 'warning');
+                if (window.KaghanUI) KaghanUI.showToast('Please enter the complete 6-digit verification code.', 'warning');
                 return;
             }
 
@@ -493,14 +546,14 @@
             const origHTML = btn ? btn.innerHTML : 'Verify Code';
 
             if (btn) {
-                btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Verifying...';
+                btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Verifying...';
                 btn.disabled = true;
             }
 
             try {
                 const res = await KaghanDB.verifyEmailOTP(email, otp);
                 if (res.success) {
-                    KaghanUI.showToast('Account verified successfully! Logging you in...', 'success');
+                    if (window.KaghanUI) KaghanUI.showToast('Account verified successfully! Logging you in...', 'success');
                     if (pass && typeof firebase !== 'undefined' && firebase.auth) {
                         try {
                             await firebase.auth().signInWithEmailAndPassword(email, pass);
@@ -513,11 +566,11 @@
                         redirectUser(user);
                     }, 800);
                 } else {
-                    KaghanUI.showToast(res.message || 'Invalid verification code.', 'error');
+                    if (window.KaghanUI) KaghanUI.showToast(res.message || 'Invalid verification code.', 'error');
                 }
             } catch (err) {
                 console.error("OTP verification error:", err);
-                KaghanUI.showToast(err.message || 'Verification failed.', 'error');
+                if (window.KaghanUI) KaghanUI.showToast(err.message || 'Verification failed.', 'error');
             } finally {
                 if (btn) {
                     btn.innerHTML = origHTML;
@@ -534,16 +587,16 @@
             const turnstileToken = document.querySelector('[name="cf-turnstile-response"]')?.value || '';
 
             if (!email || !pass) {
-                KaghanUI.showToast('Registration details missing. Please return to Step 1.', 'warning');
+                if (window.KaghanUI) KaghanUI.showToast('Registration details missing. Please return to Step 1.', 'warning');
                 return;
             }
 
-            KaghanUI.showToast('Resending 6-digit verification code...', 'info');
+            if (window.KaghanUI) KaghanUI.showToast('Resending 6-digit verification code...', 'info');
             const res = await KaghanDB.register(name, email, pass, phone, turnstileToken);
             if (res.success) {
-                KaghanUI.showToast('A new 6-digit code has been sent to your email address!', 'success');
+                if (window.KaghanUI) KaghanUI.showToast('A new 6-digit code has been sent to your email address!', 'success');
             } else {
-                KaghanUI.showToast(res.message || 'Failed to resend code.', 'error');
+                if (window.KaghanUI) KaghanUI.showToast(res.message || 'Failed to resend code.', 'error');
                 if (window.turnstile) { try { turnstile.reset(); } catch(_) {} }
             }
         }
@@ -579,10 +632,10 @@
             msg.classList.remove('hidden');
             if (pass === confirm) {
                 msg.textContent = '✓ Passwords match';
-                msg.className = 'text-[10px] mt-1 text-emerald-400 font-semibold';
+                msg.className = 'text-xs mt-1 text-emerald-600 font-bold';
             } else {
                 msg.textContent = '✕ Passwords do not match';
-                msg.className = 'text-[10px] mt-1 text-rose-400 font-semibold';
+                msg.className = 'text-xs mt-1 text-rose-500 font-bold';
             }
         }
 
@@ -594,12 +647,12 @@
 
             const res = await KaghanDB.login(email, pass);
             if (res.success) {
-                KaghanUI.showToast(`Welcome back, ${res.user.name}!`, 'success');
+                if (window.KaghanUI) KaghanUI.showToast(`Welcome back, ${res.user.name}!`, 'success');
                 setTimeout(() => {
                     redirectUser(res.user);
                 }, 800);
             } else {
-                KaghanUI.showToast(res.message, 'error');
+                if (window.KaghanUI) KaghanUI.showToast(res.message, 'error');
             }
         }
 
@@ -613,7 +666,7 @@
             const confirm = document.getElementById('reg-pass-confirm').value;
 
             if (pass !== confirm) {
-                KaghanUI.showToast('Passwords do not match.', 'error');
+                if (window.KaghanUI) KaghanUI.showToast('Passwords do not match.', 'error');
                 return;
             }
 
@@ -622,7 +675,7 @@
             const btn = document.getElementById('btn-register');
             const origContent = btn ? btn.innerHTML : 'Send 2-Step Code';
             if (btn) {
-                btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Processing...';
+                btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Processing...';
                 btn.disabled = true;
             }
 
@@ -632,21 +685,21 @@
                     if (res.requiresOtp) {
                         if (res.devOtp) {
                             console.log(`%c[Dev OTP Code]: ${res.devOtp}`, 'color: #D4AF37; font-weight: bold; font-size: 14px;');
-                            KaghanUI.showToast(`[Dev OTP Code]: ${res.devOtp}`, 'info');
+                            if (window.KaghanUI) KaghanUI.showToast(`[Dev OTP Code]: ${res.devOtp}`, 'info');
                         } else {
-                            KaghanUI.showToast('Verification code sent! Please check your email.', 'info');
+                            if (window.KaghanUI) KaghanUI.showToast('Verification code sent! Please check your email.', 'info');
                         }
                         goToRegisterStep3(res.email || email);
                     } else {
-                        KaghanUI.showToast(res.message, 'success');
+                        if (window.KaghanUI) KaghanUI.showToast(res.message, 'success');
                     }
                 } else {
-                    KaghanUI.showToast(res.message, 'error');
+                    if (window.KaghanUI) KaghanUI.showToast(res.message, 'error');
                     if (window.turnstile) { try { turnstile.reset(); } catch(_) {} }
                 }
             } catch (err) {
                 console.error("Registration error:", err);
-                KaghanUI.showToast(err.message || 'Registration failed.', 'error');
+                if (window.KaghanUI) KaghanUI.showToast(err.message || 'Registration failed.', 'error');
                 if (window.turnstile) { try { turnstile.reset(); } catch(_) {} }
             } finally {
                 if (btn) {
@@ -656,7 +709,7 @@
             }
         }
 
-        // Routing Helper (Routes admin, moderator, and editor to Admin Panel)
+        // Routing Helper
         function redirectUser(user) {
             const urlParams = new URLSearchParams(window.location.search);
             const redirectUrl = urlParams.get('redirect');
@@ -673,14 +726,13 @@
             }
         }
 
-        // Google Sign-In handler (Syncs Google Auth with Email Accounts for the same email)
+        // Google Sign-In handler
         async function processGoogleUserSession(user) {
             const email = (user.email || '').toLowerCase().trim();
             const googleUid = user.uid;
 
             let dbUser = await KaghanDB.getUserById(googleUid);
 
-            // Search by email if not found by googleUid
             if (!dbUser && email) {
                 const snap = await firebase.firestore().collection('users').where('email', '==', email).limit(1).get();
                 if (!snap.empty) {
@@ -689,7 +741,6 @@
             }
 
             if (dbUser) {
-                // Link Google account to existing user document
                 dbUser.googleUid = googleUid;
                 if (!dbUser.uid) dbUser.uid = googleUid;
                 if (user.photoURL && !dbUser.photoURL) dbUser.photoURL = user.photoURL;
@@ -714,7 +765,7 @@
             }
 
             localStorage.setItem('kaghan_hotel_session', JSON.stringify(dbUser));
-            KaghanUI.showToast(`Welcome back, ${dbUser.name}!`, 'success');
+            if (window.KaghanUI) KaghanUI.showToast(`Welcome back, ${dbUser.name}!`, 'success');
             setTimeout(() => redirectUser(dbUser), 600);
         }
 
@@ -741,11 +792,11 @@
                         await processGoogleUserSession(result.user);
                     }
                 } else {
-                    KaghanUI.showToast("Firebase Authentication is loading. Please retry.", "warning");
+                    if (window.KaghanUI) KaghanUI.showToast("Firebase Authentication is loading. Please retry.", "warning");
                 }
             } catch(err) {
                 console.error("Firebase Auth Google sign-in failed:", err);
-                KaghanUI.showToast(`Google Sign-In: ${err.message}`, 'error');
+                if (window.KaghanUI) KaghanUI.showToast(`Google Sign-In: ${err.message}`, 'error');
             }
         }
         window.handleGoogleSignIn = loginWithGoogle;
@@ -762,14 +813,6 @@
                 });
             }
         });
-
-        // Set Tab from URL Param
-        function parseUrlState() {
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('register') === 'true') {
-                toggleAuthMode(true);
-            }
-        }
 
         function setupPhoneInputFormatter() {
             const phoneInput = document.getElementById('reg-phone');
@@ -867,21 +910,21 @@
             const origText = btn ? btn.innerHTML : 'Send Link';
 
             if (btn) {
-                btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Sending...';
+                btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Sending...';
                 btn.disabled = true;
             }
 
             try {
                 const res = await KaghanDB.sendPasswordResetEmail(email);
                 if (res.success) {
-                    KaghanUI.showToast(res.message, 'success');
+                    if (window.KaghanUI) KaghanUI.showToast(res.message, 'success');
                     closeForgotPasswordModal();
                 } else {
-                    KaghanUI.showToast(res.message, 'error');
+                    if (window.KaghanUI) KaghanUI.showToast(res.message, 'error');
                 }
             } catch (err) {
                 console.error("Forgot password submit error:", err);
-                KaghanUI.showToast(err.message || 'Failed to send reset link.', 'error');
+                if (window.KaghanUI) KaghanUI.showToast(err.message || 'Failed to send reset link.', 'error');
             } finally {
                 if (btn) {
                     btn.innerHTML = origText;
@@ -900,17 +943,17 @@
             const token = urlParams.get('token');
 
             if (action === 'verify-email' && token) {
-                KaghanUI.showToast('Verifying your email address...', 'info');
+                if (window.KaghanUI) KaghanUI.showToast('Verifying your email address...', 'info');
                 if (window.KaghanDB && window.KaghanDB.verifyEmailToken) {
                     window.KaghanDB.verifyEmailToken(token).then(res => {
                         if (res.success) {
-                            KaghanUI.showToast(res.message, 'success');
+                            if (window.KaghanUI) KaghanUI.showToast(res.message, 'success');
                             toggleAuthMode(false);
                         } else {
-                            KaghanUI.showToast(res.message, 'error');
+                            if (window.KaghanUI) KaghanUI.showToast(res.message, 'error');
                         }
                     }).catch(err => {
-                        KaghanUI.showToast(err.message || 'Verification failed.', 'error');
+                        if (window.KaghanUI) KaghanUI.showToast(err.message || 'Verification failed.', 'error');
                     });
                 }
             }
@@ -922,34 +965,5 @@
             setupPhoneInputFormatter();
         });
     </script>
-
-    <!-- Modal: Forgot Password -->
-    <div id="forgot-password-modal" class="fixed inset-0 bg-[#0F172A]/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
-        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-sm w-full overflow-hidden shadow-2xl relative p-6 text-white">
-            <button type="button" onclick="closeForgotPasswordModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
-                <i class="fa-solid fa-times text-lg"></i>
-            </button>
-            <div class="flex items-center gap-3 mb-4">
-                <div class="w-10 h-10 rounded-2xl bg-[#D4AF37]/10 text-[#D4AF37] flex items-center justify-center font-bold text-base shrink-0">
-                    <i class="fa-solid fa-key"></i>
-                </div>
-                <div>
-                    <h3 class="text-base font-bold outfit text-white">Reset Password</h3>
-                    <p class="text-xs text-slate-400">Receive a password reset link via email</p>
-                </div>
-            </div>
-            
-            <form id="forgot-password-form" onsubmit="handleForgotPasswordSubmit(event)" class="space-y-4">
-                <div>
-                    <label class="block text-[10px] uppercase tracking-wider text-slate-400 font-semibold mb-2">Registered Email Address</label>
-                    <input type="email" id="forgot-email" required placeholder="name@example.com" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-4 py-3 outline-none focus:border-[#D4AF37] text-sm text-white">
-                </div>
-                <div class="flex gap-3 pt-2">
-                    <button type="button" onclick="closeForgotPasswordModal()" class="w-1/2 border border-slate-700 text-slate-300 font-bold py-2.5 rounded-xl hover:bg-slate-800 transition-all text-xs">Cancel</button>
-                    <button type="submit" id="forgot-submit-btn" class="w-1/2 bg-[#D4AF37] text-slate-950 font-bold py-2.5 rounded-xl hover:bg-white transition-all text-xs shadow-md">Send Link</button>
-                </div>
-            </form>
-        </div>
-    </div>
 </body>
 </html>

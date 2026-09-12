@@ -8,7 +8,7 @@ const { fdb } = require('./_admin-init');
 
 function getGolootloConfig() {
     const username = process.env.GOLOOTLO_USERNAME || 'kph@stay';
-    const password = process.env.GOLOOTLO_PASSWORD || 'Ar&hWMYK540JA999';
+    const password = process.env.GOLOOTLO_PASSWORD || '';
     const merchantCode = process.env.GOLOOTLO_MERCHANT_CODE || '41082';
     const baseUrl = (process.env.GOLOOTLO_API_BASE_URL || 'https://api-toolkit.golootlo.pk').replace(/\/+$/, '');
     const channelId = process.env.GOLOOTLO_CHANNEL_ID || '01';

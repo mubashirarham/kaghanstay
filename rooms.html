@@ -142,66 +142,83 @@
 <body class="bg-[#F8FAFC] text-[#0F172A] overflow-x-hidden font-sans pt-24">
 
     <!-- Header / Navigation -->
-    <nav id="hotel-navbar" class="fixed top-0 left-0 right-0 z-50 py-5 px-6 md:px-12 flex justify-between items-center text-white bg-[#0B0F19] border-b border-white/10">
+    <nav id="hotel-navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-4 px-6 md:px-12 flex justify-between items-center text-white bg-[#0F172A]/95 backdrop-blur-md border-b border-slate-700/80 shadow-lg">
         <a href="/" class="flex items-center gap-3 hover:opacity-90 transition-opacity shrink-0">
             <img src="/assets/images/logo.png" alt="KPH Stay Logo" class="h-10 w-auto object-contain">
             <div class="flex flex-col">
-                <span class="text-lg font-bold tracking-wider uppercase outfit leading-none">KPH</span>
-                <span class="text-xs text-[#C5A059] tracking-[0.2em] uppercase font-semibold">Stay</span>
+                <span class="text-xl font-extrabold tracking-wider uppercase outfit leading-none text-white">KPH</span>
+                <span class="text-[11px] text-[#C5A059] tracking-[0.25em] uppercase font-bold">Stay</span>
             </div>
         </a>
 
-        <div class="hidden md:flex gap-8 items-center font-medium">
-            <a href="index.html" class="hover:text-[#C5A059] transition-colors">Home</a>
-            <a href="rooms.html" class="text-[#C5A059] hover:text-[#C5A059] transition-colors">Rooms</a>
-            <a href="blog.html" class="hover:text-[#C5A059] transition-colors">Blog</a>
-            <a href="track.html" class="hover:text-[#C5A059] transition-colors">Track Stay</a>
-            <div id="auth-links" class="flex gap-4 items-center">
-                <a href="login.html" class="border border-[#C5A059] text-white px-5 py-2 rounded-full hover:bg-[#C5A059] hover:text-white transition-all text-sm font-semibold">Login</a>
-                <a href="login.html?register=true" class="bg-[#C5A059] text-white px-5 py-2 rounded-full hover:bg-white hover:text-slate-900 transition-all text-sm font-semibold luxury-shadow">Register</a>
+        <!-- Navigation Links -->
+        <div class="hidden md:flex gap-8 items-center font-semibold text-sm">
+            <a href="index.html" class="text-slate-200 hover:text-[#C5A059] transition-colors">Home</a>
+            <a href="rooms.html" class="text-[#C5A059] border-b-2 border-[#C5A059] pb-0.5 transition-colors">Accommodations</a>
+            <a href="blog.html" class="text-slate-200 hover:text-[#C5A059] transition-colors">Travel Journal</a>
+            <a href="track.html" class="text-slate-200 hover:text-[#C5A059] transition-colors">Track Stay</a>
+            
+            <!-- WhatsApp Direct Action -->
+            <a href="https://wa.me/923340091127?text=Hello%20KPH%20Stay,%20I%20would%20like%20to%20inquire%20about%20booking%20a%20furnished%20apartment." 
+               target="_blank" rel="noopener" 
+               class="hidden lg:inline-flex items-center gap-2 border border-emerald-500/60 bg-emerald-950/70 hover:bg-emerald-600 text-emerald-300 hover:text-white px-3.5 py-1.5 rounded-full transition-all text-xs font-bold shadow-sm">
+                <i class="fa-brands fa-whatsapp text-sm text-emerald-400"></i>
+                <span>Direct WhatsApp</span>
+            </a>
+
+            <div id="auth-links" class="flex gap-3 items-center">
+                <a href="login.html" class="border border-slate-600 hover:border-[#C5A059] text-white px-4 py-1.5 rounded-xl hover:bg-[#C5A059] hover:text-slate-950 transition-all text-xs font-bold shadow-sm">Login</a>
+                <a href="login.html?register=true" class="bg-[#C5A059] hover:bg-[#D4AF37] text-slate-950 px-4 py-1.5 rounded-xl transition-all text-xs font-extrabold shadow-md border border-amber-300">Register</a>
             </div>
         </div>
 
-        <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
-            <i class="fa-solid fa-bars text-2xl"></i>
+        <button id="menu-toggle" class="md:hidden text-white focus:outline-none p-2 rounded-lg bg-slate-800 border border-slate-700" aria-label="Toggle Navigation">
+            <i class="fa-solid fa-bars text-xl text-amber-400"></i>
         </button>
     </nav>
 
     <!-- Mobile Drawer -->
-    <div id="mobile-drawer" class="fixed inset-0 bg-[#0B0F19]/95 z-[60] flex flex-col items-center justify-center gap-8 text-white text-xl font-semibold">
+    <div id="mobile-drawer" class="fixed inset-0 bg-[#0B0F19]/95 z-[60] flex flex-col items-center justify-center gap-6 text-white text-lg font-bold border-l border-slate-700 transition-all duration-300">
         <button id="menu-close" class="absolute top-8 right-6 text-white text-3xl w-12 h-12 flex items-center justify-center focus:outline-none active:scale-90 transition-transform" aria-label="Close Menu">
             <i class="fa-solid fa-xmark"></i>
         </button>
         <a href="index.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Home</a>
-        <a href="rooms.html" class="text-[#C5A059]" onclick="toggleDrawer()">Rooms</a>
-        <a href="blog.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Blog</a>
+        <a href="rooms.html" class="text-[#C5A059] border-b-2 border-[#C5A059] pb-1" onclick="toggleDrawer()">Accommodations</a>
+        <a href="blog.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Travel Journal</a>
         <a href="track.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Track Stay</a>
-        <div id="auth-links-mobile" class="flex flex-col gap-4 w-64 text-center">
-            <a href="login.html" class="border border-[#C5A059] text-white py-3 rounded-full hover:bg-[#C5A059] transition-all text-base" onclick="toggleDrawer()">Login</a>
-            <a href="login.html?register=true" class="bg-[#C5A059] text-white py-3 rounded-full hover:bg-white hover:text-slate-900 transition-all text-base" onclick="toggleDrawer()">Register</a>
+        <a href="https://wa.me/923340091127" target="_blank" rel="noopener" class="flex items-center gap-2 text-emerald-400 font-bold text-sm bg-emerald-950/80 px-5 py-2.5 rounded-full border border-emerald-500/50">
+            <i class="fa-brands fa-whatsapp text-lg"></i>
+            <span>WhatsApp Concierge</span>
+        </a>
+        <div id="auth-links-mobile" class="flex flex-col gap-3 w-64 text-center mt-4">
+            <a href="login.html" class="border border-slate-600 text-white py-2.5 rounded-xl hover:bg-[#C5A059] hover:text-slate-950 transition-all text-sm font-bold" onclick="toggleDrawer()">Login</a>
+            <a href="login.html?register=true" class="bg-[#C5A059] text-slate-950 py-2.5 rounded-xl hover:bg-white transition-all text-sm font-extrabold border border-amber-300" onclick="toggleDrawer()">Register</a>
         </div>
     </div>
 
     <!-- Header Banner -->
-    <div class="bg-[#0B0F19] text-white py-16 px-6 text-center relative overflow-hidden">
-        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-800 via-[#0B0F19] to-[#0B0F19] opacity-80"></div>
+    <div class="bg-[#0F172A] text-white py-16 px-4 sm:px-6 md:px-12 text-center relative overflow-hidden border-b border-slate-800">
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-amber-500/10 via-slate-900/40 to-transparent opacity-80"></div>
         <div class="relative z-10 max-w-4xl mx-auto">
-            <h1 class="text-3xl md:text-5xl font-bold outfit mb-4">Our Luxury Apartments & Penthouses</h1>
-            <p class="text-slate-400 text-sm md:text-base font-light max-w-2xl mx-auto mb-5">
-                Explore a curated collection of fully furnished service apartments and premium penthouses in Islamabad and Nathia Gali. From compact studios to expansive four-bedroom apartments, find your ideal accommodation with equipped kitchens, high-speed Wi-Fi, and round-the-clock concierge support.
+            <span class="text-[#FFDF9E] font-extrabold uppercase tracking-widest text-xs mb-3 block flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-gem text-amber-400"></i> Curated Collection
+            </span>
+            <h1 class="text-3xl md:text-5xl font-extrabold outfit mb-4 tracking-tight">Luxury Apartments & Penthouses</h1>
+            <p class="text-slate-300 text-sm sm:text-base font-normal max-w-2xl mx-auto mb-6 leading-relaxed">
+                Explore a curated collection of fully furnished service apartments and premium penthouses across Islamabad, Murree, and Nathia Gali. From compact studios to expansive family suites, find your ideal accommodation with equipped kitchens, high-speed Wi-Fi, and 24/7 concierge support.
             </p>
-            <div class="inline-flex items-center gap-2 border border-emerald-400/40 bg-emerald-950/80 backdrop-blur-md text-emerald-200 text-xs font-semibold px-4 py-2 rounded-full shadow-lg">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span><strong>Golootlo Partner Deal:</strong> Download Golootlo app for exclusive booking discounts</span>
+            <div class="inline-flex items-center gap-2.5 border-2 border-emerald-500/50 bg-emerald-950/80 backdrop-blur-md text-emerald-200 text-xs font-bold px-5 py-2.5 rounded-full shadow-lg">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span><strong>Golootlo Partner Deal:</strong> Save up to 20% by entering your Golootlo code at checkout</span>
             </div>
         </div>
     </div>
 
     <!-- Explorer Grid & Filters -->
-    <section class="py-10 px-4 md:px-8 lg:px-12 max-w-7xl mx-auto">
+    <section class="py-10 px-4 sm:px-6 md:px-8 lg:px-12 max-w-7xl mx-auto">
 
-        <!-- High-End Spatial Glassmorphism Search & Category Hub Bar -->
-        <div class="bg-[#0F172A]/95 backdrop-blur-2xl rounded-[2.5rem] border border-[#C5A059]/40 p-5 md:p-7 mb-10 shadow-[0_30px_70px_-15px_rgba(0,0,0,0.6)] text-white relative overflow-visible" id="rooms-top-search-hub">
+        <!-- High-End Spatial Search & Category Hub Bar -->
+        <div class="bg-[#0F172A]/95 backdrop-blur-2xl rounded-3xl sm:rounded-[2.5rem] border-2 border-[#C5A059]/40 p-5 md:p-7 mb-10 shadow-[0_30px_70px_-15px_rgba(0,0,0,0.6)] text-white relative overflow-visible" id="rooms-top-search-hub">
             <!-- Subtle Gold Accent Glow -->
             <div class="absolute top-0 right-1/4 w-96 h-96 bg-[#C5A059]/10 rounded-full blur-[100px] pointer-events-none"></div>
 
@@ -209,11 +226,11 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3.5 items-end mb-6">
                 <!-- Search Input -->
                 <div class="sm:col-span-2 lg:col-span-4 relative">
-                    <label class="block text-[10px] uppercase tracking-widest text-[#C5A059] font-bold mb-1.5 ml-1">Search Stay</label>
+                    <label class="block text-xs uppercase tracking-widest text-[#FFDF9E] font-extrabold mb-1.5 ml-1">Search Stay</label>
                     <div class="relative group">
                         <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-[#C5A059] text-sm group-focus-within:scale-110 transition-transform"></i>
-                        <input type="text" id="filter-search-hero" oninput="syncAndApplyFilter('filter-search', this.value)" placeholder="Search suite name, location, features..." class="w-full bg-white/5 border border-white/15 focus:border-[#C5A059] hover:border-white/30 rounded-2xl pl-11 pr-10 py-3 text-xs md:text-sm text-white placeholder-slate-400 outline-none transition-all">
-                        <button type="button" id="clear-search-btn" onclick="clearSearchInput()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 text-xs flex items-center justify-center transition-all">
+                        <input type="text" id="filter-search-hero" oninput="syncAndApplyFilter('filter-search', this.value)" placeholder="Search suite name, location, features..." class="w-full bg-slate-900/90 border border-slate-700 focus:border-[#C5A059] hover:border-slate-500 rounded-2xl pl-11 pr-10 py-3.5 text-xs md:text-sm text-white placeholder-slate-400 outline-none transition-all shadow-inner">
+                        <button type="button" id="clear-search-btn" onclick="clearSearchInput()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs flex items-center justify-center transition-all border border-slate-600">
                             <i class="fa-solid fa-xmark"></i>
                         </button>
                     </div>
@@ -221,23 +238,23 @@
 
                 <!-- Destination Selector (Firestore-Driven) -->
                 <div class="sm:col-span-1 lg:col-span-3 relative">
-                    <label class="block text-[10px] uppercase tracking-widest text-[#C5A059] font-bold mb-1.5 ml-1">Destination</label>
+                    <label class="block text-xs uppercase tracking-widest text-[#FFDF9E] font-extrabold mb-1.5 ml-1">Destination</label>
                     <div class="relative">
                         <i class="fa-solid fa-location-dot absolute left-4 top-1/2 -translate-y-1/2 text-[#C5A059] pointer-events-none text-sm"></i>
-                        <select id="quick-filter-location" onchange="syncAndApplyFilter('filter-location', this.value)" class="w-full bg-white/5 border border-white/15 focus:border-[#C5A059] hover:border-white/30 rounded-2xl pl-11 pr-10 py-3 text-xs md:text-sm text-white font-medium outline-none appearance-none cursor-pointer transition-all">
+                        <select id="quick-filter-location" onchange="syncAndApplyFilter('filter-location', this.value)" class="w-full bg-slate-900/90 border border-slate-700 focus:border-[#C5A059] hover:border-slate-500 rounded-2xl pl-11 pr-10 py-3.5 text-xs md:text-sm text-white font-bold outline-none appearance-none cursor-pointer transition-all shadow-inner">
                             <option value="all" class="bg-[#0F172A] text-white">📍 All Destinations</option>
                         </select>
-                        <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-white/50 pointer-events-none text-xs"></i>
+                        <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xs"></i>
                     </div>
                 </div>
 
                 <!-- Dates Picker Trigger -->
                 <div class="sm:col-span-1 lg:col-span-3 relative">
-                    <label class="block text-[10px] uppercase tracking-widest text-[#C5A059] font-bold mb-1.5 ml-1">Stay Dates</label>
-                    <button type="button" onclick="KaghanSearchWidget.openCalendarModal()" class="w-full bg-white/5 border border-white/15 hover:bg-white/10 focus:border-[#C5A059] hover:border-[#C5A059] rounded-2xl pl-11 pr-4 py-3 outline-none transition-all text-white text-xs md:text-sm text-left flex items-center justify-between cursor-pointer group">
+                    <label class="block text-xs uppercase tracking-widest text-[#FFDF9E] font-extrabold mb-1.5 ml-1">Stay Dates</label>
+                    <button type="button" onclick="KaghanSearchWidget.openCalendarModal()" class="w-full bg-slate-900/90 border border-slate-700 hover:border-[#C5A059] focus:border-[#C5A059] rounded-2xl pl-11 pr-4 py-3.5 outline-none transition-all text-white text-xs md:text-sm text-left flex items-center justify-between cursor-pointer group shadow-inner">
                         <i class="fa-solid fa-calendar-days absolute left-4 text-[#C5A059] pointer-events-none text-sm group-hover:scale-110 transition-transform"></i>
-                        <span id="search-date-trigger-text" class="font-semibold whitespace-nowrap overflow-hidden text-ellipsis">Add dates</span>
-                        <i class="fa-solid fa-chevron-down text-white/50 text-xs shrink-0"></i>
+                        <span id="search-date-trigger-text" class="font-bold whitespace-nowrap overflow-hidden text-ellipsis">Add dates</span>
+                        <i class="fa-solid fa-chevron-down text-slate-400 text-xs shrink-0"></i>
                     </button>
                     <input type="hidden" id="search-check-in">
                     <input type="hidden" id="search-check-out">
@@ -246,40 +263,40 @@
                 <!-- Quick Action Buttons -->
                 <div class="sm:col-span-2 lg:col-span-2 flex items-center gap-2">
                     <div class="relative flex-1">
-                        <select id="sort-by-hero" onchange="document.getElementById('sort-by').value=this.value; applyFilters()" class="w-full bg-white/5 border border-white/15 focus:border-[#C5A059] hover:border-white/30 rounded-2xl px-3 py-3 text-xs text-white font-medium outline-none appearance-none cursor-pointer transition-all">
+                        <select id="sort-by-hero" onchange="document.getElementById('sort-by').value=this.value; applyFilters()" class="w-full bg-slate-900/90 border border-slate-700 focus:border-[#C5A059] hover:border-slate-500 rounded-2xl px-3 py-3.5 text-xs text-white font-bold outline-none appearance-none cursor-pointer transition-all shadow-inner">
                             <option value="default" class="bg-[#0F172A] text-white">↕ Default</option>
                             <option value="price-low" class="bg-[#0F172A] text-white">Price: Low → High</option>
                             <option value="price-high" class="bg-[#0F172A] text-white">Price: High → Low</option>
                             <option value="rating" class="bg-[#0F172A] text-white">Top Rated ★</option>
                         </select>
-                        <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-white/50 pointer-events-none text-xs"></i>
+                        <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xs"></i>
                     </div>
 
-                    <button type="button" id="toggle-map-btn" onclick="toggleMapMode()" class="bg-[#C5A059] hover:bg-[#A88443] text-white px-3.5 py-3 rounded-2xl font-bold text-xs shadow-md transition-all flex items-center gap-1.5 shrink-0 cursor-pointer">
+                    <button type="button" id="toggle-map-btn" onclick="toggleMapMode()" class="bg-[#C5A059] hover:bg-[#D4AF37] text-slate-950 px-4 py-3.5 rounded-2xl font-extrabold text-xs shadow-md transition-all flex items-center gap-1.5 shrink-0 cursor-pointer border border-amber-300">
                         <i class="fa-solid fa-map-location-dot"></i>
                         <span id="toggle-map-text" class="hidden sm:inline">Map</span>
                     </button>
 
-                    <button id="filter-toggle-btn" onclick="openFilterSidebar()" class="lg:hidden bg-white/10 text-white p-3 rounded-2xl hover:bg-white/20 transition-all shrink-0" aria-label="Filters">
-                        <i class="fa-solid fa-sliders text-xs"></i>
+                    <button id="filter-toggle-btn" onclick="openFilterSidebar()" class="lg:hidden bg-slate-800 text-white p-3.5 rounded-2xl hover:bg-slate-700 transition-all shrink-0 border border-slate-700" aria-label="Filters">
+                        <i class="fa-solid fa-sliders text-xs text-amber-400"></i>
                     </button>
                 </div>
             </div>
 
             <!-- Bottom Row: Dynamic Firestore Categories Strip -->
-            <div class="border-t border-white/10 pt-4 mt-2">
+            <div class="border-t border-slate-700/80 pt-4 mt-2">
                 <div class="flex items-center justify-between mb-3">
                     <div class="flex items-center gap-2">
-                        <span class="text-xs uppercase tracking-widest text-[#C5A059] font-bold">Categories (Firestore)</span>
-                        <span id="firestore-category-count-badge" class="bg-white/10 text-white/80 text-[10px] font-bold px-2 py-0.5 rounded-full border border-white/10">Loading...</span>
+                        <span class="text-xs uppercase tracking-widest text-[#FFDF9E] font-extrabold">Filter by Style</span>
+                        <span id="firestore-category-count-badge" class="bg-slate-800 text-slate-300 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border border-slate-700">Loading...</span>
                     </div>
 
-                    <div class="flex gap-1.5">
-                        <button type="button" onclick="scrollCategoryBar('left')" class="w-7 h-7 rounded-full bg-white/5 hover:bg-[#C5A059] border border-white/10 text-white flex items-center justify-center text-xs transition-colors cursor-pointer" aria-label="Scroll left">
-                            <i class="fa-solid fa-chevron-left text-[10px]"></i>
+                    <div class="flex gap-2">
+                        <button type="button" onclick="scrollCategoryBar('left')" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-[#C5A059] hover:text-slate-950 border border-slate-700 text-white flex items-center justify-center text-xs transition-colors cursor-pointer" aria-label="Scroll left">
+                            <i class="fa-solid fa-chevron-left text-xs"></i>
                         </button>
-                        <button type="button" onclick="scrollCategoryBar('right')" class="w-7 h-7 rounded-full bg-white/5 hover:bg-[#C5A059] border border-white/10 text-white flex items-center justify-center text-xs transition-colors cursor-pointer" aria-label="Scroll right">
-                            <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                        <button type="button" onclick="scrollCategoryBar('right')" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-[#C5A059] hover:text-slate-950 border border-slate-700 text-white flex items-center justify-center text-xs transition-colors cursor-pointer" aria-label="Scroll right">
+                            <i class="fa-solid fa-chevron-right text-xs"></i>
                         </button>
                     </div>
                 </div>
@@ -288,26 +305,26 @@
                 <div id="firestore-category-pills" class="flex items-center gap-2.5 overflow-x-auto hide-scrollbar scroll-smooth py-1 px-1">
                     <!-- Dynamically populated ONLY from Firestore categories -->
                     <div class="flex gap-2.5 animate-pulse">
-                        <div class="h-9 w-24 bg-white/10 rounded-full"></div>
-                        <div class="h-9 w-28 bg-white/10 rounded-full"></div>
-                        <div class="h-9 w-24 bg-white/10 rounded-full"></div>
+                        <div class="h-9 w-24 bg-slate-800 rounded-full border border-slate-700"></div>
+                        <div class="h-9 w-28 bg-slate-800 rounded-full border border-slate-700"></div>
+                        <div class="h-9 w-24 bg-slate-800 rounded-full border border-slate-700"></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="flex gap-8">
+        <div class="flex flex-col lg:flex-row gap-8">
 
-            <!-- Filters Sidebar Overlay (mobile) -->
+            <!-- Filters Sidebar Overlay (mobile / desktop) -->
             <div id="rooms-filter-sidebar">
-                <aside id="rooms-filter-panel" class="w-full lg:w-72 bg-white rounded-none lg:rounded-3xl border-0 lg:border border-slate-100 p-6 md:p-8 shadow-xl lg:shadow-md h-full lg:h-fit">
-                    <div class="flex justify-between items-center mb-6">
-                        <h3 class="font-bold text-lg outfit text-slate-900 flex items-center gap-2">
-                            <i class="fa-solid fa-sliders text-[#D4AF37] text-base"></i>
+                <aside id="rooms-filter-panel" class="w-full lg:w-72 bg-white rounded-none lg:rounded-3xl border-0 lg:border-2 border-slate-200 p-6 md:p-8 shadow-xl lg:shadow-md h-full lg:h-fit">
+                    <div class="flex justify-between items-center mb-6 pb-3 border-b border-slate-100">
+                        <h3 class="font-extrabold text-lg outfit text-slate-900 flex items-center gap-2">
+                            <i class="fa-solid fa-sliders text-[#C5A059] text-base"></i>
                             Filters
                         </h3>
-                        <div class="flex gap-3">
-                            <button onclick="clearFilters()" class="text-xs font-semibold text-[#D4AF37] hover:underline">Reset All</button>
+                        <div class="flex gap-3 items-center">
+                            <button onclick="clearFilters()" class="text-xs font-bold text-[#C5A059] hover:underline cursor-pointer">Reset All</button>
                             <button onclick="closeFilterSidebar()" class="lg:hidden text-slate-400 hover:text-slate-800 w-7 h-7 flex items-center justify-center rounded-lg hover:bg-slate-100 transition-colors">
                                 <i class="fa-solid fa-xmark"></i>
                             </button>
@@ -317,10 +334,10 @@
                     <div class="space-y-6">
                         <!-- Search Input -->
                         <div>
-                            <label class="block text-xs uppercase tracking-wider text-slate-500 font-semibold mb-2">Search Keyword</label>
+                            <label class="block text-xs uppercase tracking-wider text-slate-600 font-extrabold mb-2">Search Keyword</label>
                             <div class="relative">
-                                <i class="fa-solid fa-search absolute left-3 top-3 text-slate-400"></i>
-                                <input type="text" id="filter-search" oninput="applyFilters()" placeholder="e.g. Valley, Studio, Pool" class="w-full border border-slate-200 rounded-xl pl-9 pr-4 py-2 outline-none focus:border-[#D4AF37] text-sm bg-slate-50 text-slate-800">
+                                <i class="fa-solid fa-search absolute left-3.5 top-3.5 text-slate-400 text-xs"></i>
+                                <input type="text" id="filter-search" oninput="applyFilters()" placeholder="e.g. Valley, Studio, Pool" class="w-full border-2 border-slate-200 rounded-xl pl-9 pr-4 py-2.5 outline-none focus:border-[#C5A059] text-xs md:text-sm bg-slate-50 text-slate-800 font-medium">
                             </div>
                         </div>
 
@@ -328,17 +345,15 @@
                         <div>
                             <select id="filter-category" onchange="applyFilters()" class="hidden">
                                 <option value="all">All Categories</option>
-                                <!-- Dynamically loaded categories -->
                             </select>
                         </div>
 
                         <!-- Room Location -->
                         <div>
-                            <label class="block text-xs uppercase tracking-wider text-slate-500 font-semibold mb-2">Location</label>
+                            <label class="block text-xs uppercase tracking-wider text-slate-600 font-extrabold mb-2">Location</label>
                             <div class="relative">
-                                <select id="filter-location" onchange="applyFilters()" class="w-full border border-slate-200 rounded-xl pl-4 pr-11 py-2.5 outline-none focus:border-[#D4AF37] text-sm bg-slate-50 text-slate-800 cursor-pointer appearance-none">
+                                <select id="filter-location" onchange="applyFilters()" class="w-full border-2 border-slate-200 rounded-xl pl-4 pr-11 py-2.5 outline-none focus:border-[#C5A059] text-xs md:text-sm bg-slate-50 text-slate-800 cursor-pointer appearance-none font-bold">
                                     <option value="all">All Locations</option>
-                                    <!-- Dynamically loaded locations -->
                                 </select>
                                 <i class="fa-solid fa-chevron-down absolute right-4 top-3.5 text-slate-400 pointer-events-none text-xs"></i>
                             </div>
@@ -346,17 +361,17 @@
 
                         <!-- Max Price -->
                         <div>
-                            <label class="block text-xs uppercase tracking-wider text-slate-500 font-semibold mb-2">Max Price per Night</label>
-                            <div class="flex justify-between text-xs text-slate-400 mb-2 font-medium">
+                            <label class="block text-xs uppercase tracking-wider text-slate-600 font-extrabold mb-2">Max Price per Night</label>
+                            <div class="flex justify-between text-xs text-slate-500 mb-2 font-bold">
                                 <span>PKR 0</span>
-                                <span id="price-val" class="text-[#C5A059] font-bold">Any Price</span>
+                                <span id="price-val" class="text-[#B8860B] font-extrabold">Any Price</span>
                             </div>
                             <input type="range" id="filter-price" min="0" max="500000" step="5000" value="500000" oninput="updatePriceLabel(); applyFilters()" class="w-full cursor-pointer accent-[#C5A059]">
                         </div>
 
                         <!-- Amenities -->
                         <div>
-                            <label class="block text-xs uppercase tracking-wider text-slate-500 font-semibold mb-2">Amenities</label>
+                            <label class="block text-xs uppercase tracking-wider text-slate-600 font-extrabold mb-2">Amenities</label>
                             <div class="space-y-2 mt-2">
                                 <label class="flex items-center gap-2.5 text-xs text-slate-700 font-semibold cursor-pointer group">
                                     <input type="checkbox" name="filter-amenity" value="Fast WiFi" onchange="applyFilters()" class="w-4 h-4 rounded border-slate-300 text-[#C5A059] focus:ring-[#C5A059] cursor-pointer">
@@ -383,9 +398,9 @@
 
                         <!-- Sorting (hidden on mobile, shown in mobile bar) -->
                         <div class="hidden lg:block">
-                            <label class="block text-xs uppercase tracking-wider text-slate-500 font-semibold mb-2">Sort Results By</label>
+                            <label class="block text-xs uppercase tracking-wider text-slate-600 font-extrabold mb-2">Sort Results By</label>
                             <div class="relative">
-                                <select id="sort-by" onchange="applyFilters()" class="w-full border border-slate-200 rounded-xl pl-4 pr-11 py-2.5 outline-none focus:border-[#C5A059] text-sm bg-slate-50 text-slate-800 cursor-pointer appearance-none">
+                                <select id="sort-by" onchange="applyFilters()" class="w-full border-2 border-slate-200 rounded-xl pl-4 pr-11 py-2.5 outline-none focus:border-[#C5A059] text-xs md:text-sm bg-slate-50 text-slate-800 cursor-pointer appearance-none font-bold">
                                     <option value="default">Default</option>
                                     <option value="price-low">Price: Low to High</option>
                                     <option value="price-high">Price: High to Low</option>
@@ -396,7 +411,7 @@
                         </div>
 
                         <!-- Apply button (mobile) -->
-                        <button onclick="closeFilterSidebar()" class="lg:hidden w-full bg-[#0F172A] text-white font-bold text-sm py-3.5 rounded-2xl hover:bg-[#D4AF37] transition-all mt-2">
+                        <button onclick="closeFilterSidebar()" class="lg:hidden w-full bg-slate-900 text-white font-extrabold text-sm py-3.5 rounded-2xl hover:bg-[#C5A059] hover:text-slate-950 transition-all mt-2 border border-slate-800">
                             <i class="fa-solid fa-check mr-2"></i> Apply Filters
                         </button>
                     </div>
@@ -415,52 +430,50 @@
                     </div>
                 </div>
 
-                <div class="hidden lg:flex justify-between items-center mb-6">
-                    <p class="text-slate-400 text-sm font-medium"><span id="results-count" class="text-slate-900 font-bold text-lg">â€”</span> properties matching</p>
-                    <button id="toggle-map-btn" onclick="toggleMapMode()" class="bg-white border border-slate-200 text-slate-800 text-xs font-bold px-4 py-2 rounded-xl shadow-sm hover:border-[#D4AF37] hover:text-[#D4AF37] transition-all flex items-center gap-2">
-                        <i class="fa-solid fa-map-location-dot"></i> <span id="toggle-map-text">Show Map</span>
+                <div class="hidden lg:flex justify-between items-center mb-6 pb-2 border-b border-slate-100">
+                    <p class="text-slate-500 text-sm font-semibold"><span id="results-count" class="text-slate-900 font-extrabold text-lg">0</span> properties matching</p>
+                    <button id="toggle-map-btn" onclick="toggleMapMode()" class="bg-white border-2 border-slate-200 text-slate-800 text-xs font-extrabold px-4 py-2 rounded-xl shadow-sm hover:border-[#C5A059] hover:text-[#C5A059] transition-all flex items-center gap-2 cursor-pointer">
+                        <i class="fa-solid fa-map-location-dot text-[#C5A059]"></i> <span id="toggle-map-text">Show Map</span>
                     </button>
                 </div>
 
                 <div id="rooms-layout-wrapper" class="flex gap-6 relative">
                     <div id="rooms-grid-container" class="w-full transition-all duration-300">
-                        <div id="rooms-grid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-2 gap-6" data-animate-group>
+                        <div id="rooms-grid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-2 gap-6 sm:gap-8" data-animate-group>
                             <!-- Skeleton loaders initially -->
-                            <div class="bg-white rounded-[2.5rem] border border-slate-100 p-6 shadow-sm flex flex-col justify-between h-[450px]">
+                            <div class="bg-white rounded-3xl border-2 border-slate-200 p-6 shadow-md flex flex-col justify-between h-[450px]">
                                 <div class="skeleton h-48 w-full rounded-2xl mb-6 animate-pulse"></div>
                                 <div class="skeleton h-6 w-3/4 rounded mb-3 animate-pulse"></div>
                                 <div class="skeleton h-4 w-1/2 rounded mb-6 animate-pulse"></div>
                                 <div class="skeleton h-4 w-full rounded mb-3 animate-pulse"></div>
-                                <div class="skeleton h-4 w-5/6 rounded mb-8 animate-pulse"></div>
-                                <div class="flex justify-between items-center mt-auto flex-row">
-                                    <div class="skeleton h-10 w-24 rounded animate-pulse"></div>
-                                    <div class="skeleton h-10 w-24 rounded animate-pulse"></div>
+                                <div class="flex justify-between items-center mt-auto pt-4 border-t border-slate-100">
+                                    <div class="skeleton h-10 w-24 rounded-xl animate-pulse"></div>
+                                    <div class="skeleton h-10 w-24 rounded-xl animate-pulse"></div>
                                 </div>
                             </div>
-                            <div class="bg-white rounded-[2.5rem] border border-slate-100 p-6 shadow-sm flex flex-col justify-between h-[450px]">
+                            <div class="bg-white rounded-3xl border-2 border-slate-200 p-6 shadow-md flex flex-col justify-between h-[450px]">
                                 <div class="skeleton h-48 w-full rounded-2xl mb-6 animate-pulse"></div>
                                 <div class="skeleton h-6 w-3/4 rounded mb-3 animate-pulse"></div>
                                 <div class="skeleton h-4 w-1/2 rounded mb-6 animate-pulse"></div>
                                 <div class="skeleton h-4 w-full rounded mb-3 animate-pulse"></div>
-                                <div class="skeleton h-4 w-5/6 rounded mb-8 animate-pulse"></div>
-                                <div class="flex justify-between items-center mt-auto flex-row">
-                                    <div class="skeleton h-10 w-24 rounded animate-pulse"></div>
-                                    <div class="skeleton h-10 w-24 rounded animate-pulse"></div>
+                                <div class="flex justify-between items-center mt-auto pt-4 border-t border-slate-100">
+                                    <div class="skeleton h-10 w-24 rounded-xl animate-pulse"></div>
+                                    <div class="skeleton h-10 w-24 rounded-xl animate-pulse"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     
-                    <div id="rooms-map-container" class="w-0 opacity-0 overflow-hidden transition-all duration-300 rounded-3xl sticky top-24 h-[calc(100vh-120px)] border border-slate-200 shadow-inner z-10 hidden lg:block">
+                    <div id="rooms-map-container" class="w-0 opacity-0 overflow-hidden transition-all duration-300 rounded-3xl sticky top-24 h-[calc(100vh-120px)] border-2 border-slate-200 shadow-inner z-10 hidden lg:block">
                         <div id="rooms-map" class="w-full h-full"></div>
                     </div>
                 </div>
 
-                <div id="no-rooms-fallback" class="hidden text-center py-20 bg-white border border-slate-100 rounded-3xl shadow-sm" data-animate="fade-in">
-                    <i class="fa-solid fa-building text-4xl text-slate-200 mb-4 block"></i>
-                    <h3 class="text-lg font-bold outfit text-slate-900 mb-1">No Properties Found</h3>
-                    <p class="text-slate-400 text-xs mb-4">Try adjusting your filters or keyword query.</p>
-                    <button onclick="clearFilters()" class="text-xs font-bold text-[#D4AF37] border border-[#D4AF37] px-4 py-2 rounded-xl hover:bg-[#D4AF37] hover:text-white transition-all">Clear Filters</button>
+                <div id="no-rooms-fallback" class="hidden text-center py-20 bg-white border-2 border-slate-200 rounded-3xl shadow-sm" data-animate="fade-in">
+                    <i class="fa-solid fa-building text-4xl text-slate-300 mb-4 block"></i>
+                    <h3 class="text-lg font-extrabold outfit text-slate-900 mb-1">No Properties Found</h3>
+                    <p class="text-slate-500 text-xs mb-4">Try adjusting your filters or keyword query.</p>
+                    <button onclick="clearFilters()" class="text-xs font-bold text-slate-950 bg-[#C5A059] border border-amber-300 px-5 py-2.5 rounded-xl hover:bg-[#D4AF37] transition-all shadow-md">Clear Filters</button>
                 </div>
                 
                 <!-- Pagination Controls -->
@@ -473,49 +486,49 @@
     </section>
 
     <!-- Plain HTML Table for Search Crawlers & Generative Engines (AIEO) -->
-    <section class="max-w-7xl mx-auto px-6 mb-16">
-        <div class="bg-white border border-slate-100 rounded-3xl p-8 shadow-sm">
-            <h3 class="text-lg font-extrabold outfit text-slate-950 mb-2">KPH Stay Accommodations & Nightly Rate Guide</h3>
-            <p class="text-xs text-slate-500 mb-6">Standard rate summary for luxury service apartments and resort suites in Islamabad and Nathia Gali.</p>
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 mb-16">
+        <div class="bg-white border-2 border-slate-200 rounded-3xl p-6 sm:p-8 shadow-md">
+            <h3 class="text-xl font-extrabold outfit text-slate-900 mb-2">KPH Stay Accommodations & Nightly Rate Guide</h3>
+            <p class="text-xs text-slate-600 mb-6 font-normal">Standard rate summary for luxury service apartments and resort suites in Islamabad, Murree, and Nathia Gali.</p>
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse text-xs">
                     <thead>
-                        <tr class="border-b border-slate-200 text-slate-400 text-[10px] uppercase font-bold">
-                            <th class="py-3 px-4">Suite Category</th>
-                            <th class="py-3 px-4">Location</th>
-                            <th class="py-3 px-4">Occupancy</th>
-                            <th class="py-3 px-4">Core Amenities</th>
-                            <th class="py-3 px-4">Starting Rate (PKR)</th>
+                        <tr class="border-b-2 border-slate-200 text-slate-700 text-xs uppercase font-extrabold bg-slate-50">
+                            <th class="py-3.5 px-4 rounded-l-xl">Suite Category</th>
+                            <th class="py-3.5 px-4">Location</th>
+                            <th class="py-3.5 px-4">Occupancy</th>
+                            <th class="py-3.5 px-4">Core Amenities</th>
+                            <th class="py-3.5 px-4 rounded-r-xl">Starting Rate (PKR)</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-100 font-medium text-slate-700">
-                        <tr>
-                            <td class="py-3 px-4 font-bold text-slate-900">Executive 1BHK Apartment</td>
-                            <td class="py-3 px-4">Bahria Enclave, Islamabad</td>
-                            <td class="py-3 px-4">2 Guests</td>
-                            <td class="py-3 px-4">Wi-Fi, Kitchen, Housekeeping, Smart TV</td>
-                            <td class="py-3 px-4 font-bold text-emerald-600">PKR 14,000 / night</td>
+                    <tbody class="divide-y divide-slate-200 font-medium text-slate-700">
+                        <tr class="hover:bg-slate-50/50">
+                            <td class="py-3.5 px-4 font-bold text-slate-900">Executive 1BHK Apartment</td>
+                            <td class="py-3.5 px-4">Bahria Enclave, Islamabad</td>
+                            <td class="py-3.5 px-4">2 Guests</td>
+                            <td class="py-3.5 px-4">Wi-Fi, Kitchen, Housekeeping, Smart TV</td>
+                            <td class="py-3.5 px-4 font-extrabold text-emerald-700">PKR 14,000 / night</td>
                         </tr>
-                        <tr>
-                            <td class="py-3 px-4 font-bold text-slate-900">Luxury 2BHK Family Suite</td>
-                            <td class="py-3 px-4">Bahria Enclave, Islamabad</td>
-                            <td class="py-3 px-4">4 Guests</td>
-                            <td class="py-3 px-4">2 Bedrooms, Kitchen, Parking, 24/7 Security</td>
-                            <td class="py-3 px-4 font-bold text-emerald-600">PKR 24,000 / night</td>
+                        <tr class="hover:bg-slate-50/50">
+                            <td class="py-3.5 px-4 font-bold text-slate-900">Luxury 2BHK Family Suite</td>
+                            <td class="py-3.5 px-4">Bahria Enclave, Islamabad</td>
+                            <td class="py-3.5 px-4">4 Guests</td>
+                            <td class="py-3.5 px-4">2 Bedrooms, Kitchen, Parking, 24/7 Security</td>
+                            <td class="py-3.5 px-4 font-extrabold text-emerald-700">PKR 24,000 / night</td>
                         </tr>
-                        <tr>
-                            <td class="py-3 px-4 font-bold text-slate-900">Mountain View 3BHK Penthouse</td>
-                            <td class="py-3 px-4">Margalla Foothills / Nathia Gali</td>
-                            <td class="py-3 px-4">6 Guests</td>
-                            <td class="py-3 px-4">3 Bathrooms, Terrace View, Spa Access, Kitchen</td>
-                            <td class="py-3 px-4 font-bold text-emerald-600">PKR 42,000 / night</td>
+                        <tr class="hover:bg-slate-50/50">
+                            <td class="py-3.5 px-4 font-bold text-slate-900">Mountain View 3BHK Penthouse</td>
+                            <td class="py-3.5 px-4">Margalla Foothills / Nathia Gali</td>
+                            <td class="py-3.5 px-4">6 Guests</td>
+                            <td class="py-3.5 px-4">3 Bathrooms, Terrace View, Spa Access, Kitchen</td>
+                            <td class="py-3.5 px-4 font-extrabold text-emerald-700">PKR 42,000 / night</td>
                         </tr>
-                        <tr>
-                            <td class="py-3 px-4 font-bold text-slate-900">Deluxe Studio Apartment</td>
-                            <td class="py-3 px-4">Islamabad Sector C</td>
-                            <td class="py-3 px-4">2 Guests</td>
-                            <td class="py-3 px-4">King Bed, High-Speed Wi-Fi, Kitchenette</td>
-                            <td class="py-3 px-4 font-bold text-emerald-600">PKR 11,500 / night</td>
+                        <tr class="hover:bg-slate-50/50">
+                            <td class="py-3.5 px-4 font-bold text-slate-900">Deluxe Studio Apartment</td>
+                            <td class="py-3.5 px-4">Islamabad Sector C</td>
+                            <td class="py-3.5 px-4">2 Guests</td>
+                            <td class="py-3.5 px-4">King Bed, High-Speed Wi-Fi, Kitchenette</td>
+                            <td class="py-3.5 px-4 font-extrabold text-emerald-700">PKR 11,500 / night</td>
                         </tr>
                     </tbody>
                 </table>
@@ -523,10 +536,9 @@
         </div>
     </section>
 
-
     <!-- Suite Details Modal -->
     <div id="details-modal" class="fixed inset-0 bg-[#0F172A]/70 z-[100] flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
-        <div class="bg-white rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl relative border border-slate-100 transform scale-95 transition-transform duration-300">
+        <div class="bg-white rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl relative border-2 border-slate-200 transform scale-95 transition-transform duration-300">
             <button onclick="closeDetailsModal()" class="absolute top-4 right-4 bg-slate-900/60 backdrop-blur-md text-white w-8 h-8 rounded-full flex items-center justify-center hover:bg-slate-900 z-10">
                 <i class="fa-solid fa-times"></i>
             </button>
@@ -536,88 +548,101 @@
         </div>
     </div>
 
-
-
     <!-- Booking Promise Strip -->
-    <section class="py-16 px-6 md:px-12 bg-[#0F172A] border-t border-slate-800">
-        <div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center text-white">
-            <div>
-                <div class="w-12 h-12 bg-[#D4AF37]/10 text-[#D4AF37] rounded-2xl flex items-center justify-center mx-auto mb-3">
+    <section class="py-16 px-4 sm:px-6 md:px-12 bg-[#0F172A] border-t-2 border-slate-800 text-white">
+        <div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 text-center">
+            <div class="p-6 bg-slate-800/80 border-2 border-slate-700/80 rounded-3xl shadow-lg">
+                <div class="w-12 h-12 bg-amber-500/20 border border-amber-400/30 text-[#FFDF9E] rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-sm">
                     <i class="fa-solid fa-calendar-xmark text-lg"></i>
                 </div>
-                <h4 class="font-bold text-sm outfit mb-1">Free Cancellation</h4>
-                <p class="text-slate-400 text-xs font-light">Cancel up to 48 hours before check-in at no charge</p>
+                <h4 class="font-bold text-base outfit text-white mb-1">Free Cancellation</h4>
+                <p class="text-slate-300 text-xs font-normal">Cancel up to 48 hours before check-in at no charge</p>
             </div>
-            <div>
-                <div class="w-12 h-12 bg-[#D4AF37]/10 text-[#D4AF37] rounded-2xl flex items-center justify-center mx-auto mb-3">
+            <div class="p-6 bg-slate-800/80 border-2 border-slate-700/80 rounded-3xl shadow-lg">
+                <div class="w-12 h-12 bg-amber-500/20 border border-amber-400/30 text-[#FFDF9E] rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-sm">
                     <i class="fa-solid fa-shield-check text-lg"></i>
                 </div>
-                <h4 class="font-bold text-sm outfit mb-1">Best Rate Guarantee</h4>
-                <p class="text-slate-400 text-xs font-light">Lowest prices when you book direct on kphstay.com</p>
+                <h4 class="font-bold text-base outfit text-white mb-1">Best Rate Guarantee</h4>
+                <p class="text-slate-300 text-xs font-normal">Lowest prices when you book direct on kphstay.com</p>
             </div>
-            <div>
-                <div class="w-12 h-12 bg-[#D4AF37]/10 text-[#D4AF37] rounded-2xl flex items-center justify-center mx-auto mb-3">
+            <div class="p-6 bg-slate-800/80 border-2 border-slate-700/80 rounded-3xl shadow-lg">
+                <div class="w-12 h-12 bg-amber-500/20 border border-amber-400/30 text-[#FFDF9E] rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-sm">
                     <i class="fa-solid fa-bolt text-lg"></i>
                 </div>
-                <h4 class="font-bold text-sm outfit mb-1">Instant Confirmation</h4>
-                <p class="text-slate-400 text-xs font-light">Receive your booking slip via email immediately</p>
+                <h4 class="font-bold text-base outfit text-white mb-1">Instant Confirmation</h4>
+                <p class="text-slate-300 text-xs font-normal">Receive your booking slip via email immediately</p>
             </div>
-            <div>
-                <div class="w-12 h-12 bg-[#D4AF37]/10 text-[#D4AF37] rounded-2xl flex items-center justify-center mx-auto mb-3">
+            <div class="p-6 bg-slate-800/80 border-2 border-slate-700/80 rounded-3xl shadow-lg">
+                <div class="w-12 h-12 bg-amber-500/20 border border-amber-400/30 text-[#FFDF9E] rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-sm">
                     <i class="fa-solid fa-lock text-lg"></i>
                 </div>
-                <h4 class="font-bold text-sm outfit mb-1">Secure Payments</h4>
-                <p class="text-slate-400 text-xs font-light">256-bit encrypted transactions for your protection</p>
+                <h4 class="font-bold text-base outfit text-white mb-1">Secure Payments</h4>
+                <p class="text-slate-300 text-xs font-normal">256-bit encrypted transactions for your protection</p>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="bg-[#0b111e] text-slate-400 pt-20 pb-10 px-6 md:px-12 border-t border-slate-900 mt-24">
+    <footer class="bg-[#0B0F19] text-slate-300 pt-20 pb-10 px-4 sm:px-6 md:px-12 border-t-2 border-slate-800">
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
             <div>
                 <div class="flex items-center gap-3 mb-6 text-white">
-                    <img src="/assets/images/logo.png" alt="KPH Stay Logo" class="h-8 w-auto object-contain">
-                    <span class="text-base font-bold tracking-wider outfit font-semibold">KAGHAN PROPERTIES HOSPITALITY STAY</span>
+                    <img src="/assets/images/logo.png" alt="KPH Stay Logo" class="h-9 w-auto object-contain">
+                    <span class="text-sm sm:text-base font-extrabold tracking-wider outfit text-white">KAGHAN PROPERTIES HOSPITALITY</span>
                 </div>
-                <p class="text-sm leading-relaxed mb-6">
-                    Luxury staying and smart reservation system designed to deliver five-star hospitality directly to your viewport.
+                <p class="text-sm leading-relaxed mb-6 text-slate-300">
+                    A subsidiary of Kaghan Properties Hospitality (KPH) Stay Pvt. Ltd., bringing world-class ultra-luxury hospitality experiences and smart booking infrastructure to Pakistan.
                 </p>
+                <div class="flex items-center gap-3">
+                    <a href="https://wa.me/923340091127" target="_blank" rel="noopener" class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 text-emerald-400 hover:bg-emerald-600 hover:text-white flex items-center justify-center transition-all" aria-label="WhatsApp Support">
+                        <i class="fa-brands fa-whatsapp text-lg"></i>
+                    </a>
+                    <a href="https://facebook.com" target="_blank" rel="noopener" class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 text-blue-400 hover:bg-blue-600 hover:text-white flex items-center justify-center transition-all" aria-label="Facebook">
+                        <i class="fa-brands fa-facebook-f text-base"></i>
+                    </a>
+                    <a href="https://instagram.com" target="_blank" rel="noopener" class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 text-pink-400 hover:bg-pink-600 hover:text-white flex items-center justify-center transition-all" aria-label="Instagram">
+                        <i class="fa-brands fa-instagram text-lg"></i>
+                    </a>
+                </div>
             </div>
             <div>
-                <h4 class="text-white font-bold mb-6 uppercase tracking-wider text-xs outfit">Resort Nav</h4>
+                <h4 class="text-white font-extrabold mb-6 uppercase tracking-wider text-xs outfit">Luxury Stays</h4>
                 <ul class="space-y-3 text-sm">
-                    <li><a href="rooms.html" class="hover:text-[#D4AF37]">Our Suites</a></li>
-                    <li><a href="blog.html" class="hover:text-[#D4AF37]">Resort Journal</a></li>
-                    <li><a href="blog.html" class="hover:text-[#D4AF37]">Resort Journal</a></li>
-                    <li><a href="contact.html" class="hover:text-[#D4AF37]">Contact Lobby</a></li>
-                    <li><a href="login.html" class="hover:text-[#D4AF37]">Guest Portal</a></li>
+                    <li><a href="/furnished-apartments-islamabad" class="hover:text-[#FFDF9E] transition-colors flex items-center gap-2"><i class="fa-solid fa-chevron-right text-[10px] text-amber-400"></i> Furnished Apartments in Islamabad</a></li>
+                    <li><a href="/furnished-apartments-murree" class="hover:text-[#FFDF9E] transition-colors flex items-center gap-2"><i class="fa-solid fa-chevron-right text-[10px] text-amber-400"></i> Furnished Apartments in Murree</a></li>
+                    <li><a href="/furnished-apartments-nathia-gali" class="hover:text-[#FFDF9E] transition-colors flex items-center gap-2"><i class="fa-solid fa-chevron-right text-[10px] text-amber-400"></i> Furnished Apartments in Nathia Gali</a></li>
+                    <li><a href="/rooms" class="hover:text-[#FFDF9E] transition-colors flex items-center gap-2"><i class="fa-solid fa-chevron-right text-[10px] text-amber-400"></i> All Suites & Chalets</a></li>
+                    <li><a href="/blog" class="hover:text-[#FFDF9E] transition-colors flex items-center gap-2"><i class="fa-solid fa-chevron-right text-[10px] text-amber-400"></i> Travel Journal</a></li>
                 </ul>
             </div>
             <div>
-                <h4 class="text-white font-bold mb-6 uppercase tracking-wider text-xs outfit">Contact Front Desk</h4>
-                <p class="text-xs leading-relaxed mb-4">
+                <h4 class="text-white font-extrabold mb-6 uppercase tracking-wider text-xs outfit">Contact Front Desk</h4>
+                <p class="text-xs leading-relaxed mb-4 text-slate-300">
                     Office 203, 2nd Floor, Asian Arcade, opposite Zoo, C Avenue, Sector C, Bahria Enclave, Islamabad, Pakistan
                 </p>
-                <p class="text-sm text-[#D4AF37] font-bold"><i class="fa-solid fa-phone mr-2"></i>+92 51 8461975</p>
-            </div>
-            <div>
-                <h4 class="text-white font-bold mb-6 uppercase tracking-wider text-xs outfit">Newsletter</h4>
-                <div class="flex mt-3">
-                    <input type="email" placeholder="Email Address" class="bg-slate-900 border-none rounded-l-xl px-4 py-2.5 text-sm w-full outline-none text-white">
-                    <button class="bg-[#D4AF37] text-white px-4 rounded-r-xl hover:bg-white hover:text-slate-900 transition-all font-semibold text-sm">Join</button>
+                <div class="space-y-2">
+                    <p class="text-sm text-[#FFDF9E] font-bold"><i class="fa-solid fa-phone mr-2 text-[#C5A059]"></i>+92 51 8461975</p>
+                    <p class="text-sm text-slate-300 font-medium"><i class="fa-solid fa-envelope mr-2 text-[#C5A059]"></i>info@kphstay.com</p>
                 </div>
             </div>
+            <div>
+                <h4 class="text-white font-extrabold mb-6 uppercase tracking-wider text-xs outfit">Stay Updated</h4>
+                <p class="text-xs text-slate-300 mb-3">Subscribe to receive exclusive seasonal discounts and priority booking access.</p>
+                <form id="footer-newsletter-form" onsubmit="handleNewsletterSubmit(event)" class="flex mt-3">
+                    <input type="email" placeholder="Your email address" required class="bg-slate-900 border border-slate-700 rounded-l-xl px-4 py-3 text-sm w-full outline-none text-white focus:border-[#C5A059] placeholder:text-slate-500">
+                    <button type="submit" class="bg-[#C5A059] hover:bg-[#D4AF37] text-slate-950 px-5 rounded-r-xl transition-all font-extrabold text-sm border border-[#C5A059]">Join</button>
+                </form>
+            </div>
         </div>
-        <div class="max-w-7xl mx-auto pt-8 border-t border-slate-900 flex flex-col md:flex-row justify-between items-center gap-4 text-xs">
+        <div class="max-w-7xl mx-auto pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-400">
             <p>&copy; 2026 Kaghan Properties Hospitality Stay (kphstay.com). All Rights Reserved. SECP Registered.</p>
             <div class="flex flex-wrap gap-x-6 gap-y-2">
-                <a href="pricing.html" class="hover:text-[#D4AF37]">Pricing Policy</a>
-                <a href="privacy.html" class="hover:text-[#D4AF37]">Privacy Policy</a>
-                <a href="terms.html" class="hover:text-[#D4AF37]">Terms of Stay</a>
-                <a href="refund.html" class="hover:text-[#D4AF37]">Refund Policy</a>
-                <a href="cookies.html" class="hover:text-[#D4AF37]">Cookie Policy</a>
-                <a href="contact.html" class="hover:text-[#D4AF37]">Contact</a>
+                <a href="/pricing" class="hover:text-[#FFDF9E] transition-colors">Pricing Policy</a>
+                <a href="/privacy" class="hover:text-[#FFDF9E] transition-colors">Privacy Policy</a>
+                <a href="/terms" class="hover:text-[#FFDF9E] transition-colors">Terms of Stay</a>
+                <a href="/refund" class="hover:text-[#FFDF9E] transition-colors">Refund Policy</a>
+                <a href="/cookies" class="hover:text-[#FFDF9E] transition-colors">Cookie Policy</a>
+                <a href="/contact" class="hover:text-[#FFDF9E] transition-colors">Contact</a>
             </div>
         </div>
     </footer>
@@ -628,10 +653,11 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.9/dist/purify.min.js"></script>
-    <script src="/assets/js/shared.js?v=5"></script>
+    <script src="/assets/js/shared.js?v=6"></script>
     <script src="/assets/js/search-widget.js?v=2"></script>
     <script src="/assets/js/users.js"></script>
     <script src="/assets/js/rooms.js"></script>
     <script src="/assets/js/newsletter.js"></script>
 </body>
+</html></body>
 </html>

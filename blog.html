@@ -185,11 +185,11 @@
         <div id="blog-list-view" class="space-y-12">
             
             <!-- Category Filter Row -->
-            <div class="flex gap-3 overflow-x-auto pb-4 justify-start md:justify-center border-b border-slate-200/60">
-                <button onclick="filterCategory('all')" id="cat-btn-all" class="px-5 py-2.5 rounded-full text-xs font-bold bg-[#0F172A] text-white shadow-md transition-all whitespace-nowrap">All Resort Articles</button>
-                <button onclick="filterCategory('Resort Updates')" id="cat-btn-Resort Updates" class="px-5 py-2.5 rounded-full text-xs font-bold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition-all whitespace-nowrap">Resort Updates</button>
-                <button onclick="filterCategory('Pine Valley Guide')" id="cat-btn-Pine Valley Guide" class="px-5 py-2.5 rounded-full text-xs font-bold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition-all whitespace-nowrap">Pine Valley Guide</button>
-                <button onclick="filterCategory('Stay Offers')" id="cat-btn-Stay Offers" class="px-5 py-2.5 rounded-full text-xs font-bold bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition-all whitespace-nowrap">Stay Offers</button>
+            <div class="flex gap-3 overflow-x-auto pb-4 justify-start md:justify-center border-b-2 border-slate-200">
+                <button onclick="filterCategory('all')" id="cat-btn-all" class="px-5 py-2.5 rounded-xl text-xs font-bold bg-slate-900 text-white border-2 border-slate-900 shadow-md transition-all whitespace-nowrap">All Resort Articles</button>
+                <button onclick="filterCategory('Resort Updates')" id="cat-btn-Resort Updates" class="px-5 py-2.5 rounded-xl text-xs font-bold bg-white border-2 border-slate-200 text-slate-800 hover:border-[#C5A059] transition-all whitespace-nowrap">Resort Updates</button>
+                <button onclick="filterCategory('Pine Valley Guide')" id="cat-btn-Pine Valley Guide" class="px-5 py-2.5 rounded-xl text-xs font-bold bg-white border-2 border-slate-200 text-slate-800 hover:border-[#C5A059] transition-all whitespace-nowrap">Pine Valley Guide</button>
+                <button onclick="filterCategory('Stay Offers')" id="cat-btn-Stay Offers" class="px-5 py-2.5 rounded-xl text-xs font-bold bg-white border-2 border-slate-200 text-slate-800 hover:border-[#C5A059] transition-all whitespace-nowrap">Stay Offers</button>
             </div>
 
             <!-- Blog Grid -->
@@ -201,29 +201,29 @@
         </div>
 
         <!-- View 2: Full Article Reader (Hidden by default) -->
-        <div id="blog-reader-view" class="hidden max-w-4xl mx-auto bg-white border border-slate-100 rounded-[3rem] shadow-xl overflow-hidden p-6 md:p-12 relative">
-            <button onclick="closeReader()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-900 transition-colors text-xl w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center">
+        <div id="blog-reader-view" class="hidden max-w-4xl mx-auto bg-white border-2 border-slate-200 rounded-2xl shadow-xl overflow-hidden p-6 md:p-12 relative">
+            <button onclick="closeReader()" class="absolute top-6 right-6 text-slate-700 hover:text-slate-900 transition-colors text-xl w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center border border-slate-200">
                 <i class="fa-solid fa-arrow-left text-sm"></i>
             </button>
 
             <!-- Metadata -->
             <div class="space-y-4 mb-8">
-                <span id="read-cat" class="bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/25 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider inline-block">Category</span>
-                <h2 id="read-title" class="text-3xl md:text-5xl font-extrabold outfit text-slate-950 leading-tight">Article Title</h2>
-                <div class="flex items-center gap-4 text-xs text-slate-400 font-semibold pt-2">
-                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-user text-[#D4AF37]"></i> <span id="read-author">Author</span></span>
-                    <span class="h-3 w-px bg-slate-200"></span>
-                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-calendar text-[#D4AF37]"></i> <span id="read-date">Date</span></span>
+                <span id="read-cat" class="bg-amber-50 text-amber-900 border border-amber-200 px-3.5 py-1 rounded-xl text-[10px] font-extrabold uppercase tracking-wider inline-block">Category</span>
+                <h2 id="read-title" class="text-3xl md:text-5xl font-extrabold outfit text-slate-900 leading-tight">Article Title</h2>
+                <div class="flex items-center gap-4 text-xs text-slate-600 font-bold pt-2">
+                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-user text-[#B8860B]"></i> <span id="read-author">Author</span></span>
+                    <span class="h-3 w-px bg-slate-300"></span>
+                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-calendar text-[#B8860B]"></i> <span id="read-date">Date</span></span>
                 </div>
             </div>
 
             <!-- Featured Image -->
-            <div class="h-[450px] rounded-3xl overflow-hidden mb-8 border border-slate-100">
+            <div class="h-[450px] rounded-2xl overflow-hidden mb-8 border-2 border-slate-200">
                 <img id="read-image" src="" alt="Featured Art" class="w-full h-full object-cover">
             </div>
 
             <!-- Main Rich text Content -->
-            <article id="read-content" class="text-slate-700 text-sm leading-relaxed space-y-6 prose max-w-none">
+            <article id="read-content" class="text-slate-800 text-sm md:text-base leading-relaxed space-y-6 prose max-w-none font-normal">
                 <!-- Loaded dynamically -->
             </article>
         </div>
@@ -231,21 +231,20 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-[#0F172A] text-slate-400 pt-16 pb-12 px-6 md:px-12 border-t border-white/10 mt-auto">
+    <footer class="bg-[#0B0F19] text-slate-400 pt-16 pb-12 px-6 md:px-12 border-t border-white/10 mt-auto">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
             <div class="flex items-center gap-3">
                 <img src="/assets/images/logo.png" alt="Logo" class="h-8 w-auto object-contain" onerror="this.src='/assets/images/logo.png'">
-                <span class="text-xs uppercase font-extrabold tracking-widest text-[#D4AF37]">Kaghan Hotel & Resorts</span>
+                <span class="text-xs uppercase font-extrabold tracking-widest text-[#C5A059]">KPH Stay &bull; Hospitality</span>
             </div>
-            <div class="flex flex-wrap gap-x-6 gap-y-2 text-xs justify-center">
-                <a href="pricing.html" class="hover:text-[#D4AF37]">Pricing Policy</a>
-                <a href="privacy.html" class="hover:text-[#D4AF37]">Privacy Policy</a>
-                <a href="terms.html" class="hover:text-[#D4AF37]">Terms of Stay</a>
-                <a href="refund.html" class="hover:text-[#D4AF37]">Refund Policy</a>
-                <a href="cookies.html" class="hover:text-[#D4AF37]">Cookie Policy</a>
-                <a href="contact.html" class="hover:text-[#D4AF37]">Contact</a>
+            <div class="flex flex-wrap gap-x-6 gap-y-2 text-xs justify-center font-semibold">
+                <a href="/pricing" class="hover:text-[#C5A059]">Pricing Policy</a>
+                <a href="/privacy" class="hover:text-[#C5A059]">Privacy Policy</a>
+                <a href="/terms" class="hover:text-[#C5A059]">Terms of Stay</a>
+                <a href="/refund" class="hover:text-[#C5A059]">Refund Policy</a>
+                <a href="/contact" class="hover:text-[#C5A059]">Contact</a>
             </div>
-            <p class="text-xs">&copy; 2026 Kaghan Resorts. All rights reserved.</p>
+            <p class="text-xs">&copy; 2026 KPH Stay. All rights reserved.</p>
         </div>
     </footer>
 
@@ -254,7 +253,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <!-- shared DB script -->
-    <script src="/assets/js/shared.js?v=5"></script>
+    <script src="/assets/js/shared.js?v=6"></script>
 
     <!-- Blog Controller Logic -->
     <script>
@@ -278,7 +277,7 @@
                 checkHashRoute();
             } catch(e) {
                 console.error("Fail to load blog engine:", e);
-                document.getElementById('blog-grid').innerHTML = `<div class="col-span-3 text-center text-rose-500 py-12">Failed to load articles from database.</div>`;
+                document.getElementById('blog-grid').innerHTML = `<div class="col-span-3 text-center text-rose-500 py-12 font-bold">Failed to load articles from database.</div>`;
             }
         }
 
@@ -288,8 +287,8 @@
                 {
                     title: "Pine Valley Hiking Trails: Exploring Margalla Foothills",
                     slug: "pine-valley-hiking-trails-islamabad",
-                    excerpt: "A hiker's roadmap detailing secret paths, flora, and sunrise spots adjacent to Kaghan Resorts Islamabad.",
-                    content: `<p>Located in the scenic foothills of Islamabad, Kaghan Resorts offers direct access to some of the most serene, untouched hiking trails in the Margalla region. These trails wind through thick pine clusters, leading to panoramic lookouts of the capital valley.</p>
+                    excerpt: "A hiker's roadmap detailing secret paths, flora, and sunrise spots adjacent to KPH Stay Islamabad.",
+                    content: `<p>Located in the scenic foothills of Islamabad, KPH Stay offers direct access to some of the most serene, untouched hiking trails in the Margalla region. These trails wind through thick pine clusters, leading to panoramic lookouts of the capital valley.</p>
                                <p>Our favorite trail—Trail 3B—starts just 5 minutes from the resort lobby. It takes hikers on a moderate 45-minute climb, leading to Pinecrest Ridge. Sunrise from this point is breathtaking, offering panoramic views of Rawal Lake and the city skyline in a fresh, mist-covered alpine landscape.</p>
                               <p>Our concierge desks provides complimentary hiking kits, including map layouts, local safety guidelines, water bottles, and walking sticks. Ensure you wear sturdy footwear and head out early to experience the raw morning tranquility.</p>`,
                     author: "Resort Concierge",
@@ -301,7 +300,7 @@
                     title: "Luxury Retreat Packages: Golden Hours Spa Launch",
                     slug: "spa-retreat-launch-kaghan-resorts",
                     excerpt: "Indulge in absolute alpine relaxation. Discover our newly launched hot-stone sauna and Swedish massage treatments.",
-                    content: `<p>Kaghan Resorts is proud to launch its Golden Hours Wellness Spa, a dedicated sanctuary featuring Swedish therapy, hot-stone saunas, and organic pine oil aromatherapy.</p>
+                    content: `<p>KPH Stay is proud to launch its Golden Hours Wellness Spa, a dedicated sanctuary featuring Swedish therapy, hot-stone saunas, and organic pine oil aromatherapy.</p>
                               <p>Designed to heal mind and body, our wellness packages cater to weekend stays and corporate travelers. Guests staying in Executive and Presidential Suites receive complimentary 30-minute relaxation coupons upon checking in.</p>
                               <p>Enjoy panoramic glass walls overlooking the mountain forests while getting custom therapies from our professional spa technicians. Book your slots in advance during peak season.</p>`,
                     author: "Resort Manager",
@@ -321,7 +320,7 @@
             filteredBlogs = allBlogs.filter(b => activeCategory === 'all' || b.category === activeCategory);
 
             if (filteredBlogs.length === 0) {
-                grid.innerHTML = `<div class="col-span-3 text-center text-slate-500 py-12">No resort updates published under this category yet.</div>`;
+                grid.innerHTML = `<div class="col-span-3 text-center text-slate-600 py-12 font-medium">No resort updates published under this category yet.</div>`;
                 const pagContainer = document.getElementById('blog-pagination');
                 if (pagContainer) pagContainer.classList.add('hidden');
                 return;
@@ -341,23 +340,23 @@
                 const categoryName = b.category || 'Travel Guide';
 
                 return `
-                    <div class="bg-white rounded-[2.5rem] border border-slate-100 overflow-hidden shadow-sm hover-lift hover:border-[#D4AF37] transition-all flex flex-col justify-between">
-                        <div class="h-56 overflow-hidden relative bg-slate-100">
+                    <div class="bg-white rounded-2xl border-2 border-slate-200 overflow-hidden shadow-md hover:border-[#C5A059] hover:shadow-xl transition-all flex flex-col justify-between group">
+                        <div class="h-56 overflow-hidden relative bg-slate-900 border-b border-slate-200">
                             <a href="${articleUrl}">
-                                <img src="${img}" alt="${KaghanSafe.escapeHTML(b.title)}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" onerror="this.src='/assets/images/logo.png'">
+                                <img src="${img}" alt="${KaghanSafe.escapeHTML(b.title)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='/assets/images/logo.png'">
                             </a>
-                            <span class="absolute top-4 left-4 bg-slate-900 text-white text-[9px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">${KaghanSafe.escapeHTML(categoryName)}</span>
+                            <span class="absolute top-4 left-4 bg-slate-900/90 text-white text-[10px] font-extrabold px-3 py-1 rounded-xl uppercase tracking-wider border border-slate-700">${KaghanSafe.escapeHTML(categoryName)}</span>
                         </div>
-                        <div class="p-8 flex-grow flex flex-col justify-between">
+                        <div class="p-6 flex-grow flex flex-col justify-between">
                             <div>
                                 <a href="${articleUrl}">
-                                    <h4 class="text-lg font-bold outfit text-slate-900 mb-3 leading-snug hover:text-[#D4AF37] transition-colors">${KaghanSafe.escapeHTML(b.title)}</h4>
+                                    <h4 class="text-lg font-bold outfit text-slate-900 mb-2 leading-snug group-hover:text-[#B8860B] transition-colors">${KaghanSafe.escapeHTML(b.title)}</h4>
                                 </a>
-                                <p class="text-slate-500 text-xs leading-relaxed mb-6 line-clamp-3">${KaghanSafe.escapeHTML(b.excerpt)}</p>
+                                <p class="text-slate-700 text-xs leading-relaxed mb-6 line-clamp-3 font-normal">${KaghanSafe.escapeHTML(b.excerpt)}</p>
                             </div>
-                            <div class="pt-4 border-t border-slate-50 flex justify-between items-center text-[10px] font-semibold text-slate-400">
+                            <div class="pt-4 border-t-2 border-slate-100 flex justify-between items-center text-[10px] font-bold text-slate-600">
                                 <span>BY ${KaghanSafe.escapeHTML(authorName)}</span>
-                                <a href="${articleUrl}" class="text-[#D4AF37] font-bold uppercase tracking-wider hover:underline flex items-center gap-1.5">Read Post <i class="fa-solid fa-arrow-right text-[8px]"></i></a>
+                                <a href="${articleUrl}" class="text-[#B8860B] font-extrabold uppercase tracking-wider hover:underline flex items-center gap-1.5">Read Post <i class="fa-solid fa-arrow-right text-[8px]"></i></a>
                             </div>
                         </div>
                     </div>

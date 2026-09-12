@@ -12,7 +12,7 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
-    <title>Administrator Console | KPH Stay</title>
+    <title>Administrator Console | Kaghan Stay</title>
     <meta name="robots" content="noindex, nofollow">
     <link rel="manifest" href="/manifest.json">
     <link rel="icon" type="image/png" href="/assets/images/logo.png">
@@ -55,7 +55,7 @@
             min-height: 56px !important;
             max-height: 56px !important;
             background: #ffffff !important;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 2px solid #e2e8f0;
             box-shadow: 0 1px 4px rgba(15,23,42,0.06);
             display: flex !important;
             align-items: center !important;
@@ -73,7 +73,7 @@
             bottom: 0;
             width: 256px;
             background: #0B0F19;
-            border-right: 1px solid #1e293b;
+            border-right: 2px solid #1e293b;
             color: #fff;
             display: flex;
             flex-direction: column;
@@ -104,21 +104,21 @@
 
         /* Sidebar active state */
         .sidebar-active {
-            color: #D4AF37 !important;
-            background: linear-gradient(135deg, rgba(212,175,55,0.1) 0%, rgba(212,175,55,0.04) 100%) !important;
-            border-left: 3px solid #D4AF37 !important;
+            color: #C5A059 !important;
+            background: linear-gradient(135deg, rgba(197,160,89,0.15) 0%, rgba(197,160,89,0.05) 100%) !important;
+            border-left: 3px solid #C5A059 !important;
         }
 
         /* FullCalendar Luxury & Mobile Styling */
         .fc {
-            --fc-border-color: #f1f5f9;
+            --fc-border-color: #e2e8f0;
             --fc-button-bg-color: #0f172a;
             --fc-button-border-color: #0f172a;
-            --fc-button-hover-bg-color: #D4AF37;
-            --fc-button-hover-border-color: #D4AF37;
-            --fc-button-active-bg-color: #D4AF37;
-            --fc-button-active-border-color: #D4AF37;
-            --fc-today-bg-color: rgba(212, 175, 55, 0.06);
+            --fc-button-hover-bg-color: #C5A059;
+            --fc-button-hover-border-color: #C5A059;
+            --fc-button-active-bg-color: #C5A059;
+            --fc-button-active-border-color: #C5A059;
+            --fc-today-bg-color: rgba(197, 160, 89, 0.08);
             --fc-page-bg-color: #ffffff;
             font-family: 'Inter', sans-serif;
         }
@@ -147,7 +147,7 @@
         .fc .fc-button-primary:not(:disabled):active {
             background-color: #0f172a !important;
             border-color: #0f172a !important;
-            color: #D4AF37 !important;
+            color: #C5A059 !important;
         }
         .fc-event {
             border-radius: 8px !important;
@@ -197,9 +197,9 @@
             <button onclick="toggleSidebar()" id="admin-menu-btn" class="md:hidden" style="display:flex;align-items:center;justify-content:center;width:36px;height:36px;border:none;background:transparent;cursor:pointer;border-radius:10px;color:#475569" aria-label="Menu">
                 <i class="fa-solid fa-bars" style="font-size:16px"></i>
             </button>
-            <img src="../assets/images/logo.png" alt="KPH Stay" style="height:28px;width:auto;object-fit:contain;flex-shrink:0">
+            <img src="../assets/images/logo.png" alt="Kaghan Stay" style="height:28px;width:auto;object-fit:contain;flex-shrink:0">
             <div class="hidden sm:flex" style="flex-direction:column;line-height:1">
-                <span style="font-size:9px;text-transform:uppercase;font-weight:800;letter-spacing:0.18em;color:#D4AF37">Hotel Management</span>
+                <span style="font-size:9px;text-transform:uppercase;font-weight:800;letter-spacing:0.18em;color:#C5A059">Hotel Management</span>
                 <span style="font-size:14px;font-weight:700;color:#0f172a;letter-spacing:-0.01em">Admin Console</span>
             </div>
             <!-- Mobile: current tab label -->
@@ -228,10 +228,10 @@
             <!-- Branding -->
             <div class="p-6 border-b border-slate-800 flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                    <img src="../assets/images/logo.png" alt="KPH Stay Logo" class="h-10 w-auto object-contain">
+                    <img src="../assets/images/logo.png" alt="Kaghan Stay Logo" class="h-10 w-auto object-contain">
                     <div class="flex flex-col">
-                        <span class="text-base font-bold tracking-wider uppercase outfit leading-none">KPH</span>
-                        <span class="text-[10px] text-[#D4AF37] tracking-[0.2em] uppercase font-semibold">Stay</span>
+                        <span class="text-base font-bold tracking-wider uppercase outfit leading-none text-white">Kaghan</span>
+                        <span class="text-[10px] text-[#C5A059] tracking-[0.2em] uppercase font-bold">Stay</span>
                     </div>
                 </div>
                 <button onclick="toggleSidebar()" class="md:hidden text-slate-400 hover:text-white p-2 rounded-lg transition-colors" aria-label="Close Sidebar">
@@ -777,25 +777,25 @@
 
                 <!-- Executive Summary Ribbon -->
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                    <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Booking Reference</span>
+                    <div class="bg-white rounded-2xl p-5 border-2 border-slate-200 shadow-xs">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Booking Reference</span>
                         <div id="detail-ribbon-id" class="text-base font-black outfit text-slate-900 font-mono">BK-...</div>
-                        <div id="detail-ribbon-source" class="text-[11px] text-slate-500 font-medium mt-0.5">KPHStay.com</div>
+                        <div id="detail-ribbon-source" class="text-[11px] text-slate-600 font-semibold mt-0.5">kaghanstay.com</div>
                     </div>
-                    <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Stay Duration</span>
+                    <div class="bg-white rounded-2xl p-5 border-2 border-slate-200 shadow-xs">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Stay Duration</span>
                         <div id="detail-ribbon-nights" class="text-base font-black outfit text-slate-900">0 Nights</div>
-                        <div id="detail-ribbon-dates" class="text-[11px] text-slate-500 font-medium mt-0.5">Date range</div>
+                        <div id="detail-ribbon-dates" class="text-[11px] text-slate-600 font-semibold mt-0.5">Date range</div>
                     </div>
-                    <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Total Amount</span>
-                        <div id="detail-ribbon-total" class="text-base font-black outfit text-[#D4AF37]">PKR 0</div>
-                        <div id="detail-ribbon-payment-status" class="text-[10px] font-extrabold uppercase mt-0.5 text-emerald-600">PAID</div>
+                    <div class="bg-white rounded-2xl p-5 border-2 border-slate-200 shadow-xs">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Total Amount</span>
+                        <div id="detail-ribbon-total" class="text-base font-black outfit text-[#C5A059]">PKR 0</div>
+                        <div id="detail-ribbon-payment-status" class="text-[10px] font-extrabold uppercase mt-0.5 text-emerald-700">PAID</div>
                     </div>
-                    <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Balance Due</span>
-                        <div id="detail-ribbon-balance" class="text-base font-black outfit text-slate-800">PKR 0</div>
-                        <div id="detail-ribbon-advance" class="text-[11px] text-slate-500 font-medium mt-0.5">Advance: PKR 0</div>
+                    <div class="bg-white rounded-2xl p-5 border-2 border-slate-200 shadow-xs">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Balance Due</span>
+                        <div id="detail-ribbon-balance" class="text-base font-black outfit text-slate-900">PKR 0</div>
+                        <div id="detail-ribbon-advance" class="text-[11px] text-slate-600 font-semibold mt-0.5">Advance: PKR 0</div>
                     </div>
                 </div>
 
@@ -981,36 +981,36 @@
                             </div>
 
                             <!-- Payment Method & Reference Box -->
-                            <div class="bg-slate-50 rounded-2xl p-3.5 border border-slate-200/70 text-[11px] space-y-1.5">
+                            <div class="bg-slate-50 rounded-2xl p-4 border-2 border-slate-200 text-[11px] space-y-1.5">
                                 <div class="flex justify-between">
-                                    <span class="text-slate-400 font-bold uppercase text-[9px]">Payment Method:</span>
-                                    <span id="detail-payment-method" class="font-bold text-slate-800">Cash / Direct Bank</span>
+                                    <span class="text-slate-500 font-bold uppercase text-[9px]">Payment Method:</span>
+                                    <span id="detail-payment-method" class="font-bold text-slate-900">PayFast / Direct Bank</span>
                                 </div>
                                 <div class="flex justify-between">
-                                    <span class="text-slate-400 font-bold uppercase text-[9px]">Transaction Ref:</span>
-                                    <span id="detail-payment-ref" class="font-mono text-slate-700">N/A</span>
+                                    <span class="text-slate-500 font-bold uppercase text-[9px]">Transaction Ref:</span>
+                                    <span id="detail-payment-ref" class="font-mono text-slate-800 font-bold">N/A</span>
                                 </div>
                                 <div class="flex justify-between">
-                                    <span class="text-slate-400 font-bold uppercase text-[9px]">Invoice Number:</span>
-                                    <span id="detail-invoice-no" class="font-mono font-bold text-slate-900">#KPH-INV-...</span>
+                                    <span class="text-slate-500 font-bold uppercase text-[9px]">Invoice Number:</span>
+                                    <span id="detail-invoice-no" class="font-mono font-black text-slate-900">#KS-INV-...</span>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Card: Live Official Invoice Preview -->
-                        <div class="bg-white rounded-3xl p-6 sm:p-7 border border-slate-100 shadow-sm space-y-4">
-                            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                        <div class="bg-white rounded-3xl p-6 sm:p-7 border-2 border-slate-200 shadow-md space-y-4">
+                            <div class="flex items-center justify-between border-b-2 border-slate-200 pb-3">
                                 <div>
                                     <h3 class="text-sm font-bold outfit text-slate-900">Official Invoice Preview</h3>
-                                    <p class="text-[10px] text-slate-400">Live preview of guest voucher &amp; receipt</p>
+                                    <p class="text-[10px] text-slate-500">Live preview of guest voucher &amp; receipt</p>
                                 </div>
-                                <button type="button" onclick="triggerDetailPDFDownload()" class="text-xs text-[#D4AF37] hover:underline font-bold flex items-center gap-1">
+                                <button type="button" onclick="triggerDetailPDFDownload()" class="text-xs text-[#C5A059] hover:underline font-bold flex items-center gap-1">
                                     <i class="fa-solid fa-download"></i> Download PDF
                                 </button>
                             </div>
 
                             <!-- Scaled down invoice container preview -->
-                            <div class="border border-slate-200 rounded-2xl p-2 bg-slate-50/50 max-h-[420px] overflow-y-auto shadow-inner text-left">
+                            <div class="border-2 border-slate-200 rounded-2xl p-2 bg-slate-50/50 max-h-[420px] overflow-y-auto shadow-inner text-left">
                                 <div id="detail-live-invoice-container" class="transform origin-top scale-[0.82] -mb-16">
                                     <!-- Populated dynamically via window.getCleanInvoiceHTML() -->
                                 </div>
@@ -1432,25 +1432,25 @@
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">SEO Title (50-60 chars)</label>
-                                        <input type="text" id="blog-seo-title" placeholder="e.g. Top 5 Nathia Gali Places to Visit | KPH Stay" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                                        <input type="text" id="blog-seo-title" placeholder="e.g. Top 5 Nathia Gali Places to Visit | Kaghan Stay" class="w-full border-2 border-slate-300 rounded-xl px-3 py-2 text-xs bg-white text-slate-900 font-bold outline-none focus:border-[#C5A059]">
                                     </div>
                                     <div>
                                         <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">URL Slug</label>
-                                        <input type="text" id="blog-seo-slug" placeholder="top-5-nathia-gali-places" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                                        <input type="text" id="blog-seo-slug" placeholder="top-5-nathia-gali-places" class="w-full border-2 border-slate-300 rounded-xl px-3 py-2 text-xs bg-white text-slate-900 font-bold outline-none focus:border-[#C5A059]">
                                     </div>
                                 </div>
                                 <div>
                                     <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">SEO Meta Description (140-160 chars)</label>
-                                    <input type="text" id="blog-seo-desc" placeholder="High-converting meta description..." class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                                    <input type="text" id="blog-seo-desc" placeholder="High-converting meta description..." class="w-full border-2 border-slate-300 rounded-xl px-3 py-2 text-xs bg-white text-slate-900 font-bold outline-none focus:border-[#C5A059]">
                                 </div>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Focus & LSI Keywords</label>
-                                        <input type="text" id="blog-seo-keywords" placeholder="nathia gali, luxury travel, kph stay..." class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                                        <input type="text" id="blog-seo-keywords" placeholder="nathia gali, luxury travel, kaghan stay..." class="w-full border-2 border-slate-300 rounded-xl px-3 py-2 text-xs bg-white text-slate-900 font-bold outline-none focus:border-[#C5A059]">
                                     </div>
                                     <div>
                                         <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Search Index Policy</label>
-                                        <select id="blog-seo-index" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                                        <select id="blog-seo-index" class="w-full border-2 border-slate-300 rounded-xl px-3 py-2 text-xs bg-white text-slate-900 font-bold outline-none focus:border-[#C5A059]">
                                             <option value="index, follow">Index, Follow (Recommended)</option>
                                             <option value="noindex, nofollow">Noindex, Nofollow</option>
                                         </select>
@@ -1593,23 +1593,23 @@
                         </div>
 
                         <!-- Google Search Result Box -->
-                        <div class="bg-slate-50/70 border border-slate-200/80 rounded-2xl p-5 max-w-3xl space-y-2">
+                        <div class="bg-slate-50 border-2 border-slate-200 rounded-2xl p-5 max-w-3xl space-y-2">
                             <div class="flex items-center gap-2 text-xs">
-                                <div class="w-6 h-6 rounded-full bg-white border border-slate-200 flex items-center justify-center text-[10px] font-bold text-[#D4AF37]">
-                                    K
+                                <div class="w-6 h-6 rounded-full bg-slate-900 border-2 border-[#C5A059] flex items-center justify-center text-[10px] font-bold text-[#C5A059]">
+                                    KS
                                 </div>
                                 <div>
-                                    <span class="text-slate-900 font-bold block leading-none text-xs">KPH Stay</span>
-                                    <span class="text-slate-500 text-[11px] font-mono leading-none">https://kphstay.com › rooms</span>
+                                    <span class="text-slate-900 font-bold block leading-none text-xs">Kaghan Stay</span>
+                                    <span class="text-slate-600 text-[11px] font-mono leading-none">https://kaghanstay.com › rooms</span>
                                 </div>
                             </div>
-                            <h4 id="serp-preview-title" class="text-blue-800 hover:underline font-medium text-base sm:text-lg cursor-pointer leading-snug">
-                                KPH Stay | Luxury Furnished Apartments in Islamabad, Murree & Nathia Gali
+                            <h4 id="serp-preview-title" class="text-blue-800 hover:underline font-bold text-base sm:text-lg cursor-pointer leading-snug">
+                                Kaghan Stay | Luxury Furnished Apartments in Islamabad, Murree & Nathia Gali
                             </h4>
                             <div id="serp-preview-stars-wrap" class="py-0.5">
                                 <!-- Rendered dynamically -->
                             </div>
-                            <p id="serp-preview-desc" class="text-slate-600 text-xs leading-relaxed">
+                            <p id="serp-preview-desc" class="text-slate-700 text-xs leading-relaxed font-medium">
                                 Book 1BHK to 4BHK luxury furnished apartments in Islamabad, Murree, and Nathia Gali with equipped kitchens, 24/7 concierge, fast Wi-Fi, and generator backup.
                             </p>
                             <div id="serp-preview-faqs-wrap" class="pt-1">
@@ -1619,10 +1619,10 @@
                     </div>
 
                     <!-- Master Schema Types Toggle Grid -->
-                    <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md space-y-4">
+                    <div class="bg-white rounded-3xl border-2 border-slate-200 p-6 md:p-8 shadow-md space-y-4">
                         <div>
                             <h3 class="text-sm font-bold outfit text-slate-900 flex items-center gap-2">
-                                <i class="fa-solid fa-sliders text-[#D4AF37]"></i> Master Schema Rich Result Toggles
+                                <i class="fa-solid fa-sliders text-[#C5A059]"></i> Master Schema Rich Result Toggles
                             </h3>
                             <p class="text-xs text-slate-400">Activate or deactivate individual Schema.org classes dynamically across your site.</p>
                         </div>
@@ -2114,7 +2114,7 @@
                             <div class="space-y-3">
                                 <div>
                                     <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Target URL to Index</label>
-                                    <input type="text" id="gsc-index-url" placeholder="https://kphstay.com/room/presidential-suite" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                                    <input type="text" id="gsc-index-url" placeholder="https://kaghanstay.com/rooms" class="w-full border-2 border-slate-300 rounded-xl px-3 py-2 text-xs bg-white text-slate-900 font-bold outline-none focus:border-[#C5A059]">
                                 </div>
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                     <button onclick="requestGoogleIndexing()" class="w-full bg-slate-900 hover:bg-[#D4AF37] hover:text-slate-950 text-white font-bold py-2.5 rounded-xl transition-all text-xs flex items-center justify-center gap-2 shadow">
@@ -3002,41 +3002,41 @@
             <div id="view-inquiries" class="tab-view hidden space-y-6">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
-                        <span class="text-[#D4AF37] text-xs font-bold uppercase tracking-wider">Website Leads</span>
+                        <span class="text-[#C5A059] text-xs font-bold uppercase tracking-wider">Website Leads</span>
                         <h1 class="text-2xl font-extrabold outfit text-slate-900 mt-0.5">Contact Form Inquiries</h1>
-                        <p class="text-slate-400 text-xs font-light">View and manage messages submitted through the website contact page (info@kphstay.com).</p>
+                        <p class="text-slate-600 text-xs font-medium">View and manage messages submitted through the website contact page (support@kaghanstay.com).</p>
                     </div>
-                    <button onclick="KaghanInquiries.loadInquiries()" class="bg-slate-900 hover:bg-[#D4AF37] hover:text-slate-950 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 self-start sm:self-auto shadow-sm">
+                    <button onclick="KaghanInquiries.loadInquiries()" class="bg-slate-900 hover:bg-[#C5A059] hover:text-slate-950 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 self-start sm:self-auto shadow-md">
                         <i class="fa-solid fa-rotate text-xs"></i> Refresh Inquiries
                     </button>
                 </div>
 
                 <!-- Stats Cards -->
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                    <div class="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-2xl bg-amber-50 text-[#D4AF37] flex items-center justify-center text-lg">
+                    <div class="bg-white rounded-3xl border-2 border-slate-200 p-6 shadow-md flex items-center gap-4 hover:border-[#C5A059] transition-all">
+                        <div class="w-12 h-12 rounded-2xl bg-amber-50 text-[#C5A059] flex items-center justify-center text-lg border-2 border-amber-200">
                             <i class="fa-solid fa-inbox"></i>
                         </div>
                         <div>
-                            <span class="text-xs text-slate-400 font-bold uppercase tracking-wider">Total Received</span>
+                            <span class="text-xs text-slate-500 font-bold uppercase tracking-wider">Total Received</span>
                             <h3 class="text-2xl font-black outfit text-slate-900" id="stat-total-inquiries">0</h3>
                         </div>
                     </div>
-                    <div class="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-500 flex items-center justify-center text-lg">
+                    <div class="bg-white rounded-3xl border-2 border-slate-200 p-6 shadow-md flex items-center gap-4 hover:border-rose-400 transition-all">
+                        <div class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-500 flex items-center justify-center text-lg border-2 border-rose-200">
                             <i class="fa-solid fa-bell"></i>
                         </div>
                         <div>
-                            <span class="text-xs text-slate-400 font-bold uppercase tracking-wider">Unread Messages</span>
+                            <span class="text-xs text-slate-500 font-bold uppercase tracking-wider">Unread Messages</span>
                             <h3 class="text-2xl font-black outfit text-rose-600" id="stat-unread-inquiries">0</h3>
                         </div>
                     </div>
-                    <div class="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg">
+                    <div class="bg-white rounded-3xl border-2 border-slate-200 p-6 shadow-md flex items-center gap-4 hover:border-emerald-400 transition-all">
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg border-2 border-emerald-200">
                             <i class="fa-solid fa-calendar-day"></i>
                         </div>
                         <div>
-                            <span class="text-xs text-slate-400 font-bold uppercase tracking-wider">Received Today</span>
+                            <span class="text-xs text-slate-500 font-bold uppercase tracking-wider">Received Today</span>
                             <h3 class="text-2xl font-black outfit text-slate-900" id="stat-today-inquiries">0</h3>
                         </div>
                     </div>
@@ -3048,12 +3048,12 @@
                 </div>
 
                 <!-- Empty State -->
-                <div id="admin-inquiries-empty" class="hidden bg-white rounded-3xl border border-slate-100 p-16 text-center shadow-sm">
-                    <div class="w-16 h-16 rounded-full bg-slate-50 text-slate-300 flex items-center justify-center text-3xl mx-auto mb-4 border border-slate-100">
+                <div id="admin-inquiries-empty" class="hidden bg-white rounded-3xl border-2 border-slate-200 p-16 text-center shadow-md">
+                    <div class="w-16 h-16 rounded-full bg-slate-50 text-slate-300 flex items-center justify-center text-3xl mx-auto mb-4 border-2 border-slate-200">
                         <i class="fa-solid fa-inbox"></i>
                     </div>
                     <h3 class="font-bold outfit text-slate-800 text-lg mb-1">No Inquiries Found</h3>
-                    <p class="text-xs text-slate-400 max-w-sm mx-auto">When guests submit messages on the contact page, they will appear here and be delivered to info@kphstay.com.</p>
+                    <p class="text-xs text-slate-500 max-w-sm mx-auto">When guests submit messages on the contact page, they will appear here and be delivered to support@kaghanstay.com.</p>
                 </div>
             </div>
 
@@ -3124,8 +3124,8 @@
                         <div>
                             <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Unique Property ID / Unit Code</label>
                             <div class="flex gap-2">
-                                <input type="text" id="edit-room-unit-code" placeholder="e.g. KPH-MUR-6M" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 font-mono font-bold uppercase outline-none focus:border-[#D4AF37]">
-                                <button type="button" onclick="window.autoGenerateUnitCode('edit')" class="px-3 py-2 bg-slate-100 hover:bg-[#D4AF37] hover:text-slate-900 text-slate-700 text-[10px] font-bold rounded-xl transition-all shrink-0" title="Auto-Generate Unit Code">
+                                <input type="text" id="edit-room-unit-code" placeholder="e.g. KS-MUR-6M" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2.5 text-xs bg-white text-slate-900 font-mono font-bold uppercase outline-none focus:border-[#C5A059]">
+                                <button type="button" onclick="window.autoGenerateUnitCode('edit')" class="px-3 py-2 bg-slate-100 hover:bg-[#C5A059] hover:text-slate-900 text-slate-700 text-[10px] font-bold rounded-xl transition-all shrink-0" title="Auto-Generate Unit Code">
                                     <i class="fa-solid fa-wand-magic-sparkles"></i> Auto
                                 </button>
                             </div>
@@ -3311,25 +3311,25 @@
                         </div>
                         <div>
                             <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">SEO Title Override (50 - 60 Chars)</label>
-                            <input type="text" id="edit-room-seo-title" placeholder="e.g. Executive 2BHK Suite in Bahria Enclave | KPH Stay" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                            <input type="text" id="edit-room-seo-title" placeholder="e.g. Executive 2BHK Suite in Bahria Enclave | Kaghan Stay" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2.5 text-xs bg-white text-slate-900 font-bold outline-none focus:border-[#C5A059]">
                         </div>
                         <div>
                             <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">SEO Meta Description (150 - 160 Chars)</label>
-                            <textarea id="edit-room-seo-desc" rows="2" placeholder="e.g. Reserve luxury 2BHK service apartment in Islamabad near Margalla Hills. 24/7 security, fully equipped kitchen, high-speed Wi-Fi, best rate guarantee." class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37] resize-none"></textarea>
+                            <textarea id="edit-room-seo-desc" rows="2" placeholder="e.g. Reserve luxury 2BHK service apartment in Islamabad near Margalla Hills. 24/7 security, fully equipped kitchen, high-speed Wi-Fi, best rate guarantee." class="w-full border-2 border-slate-300 rounded-xl px-4 py-2.5 text-xs bg-white text-slate-900 font-bold outline-none focus:border-[#C5A059] resize-none"></textarea>
                         </div>
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Focus Keywords (comma-separated)</label>
-                                <input type="text" id="edit-room-seo-keywords" placeholder="e.g. luxury apartment, bahria enclave, islamabad stay" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                                <input type="text" id="edit-room-seo-keywords" placeholder="e.g. luxury apartment, bahria enclave, islamabad stay" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2.5 text-xs bg-white text-slate-900 font-bold outline-none focus:border-[#C5A059]">
                             </div>
                             <div>
                                 <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Custom URL Slug</label>
-                                <input type="text" id="edit-room-seo-slug" placeholder="e.g. luxury-2bhk-bahria-enclave-islamabad" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                                <input type="text" id="edit-room-seo-slug" placeholder="e.g. luxury-2bhk-bahria-enclave-islamabad" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2.5 text-xs bg-white text-slate-900 font-bold outline-none focus:border-[#C5A059]">
                             </div>
                         </div>
                         <div>
                             <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Search Engine Index Directive</label>
-                            <select id="edit-room-seo-index" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                            <select id="edit-room-seo-index" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2.5 text-xs bg-white text-slate-900 font-bold outline-none focus:border-[#C5A059]">
                                 <option value="index, follow">index, follow (Allow search engines to rank this page)</option>
                                 <option value="noindex, nofollow">noindex, nofollow (Exclude from search engines)</option>
                             </select>
@@ -3337,12 +3337,12 @@
                     </div>
 
                     <!-- Airbnb & iCal Multi-Channel Calendar Sync Card -->
-                    <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm space-y-4">
+                    <div class="bg-white rounded-3xl p-6 border-2 border-slate-200 shadow-sm space-y-4">
                         <div class="flex items-center justify-between">
-                            <h4 class="text-sm font-bold uppercase tracking-wider text-[#D4AF37] flex items-center gap-2">
-                                <i class="fa-solid fa-arrows-rotate text-[#D4AF37]"></i> Airbnb & iCal 2-Way Calendar Sync
+                            <h4 class="text-sm font-bold uppercase tracking-wider text-[#C5A059] flex items-center gap-2">
+                                <i class="fa-solid fa-arrows-rotate text-[#C5A059]"></i> Airbnb & iCal 2-Way Calendar Sync
                             </h4>
-                            <span class="text-[10px] bg-rose-50 text-rose-700 px-2.5 py-1 rounded-full font-bold border border-rose-200/80 flex items-center gap-1">
+                            <span class="text-[10px] bg-rose-50 text-rose-700 px-2.5 py-1 rounded-full font-bold border-2 border-rose-200 flex items-center gap-1">
                                 <i class="fa-brands fa-airbnb text-rose-500"></i> Airbnb Sync
                             </span>
                         </div>
@@ -3352,20 +3352,20 @@
                                 Airbnb / External iCal Import URL (From Airbnb Listing > Pricing & Availability > Export Calendar)
                             </label>
                             <div class="flex gap-2">
-                                <input type="url" id="edit-room-airbnb-ical" placeholder="https://www.airbnb.com/calendar/ical/12345678.ics?s=abcdef..." class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37] font-mono">
-                                <button type="button" onclick="syncCurrentEditRoomAirbnb()" class="bg-slate-900 hover:bg-[#D4AF37] hover:text-slate-950 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition-all shrink-0 flex items-center gap-1.5" title="Test sync now">
+                                <input type="url" id="edit-room-airbnb-ical" placeholder="https://www.airbnb.com/calendar/ical/12345678.ics?s=abcdef..." class="w-full border-2 border-slate-300 rounded-xl px-4 py-2.5 text-xs bg-white text-slate-900 outline-none focus:border-[#C5A059] font-mono font-bold">
+                                <button type="button" onclick="syncCurrentEditRoomAirbnb()" class="bg-slate-900 hover:bg-[#C5A059] hover:text-slate-950 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition-all shrink-0 flex items-center gap-1.5" title="Test sync now">
                                     <i class="fa-solid fa-arrows-rotate text-xs"></i> Sync Now
                                 </button>
                             </div>
-                            <span class="text-[10px] text-slate-400 block mt-1">Paste your Airbnb calendar export link here to automatically block booked dates on Kaghan Stay.</span>
+                            <span class="text-[10px] text-slate-500 block mt-1">Paste your Airbnb calendar export link here to automatically block booked dates on Kaghan Stay.</span>
                         </div>
 
-                        <div class="pt-3 border-t border-slate-100 space-y-1.5">
+                        <div class="pt-3 border-t-2 border-slate-100 space-y-1.5">
                             <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold">
                                 Kaghan Stay iCal Export Feed URL (Paste this into Airbnb > Import Calendar)
                             </label>
-                            <div class="flex items-center gap-2 p-2 bg-slate-50 rounded-xl border border-slate-200">
-                                <span id="edit-room-ical-export-url" class="text-[11px] font-mono text-slate-600 truncate flex-grow select-all">https://kphstay.com/.netlify/functions/ical-export?roomId=...</span>
+                            <div class="flex items-center gap-2 p-2 bg-slate-50 rounded-xl border-2 border-slate-200">
+                                <span id="edit-room-ical-export-url" class="text-[11px] font-mono text-slate-700 font-bold truncate flex-grow select-all">https://kaghanstay.com/.netlify/functions/ical-export?roomId=...</span>
                                 <button type="button" onclick="copyEditRoomIcalExport()" class="px-3 py-1.5 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg text-xs font-bold text-slate-700 transition-all shrink-0 flex items-center gap-1">
                                     <i class="fa-solid fa-copy text-xs"></i> Copy
                                 </button>
@@ -3424,8 +3424,8 @@
                         <div>
                             <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Unique Property ID / Unit Code (Optional)</label>
                             <div class="flex gap-2">
-                                <input type="text" id="add-room-unit-code" placeholder="e.g. KPH-MUR-6M (Leave blank to auto-generate)" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 font-mono font-bold uppercase outline-none focus:border-[#D4AF37]">
-                                <button type="button" onclick="window.autoGenerateUnitCode('add')" class="px-3 py-2 bg-slate-100 hover:bg-[#D4AF37] hover:text-slate-900 text-slate-700 text-[10px] font-bold rounded-xl transition-all shrink-0" title="Auto-Generate Unit Code">
+                                <input type="text" id="add-room-unit-code" placeholder="e.g. KS-MUR-6M (Leave blank to auto-generate)" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2.5 text-xs bg-white text-slate-900 font-mono font-bold uppercase outline-none focus:border-[#C5A059]">
+                                <button type="button" onclick="window.autoGenerateUnitCode('add')" class="px-3 py-2 bg-slate-100 hover:bg-[#C5A059] hover:text-slate-900 text-slate-700 text-[10px] font-bold rounded-xl transition-all shrink-0" title="Auto-Generate Unit Code">
                                     <i class="fa-solid fa-wand-magic-sparkles"></i> Auto
                                 </button>
                             </div>
@@ -3615,25 +3615,25 @@
                         </div>
                         <div>
                             <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">SEO Title Override (50 - 60 Chars)</label>
-                            <input type="text" id="add-room-seo-title" placeholder="e.g. Executive 2BHK Suite in Bahria Enclave | KPH Stay" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                            <input type="text" id="add-room-seo-title" placeholder="e.g. Executive 2BHK Suite in Bahria Enclave | Kaghan Stay" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2.5 text-xs bg-white text-slate-900 font-bold outline-none focus:border-[#C5A059]">
                         </div>
                         <div>
                             <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">SEO Meta Description (150 - 160 Chars)</label>
-                            <textarea id="add-room-seo-desc" rows="2" placeholder="e.g. Reserve luxury 2BHK service apartment in Islamabad near Margalla Hills. 24/7 security, fully equipped kitchen, high-speed Wi-Fi, best rate guarantee." class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37] resize-none"></textarea>
+                            <textarea id="add-room-seo-desc" rows="2" placeholder="e.g. Reserve luxury 2BHK service apartment in Islamabad near Margalla Hills. 24/7 security, fully equipped kitchen, high-speed Wi-Fi, best rate guarantee." class="w-full border-2 border-slate-300 rounded-xl px-4 py-2.5 text-xs bg-white text-slate-900 font-bold outline-none focus:border-[#C5A059] resize-none"></textarea>
                         </div>
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Focus Keywords (comma-separated)</label>
-                                <input type="text" id="add-room-seo-keywords" placeholder="e.g. luxury apartment, bahria enclave, islamabad stay" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                                <input type="text" id="add-room-seo-keywords" placeholder="e.g. luxury apartment, bahria enclave, islamabad stay" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2.5 text-xs bg-white text-slate-900 font-bold outline-none focus:border-[#C5A059]">
                             </div>
                             <div>
                                 <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Custom URL Slug</label>
-                                <input type="text" id="add-room-seo-slug" placeholder="e.g. luxury-2bhk-bahria-enclave-islamabad" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                                <input type="text" id="add-room-seo-slug" placeholder="e.g. luxury-2bhk-bahria-enclave-islamabad" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2.5 text-xs bg-white text-slate-900 font-bold outline-none focus:border-[#C5A059]">
                             </div>
                         </div>
                         <div>
                             <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Search Engine Index Directive</label>
-                            <select id="add-room-seo-index" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37]">
+                            <select id="add-room-seo-index" class="w-full border-2 border-slate-300 rounded-xl px-4 py-2.5 text-xs bg-white text-slate-900 font-bold outline-none focus:border-[#C5A059]">
                                 <option value="index, follow">index, follow (Allow search engines to rank this page)</option>
                                 <option value="noindex, nofollow">noindex, nofollow (Exclude from search engines)</option>
                             </select>
@@ -3641,12 +3641,12 @@
                     </div>
 
                     <!-- Airbnb & iCal Multi-Channel Calendar Sync Card -->
-                    <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm space-y-4">
+                    <div class="bg-white rounded-3xl p-6 border-2 border-slate-200 shadow-sm space-y-4">
                         <div class="flex items-center justify-between">
-                            <h4 class="text-sm font-bold uppercase tracking-wider text-[#D4AF37] flex items-center gap-2">
-                                <i class="fa-solid fa-arrows-rotate text-[#D4AF37]"></i> Airbnb & iCal 2-Way Calendar Sync
+                            <h4 class="text-sm font-bold uppercase tracking-wider text-[#C5A059] flex items-center gap-2">
+                                <i class="fa-solid fa-arrows-rotate text-[#C5A059]"></i> Airbnb & iCal 2-Way Calendar Sync
                             </h4>
-                            <span class="text-[10px] bg-rose-50 text-rose-700 px-2.5 py-1 rounded-full font-bold border border-rose-200/80 flex items-center gap-1">
+                            <span class="text-[10px] bg-rose-50 text-rose-700 px-2.5 py-1 rounded-full font-bold border-2 border-rose-200 flex items-center gap-1">
                                 <i class="fa-brands fa-airbnb text-rose-500"></i> Airbnb Sync
                             </span>
                         </div>
@@ -3655,14 +3655,14 @@
                             <label class="block text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">
                                 Airbnb / External iCal Import URL (From Airbnb Listing > Pricing & Availability > Export Calendar)
                             </label>
-                            <input type="url" id="add-room-airbnb-ical" placeholder="https://www.airbnb.com/calendar/ical/12345678.ics?s=abcdef..." class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37] font-mono">
-                            <span class="text-[10px] text-slate-400 block mt-1">Paste your Airbnb calendar export link here to automatically sync and block dates on Kaghan Stay.</span>
+                            <input type="url" id="add-room-airbnb-ical" placeholder="https://www.airbnb.com/calendar/ical/12345678.ics?s=abcdef..." class="w-full border-2 border-slate-300 rounded-xl px-4 py-2.5 text-xs bg-white text-slate-900 outline-none focus:border-[#C5A059] font-mono font-bold">
+                            <span class="text-[10px] text-slate-500 block mt-1">Paste your Airbnb calendar export link here to automatically sync and block dates on Kaghan Stay.</span>
                         </div>
                     </div>
 
-                    <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
-                        <h4 class="text-sm font-bold uppercase tracking-wider text-[#D4AF37] mb-4">Room Description</h4>
-                        <textarea id="add-room-desc" placeholder="Write a comprehensive suite description..." rows="10" class="w-full border border-slate-200 rounded-xl px-4 py-3 text-xs bg-slate-50 text-slate-800 outline-none focus:border-[#D4AF37] resize-none leading-relaxed"></textarea>
+                    <div class="bg-white rounded-3xl p-6 border-2 border-slate-200 shadow-sm">
+                        <h4 class="text-sm font-bold uppercase tracking-wider text-[#C5A059] mb-4">Room Description</h4>
+                        <textarea id="add-room-desc" placeholder="Write a comprehensive suite description..." rows="10" class="w-full border-2 border-slate-300 rounded-xl px-4 py-3 text-xs bg-white text-slate-900 outline-none focus:border-[#C5A059] resize-none leading-relaxed font-medium"></textarea>
                     </div>
                 </div>
 
@@ -4467,7 +4467,7 @@
                         </div>
                         <div>
                             <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Kaghan Stay iCal Export Feed</label>
-                            <span id="airbnb-setting-export-url" class="text-[11px] font-mono text-slate-300 bg-slate-800/80 p-2 rounded-xl block truncate select-all">https://kphstay.com/.netlify/functions/ical-export?roomId=...</span>
+                            <span id="airbnb-setting-export-url" class="text-[11px] font-mono text-slate-300 bg-slate-800/80 p-2 rounded-xl block truncate select-all">https://kaghanstay.com/.netlify/functions/ical-export?roomId=...</span>
                         </div>
                     </div>
 
