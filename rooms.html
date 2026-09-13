@@ -153,22 +153,22 @@
 
         <!-- Navigation Links -->
         <div class="hidden md:flex gap-8 items-center font-semibold text-sm">
-            <a href="index.html" class="text-slate-200 hover:text-[#C5A059] transition-colors">Home</a>
-            <a href="rooms.html" class="text-[#C5A059] border-b-2 border-[#C5A059] pb-0.5 transition-colors">Accommodations</a>
-            <a href="blog.html" class="text-slate-200 hover:text-[#C5A059] transition-colors">Travel Journal</a>
-            <a href="track.html" class="text-slate-200 hover:text-[#C5A059] transition-colors">Track Stay</a>
+            <a href="/" class="text-slate-200 hover:text-[#C5A059] transition-colors">Home</a>
+            <a href="/rooms" class="text-[#C5A059] border-b-2 border-[#C5A059] pb-0.5 transition-colors">Accommodations</a>
+            <a href="/blog" class="text-slate-200 hover:text-[#C5A059] transition-colors">Blog</a>
+            <a href="/track" class="text-slate-200 hover:text-[#C5A059] transition-colors">Track Stay</a>
             
             <!-- WhatsApp Direct Action -->
             <a href="https://wa.me/923340091127?text=Hello%20KPH%20Stay,%20I%20would%20like%20to%20inquire%20about%20booking%20a%20furnished%20apartment." 
-               target="_blank" rel="noopener" 
+               target="_blank" rel="noopener noreferrer" 
                class="hidden lg:inline-flex items-center gap-2 border border-emerald-500/60 bg-emerald-950/70 hover:bg-emerald-600 text-emerald-300 hover:text-white px-3.5 py-1.5 rounded-full transition-all text-xs font-bold shadow-sm">
                 <i class="fa-brands fa-whatsapp text-sm text-emerald-400"></i>
                 <span>Direct WhatsApp</span>
             </a>
 
             <div id="auth-links" class="flex gap-3 items-center">
-                <a href="login.html" class="border border-slate-600 hover:border-[#C5A059] text-white px-4 py-1.5 rounded-xl hover:bg-[#C5A059] hover:text-slate-950 transition-all text-xs font-bold shadow-sm">Login</a>
-                <a href="login.html?register=true" class="bg-[#C5A059] hover:bg-[#D4AF37] text-slate-950 px-4 py-1.5 rounded-xl transition-all text-xs font-extrabold shadow-md border border-amber-300">Register</a>
+                <a href="/login" class="border border-slate-600 hover:border-[#C5A059] text-white px-4 py-1.5 rounded-xl hover:bg-[#C5A059] hover:text-slate-950 transition-all text-xs font-bold shadow-sm">Login</a>
+                <a href="/login?register=true" class="bg-[#C5A059] hover:bg-[#D4AF37] text-slate-950 px-4 py-1.5 rounded-xl transition-all text-xs font-extrabold shadow-md border border-amber-300">Register</a>
             </div>
         </div>
 
@@ -178,21 +178,21 @@
     </nav>
 
     <!-- Mobile Drawer -->
-    <div id="mobile-drawer" class="fixed inset-0 bg-[#0B0F19]/95 z-[60] flex flex-col items-center justify-center gap-6 text-white text-lg font-bold border-l border-slate-700 transition-all duration-300">
+    <div id="mobile-drawer" class="fixed inset-0 bg-[#0B0F19]/95 z-[60] flex flex-col items-center justify-center gap-6 text-white text-lg font-bold border-l border-slate-700 transition-all duration-300 hidden">
         <button id="menu-close" class="absolute top-8 right-6 text-white text-3xl w-12 h-12 flex items-center justify-center focus:outline-none active:scale-90 transition-transform" aria-label="Close Menu">
             <i class="fa-solid fa-xmark"></i>
         </button>
-        <a href="index.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Home</a>
-        <a href="rooms.html" class="text-[#C5A059] border-b-2 border-[#C5A059] pb-1" onclick="toggleDrawer()">Accommodations</a>
-        <a href="blog.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Travel Journal</a>
-        <a href="track.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Track Stay</a>
-        <a href="https://wa.me/923340091127" target="_blank" rel="noopener" class="flex items-center gap-2 text-emerald-400 font-bold text-sm bg-emerald-950/80 px-5 py-2.5 rounded-full border border-emerald-500/50">
+        <a href="/" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Home</a>
+        <a href="/rooms" class="text-[#C5A059] border-b-2 border-[#C5A059] pb-1" onclick="toggleDrawer()">Accommodations</a>
+        <a href="/blog" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Blog</a>
+        <a href="/track" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Track Stay</a>
+        <a href="https://wa.me/923340091127" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-emerald-400 font-bold text-sm bg-emerald-950/80 px-5 py-2.5 rounded-full border border-emerald-500/50">
             <i class="fa-brands fa-whatsapp text-lg"></i>
             <span>WhatsApp Concierge</span>
         </a>
         <div id="auth-links-mobile" class="flex flex-col gap-3 w-64 text-center mt-4">
-            <a href="login.html" class="border border-slate-600 text-white py-2.5 rounded-xl hover:bg-[#C5A059] hover:text-slate-950 transition-all text-sm font-bold" onclick="toggleDrawer()">Login</a>
-            <a href="login.html?register=true" class="bg-[#C5A059] text-slate-950 py-2.5 rounded-xl hover:bg-white transition-all text-sm font-extrabold border border-amber-300" onclick="toggleDrawer()">Register</a>
+            <a href="/login" class="border border-slate-600 text-white py-2.5 rounded-xl hover:bg-[#C5A059] hover:text-slate-950 transition-all text-sm font-bold" onclick="toggleDrawer()">Login</a>
+            <a href="/login?register=true" class="bg-[#C5A059] text-slate-950 py-2.5 rounded-xl hover:bg-white transition-all text-sm font-extrabold border border-amber-300" onclick="toggleDrawer()">Register</a>
         </div>
     </div>
 
@@ -612,7 +612,7 @@
                     <li><a href="/furnished-apartments-murree" class="hover:text-[#FFDF9E] transition-colors flex items-center gap-2"><i class="fa-solid fa-chevron-right text-[10px] text-amber-400"></i> Furnished Apartments in Murree</a></li>
                     <li><a href="/furnished-apartments-nathia-gali" class="hover:text-[#FFDF9E] transition-colors flex items-center gap-2"><i class="fa-solid fa-chevron-right text-[10px] text-amber-400"></i> Furnished Apartments in Nathia Gali</a></li>
                     <li><a href="/rooms" class="hover:text-[#FFDF9E] transition-colors flex items-center gap-2"><i class="fa-solid fa-chevron-right text-[10px] text-amber-400"></i> All Suites & Chalets</a></li>
-                    <li><a href="/blog" class="hover:text-[#FFDF9E] transition-colors flex items-center gap-2"><i class="fa-solid fa-chevron-right text-[10px] text-amber-400"></i> Travel Journal</a></li>
+                    <li><a href="/blog" class="hover:text-[#FFDF9E] transition-colors flex items-center gap-2"><i class="fa-solid fa-chevron-right text-[10px] text-amber-400"></i> Travel Blog</a></li>
                 </ul>
             </div>
             <div>

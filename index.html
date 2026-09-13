@@ -269,14 +269,14 @@
 
         <!-- Navigation Links -->
         <div class="hidden md:flex gap-8 items-center font-semibold text-sm">
-            <a href="index.html" class="text-[#C5A059] border-b-2 border-[#C5A059] pb-0.5 transition-colors">Home</a>
-            <a href="rooms.html" class="text-slate-200 hover:text-[#C5A059] transition-colors">Accommodations</a>
-            <a href="blog.html" class="text-slate-200 hover:text-[#C5A059] transition-colors">Travel Journal</a>
-            <a href="track.html" class="text-slate-200 hover:text-[#C5A059] transition-colors">Track Stay</a>
+            <a href="/" class="text-[#C5A059] border-b-2 border-[#C5A059] pb-0.5 transition-colors">Home</a>
+            <a href="/rooms" class="text-slate-200 hover:text-[#C5A059] transition-colors">Accommodations</a>
+            <a href="/blog" class="text-slate-200 hover:text-[#C5A059] transition-colors">Blog</a>
+            <a href="/track" class="text-slate-200 hover:text-[#C5A059] transition-colors">Track Stay</a>
             
             <!-- WhatsApp Direct Action -->
             <a href="https://wa.me/923340091127?text=Hello%20Kaghan%20Stay,%20I%20would%20like%20to%20inquire%20about%20booking%20a%20furnished%20apartment." 
-               target="_blank" rel="noopener" 
+               target="_blank" rel="noopener noreferrer" 
                class="hidden lg:inline-flex items-center gap-2 border border-emerald-500/60 bg-emerald-950/70 hover:bg-emerald-600 text-emerald-300 hover:text-white px-3.5 py-1.5 rounded-full transition-all text-xs font-bold shadow-sm">
                 <i class="fa-brands fa-whatsapp text-sm text-emerald-400"></i>
                 <span>Direct WhatsApp</span>
@@ -284,8 +284,8 @@
 
             <div id="auth-links" class="flex gap-3 items-center">
                 <!-- Dynamically updated by shared JS -->
-                <a href="login.html" class="border border-slate-600 text-slate-200 px-4 py-1.5 rounded-full hover:border-[#C5A059] hover:text-white transition-all text-xs font-bold">Login</a>
-                <a href="login.html?register=true" class="bg-[#C5A059] text-slate-950 px-4 py-1.5 rounded-full hover:bg-white hover:text-slate-900 transition-all text-xs font-extrabold shadow-md">Register</a>
+                <a href="/login" class="border border-slate-600 text-slate-200 px-4 py-1.5 rounded-full hover:border-[#C5A059] hover:text-white transition-all text-xs font-bold">Login</a>
+                <a href="/login?register=true" class="bg-[#C5A059] text-slate-950 px-4 py-1.5 rounded-full hover:bg-white hover:text-slate-900 transition-all text-xs font-extrabold shadow-md">Register</a>
             </div>
         </div>
 
@@ -296,20 +296,20 @@
     </nav>
 
     <!-- Mobile Drawer Navigation -->
-    <div id="mobile-drawer" class="fixed inset-0 bg-[#0F172A]/98 z-[60] flex flex-col items-center justify-center gap-6 text-white text-xl font-bold border-l border-slate-800">
+    <div id="mobile-drawer" class="fixed inset-0 bg-[#0F172A]/98 z-[60] flex flex-col items-center justify-center gap-6 text-white text-xl font-bold border-l border-slate-800 hidden">
         <button id="menu-close" class="absolute top-6 right-6 text-white text-2xl w-11 h-11 rounded-full border border-slate-700 bg-slate-800 flex items-center justify-center focus:outline-none active:scale-90 transition-transform" aria-label="Close Menu">
             <i class="fa-solid fa-xmark"></i>
         </button>
-        <a href="index.html" class="text-[#C5A059] text-2xl font-extrabold" onclick="toggleDrawer()">Home</a>
-        <a href="rooms.html" class="hover:text-[#C5A059] text-slate-200" onclick="toggleDrawer()">Accommodations</a>
-        <a href="blog.html" class="hover:text-[#C5A059] text-slate-200" onclick="toggleDrawer()">Travel Journal</a>
-        <a href="track.html" class="hover:text-[#C5A059] text-slate-200" onclick="toggleDrawer()">Track Stay</a>
-        <a href="https://wa.me/923340091127" target="_blank" rel="noopener" class="border border-emerald-500/60 bg-emerald-950/80 text-emerald-300 px-6 py-2.5 rounded-full text-base font-bold flex items-center gap-2" onclick="toggleDrawer()">
+        <a href="/" class="text-[#C5A059] text-2xl font-extrabold" onclick="toggleDrawer()">Home</a>
+        <a href="/rooms" class="hover:text-[#C5A059] text-slate-200" onclick="toggleDrawer()">Accommodations</a>
+        <a href="/blog" class="hover:text-[#C5A059] text-slate-200" onclick="toggleDrawer()">Blog</a>
+        <a href="/track" class="hover:text-[#C5A059] text-slate-200" onclick="toggleDrawer()">Track Stay</a>
+        <a href="https://wa.me/923340091127" target="_blank" rel="noopener noreferrer" class="border border-emerald-500/60 bg-emerald-950/80 text-emerald-300 px-6 py-2.5 rounded-full text-base font-bold flex items-center gap-2" onclick="toggleDrawer()">
             <i class="fa-brands fa-whatsapp text-lg text-emerald-400"></i> WhatsApp Concierge
         </a>
         <div id="auth-links-mobile" class="flex flex-col gap-3 w-64 text-center mt-2">
-            <a href="login.html" class="border border-slate-600 text-white py-2.5 rounded-full hover:bg-slate-800 transition-all text-sm font-bold" onclick="toggleDrawer()">Login</a>
-            <a href="login.html?register=true" class="bg-[#C5A059] text-slate-950 py-2.5 rounded-full hover:bg-white transition-all text-sm font-extrabold shadow-lg" onclick="toggleDrawer()">Register</a>
+            <a href="/login" class="border border-slate-600 text-white py-2.5 rounded-full hover:bg-slate-800 transition-all text-sm font-bold" onclick="toggleDrawer()">Login</a>
+            <a href="/login?register=true" class="bg-[#C5A059] text-slate-950 py-2.5 rounded-full hover:bg-white transition-all text-sm font-extrabold shadow-lg" onclick="toggleDrawer()">Register</a>
         </div>
     </div>
 
@@ -581,7 +581,7 @@
             <!-- Subtle Minimalist Bottom Suite Preview & Controls -->
             <div class="relative z-0 mt-8 sm:mt-12 flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-800/80 max-w-5xl mx-auto" style="position: relative; z-index: 1;">
                 <!-- Clickable Live Suite Tag -->
-                <a id="hero-current-suite-link" href="rooms.html" class="flex items-center gap-2.5 backdrop-blur-md bg-slate-900/80 hover:bg-slate-800 border border-slate-700 hover:border-[#C5A059] px-4 py-2 rounded-full text-xs text-slate-200 transition-all group cursor-pointer">
+                <a id="hero-current-suite-link" href="/rooms" class="flex items-center gap-2.5 backdrop-blur-md bg-slate-900/80 hover:bg-slate-800 border border-slate-700 hover:border-[#C5A059] px-4 py-2 rounded-full text-xs text-slate-200 transition-all group cursor-pointer">
                     <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
                     <span class="text-slate-400 font-normal">Now Viewing:</span>
                     <span id="hero-current-suite-name" class="font-bold text-white group-hover:text-[#C5A059] transition-colors truncate max-w-[200px] sm:max-w-xs">Featured Luxury Suite</span>
@@ -616,7 +616,7 @@
                     </span>
                     <h2 class="text-3xl md:text-5xl font-extrabold outfit text-slate-900 tracking-tight">Featured <span class="text-[#C5A059]">Accommodations</span></h2>
                 </div>
-                <a href="rooms.html" class="text-slate-900 border-b-2 border-[#C5A059] font-extrabold py-2 flex items-center gap-2 hover:text-[#C5A059] transition-all mt-4 md:mt-0 text-sm">
+                <a href="/rooms" class="text-slate-900 border-b-2 border-[#C5A059] font-extrabold py-2 flex items-center gap-2 hover:text-[#C5A059] transition-all mt-4 md:mt-0 text-sm">
                     Explore All Rooms
                     <i class="fa-solid fa-arrow-right text-sm"></i>
                 </a>
@@ -715,7 +715,7 @@
                     <p class="text-slate-700 text-base leading-relaxed font-normal mb-8">
                         Our service apartments combine the privacy and spaciousness of fully furnished luxury homes with five-star hotel conveniences — including daily housekeeping, round-the-clock security, ultra-fast fiber Wi-Fi, and 24/7 concierge assistance.
                     </p>
-                    <a href="rooms.html" class="inline-flex items-center justify-center bg-slate-900 text-white font-extrabold px-8 py-4 rounded-xl hover:bg-[#C5A059] hover:text-slate-950 transition-all gap-2.5 text-sm shadow-md border border-slate-800 hover:border-[#C5A059]">
+                    <a href="/rooms" class="inline-flex items-center justify-center bg-slate-900 text-white font-extrabold px-8 py-4 rounded-xl hover:bg-[#C5A059] hover:text-slate-950 transition-all gap-2.5 text-sm shadow-md border border-slate-800 hover:border-[#C5A059]">
                         <span>Book Your Suite</span>
                         <i class="fa-solid fa-arrow-right"></i>
                     </a>
@@ -843,22 +843,18 @@
             <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 pb-4 border-b border-slate-100">
                 <div>
                     <span class="text-[#B8860B] font-extrabold uppercase tracking-widest text-xs mb-3 block flex items-center gap-1.5">
-                        <i class="fa-solid fa-newspaper text-amber-600"></i> Resort Journal
+                        <i class="fa-solid fa-newspaper text-amber-600"></i> Resort Blog
                     </span>
                     <h2 class="text-3xl md:text-5xl font-extrabold outfit text-slate-900 tracking-tight">Alpine Insights & <span class="text-[#C5A059]">Attractions Guide</span></h2>
                 </div>
-                <a href="blog.html" class="text-slate-900 border-b-2 border-[#C5A059] font-extrabold py-2 flex items-center gap-2 hover:text-[#C5A059] transition-all mt-4 md:mt-0 text-sm">
+                <a href="/blog" class="text-slate-900 border-b-2 border-[#C5A059] font-extrabold py-2 flex items-center gap-2 hover:text-[#C5A059] transition-all mt-4 md:mt-0 text-sm">
                     Read All Articles <i class="fa-solid fa-arrow-right text-xs"></i>
                 </a>
             </div>
 
-            <!-- Dynamic Blogs Grid -->
+            <!-- Dynamic Blogs Grid (Synchronously Hydrated on load) -->
             <div id="resort-blog-feed-container" class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- Dynamically populated via JS -->
-                <div class="col-span-2 text-center text-slate-500 py-12">
-                    <i class="fa-solid fa-spinner animate-spin text-2xl text-[#C5A059] mb-3"></i>
-                    <p class="text-xs uppercase font-bold tracking-wider">Syncing resort feeds...</p>
-                </div>
+                <!-- Dynamically populated immediately -->
             </div>
         </div>
     </section>
@@ -898,7 +894,7 @@
                         </div>
                     </div>
                     <div class="px-6 pb-6 pt-2 border-t border-slate-100">
-                        <a href="rooms.html?location=Islamabad" class="w-full text-center bg-slate-900 hover:bg-[#C5A059] hover:text-slate-950 text-white text-xs font-extrabold py-3 rounded-xl block transition-all shadow-sm border border-slate-800 hover:border-[#C5A059]">View Islamabad Apartments</a>
+                        <a href="/rooms?location=Islamabad" class="w-full text-center bg-slate-900 hover:bg-[#C5A059] hover:text-slate-950 text-white text-xs font-extrabold py-3 rounded-xl block transition-all shadow-sm border border-slate-800 hover:border-[#C5A059]">View Islamabad Apartments</a>
                     </div>
                 </div>
 
@@ -925,7 +921,7 @@
                         </div>
                     </div>
                     <div class="px-6 pb-6 pt-2 border-t border-slate-100">
-                        <a href="rooms.html?location=Murree" class="w-full text-center bg-slate-900 hover:bg-[#C5A059] hover:text-slate-950 text-white text-xs font-extrabold py-3 rounded-xl block transition-all shadow-sm border border-slate-800 hover:border-[#C5A059]">View Murree Apartments</a>
+                        <a href="/rooms?location=Murree" class="w-full text-center bg-slate-900 hover:bg-[#C5A059] hover:text-slate-950 text-white text-xs font-extrabold py-3 rounded-xl block transition-all shadow-sm border border-slate-800 hover:border-[#C5A059]">View Murree Apartments</a>
                     </div>
                 </div>
 
@@ -952,7 +948,7 @@
                         </div>
                     </div>
                     <div class="px-6 pb-6 pt-2 border-t border-slate-100">
-                        <a href="rooms.html?location=Nathia%20Gali" class="w-full text-center bg-slate-900 hover:bg-[#C5A059] hover:text-slate-950 text-white text-xs font-extrabold py-3 rounded-xl block transition-all shadow-sm border border-slate-800 hover:border-[#C5A059]">View Nathia Gali Apartments</a>
+                        <a href="/rooms?location=Nathia%20Gali" class="w-full text-center bg-slate-900 hover:bg-[#C5A059] hover:text-slate-950 text-white text-xs font-extrabold py-3 rounded-xl block transition-all shadow-sm border border-slate-800 hover:border-[#C5A059]">View Nathia Gali Apartments</a>
                     </div>
                 </div>
             </div>
@@ -1127,7 +1123,7 @@
                     <li><a href="/furnished-apartments-murree" class="hover:text-[#FFDF9E] transition-colors flex items-center gap-2"><i class="fa-solid fa-chevron-right text-[10px] text-amber-400"></i> Furnished Apartments in Murree</a></li>
                     <li><a href="/furnished-apartments-nathia-gali" class="hover:text-[#FFDF9E] transition-colors flex items-center gap-2"><i class="fa-solid fa-chevron-right text-[10px] text-amber-400"></i> Furnished Apartments in Nathia Gali</a></li>
                     <li><a href="/rooms" class="hover:text-[#FFDF9E] transition-colors flex items-center gap-2"><i class="fa-solid fa-chevron-right text-[10px] text-amber-400"></i> All Suites & Chalets</a></li>
-                    <li><a href="/blog" class="hover:text-[#FFDF9E] transition-colors flex items-center gap-2"><i class="fa-solid fa-chevron-right text-[10px] text-amber-400"></i> Travel Journal</a></li>
+                    <li><a href="/blog" class="hover:text-[#FFDF9E] transition-colors flex items-center gap-2"><i class="fa-solid fa-chevron-right text-[10px] text-amber-400"></i> Travel Blog</a></li>
                 </ul>
             </div>
             <div>
@@ -1152,12 +1148,12 @@
         <div class="max-w-7xl mx-auto pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-400">
             <p>&copy; 2026 Kaghan Properties Hospitality Stay (kphstay.com). All Rights Reserved. SECP Registered.</p>
             <div class="flex flex-wrap gap-x-6 gap-y-2">
-                <a href="pricing.html" class="hover:text-[#FFDF9E] transition-colors">Pricing Policy</a>
-                <a href="privacy.html" class="hover:text-[#FFDF9E] transition-colors">Privacy Policy</a>
-                <a href="terms.html" class="hover:text-[#FFDF9E] transition-colors">Terms of Stay</a>
-                <a href="refund.html" class="hover:text-[#FFDF9E] transition-colors">Refund Policy</a>
-                <a href="cookies.html" class="hover:text-[#FFDF9E] transition-colors">Cookie Policy</a>
-                <a href="contact.html" class="hover:text-[#FFDF9E] transition-colors">Contact</a>
+                <a href="/pricing" class="hover:text-[#FFDF9E] transition-colors">Pricing Policy</a>
+                <a href="/privacy" class="hover:text-[#FFDF9E] transition-colors">Privacy Policy</a>
+                <a href="/terms" class="hover:text-[#FFDF9E] transition-colors">Terms of Stay</a>
+                <a href="/refund" class="hover:text-[#FFDF9E] transition-colors">Refund Policy</a>
+                <a href="/cookies" class="hover:text-[#FFDF9E] transition-colors">Cookie Policy</a>
+                <a href="/contact" class="hover:text-[#FFDF9E] transition-colors">Contact</a>
             </div>
         </div>
     </footer>
@@ -1347,12 +1343,12 @@
 
             goToCurrentRoom() {
                 if (!this.rooms.length) {
-                    window.location.href = 'rooms.html';
+                    window.location.href = '/rooms';
                     return;
                 }
                 const room = this.rooms[this.currentIndex];
                 if (!room) return;
-                const link = window.KaghanDB && window.KaghanDB.getRoomLink ? window.KaghanDB.getRoomLink(room) : `room-details.html?id=${room.id}`;
+                const link = window.KaghanDB && window.KaghanDB.getRoomLink ? window.KaghanDB.getRoomLink(room) : (room.slug ? `/room/${encodeURIComponent(room.slug)}` : '/rooms');
                 window.location.href = link;
             },
 
@@ -1700,7 +1696,7 @@
             if (guests)   params.set('guests',   guests);
             if (stayType && stayType !== 'daily') params.set('stayType', stayType);
 
-            window.location.href = 'rooms.html?' + params.toString();
+            window.location.href = '/rooms?' + params.toString();
         };
 
         // ── DYNAMIC FILTERS (Locations dropdown + Index categories) ──
@@ -1800,46 +1796,65 @@
             }
         }
 
-        // ── BLOG FEED ──
-        async function loadResortBlogs() {
+        // ── BLOG FEED (Instant SWR Hydration) ──
+        function renderResortBlogsDOM(blogs) {
             const container = document.getElementById('resort-blog-feed-container');
             if (!container) return;
 
+            const stayBlogs = blogs.filter(b => !b.portal || b.portal === 'stay');
+            if (!stayBlogs.length) {
+                container.innerHTML = `<div class="col-span-2 text-center text-slate-500 py-12 font-semibold">No updates published yet.</div>`;
+                return;
+            }
+
+            container.innerHTML = stayBlogs.slice(0, 2).map((b) => {
+                const img = b.imageUrl || '/assets/images/logo.png';
+                const targetSlug = (b.slug && b.slug.trim()) ? b.slug.trim() : (b.title ? b.title.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^\w\-]+/g, '') : b.id);
+                const blogUrl = `/blog/${encodeURIComponent(targetSlug)}`;
+                return `
+                    <div class="bg-white rounded-3xl border-2 border-slate-200 p-6 md:p-8 shadow-md hover-lift hover:border-[#C5A059] transition-all duration-300 flex flex-col md:flex-row gap-6 items-center">
+                        <div class="w-full md:w-1/3 aspect-video md:aspect-square rounded-2xl overflow-hidden shrink-0 border border-slate-200 shadow-inner">
+                            <a href="${blogUrl}">
+                                <img src="${KaghanSafe.escapeHTML(img)}" alt="${KaghanSafe.escapeHTML(b.title)}"
+                                     class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" loading="lazy"
+                                     onerror="this.src='/assets/images/logo.png'">
+                            </a>
+                        </div>
+                        <div class="flex-grow">
+                            <span class="text-[#B8860B] font-extrabold text-[10px] uppercase tracking-widest block mb-2 flex items-center gap-1.5"><i class="fa-solid fa-tag text-amber-500"></i> ${KaghanSafe.escapeHTML(b.category || 'Article')}</span>
+                            <a href="${blogUrl}">
+                                <h4 class="text-xl font-extrabold outfit text-slate-900 mb-2 leading-snug hover:text-[#C5A059] transition-colors">${KaghanSafe.escapeHTML(b.title || '')}</h4>
+                            </a>
+                            <p class="text-slate-600 text-xs sm:text-sm leading-relaxed mb-4 line-clamp-2 font-normal">${KaghanSafe.escapeHTML(b.excerpt || '')}</p>
+                            <a href="${blogUrl}"
+                               class="text-slate-900 hover:text-[#C5A059] text-xs font-extrabold uppercase tracking-wider flex items-center gap-1.5 self-start border-b-2 border-slate-900 hover:border-[#C5A059] pb-0.5 transition-colors">
+                                Read Article <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                            </a>
+                        </div>
+                    </div>`;
+            }).join('');
+        }
+
+        // Instant synchronous render from localStorage / cached seeds
+        (function bootstrapInstantHomeBlogs() {
+            try {
+                let initial = null;
+                const raw = localStorage.getItem('kph_stay_blogs_cache');
+                if (raw) initial = JSON.parse(raw);
+                if ((!initial || !initial.length) && window.KaghanDB && window.KaghanDB.getCachedBlogs) {
+                    initial = window.KaghanDB.getCachedBlogs();
+                }
+                if (initial && initial.length) renderResortBlogsDOM(initial);
+            } catch (e) {}
+        })();
+
+        async function loadResortBlogs() {
             try {
                 const blogs = await KaghanDB.getBlogs();
-                const stayBlogs = blogs.filter(b => b.portal === 'stay');
-
-                if (!stayBlogs.length) {
-                    container.innerHTML = `<div class="col-span-2 text-center text-slate-500 py-12 font-semibold">No updates published yet.</div>`;
-                    return;
-                }
-
-                container.innerHTML = stayBlogs.slice(0, 2).map((b, idx) => {
-                    const img = b.imageUrl || '/assets/images/logo.png';
-                    const blogUrl = window.KaghanDB && window.KaghanDB.getBlogLink ? window.KaghanDB.getBlogLink(b) : `/blog-details.html?id=${b.id}`;
-                    return `
-                        <div class="bg-white rounded-3xl border-2 border-slate-200 p-6 md:p-8 shadow-md hover-lift hover:border-[#C5A059] transition-all duration-300 flex flex-col md:flex-row gap-6 items-center">
-                            <div class="w-full md:w-1/3 aspect-video md:aspect-square rounded-2xl overflow-hidden shrink-0 border border-slate-200 shadow-inner">
-                                <img src="${KaghanSafe.escapeHTML(img)}" alt="${KaghanSafe.escapeHTML(b.title)}"
-                                     class="w-full h-full object-cover" loading="lazy"
-                                     onerror="this.src='/assets/images/logo.png'">
-                            </div>
-                            <div class="flex-grow">
-                                <span class="text-[#B8860B] font-extrabold text-[10px] uppercase tracking-widest block mb-2 flex items-center gap-1.5"><i class="fa-solid fa-tag text-amber-500"></i> ${KaghanSafe.escapeHTML(b.category || 'Article')}</span>
-                                <h4 class="text-xl font-extrabold outfit text-slate-900 mb-2 leading-snug">${KaghanSafe.escapeHTML(b.title || '')}</h4>
-                                <p class="text-slate-600 text-xs sm:text-sm leading-relaxed mb-4 line-clamp-2 font-normal">${KaghanSafe.escapeHTML(b.excerpt || '')}</p>
-                                <a href="${blogUrl}"
-                                   class="text-slate-900 hover:text-[#C5A059] text-xs font-extrabold uppercase tracking-wider flex items-center gap-1.5 self-start border-b-2 border-slate-900 hover:border-[#C5A059] pb-0.5 transition-colors">
-                                    Read Article <i class="fa-solid fa-arrow-right text-[10px]"></i>
-                                </a>
-                            </div>
-                        </div>`;
-                }).join('');
-
+                renderResortBlogsDOM(blogs);
                 if (window.setupScrollAnimations) window.setupScrollAnimations();
             } catch (err) {
-                console.error('loadResortBlogs error:', err);
-                container.innerHTML = `<div class="col-span-2 text-center text-rose-500 py-12 font-semibold">Failed to load resort news.</div>`;
+                console.warn('loadResortBlogs background sync:', err);
             }
         }
 

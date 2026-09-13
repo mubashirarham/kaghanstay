@@ -135,7 +135,7 @@
         const submitBtnIcon = document.getElementById('blog-btn-icon');
         const cancelBtn = document.getElementById('blog-cancel-edit-btn');
 
-        if (submitBtnText) submitBtnText.textContent = 'Update Journal Article';
+        if (submitBtnText) submitBtnText.textContent = 'Update Blog Article';
         if (submitBtnIcon) submitBtnIcon.className = 'fa-solid fa-floppy-disk text-xs';
         if (cancelBtn) cancelBtn.classList.remove('hidden');
 
@@ -162,7 +162,7 @@
         const submitBtnIcon = document.getElementById('blog-btn-icon');
         const cancelBtn = document.getElementById('blog-cancel-edit-btn');
 
-        if (submitBtnText) submitBtnText.textContent = 'Publish Journal Article';
+        if (submitBtnText) submitBtnText.textContent = 'Publish Blog Article';
         if (submitBtnIcon) submitBtnIcon.className = 'fa-solid fa-plus text-xs';
         if (cancelBtn) cancelBtn.classList.add('hidden');
     };

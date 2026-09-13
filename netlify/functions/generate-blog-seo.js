@@ -52,7 +52,7 @@ Act as an Elite Hospitality SEO Strategist & Search Data Analyst. Output strictl
             messages: [
                 {
                     role: 'system',
-                    content: 'You are an Elite Technical SEO Strategist and Search Data Analyst specializing in luxury travel, resort journals, and travel search trends in Pakistan. Output strictly valid JSON.'
+                    content: 'You are an Elite Technical SEO Strategist and Search Data Analyst specializing in luxury travel, resort blogs, and travel search trends in Pakistan. Output strictly valid JSON.'
                 },
                 {
                     role: 'user',
@@ -76,7 +76,7 @@ Act as an Elite Hospitality SEO Strategist & Search Data Analyst. Output strictl
             },
             body: JSON.stringify({
                 seoTitle: parsed.seoTitle || `${title} | KPH Stay`,
-                seoDescription: parsed.seoDescription || (excerpt ? excerpt.slice(0, 160) : `Discover ${title} with KPH Stay luxury travel journal.`),
+                seoDescription: parsed.seoDescription || (excerpt ? excerpt.slice(0, 160) : `Discover ${title} with KPH Stay luxury travel blog.`),
                 seoKeywords: parsed.seoKeywords || `${category ? category.toLowerCase() : 'travel'}, islamabad stay, luxury travel`,
                 slug: parsed.slug || (title ? title.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^\w\-]+/g, '') : 'blog-post'),
                 searchIntent: parsed.searchIntent || 'Informational / Destination Planning',

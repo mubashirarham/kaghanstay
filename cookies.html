@@ -61,14 +61,14 @@
 
         <!-- Navigation Links -->
         <div class="hidden md:flex gap-8 items-center font-bold text-xs uppercase tracking-wider">
-            <a href="index.html" class="text-slate-300 hover:text-[#C5A059] transition-colors">Home</a>
-            <a href="rooms.html" class="text-slate-300 hover:text-[#C5A059] transition-colors">Rooms</a>
-            <a href="blog.html" class="text-slate-300 hover:text-[#C5A059] transition-colors">Blog</a>
-            <a href="track.html" class="text-slate-300 hover:text-[#C5A059] transition-colors">Track Stay</a>
-            <a href="contact.html" class="text-slate-300 hover:text-[#C5A059] transition-colors">Contact</a>
+            <a href="/" class="text-slate-300 hover:text-[#C5A059] transition-colors">Home</a>
+            <a href="/rooms" class="text-slate-300 hover:text-[#C5A059] transition-colors">Rooms</a>
+            <a href="/blog" class="text-slate-300 hover:text-[#C5A059] transition-colors">Blog</a>
+            <a href="/track" class="text-slate-300 hover:text-[#C5A059] transition-colors">Track Stay</a>
+            <a href="/contact" class="text-slate-300 hover:text-[#C5A059] transition-colors">Contact</a>
             <div id="auth-links" class="flex gap-3 items-center ml-4">
-                <a href="login.html" class="border-2 border-slate-600 hover:border-[#C5A059] text-white px-5 py-2.5 rounded-xl hover:text-[#C5A059] transition-all text-xs font-black">Login</a>
-                <a href="login.html?register=true" class="bg-[#C5A059] text-slate-900 border-2 border-amber-300 hover:bg-white hover:border-white px-5 py-2.5 rounded-xl transition-all text-xs font-black shadow-md">Register</a>
+                <a href="/login" class="border-2 border-slate-600 hover:border-[#C5A059] text-white px-5 py-2.5 rounded-xl hover:text-[#C5A059] transition-all text-xs font-black">Login</a>
+                <a href="/login?register=true" class="bg-[#C5A059] text-slate-900 border-2 border-amber-300 hover:bg-white hover:border-white px-5 py-2.5 rounded-xl transition-all text-xs font-black shadow-md">Register</a>
             </div>
         </div>
 
@@ -83,14 +83,14 @@
         <button id="menu-close" class="absolute top-8 right-6 text-white text-3xl w-12 h-12 flex items-center justify-center focus:outline-none active:scale-90 transition-transform" aria-label="Close Menu">
             <i class="fa-solid fa-xmark"></i>
         </button>
-        <a href="index.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Home</a>
-        <a href="rooms.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Rooms</a>
-        <a href="blog.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Blog</a>
-        <a href="track.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Track Stay</a>
-        <a href="contact.html" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Contact</a>
+        <a href="/" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Home</a>
+        <a href="/rooms" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Rooms</a>
+        <a href="/blog" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Blog</a>
+        <a href="/track" class="hover:text-[#C5A059]" onclick="toggleDrawer()">Track Stay</a>
+        <a href="/contact" class="text-[#C5A059]" onclick="toggleDrawer()">Contact</a>
         <div id="auth-links-mobile" class="flex flex-col gap-3 w-64 text-center mt-4">
-            <a href="login.html" class="border-2 border-[#C5A059] text-white py-3.5 rounded-xl hover:bg-[#C5A059] hover:text-slate-900 transition-all text-sm font-black" onclick="toggleDrawer()">Login</a>
-            <a href="login.html?register=true" class="bg-[#C5A059] text-slate-900 py-3.5 rounded-xl hover:bg-white transition-all text-sm font-black shadow-lg" onclick="toggleDrawer()">Register</a>
+            <a href="/login" class="border-2 border-[#C5A059] text-white py-3.5 rounded-xl hover:bg-[#C5A059] hover:text-slate-900 transition-all text-sm font-black" onclick="toggleDrawer()">Login</a>
+            <a href="/login?register=true" class="bg-[#C5A059] text-slate-900 py-3.5 rounded-xl hover:bg-white transition-all text-sm font-black shadow-lg" onclick="toggleDrawer()">Register</a>
         </div>
     </div>
 
@@ -176,20 +176,20 @@
             <div>
                 <h5 class="text-xs uppercase tracking-widest font-black text-[#C5A059] mb-4">Quick Links</h5>
                 <ul class="space-y-2.5 text-xs font-medium text-slate-300">
-                    <li><a href="rooms.html" class="hover:text-white transition-colors">Suites Catalog</a></li>
-                    <li><a href="blog.html" class="hover:text-white transition-colors">Resort Journal</a></li>
-                    <li><a href="track.html" class="hover:text-white transition-colors">Track Stay</a></li>
-                    <li><a href="contact.html" class="hover:text-white transition-colors">Contact Lobby</a></li>
+                    <li><a href="/rooms" class="hover:text-white transition-colors">Suites Catalog</a></li>
+                    <li><a href="/blog" class="hover:text-white transition-colors">Travel Blog</a></li>
+                    <li><a href="/track" class="hover:text-white transition-colors">Track Stay</a></li>
+                    <li><a href="/contact" class="hover:text-white transition-colors">Contact Lobby</a></li>
                 </ul>
             </div>
             <div>
                 <h5 class="text-xs uppercase tracking-widest font-black text-[#C5A059] mb-4">Legal Guides</h5>
                 <ul class="space-y-2.5 text-xs font-medium text-slate-300">
-                    <li><a href="pricing.html" class="hover:text-white transition-colors">Pricing & Payment Policy</a></li>
-                    <li><a href="terms.html" class="hover:text-white transition-colors">Terms & Conditions</a></li>
-                    <li><a href="privacy.html" class="hover:text-white transition-colors">Privacy Policy</a></li>
-                    <li><a href="refund.html" class="hover:text-white transition-colors">Refund Policy</a></li>
-                    <li><a href="cookies.html" class="hover:text-white transition-colors">Cookie Policy</a></li>
+                    <li><a href="/pricing" class="hover:text-white transition-colors">Pricing & Payment Policy</a></li>
+                    <li><a href="/terms" class="hover:text-white transition-colors">Terms & Conditions</a></li>
+                    <li><a href="/privacy" class="hover:text-white transition-colors">Privacy Policy</a></li>
+                    <li><a href="/refund" class="hover:text-white transition-colors">Refund Policy</a></li>
+                    <li><a href="/cookies" class="hover:text-white transition-colors">Cookie Policy</a></li>
                 </ul>
             </div>
             <div>

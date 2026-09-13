@@ -1,20 +1,21 @@
-const CACHE_NAME = 'kph-stay-cache-v10';
+const CACHE_NAME = 'kph-stay-cache-v11';
 const ASSETS_TO_CACHE = [
   '/',
-  '/index.html',
-  '/rooms.html',
-  '/blog.html',
-  '/booking.html',
-  '/login.html',
+  '/rooms',
+  '/blog',
+  '/booking',
+  '/login',
+  '/contact',
+  '/track',
+  '/terms',
+  '/privacy',
+  '/refund',
+  '/pricing',
+  '/cookies',
   '/404.html',
-  '/contact.html',
-  '/terms.html',
-  '/privacy.html',
-  '/refund.html',
-  '/pricing.html',
   '/manifest.json',
-  '/assets/css/style.css?v=10',
-  '/assets/js/rooms.js?v=10',
+  '/assets/css/style.css?v=6',
+  '/assets/js/shared.js?v=6',
   '/assets/images/logo.png'
 ];
 

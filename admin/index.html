@@ -1355,8 +1355,8 @@
             <!-- VIEW: BLOGS MANAGEMENT -->
             <div id="view-blogs" class="tab-view hidden space-y-6">
                 <div>
-                    <span class="text-[#D4AF37] text-xs font-bold uppercase tracking-wider">Journal Circle</span>
-                    <h1 class="text-2xl font-extrabold outfit text-slate-900 mt-0.5">Resort Journal Management</h1>
+                    <span class="text-[#D4AF37] text-xs font-bold uppercase tracking-wider">Blog Circle</span>
+                    <h1 class="text-2xl font-extrabold outfit text-slate-900 mt-0.5">Resort Blog Management</h1>
                     <p class="text-slate-400 text-xs font-light">Add, review, and delete resort blog posts and local guides.</p>
                 </div>
 
@@ -1365,7 +1365,7 @@
                     <div class="lg:col-span-2 bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md h-fit">
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
                             <div>
-                                <h3 class="text-lg font-bold outfit text-slate-950">Write & Edit Journal Article</h3>
+                                <h3 class="text-lg font-bold outfit text-slate-950">Write & Edit Blog Article</h3>
                                 <p class="text-xs text-slate-400">Compose rich HTML content or auto-write full articles with Groq AI.</p>
                             </div>
                             <div class="flex gap-2">
@@ -1461,7 +1461,7 @@
                             <div class="flex gap-3 mt-6">
                                 <button type="submit" id="blog-submit-btn" class="flex-grow bg-gradient-to-r from-[#D4AF37] to-[#DC2626] text-white font-bold py-3.5 rounded-2xl hover:opacity-90 transition-all text-xs shadow-md flex items-center justify-center gap-2">
                                     <i id="blog-btn-icon" class="fa-solid fa-plus text-xs"></i>
-                                    <span id="blog-btn-text">Publish Journal Article</span>
+                                    <span id="blog-btn-text">Publish Blog Article</span>
                                 </button>
                                 <button type="button" id="blog-cancel-edit-btn" onclick="window.cancelBlogEdit()" class="hidden bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-3.5 rounded-2xl transition-all text-xs flex items-center gap-1.5 shrink-0">
                                     <i class="fa-solid fa-xmark"></i> Cancel Edit
@@ -1470,7 +1470,7 @@
                         </form>
                     </div>
 
-                    <!-- Published Journal Articles List (Side Panel - 1 Column) -->
+                    <!-- Published Blog Articles List (Side Panel - 1 Column) -->
                     <div class="lg:col-span-1 bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-md h-fit">
                         <div class="flex justify-between items-center mb-6">
                             <h3 class="text-lg font-bold outfit text-slate-950">Published Articles</h3>
@@ -1492,7 +1492,7 @@
                         </div>
                         <div id="admin-blogs-pagination" class="mt-4 hidden"></div>
                         <div id="blogs-empty-state" class="hidden text-center py-12">
-                            <p class="text-slate-400 text-xs">No journal articles published yet.</p>
+                            <p class="text-slate-400 text-xs">No blog articles published yet.</p>
                         </div>
                     </div>
                 </div>

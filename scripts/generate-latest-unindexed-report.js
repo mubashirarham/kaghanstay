@@ -112,7 +112,7 @@ async function main() {
     const staticPages = [
         { url: 'https://kphstay.com/', type: 'Core Landing', name: 'Homepage' },
         { url: 'https://kphstay.com/rooms', type: 'Core Catalog', name: 'All Accommodations' },
-        { url: 'https://kphstay.com/blog', type: 'Core Blog', name: 'Travel Journal / Blog' },
+        { url: 'https://kphstay.com/blog', type: 'Core Blog', name: 'Resort Blog' },
         { url: 'https://kphstay.com/contact', type: 'Utility / Support', name: 'Contact & Support' },
         { url: 'https://kphstay.com/pricing', type: 'Utility', name: 'Transparent Pricing' },
         { url: 'https://kphstay.com/privacy', type: 'Legal', name: 'Privacy Policy' },

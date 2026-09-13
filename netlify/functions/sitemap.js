@@ -160,7 +160,7 @@ exports.handler = async (event, context) => {
             }
         });
 
-        // 3. Dynamic Journal/Blog clean routes with Image SEO & strict URL deduplication
+        // 3. Dynamic Blog clean routes with Image SEO & strict URL deduplication
         const stayBlogs = (blogs || []).filter(b => !b.portal || b.portal === 'stay');
         stayBlogs.forEach(blog => {
             const blogDate = blog.createdAt ? blog.createdAt.split('T')[0] : todayStr;
@@ -180,7 +180,7 @@ exports.handler = async (event, context) => {
                     blogImageXml = `
         <image:image>
             <image:loc>${escapeXml(blog.imageUrl)}</image:loc>
-            <image:title>${escapeXml(blog.title || 'Resort Journal')}</image:title>
+            <image:title>${escapeXml(blog.title || 'Resort Blog')}</image:title>
             <image:caption>${escapeXml(blog.excerpt || blog.title)}</image:caption>
         </image:image>`;
                 }
