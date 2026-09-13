@@ -907,6 +907,16 @@ function prerenderRoomDetails(html, room) {
 
     const roomCode = generateRoomCode(room);
 
+    // Collect ALL images without limits (deduplicated)
+    const imageSet = new Set();
+    if (room.images && Array.isArray(room.images)) {
+        room.images.forEach(img => { if (img && typeof img === 'string' && img.trim()) imageSet.add(img.trim()); });
+    }
+    if (room.image && typeof room.image === 'string' && room.image.trim()) {
+        imageSet.add(room.image.trim());
+    }
+    const allRoomImages = imageSet.size > 0 ? Array.from(imageSet) : [roomImg];
+
     // 7. Inject Full Body HTML Elements
     modified = modified.replace(/<span id="breadcrumb-room-name"[^>]*>.*?<\/span>/i, `<span id="breadcrumb-room-name" class="text-slate-900 font-bold">${escapeHTML(cleanRoomName)}</span>`);
     modified = modified.replace(/<h1 id="detail-title"[^>]*>.*?<\/h1>/i, `<h1 id="detail-title" class="text-2xl md:text-4xl font-bold outfit text-[#0B0F19]">${escapeHTML(cleanRoomName)}</h1>`);
@@ -918,8 +928,38 @@ function prerenderRoomDetails(html, room) {
     }
 
     modified = modified.replace(/<img id="gallery-main-img"[^>]*>/i, `<img id="gallery-main-img" src="${roomImg}" alt="${escapeHTML(cleanRoomName)} - Furnished Apartment in ${escapeHTML(city)}" class="w-full h-full object-cover transition-all duration-500">`);
+    modified = modified.replace(/<span id="gallery-count"[^>]*>.*?<\/span>/i, `<span id="gallery-count">${allRoomImages.length}</span>`);
 
-    // 8. Structured Schema Graph (Breadcrumbs, Apartment / VacationRental, FAQPage)
+    // Prerender all image thumbnails directly in static HTML for web & image crawlers
+    const thumbnailsHtml = allRoomImages.map((img, idx) => `
+        <button class="relative w-20 h-20 rounded-xl overflow-hidden shrink-0 border-2 border-slate-200 transition-all cursor-pointer">
+            <img src="${escapeHTML(img)}" alt="${escapeHTML(cleanRoomName)} photo ${idx + 1} in ${escapeHTML(city)}, Pakistan" class="w-full h-full object-cover" loading="lazy" itemprop="image">
+        </button>
+    `).join('\n');
+    modified = modified.replace(/<div id="gallery-thumbnails"[^>]*>[\s\S]*?<\/div>/i, `<div id="gallery-thumbnails" class="flex gap-3 overflow-x-auto pb-2 scrollbar-thin hide-scrollbar">\n${thumbnailsHtml}\n</div>`);
+
+    // Add semantic noscript image gallery for Googlebot
+    const noscriptGallery = `
+    <noscript>
+        <div class="p-6 bg-slate-50 rounded-2xl my-6 border border-slate-200">
+            <h2 class="text-base font-bold text-slate-900 mb-3">${escapeHTML(cleanRoomName)} Photo Gallery (${allRoomImages.length} Photos)</h2>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                ${allRoomImages.map((img, idx) => `<img src="${escapeHTML(img)}" alt="${escapeHTML(cleanRoomName)} - Photo ${idx + 1} (${escapeHTML(city)}, Pakistan)" class="rounded-xl object-cover w-full h-32" itemprop="image">`).join('\n')}
+            </div>
+        </div>
+    </noscript>
+    `;
+    modified = modified.replace(/<\/main>/i, `${noscriptGallery}\n</main>`);
+
+    // 8. Structured Schema Graph (Breadcrumbs, Apartment / VacationRental with full ImageObject photo array, FAQPage)
+    const photoObjects = allRoomImages.map((imgUrl, idx) => ({
+        "@type": "ImageObject",
+        "contentUrl": imgUrl,
+        "url": imgUrl,
+        "name": `${cleanRoomName} - Photo ${idx + 1}`,
+        "caption": `${cleanRoomName} photo ${idx + 1} - fully furnished accommodation in ${city}, Pakistan`
+    }));
+
     const hasRealReviews = room.reviewsCount && Number(room.reviewsCount) > 0;
     const schemaGraph = {
         "@context": "https://schema.org",
@@ -938,7 +978,8 @@ function prerenderRoomDetails(html, room) {
                 "identifier": roomCode,
                 "name": roomTitle,
                 "description": rawDesc,
-                "image": room.images && room.images.length ? room.images : [roomImg],
+                "image": allRoomImages,
+                "photo": photoObjects,
                 "category": typeName,
                 "url": roomUrl,
                 "occupancy": {

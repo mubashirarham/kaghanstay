@@ -119,7 +119,7 @@ exports.handler = async (event, context) => {
             }
         });
 
-        // 2. Dynamic Room detail routes with Image SEO & strict URL deduplication
+        // 2. Dynamic Room detail routes with Image SEO for ALL listing photos & strict URL deduplication
         (rooms || []).forEach(room => {
             if (room.status === 'available' || !room.status) {
                 const roomModDate = room.updatedAt ? room.updatedAt.split('T')[0] : todayStr;
@@ -136,17 +136,44 @@ exports.handler = async (event, context) => {
                 if (!emittedUrls.has(roomLoc)) {
                     emittedUrls.add(roomLoc);
 
-                    const roomImages = (room.images && Array.isArray(room.images) && room.images.length) ? room.images : (room.image ? [room.image] : []);
+                    // Resolve clean city name
+                    const rawLoc = (room.location || room.locationName || '').toLowerCase();
+                    const rawName = (room.name || '').toLowerCase();
+                    let city = 'Islamabad';
+                    if (rawLoc.includes('nathia') || rawLoc.includes('gali') || rawLoc.includes('ayubia') || rawName.includes('nathia') || rawName.includes('ayubia')) {
+                        city = 'Nathia Gali';
+                    } else if (rawLoc.includes('murree') || rawLoc.includes('bhurban') || rawName.includes('murree') || rawName.includes('bhurban')) {
+                        city = 'Murree';
+                    }
+
+                    const cleanRoomName = room.name ? room.name
+                        .replace(/\s*[–—-]\s*by\s+Nook\s+House/gi, '')
+                        .replace(/\s*[–—-]\s*Book\s+Your\s+Stay.*/gi, '')
+                        .replace(/\s*[–—-]\s*Your\s+Perfect\s+Mountain\s+Getaway/gi, '')
+                        .replace(/\s*[–—-]\s*Your\s+Private\s+Mountain\s+Escape.*/gi, '')
+                        .trim() : (room.name || 'Luxury Suite');
+
+                    // Collect ALL images without limits (deduplicated)
+                    const imageSet = new Set();
+                    if (room.images && Array.isArray(room.images)) {
+                        room.images.forEach(img => { if (img && typeof img === 'string' && img.trim()) imageSet.add(img.trim()); });
+                    }
+                    if (room.image && typeof room.image === 'string' && room.image.trim()) {
+                        imageSet.add(room.image.trim());
+                    }
+                    const allRoomImages = Array.from(imageSet);
+
                     let imageXml = '';
-                    roomImages.slice(0, 5).forEach(imgUrl => {
-                        if (imgUrl && typeof imgUrl === 'string') {
-                            imageXml += `
+                    allRoomImages.forEach((imgUrl, imgIdx) => {
+                        const imgTitle = `${cleanRoomName} - Photo ${imgIdx + 1} | Furnished Apartment in ${city}`;
+                        const imgCaption = `${cleanRoomName} photo ${imgIdx + 1} - fully furnished apartment in ${city}, Pakistan with 24/7 backup power and modern amenities.`;
+                        imageXml += `
         <image:image>
             <image:loc>${escapeXml(imgUrl)}</image:loc>
-            <image:title>${escapeXml(room.name || 'Luxury Suite')}</image:title>
-            <image:caption>${escapeXml(room.location ? `${room.name} in ${room.location}` : room.name)}</image:caption>
+            <image:title>${escapeXml(imgTitle)}</image:title>
+            <image:caption>${escapeXml(imgCaption)}</image:caption>
+            <image:geo_location>${escapeXml(city)}, Pakistan</image:geo_location>
         </image:image>`;
-                        }
                     });
 
                     xml += `

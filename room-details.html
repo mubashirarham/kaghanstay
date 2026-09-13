@@ -1082,6 +1082,15 @@
                 let dynamicPdpSchema = document.getElementById('dynamic-vacation-rental-schema');
                 if (dynamicPdpSchema) dynamicPdpSchema.remove();
 
+                const allRoomImages = (currentRoom.images && currentRoom.images.length) ? currentRoom.images : [primaryImage];
+                const photoObjects = allRoomImages.map((imgUrl, idx) => ({
+                    "@type": "ImageObject",
+                    "contentUrl": imgUrl,
+                    "url": imgUrl,
+                    "name": `${cleanRoomName} - Photo ${idx + 1}`,
+                    "caption": `${cleanRoomName} photo ${idx + 1} - fully furnished accommodation in ${city}, Pakistan`
+                }));
+
                 const hasRealReviews = currentRoom.reviewsCount && Number(currentRoom.reviewsCount) > 0;
                 const schemaGraph = {
                     "@context": "https://schema.org",
@@ -1100,7 +1109,8 @@
                             "identifier": roomCode,
                             "name": roomTitleText,
                             "description": roomDescText,
-                            "image": currentRoom.images && currentRoom.images.length ? currentRoom.images : [primaryImage],
+                            "image": allRoomImages,
+                            "photo": photoObjects,
                             "category": typeName,
                             "url": canonicalUrl,
                             "occupancy": {
@@ -1686,9 +1696,10 @@
 
             const thumbsContainer = document.getElementById('gallery-thumbnails');
             if (thumbsContainer) {
+                const roomTitle = currentRoom ? (currentRoom.name || 'Luxury Suite') : 'Luxury Suite';
                 thumbsContainer.innerHTML = roomImages.map((img, idx) => `
                     <button onclick="selectGalleryImage(${idx})" class="relative w-20 h-20 rounded-xl overflow-hidden shrink-0 border-2 transition-all cursor-pointer ${idx === activeImgIdx ? 'border-[#C5A059] ring-2 ring-[#C5A059]/30 scale-105' : 'border-slate-200 opacity-60 hover:opacity-100'}">
-                        <img src="${img}" alt="${KaghanSafe.escapeHTML(currentRoom ? currentRoom.name : 'Gallery thumbnail')} photo ${idx + 1}" class="w-full h-full object-cover">
+                        <img src="${img}" alt="${KaghanSafe.escapeHTML(roomTitle)} photo ${idx + 1}" class="w-full h-full object-cover" loading="lazy" itemprop="image">
                     </button>
                 `).join('');
             }
