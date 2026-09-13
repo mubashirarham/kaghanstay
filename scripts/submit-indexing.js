@@ -155,10 +155,17 @@ async function main() {
         'https://kphstay.com/blog',
         'https://kphstay.com/contact',
         'https://kphstay.com/booking',
+        'https://kphstay.com/track',
+        'https://kphstay.com/pricing',
+        'https://kphstay.com/serviced-apartments-islamabad',
+        'https://kphstay.com/furnished-apartments-islamabad',
+        'https://kphstay.com/luxury-apartments-murree',
+        'https://kphstay.com/furnished-apartments-murree',
+        'https://kphstay.com/vacation-rentals-nathia-gali',
+        'https://kphstay.com/furnished-apartments-nathia-gali',
         'https://kphstay.com/privacy',
         'https://kphstay.com/terms',
         'https://kphstay.com/refund',
-        'https://kphstay.com/pricing',
         'https://kphstay.com/cookies'
     ];
 
