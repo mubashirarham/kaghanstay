@@ -19,12 +19,12 @@ function buildAdminInquiryEmail(name, email, subject, message, createdAt) {
         <meta charset="utf-8">
         <style>
             body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8fafc; color: #0f172a; margin: 0; padding: 20px; }
-            .card { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+            .card { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 0; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
             .header { background: #0f172a; padding: 24px; text-align: center; color: #ffffff; }
             .header h2 { margin: 0; font-size: 20px; font-weight: 700; }
             .header span { color: #d4af37; text-transform: uppercase; font-size: 11px; letter-spacing: 2px; }
             .body { padding: 32px; font-size: 14px; line-height: 1.6; color: #334155; }
-            .field-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+            .field-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0; padding: 16px; margin-bottom: 16px; }
             .field-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #64748b; margin-bottom: 4px; }
             .field-value { font-size: 14px; font-weight: 600; color: #0f172a; }
             .message-text { font-size: 14px; color: #1e293b; white-space: pre-wrap; margin: 0; }
@@ -76,7 +76,7 @@ function buildGuestAutoReplyEmail(name, subject) {
         <meta charset="utf-8">
         <style>
             body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8fafc; color: #0f172a; margin: 0; padding: 20px; }
-            .card { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+            .card { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 0; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
             .header { background: #0f172a; padding: 24px; text-align: center; color: #ffffff; }
             .header h2 { margin: 0; font-size: 20px; font-weight: 700; }
             .header span { color: #d4af37; text-transform: uppercase; font-size: 11px; letter-spacing: 2px; }

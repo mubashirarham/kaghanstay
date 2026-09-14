@@ -119,7 +119,7 @@ function buildVerificationEmailHTML(name, email, otpCode, verifyUrl) {
     <title>Verify Your Email - KPH Stay</title>
 </head>
 <body style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #0b111e; color: #e2e8f0; margin: 0; padding: 40px 20px;">
-    <table align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="background-color: #0f172a; border-radius: 16px; overflow: hidden; border: 1px solid #1e293b; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
+    <table align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="background-color: #0f172a; border-radius: 0; overflow: hidden; border: 1px solid #1e293b; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
         <!-- Header -->
         <tr>
             <td align="center" style="padding: 40px 30px 20px 30px; background-color: #0b111e; border-bottom: 1px solid #1e293b;">
@@ -137,7 +137,7 @@ function buildVerificationEmailHTML(name, email, otpCode, verifyUrl) {
                 </p>
 
                 <!-- OTP Code Display Card -->
-                <div style="background-color: #0b111e; border: 1px solid #D4AF37; border-radius: 14px; padding: 20px; text-align: center; margin: 24px 0;">
+                <div style="background-color: #0b111e; border: 1px solid #D4AF37; border-radius: 0; padding: 20px; text-align: center; margin: 24px 0;">
                     <p style="color: #94a3b8; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; margin: 0 0 8px 0;">Your 6-Digit Verification Code</p>
                     <div style="color: #D4AF37; font-size: 38px; font-weight: bold; letter-spacing: 12px; font-family: monospace; line-height: 1.2;">${otpCode}</div>
                     <p style="color: #64748b; font-size: 12px; margin: 10px 0 0 0;">Enter this code directly in the registration window</p>
@@ -145,7 +145,7 @@ function buildVerificationEmailHTML(name, email, otpCode, verifyUrl) {
 
                 <div style="text-align: center; margin: 30px 0 10px 0;">
                     <p style="color: #94a3b8; font-size: 13px; margin-bottom: 16px;">Or click the button below to verify instantly:</p>
-                    <a href="${verifyUrl}" target="_blank" style="display: inline-block; padding: 14px 32px; font-weight: bold; color: #0b111e; background-color: #D4AF37; font-size: 14px; text-decoration: none; text-transform: uppercase; letter-spacing: 1px; border-radius: 12px;">Verify Account Link</a>
+                    <a href="${verifyUrl}" target="_blank" style="display: inline-block; padding: 14px 32px; font-weight: bold; color: #0b111e; background-color: #D4AF37; font-size: 14px; text-decoration: none; text-transform: uppercase; letter-spacing: 1px; border-radius: 0;">Verify Account Link</a>
                 </div>
             </td>
         </tr>

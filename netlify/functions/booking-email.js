@@ -100,7 +100,7 @@ function buildInvoiceHTML(booking) {
             max-width: 780px;
             margin: 0 auto;
             background: #ffffff;
-            border-radius: 16px;
+            border-radius: 0;
             overflow: hidden;
             box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
             border: 1px solid #E2E8F0;
@@ -205,7 +205,7 @@ function buildInvoiceHTML(booking) {
             margin-left: auto;
             background-color: #F8FAFC;
             border: 1px solid #E2E8F0;
-            border-radius: 10px;
+            border-radius: 0;
             padding: 15px;
             margin-bottom: 25px;
         }
@@ -238,7 +238,7 @@ function buildInvoiceHTML(booking) {
         .checklist {
             background: #F8FAFC;
             border: 1px solid #E2E8F0;
-            border-radius: 10px;
+            border-radius: 0;
             padding: 15px;
             font-size: 12px;
             line-height: 1.9;
@@ -247,7 +247,7 @@ function buildInvoiceHTML(booking) {
         .terms-box {
             background-color: #FFFDF5;
             border: 1px solid #FEF08A;
-            border-radius: 10px;
+            border-radius: 0;
             padding: 15px;
             font-size: 11px;
             line-height: 1.7;
@@ -307,7 +307,7 @@ function buildInvoiceHTML(booking) {
             <div class="doc-title">BOOKING INVOICE</div>
 
             <!-- Top Invoice & Booking Metadata -->
-            <div style="margin: 15px 0 20px 0; padding: 12px 18px; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 10px;">
+            <div style="margin: 15px 0 20px 0; padding: 12px 18px; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 0;">
                 <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
                     <tr>
                         <td width="50%"><span class="label">Invoice No:</span> <strong style="color: #0F172A; font-size: 13px;">${invoiceNo}</strong></td>

@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
+        *, *::before, *::after, [class*="rounded"] { border-radius: 0 !important; }
         .outfit { font-family: 'Outfit', sans-serif; }
         body { font-family: 'Inter', sans-serif; }
         @media print {
@@ -25,13 +26,13 @@
         <a href="/" class="inline-flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-[#C5A059] transition-colors">
             <i class="fa-solid fa-arrow-left"></i> Return to Kaghan Stay
         </a>
-        <button onclick="window.print()" class="inline-flex items-center gap-2 bg-[#C5A059] hover:bg-amber-400 text-slate-950 font-black text-xs uppercase tracking-wider px-4 py-2.5 rounded-xl border-2 border-amber-300 shadow-md transition-all cursor-pointer">
+        <button onclick="window.print()" class="inline-flex items-center gap-2 bg-[#C5A059] hover:bg-amber-400 text-slate-950 font-black text-xs uppercase tracking-wider px-4 py-2.5 rounded-none border-2 border-amber-300 shadow-md transition-all cursor-pointer">
             <i class="fa-solid fa-print"></i> Print / Save PDF
         </button>
     </div>
 
     <!-- Invoice Container -->
-    <div class="invoice-card w-full max-w-2xl bg-white rounded-3xl p-6 md:p-8 shadow-2xl space-y-6 text-slate-900 border-2 border-slate-200">
+    <div class="invoice-card w-full max-w-2xl bg-white rounded-none p-6 md:p-8 shadow-2xl space-y-6 text-slate-900 border-2 border-slate-200">
         
         <!-- Header -->
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b-2 border-slate-200 pb-5 gap-4">

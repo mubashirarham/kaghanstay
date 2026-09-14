@@ -3381,7 +3381,7 @@ window.getCleanInvoiceHTML = function(booking, room) {
     const isPaid = paymentStatus === 'PAID';
 
     return `
-    <div class="kph-invoice-document" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 28px 32px; color: #0F172A; width: 750px; background: #ffffff; margin: 0 auto; box-sizing: border-box; border: 1px solid #E2E8F0; border-radius: 14px;">
+    <div class="kph-invoice-document" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 28px 32px; color: #0F172A; width: 750px; background: #ffffff; margin: 0 auto; box-sizing: border-box; border: 1px solid #E2E8F0; border-radius: 0;">
         <!-- Sleek Compact Header -->
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #D4AF37; padding-bottom: 16px; margin-bottom: 18px;">
             <div>
@@ -3389,20 +3389,20 @@ window.getCleanInvoiceHTML = function(booking, room) {
                 <div style="color: #D4AF37; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-top: 3px;">Luxury Resort &amp; Executive Suites</div>
             </div>
             <div style="text-align: right;">
-                <div style="background: #0F172A; color: #D4AF37; font-size: 11px; font-weight: 800; padding: 5px 14px; border-radius: 6px; display: inline-block; text-transform: uppercase; letter-spacing: 1px;">OFFICIAL INVOICE</div>
+                <div style="background: #0F172A; color: #D4AF37; font-size: 11px; font-weight: 800; padding: 5px 14px; border-radius: 0; display: inline-block; text-transform: uppercase; letter-spacing: 1px;">OFFICIAL INVOICE</div>
                 <div style="font-size: 12px; font-weight: 800; color: #334155; margin-top: 5px; font-family: monospace;">#${invoiceNo}</div>
                 <div style="font-size: 10px; color: #64748B; margin-top: 1px;">Date: ${invoiceDate}</div>
             </div>
         </div>
 
         <!-- 2-Column Guest & Reservation Info Grid -->
-        <div style="display: flex; gap: 16px; background: #F8FAFC; border: 1px solid #E2E8F0; padding: 16px; border-radius: 10px; margin-bottom: 18px; font-size: 11px;">
+        <div style="display: flex; gap: 16px; background: #F8FAFC; border: 1px solid #E2E8F0; padding: 16px; border-radius: 0; margin-bottom: 18px; font-size: 11px;">
             <div style="flex: 1;">
                 <div style="font-size: 9px; font-weight: 800; text-transform: uppercase; color: #94A3B8; letter-spacing: 1px; margin-bottom: 6px;">GUEST DETAILS</div>
                 <div style="font-weight: 800; font-size: 14px; color: #0F172A; margin-bottom: 3px;">${guestName}</div>
                 <div style="color: #475569; margin-top: 2px;">Phone: <strong style="color: #0F172A;">${guestPhone}</strong></div>
                 <div style="color: #475569; margin-top: 2px;">Email: <strong>${guestEmail}</strong></div>
-                <div style="color: #475569; margin-top: 2px;">CNIC / ID: <strong style="color: #0F172A; font-family: monospace;">${cnicPassport}</strong>${(b.cnicFrontImg || b.cnicBackImg) ? ' <span style="display:inline-block; padding: 1px 6px; background: #ECFDF5; color: #059669; font-size: 8.5px; font-weight: 800; border-radius: 4px; border: 1px solid #A7F3D0; vertical-align: middle;">ID Photos Attached ✓</span>' : ''}</div>
+                <div style="color: #475569; margin-top: 2px;">CNIC / ID: <strong style="color: #0F172A; font-family: monospace;">${cnicPassport}</strong>${(b.cnicFrontImg || b.cnicBackImg) ? ' <span style="display:inline-block; padding: 1px 6px; background: #ECFDF5; color: #059669; font-size: 8.5px; font-weight: 800; border-radius: 0; border: 1px solid #A7F3D0; vertical-align: middle;">ID Photos Attached ✓</span>' : ''}</div>
             </div>
             <div style="flex: 1; border-left: 1px solid #CBD5E1; padding-left: 18px;">
                 <div style="font-size: 9px; font-weight: 800; text-transform: uppercase; color: #94A3B8; letter-spacing: 1px; margin-bottom: 6px;">RESERVATION DETAILS</div>
@@ -3418,10 +3418,10 @@ window.getCleanInvoiceHTML = function(booking, room) {
         <table style="width: 100%; border-collapse: collapse; margin-bottom: 18px; font-size: 11px;">
             <thead>
                 <tr style="background: #0F172A; color: #ffffff; text-align: left;">
-                    <th style="padding: 9px 12px; border-radius: 6px 0 0 6px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Description</th>
+                    <th style="padding: 9px 12px; border-radius: 0; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Description</th>
                     <th style="padding: 9px 8px; text-align: center; font-size: 10px; text-transform: uppercase;">Nights</th>
                     <th style="padding: 9px 8px; text-align: right; font-size: 10px; text-transform: uppercase;">Rate / Night</th>
-                    <th style="padding: 9px 12px; text-align: right; border-radius: 0 6px 6px 0; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Amount (PKR)</th>
+                    <th style="padding: 9px 12px; text-align: right; border-radius: 0; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Amount (PKR)</th>
                 </tr>
             </thead>
             <tbody>
@@ -3460,15 +3460,15 @@ window.getCleanInvoiceHTML = function(booking, room) {
 
         <!-- Summary & Payment Info Grid -->
         <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 18px;">
-            <div style="flex: 1; background: #F8FAFC; border: 1px solid #E2E8F0; padding: 14px; border-radius: 10px; font-size: 11px;">
+            <div style="flex: 1; background: #F8FAFC; border: 1px solid #E2E8F0; padding: 14px; border-radius: 0; font-size: 11px;">
                 <div style="font-size: 9px; font-weight: 800; text-transform: uppercase; color: #94A3B8; letter-spacing: 1px; margin-bottom: 6px;">PAYMENT METHOD &amp; STATUS</div>
                 <div style="margin-bottom: 3px;">Method: <strong>${paymentMethod}</strong></div>
-                <div style="margin-bottom: 3px;">Status: <span style="display: inline-block; padding: 2px 8px; border-radius: 4px; font-weight: 800; font-size: 10px; background: ${isPaid ? '#DCFCE7' : (balanceDue === 0 ? '#DCFCE7' : '#FEF3C7')}; color: ${isPaid ? '#15803D' : (balanceDue === 0 ? '#15803D' : '#B45309')}; border: 1px solid ${isPaid ? '#BBF7D0' : '#FDE68A'};">${paymentStatus}</span></div>
+                <div style="margin-bottom: 3px;">Status: <span style="display: inline-block; padding: 2px 8px; border-radius: 0; font-weight: 800; font-size: 10px; background: ${isPaid ? '#DCFCE7' : (balanceDue === 0 ? '#DCFCE7' : '#FEF3C7')}; color: ${isPaid ? '#15803D' : (balanceDue === 0 ? '#15803D' : '#B45309')}; border: 1px solid ${isPaid ? '#BBF7D0' : '#FDE68A'};">${paymentStatus}</span></div>
                 ${transactionNo ? `<div style="color: #64748B; font-size: 10px; margin-top: 4px;">Reference: <strong style="color: #0F172A; font-family: monospace;">${transactionNo}</strong></div>` : ''}
                 ${b.couponUsed ? `<div style="color: #047857; font-size: 10px; margin-top: 4px; font-weight: 700;">Discount Coupon: ${b.couponUsed}</div>` : ''}
             </div>
 
-            <div style="width: 270px; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 10px; padding: 14px; font-size: 11px;">
+            <div style="width: 270px; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 0; padding: 14px; font-size: 11px;">
                 ${discount > 0 ? `
                 <div style="display: flex; justify-content: space-between; padding: 3px 0; color: #475569;">
                     <span>Subtotal:</span>
@@ -3494,7 +3494,7 @@ window.getCleanInvoiceHTML = function(booking, room) {
         </div>
 
         <!-- Compact 2-Line Footer -->
-        <div style="background: #0F172A; color: #94A3B8; text-align: center; padding: 12px 16px; font-size: 10px; border-radius: 8px;">
+        <div style="background: #0F172A; color: #94A3B8; text-align: center; padding: 12px 16px; font-size: 10px; border-radius: 0;">
             <div style="color: #D4AF37; font-weight: 800; font-size: 11px; letter-spacing: 1.5px;">KPH STAY &bull; LUXURY APARTMENTS &amp; RESORTS</div>
             <div style="color: #CBD5E1; margin-top: 3px;">Check-in: 2:00 PM | Check-out: 12:00 PM &bull; Valid CNIC/Passport required at check-in.</div>
         </div>

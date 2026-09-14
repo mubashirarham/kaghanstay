@@ -517,7 +517,7 @@ function renderCharts(bookings, rooms) {
     const suiteRevOptions = {
         series: [{ name: 'Revenue Contribution', data: revenueValues }],
         chart: { type: 'bar', height: 320, toolbar: { show: false }, fontFamily: 'Inter, sans-serif' },
-        plotOptions: { bar: { horizontal: true, borderRadius: 8, barHeight: '55%' } },
+        plotOptions: { bar: { horizontal: true, borderRadius: 0, barHeight: '55%' } },
         colors: ['#D4AF37'],
         dataLabels: { enabled: true, formatter: (val) => "PKR " + (val / 1000).toFixed(0) + "k", style: { colors: ['#fff'], fontSize: '10px' } },
         xaxis: { categories: categories, labels: { formatter: (val) => "PKR " + (val / 1000).toFixed(0) + "k" } },
