@@ -220,6 +220,15 @@ h1,h2,h3,h4,h5,h6 { font-family: var(--font-display); letter-spacing: -0.02em; l
     }
 }
 
+/* Bulletproof Mobile Viewport Top Spacing (Prevents Fixed Header Overlapping) */
+@media (max-width: 640px) {
+    #hero-slider-header,
+    header.hero-section,
+    .hero-container-pad {
+        padding-top: max(8.5rem, calc(4.5rem + env(safe-area-inset-top))) !important;
+    }
+}
+
 .responsive-container { width:100%; max-width:var(--container-max); margin:0 auto; padding:0 var(--section-pad-x); }
 .section-spacing { padding-top: var(--section-pad-y); padding-bottom: var(--section-pad-y); }
 
