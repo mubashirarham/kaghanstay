@@ -156,22 +156,22 @@
             <div class="w-full lg:w-2/3 space-y-8">
                 
                 <!-- RoomHero Gallery Component -->
-                <div class="bg-white rounded-2xl border-2 border-slate-200 shadow-md hover:border-[#C5A059] transition-all duration-300 p-4 md:p-6 overflow-hidden">
+                <div class="bg-white rounded-2xl border-2 border-slate-200 shadow-md pop-card transition-all duration-300 p-4 md:p-6 overflow-hidden">
                     
                     <!-- Main Display Image Container with Touch Swipe & Fullscreen Lightbox -->
                     <div id="pdp-gallery-main-container" class="relative h-72 md:h-[420px] rounded-xl overflow-hidden bg-slate-900 group cursor-pointer border-2 border-slate-200" onclick="openPDPFullScreenLightbox()">
                         <img id="gallery-main-img" src="/assets/images/logo.png" alt="Suite View" class="w-full h-full object-cover transition-all duration-500">
                         
                         <!-- Floating Navigation Arrows -->
-                        <button onclick="event.stopPropagation(); prevGalleryImage();" class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-slate-900/80 hover:bg-[#C5A059] text-white flex items-center justify-center backdrop-blur-md transition-all shadow-md z-10 border border-slate-700" aria-label="Previous Image">
+                        <button onclick="event.stopPropagation(); prevGalleryImage();" class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-slate-900/80 hover:bg-slate-700 text-white flex items-center justify-center backdrop-blur-md transition-all shadow-md z-10 border border-slate-700 pop-btn" aria-label="Previous Image">
                             <i class="fa-solid fa-chevron-left text-sm"></i>
                         </button>
-                        <button onclick="event.stopPropagation(); nextGalleryImage();" class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-slate-900/80 hover:bg-[#C5A059] text-white flex items-center justify-center backdrop-blur-md transition-all shadow-md z-10 border border-slate-700" aria-label="Next Image">
+                        <button onclick="event.stopPropagation(); nextGalleryImage();" class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-slate-900/80 hover:bg-slate-700 text-white flex items-center justify-center backdrop-blur-md transition-all shadow-md z-10 border border-slate-700 pop-btn" aria-label="Next Image">
                             <i class="fa-solid fa-chevron-right text-sm"></i>
                         </button>
 
                         <!-- Expand Fullscreen Gallery Badge Button -->
-                        <button onclick="event.stopPropagation(); openPDPFullScreenLightbox();" class="absolute top-4 right-4 bg-slate-900/90 hover:bg-[#C5A059] text-white px-3.5 py-1.5 rounded-xl text-xs font-bold backdrop-blur-md transition-all shadow-md flex items-center gap-1.5 z-10 border border-slate-700">
+                        <button onclick="event.stopPropagation(); openPDPFullScreenLightbox();" class="absolute top-4 right-4 bg-slate-900/90 hover:bg-slate-700 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold backdrop-blur-md transition-all shadow-md flex items-center gap-1.5 z-10 border border-slate-700 pop-btn">
                             <i class="fa-solid fa-expand text-xs"></i> <span class="hidden sm:inline">Fullscreen</span>
                         </button>
 
@@ -523,7 +523,7 @@
                     <form id="booking-card-form" onsubmit="handleConfirmBooking(event)" class="space-y-4">
                         <div>
                             <label class="block text-[10px] uppercase font-bold tracking-wider text-slate-600 mb-1">Stay Dates</label>
-                            <button type="button" onclick="openPDPDateCalendarModal()" class="w-full bg-slate-50 border-2 border-slate-300 hover:border-[#C5A059] rounded-xl px-3.5 py-3 text-xs text-left flex items-center justify-between font-bold text-slate-900 cursor-pointer shadow-sm">
+                            <button type="button" onclick="openPDPDateCalendarModal()" class="w-full bg-slate-50 border-2 border-slate-300 hover:border-slate-500 rounded-xl px-3.5 py-3 text-xs text-left flex items-center justify-between font-bold text-slate-900 cursor-pointer shadow-sm pop-hover">
                                 <span id="search-date-trigger-text">Select check-in & check-out</span>
                                 <i class="fa-solid fa-calendar-alt text-[#B8860B] text-sm"></i>
                             </button>
@@ -1423,7 +1423,7 @@
                         } else if (isInRange) {
                             cellClass += "bg-[#C5A059]/20 text-slate-900 font-semibold border border-[#C5A059]/40";
                         } else {
-                            cellClass += "bg-white text-slate-800 border border-slate-200/60 shadow-2xs hover:border-[#C5A059] hover:text-[#C5A059] cursor-pointer";
+                            cellClass += "bg-white text-slate-800 border border-slate-200/60 shadow-2xs hover:border-slate-400 hover:text-slate-900 cursor-pointer pop-hover";
                         }
 
                         const disabledAttr = (isPast || isUnavailable) ? 'disabled' : '';
@@ -2072,13 +2072,13 @@
                     const img = r.image || (r.images && r.images.length ? r.images[0] : '/assets/images/logo.png');
                     const roomHref = KaghanDB.getRoomLink ? KaghanDB.getRoomLink(r) : `/room-details.html?id=${r.id}`;
                     return `
-                        <a href="${roomHref}" class="flex items-center gap-3 p-3 rounded-2xl border border-slate-100 hover:border-[#C5A059]/40 bg-slate-50/60 hover:bg-white transition-all duration-300 group">
+                        <a href="${roomHref}" class="flex items-center gap-3 p-3 rounded-2xl border border-slate-200 bg-slate-50/60 hover:bg-white transition-all duration-300 group pop-hover">
                             <div class="w-20 h-20 rounded-xl overflow-hidden shrink-0 bg-slate-200">
                                 <img src="${img}" alt="${KaghanSafe.escapeHTML(r.name)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                             </div>
                             <div class="flex-grow min-w-0">
-                                <span class="text-[9px] uppercase font-bold text-[#C5A059] block tracking-wider truncate">${KaghanSafe.escapeHTML(r.type || 'Suite')}</span>
-                                <h4 class="font-bold text-slate-900 text-xs truncate group-hover:text-[#C5A059] transition-colors">${KaghanSafe.escapeHTML(r.name)}</h4>
+                                <span class="text-[9px] uppercase font-bold text-amber-600 block tracking-wider truncate">${KaghanSafe.escapeHTML(r.type || 'Suite')}</span>
+                                <h4 class="font-bold text-slate-900 text-xs truncate group-hover:text-amber-600 transition-colors">${KaghanSafe.escapeHTML(r.name)}</h4>
                                 <span class="text-xs font-black text-slate-800 mt-1 block">${KaghanUI.formatPKR(price)} <span class="text-[9px] text-slate-400 font-normal">/night</span></span>
                             </div>
                         </a>

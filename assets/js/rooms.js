@@ -132,7 +132,7 @@
                     </div>
                     <h4 class="font-bold text-sm text-slate-900 leading-tight mb-1">${KaghanSafe.escapeHTML(room.name)}</h4>
                     <p class="text-xs text-[#C5A059] font-bold">${priceText} <span class="text-slate-500 font-normal">/ Night</span></p>
-                    <a href="${window.KaghanDB && window.KaghanDB.getRoomLink ? window.KaghanDB.getRoomLink(room) : `/room-details.html?id=${room.id}`}" class="block text-center bg-slate-900 text-white text-xs py-1.5 rounded-xl mt-2 font-bold hover:bg-[#C5A059] transition-colors">View Stay</a>
+                    <a href="${window.KaghanDB && window.KaghanDB.getRoomLink ? window.KaghanDB.getRoomLink(room) : `/room-details.html?id=${room.id}`}" class="block text-center bg-slate-900 text-white text-xs py-1.5 rounded-xl mt-2 font-bold hover:bg-slate-800 pop-btn transition-all">View Stay</a>
                 </div>
             `);
 
@@ -646,7 +646,7 @@
                 let mainImg = room.image || (room.images && room.images.length ? room.images[0] : '');
                 const isSaved = savedWishlist.includes(room.id);
                 return `
-                <div data-room-id="${room.id}" data-animate="fade-up" style="transition-delay: ${idx * 80}ms;" onclick="KaghanUI.openRoomDetailModal('${room.id}')" class="bg-white rounded-2xl overflow-hidden border-2 border-slate-200 shadow-md hover:border-[#C5A059] hover:shadow-xl transition-all duration-300 group cursor-pointer flex flex-col h-full relative">
+                <div data-room-id="${room.id}" data-animate="fade-up" style="transition-delay: ${idx * 80}ms;" onclick="KaghanUI.openRoomDetailModal('${room.id}')" class="bg-white rounded-2xl overflow-hidden border-2 border-slate-200 shadow-md pop-card group cursor-pointer flex flex-col h-full relative">
                     <div class="relative h-60 overflow-hidden bg-slate-100 shrink-0 border-b border-slate-200">
                         <img src="${KaghanSafe.escapeHTML(mainImg)}" alt="${KaghanSafe.escapeHTML(room.name || 'Furnished Luxury Apartment')}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-all duration-500">
                         ${room.isPinned ? `
@@ -668,7 +668,7 @@
                     <div class="p-6 flex-1 flex flex-col justify-between bg-white">
                         <div>
                             <div class="flex justify-between items-start mb-2 gap-2">
-                                <h3 class="text-lg font-bold outfit text-slate-900 leading-tight group-hover:text-[#B8860B] transition-colors duration-200">${KaghanSafe.escapeHTML(room.name)}</h3>
+                                <h3 class="text-lg font-bold outfit text-slate-900 leading-tight group-hover:text-slate-700 transition-colors duration-200">${KaghanSafe.escapeHTML(room.name)}</h3>
                                 <div class="flex items-center gap-1 text-amber-900 font-extrabold text-xs bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-lg shrink-0">
                                     <i class="fa-solid fa-star text-amber-500"></i>
                                     <span>${room.rating || '5.0'}</span>
@@ -695,13 +695,13 @@
                                 <i class="fa-solid fa-user-group text-[#B8860B] text-xs"></i> Max ${room.maxGuests} Guests • ${room.bedrooms || 1} Bed
                             </div>
                             <div class="flex items-center gap-2 shrink-0">
-                                <button onclick="event.stopPropagation(); window.shareRoomCard('${room.id}', '${KaghanSafe.escapeHTML(room.name)}');" class="bg-slate-100 hover:bg-[#C5A059] hover:text-white text-slate-700 w-8 h-8 rounded-lg border border-slate-200 flex items-center justify-center text-xs transition-all shadow-sm" title="Share Listing">
+                                <button onclick="event.stopPropagation(); window.shareRoomCard('${room.id}', '${KaghanSafe.escapeHTML(room.name)}');" class="bg-slate-100 hover:bg-slate-900 hover:text-white text-slate-700 w-8 h-8 rounded-lg border border-slate-200 flex items-center justify-center text-xs transition-all shadow-sm pop-btn" title="Share Listing">
                                     <i class="fa-solid fa-share-nodes"></i>
                                 </button>
-                                <button onclick="event.stopPropagation(); window.location.href='${window.KaghanDB && window.KaghanDB.getRoomLink ? window.KaghanDB.getRoomLink(room) : `/room-details.html?id=${room.id}`}'" class="bg-slate-900 text-white text-xs uppercase tracking-wider font-bold px-3.5 py-2 rounded-xl hover:bg-slate-800 border border-slate-900 transition-all shadow-sm">
+                                <button onclick="event.stopPropagation(); window.location.href='${window.KaghanDB && window.KaghanDB.getRoomLink ? window.KaghanDB.getRoomLink(room) : `/room-details.html?id=${room.id}`}'" class="bg-slate-900 text-white text-xs uppercase tracking-wider font-bold px-3.5 py-2 rounded-xl hover:bg-slate-800 border border-slate-900 transition-all shadow-sm pop-btn">
                                     View Details
                                 </button>
-                                <button onclick="event.stopPropagation(); window.location.href='/booking.html?id=${room.id}'" class="bg-[#C5A059] text-white text-xs uppercase tracking-wider font-extrabold px-3.5 py-2 rounded-xl hover:bg-[#B8860B] border border-[#B8860B] transition-all shadow-sm">
+                                <button onclick="event.stopPropagation(); window.location.href='/booking.html?id=${room.id}'" class="bg-[#C5A059] text-white text-xs uppercase tracking-wider font-extrabold px-3.5 py-2 rounded-xl hover:bg-slate-900 border border-[#B8860B] hover:border-slate-900 transition-all shadow-sm pop-btn">
                                     Book Now
                                 </button>
                             </div>
@@ -887,19 +887,19 @@
                     <span class="text-white text-xs font-bold bg-white/10 px-3 py-1.5 rounded-full border border-white/10">
                         ${idx + 1} / ${list.length}
                     </span>
-                    <button onclick="closeRoomsLightbox()" class="w-10 h-10 rounded-full bg-white/10 hover:bg-rose-600 text-white flex items-center justify-center text-base focus:outline-none cursor-pointer">
+                    <button onclick="closeRoomsLightbox()" class="w-10 h-10 rounded-full bg-white/10 hover:bg-rose-600 text-white flex items-center justify-center text-base focus:outline-none cursor-pointer pop-btn">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
                 </div>
                 <div id="rooms-lb-wrapper" class="relative flex-grow flex items-center justify-center my-4 overflow-hidden touch-pan-y cursor-pointer">
                     ${list.length > 1 ? `
-                    <button onclick="changeRoomsLbImg(-1, event)" class="absolute left-2 md:left-6 z-20 w-12 h-12 rounded-full bg-black/50 hover:bg-[#D4AF37] text-white flex items-center justify-center backdrop-blur-md transition-all shadow-xl border border-white/10" aria-label="Previous">
+                    <button onclick="changeRoomsLbImg(-1, event)" class="absolute left-2 md:left-6 z-20 w-12 h-12 rounded-full bg-black/50 hover:bg-white/20 text-white flex items-center justify-center backdrop-blur-md transition-all shadow-xl border border-white/10 pop-btn" aria-label="Previous">
                         <i class="fa-solid fa-chevron-left"></i>
                     </button>
                     ` : ''}
                     <img src="${list[idx]}" class="max-w-full max-h-[80vh] rounded-2xl shadow-2xl object-contain">
                     ${list.length > 1 ? `
-                    <button onclick="changeRoomsLbImg(1, event)" class="absolute right-2 md:right-6 z-20 w-12 h-12 rounded-full bg-black/50 hover:bg-[#D4AF37] text-white flex items-center justify-center backdrop-blur-md transition-all shadow-xl border border-white/10" aria-label="Next">
+                    <button onclick="changeRoomsLbImg(1, event)" class="absolute right-2 md:right-6 z-20 w-12 h-12 rounded-full bg-black/50 hover:bg-white/20 text-white flex items-center justify-center backdrop-blur-md transition-all shadow-xl border border-white/10 pop-btn" aria-label="Next">
                         <i class="fa-solid fa-chevron-right"></i>
                     </button>
                     ` : ''}
@@ -907,7 +907,7 @@
                 ${list.length > 1 ? `
                 <div class="z-10 overflow-x-auto pb-2 scrollbar-thin hide-scrollbar flex justify-center gap-2">
                     ${list.map((img, i) => `
-                        <button onclick="setRoomsLbImg(${i})" class="w-12 h-12 rounded-xl overflow-hidden shrink-0 border-2 transition-all cursor-pointer ${i === idx ? 'border-[#D4AF37] opacity-100 scale-105' : 'border-white/20 opacity-40 hover:opacity-100'}">
+                        <button onclick="setRoomsLbImg(${i})" class="w-12 h-12 rounded-xl overflow-hidden shrink-0 border-2 transition-all cursor-pointer pop-chip ${i === idx ? 'border-[#D4AF37] opacity-100 scale-105' : 'border-white/20 opacity-40 hover:opacity-100'}">
                             <img src="${img}" class="w-full h-full object-cover">
                         </button>
                     `).join('')}

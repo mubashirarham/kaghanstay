@@ -2707,14 +2707,14 @@ const UI = {
         const nextDisabled = currentPage === totalPages;
 
         const prevBtnHtml = `
-            <button type="button" data-page="${currentPage - 1}" ${prevDisabled ? 'disabled' : ''} class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all border flex items-center gap-1.5 ${prevDisabled ? 'border-slate-100 text-slate-300 cursor-not-allowed bg-slate-50' : 'border-slate-200 text-slate-700 hover:border-[#D4AF37] hover:text-[#D4AF37] bg-white shadow-sm hover:shadow-md'}">
+            <button type="button" data-page="${currentPage - 1}" ${prevDisabled ? 'disabled' : ''} class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all border flex items-center gap-1.5 ${prevDisabled ? 'border-slate-100 text-slate-300 cursor-not-allowed bg-slate-50' : 'border-slate-200 text-slate-700 hover:border-slate-400 hover:text-slate-900 bg-white shadow-sm pop-btn'}">
                 <i class="fa-solid fa-chevron-left text-[10px]"></i>
                 <span class="hidden sm:inline">Prev</span>
             </button>
         `;
 
         const nextBtnHtml = `
-            <button type="button" data-page="${currentPage + 1}" ${nextDisabled ? 'disabled' : ''} class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all border flex items-center gap-1.5 ${nextDisabled ? 'border-slate-100 text-slate-300 cursor-not-allowed bg-slate-50' : 'border-slate-200 text-slate-700 hover:border-[#D4AF37] hover:text-[#D4AF37] bg-white shadow-sm hover:shadow-md'}">
+            <button type="button" data-page="${currentPage + 1}" ${nextDisabled ? 'disabled' : ''} class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all border flex items-center gap-1.5 ${nextDisabled ? 'border-slate-100 text-slate-300 cursor-not-allowed bg-slate-50' : 'border-slate-200 text-slate-700 hover:border-slate-400 hover:text-slate-900 bg-white shadow-sm pop-btn'}">
                 <span class="hidden sm:inline">Next</span>
                 <i class="fa-solid fa-chevron-right text-[10px]"></i>
             </button>
@@ -2726,7 +2726,7 @@ const UI = {
             }
             const isActive = p === currentPage;
             return `
-                <button type="button" data-page="${p}" class="w-9 h-9 rounded-xl flex items-center justify-center text-xs font-extrabold transition-all border ${isActive ? 'border-[#D4AF37] bg-[#D4AF37] text-white shadow-md shadow-[#D4AF37]/30 scale-105' : 'border-slate-200 text-slate-700 hover:border-[#D4AF37] hover:text-[#D4AF37] bg-white shadow-sm'}">
+                <button type="button" data-page="${p}" class="w-9 h-9 rounded-xl flex items-center justify-center text-xs font-extrabold transition-all border ${isActive ? 'border-slate-900 bg-slate-900 text-white shadow-md scale-105' : 'border-slate-200 text-slate-700 hover:border-slate-400 hover:text-slate-900 bg-white shadow-sm pop-btn'}">
                     ${p}
                 </button>
             `;
@@ -2844,11 +2844,11 @@ function injectChatbot() {
             
             <!-- Quick Options -->
             <div id="kph-chat-chips" class="flex flex-wrap gap-2 pt-2">
-                <button onclick="sendQuickMessage('Check suite availability')" class="bg-slate-800/80 border border-[#D4AF37]/20 hover:border-[#D4AF37] text-slate-300 text-[10px] px-3 py-1.5 rounded-full transition-all text-left font-medium">✨ Check Suite Availability</button>
-                <button onclick="sendQuickMessage('Find me a room under 25000 PKR for 2 guests')" class="bg-slate-800/80 border border-[#D4AF37]/20 hover:border-[#D4AF37] text-slate-300 text-[10px] px-3 py-1.5 rounded-full transition-all text-left font-medium">🎯 Best Room Matches</button>
-                <button onclick="sendQuickMessage('What do guests say in reviews?')" class="bg-slate-800/80 border border-[#D4AF37]/20 hover:border-[#D4AF37] text-slate-300 text-[10px] px-3 py-1.5 rounded-full transition-all text-left font-medium">⭐ Customer Reviews & Feedback</button>
-                <button onclick="sendQuickMessage('What is your cancellation and check-in policy?')" class="bg-slate-800/80 border border-[#D4AF37]/20 hover:border-[#D4AF37] text-slate-300 text-[10px] px-3 py-1.5 rounded-full transition-all text-left font-medium">📋 Reservation Policies & FAQ</button>
-                <button onclick="sendQuickMessage('Track my booking')" class="bg-slate-800/80 border border-[#D4AF37]/20 hover:border-[#D4AF37] text-slate-300 text-[10px] px-3 py-1.5 rounded-full transition-all text-left font-medium">🔍 Track My Reservation</button>
+                <button onclick="sendQuickMessage('Check suite availability')" class="bg-slate-800/80 border border-slate-700 hover:border-slate-400 text-slate-200 text-[10px] px-3 py-1.5 rounded-full transition-all text-left font-medium pop-chip">✨ Check Suite Availability</button>
+                <button onclick="sendQuickMessage('Find me a room under 25000 PKR for 2 guests')" class="bg-slate-800/80 border border-slate-700 hover:border-slate-400 text-slate-200 text-[10px] px-3 py-1.5 rounded-full transition-all text-left font-medium pop-chip">🎯 Best Room Matches</button>
+                <button onclick="sendQuickMessage('What do guests say in reviews?')" class="bg-slate-800/80 border border-slate-700 hover:border-slate-400 text-slate-200 text-[10px] px-3 py-1.5 rounded-full transition-all text-left font-medium pop-chip">⭐ Customer Reviews & Feedback</button>
+                <button onclick="sendQuickMessage('What is your cancellation and check-in policy?')" class="bg-slate-800/80 border border-slate-700 hover:border-slate-400 text-slate-200 text-[10px] px-3 py-1.5 rounded-full transition-all text-left font-medium pop-chip">📋 Reservation Policies & FAQ</button>
+                <button onclick="sendQuickMessage('Track my booking')" class="bg-slate-800/80 border border-slate-700 hover:border-slate-400 text-slate-200 text-[10px] px-3 py-1.5 rounded-full transition-all text-left font-medium pop-chip">🔍 Track My Reservation</button>
             </div>
         </div>
 
@@ -2997,9 +2997,9 @@ function injectChatbot() {
         formatted = formatted.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (match, label, url) => {
             const isRoomLink = url.includes('room-details.html') || url.includes('booking.html');
             if (isRoomLink) {
-                return `<a href="${url}" class="inline-flex items-center gap-1.5 bg-gradient-to-r from-[#D4AF37] to-amber-600 hover:from-amber-400 hover:to-[#D4AF37] text-slate-950 font-extrabold px-3.5 py-1.5 rounded-xl text-[10px] uppercase tracking-wider my-1.5 shadow-md transition-all hover:scale-105">${label} <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i></a>`;
+                return `<a href="${url}" class="inline-flex items-center gap-1.5 bg-[#C5A059] hover:bg-slate-900 text-slate-950 hover:text-white font-extrabold px-3.5 py-1.5 rounded-xl text-[10px] uppercase tracking-wider my-1.5 shadow-md pop-btn transition-all">${label} <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i></a>`;
             }
-            return `<a href="${url}" target="_blank" class="text-[#D4AF37] font-semibold underline hover:text-white transition-colors">${label}</a>`;
+            return `<a href="${url}" target="_blank" class="text-white font-semibold underline hover:text-amber-300 transition-colors">${label}</a>`;
         });
 
         // 2. Bold emphasis **text**
@@ -3151,14 +3151,14 @@ window.renderNavbar = () => {
     } else {
         if (authContainer) {
             authContainer.innerHTML = `
-                <a href="/login.html" class="border border-[#D4AF37] text-white px-5 py-2 rounded-full hover:bg-[#D4AF37] hover:text-white transition-all text-sm font-semibold">Login</a>
-                <a href="/login.html?register=true" class="bg-[#D4AF37] text-white px-5 py-2 rounded-full hover:bg-white hover:text-slate-900 transition-all text-sm font-semibold luxury-shadow">Register</a>
+                <a href="/login.html" class="border border-slate-600 text-white px-5 py-2 rounded-full hover:bg-white hover:text-slate-900 transition-all text-sm font-semibold pop-btn">Login</a>
+                <a href="/login.html?register=true" class="bg-[#D4AF37] text-slate-950 px-5 py-2 rounded-full hover:bg-white hover:text-slate-900 transition-all text-sm font-semibold pop-btn shadow-md">Register</a>
             `;
         }
         if (authContainerMobile) {
             authContainerMobile.innerHTML = `
-                <a href="/login.html" class="border border-[#D4AF37] text-white py-3 rounded-full hover:bg-[#D4AF37] transition-all text-base" onclick="toggleDrawer()">Login</a>
-                <a href="/login.html?register=true" class="bg-[#D4AF37] text-white py-3 rounded-full hover:bg-white hover:text-slate-900 transition-all text-base shadow-lg" onclick="toggleDrawer()">Register</a>
+                <a href="/login.html" class="border border-slate-600 text-white py-3 rounded-full hover:bg-slate-800 transition-all text-base pop-btn" onclick="toggleDrawer()">Login</a>
+                <a href="/login.html?register=true" class="bg-[#D4AF37] text-slate-950 py-3 rounded-full hover:bg-white hover:text-slate-900 transition-all text-base pop-btn shadow-lg" onclick="toggleDrawer()">Register</a>
             `;
         }
     }
@@ -4040,7 +4040,7 @@ function ensureBlogNavLinks() {
                     const isCurrentBlog = window.location.pathname.includes('blog');
                     const blogLink = document.createElement('a');
                     blogLink.href = '/blog';
-                    blogLink.className = (isCurrentBlog ? 'text-[#D4AF37] font-bold' : 'hover:text-[#D4AF37]') + ' transition-colors';
+                    blogLink.className = (isCurrentBlog ? 'text-[#D4AF37] font-bold' : 'text-slate-200 hover:text-white') + ' transition-colors';
                     blogLink.innerText = 'Blog';
 
                     const roomsLink = links.find(a => (a.getAttribute('href') || '').includes('rooms'));
@@ -4461,7 +4461,7 @@ window.KaghanPromotions = {
                 ${perks.map(p => {
                     const tagHtml = p.tag ? `<span class="inline-block text-[8px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-md bg-amber-400/20 text-amber-300 border border-amber-400/30 ml-1 shrink-0">${window.KaghanSafe ? window.KaghanSafe.escapeHTML(p.tag) : p.tag}</span>` : '';
                     return `
-                    <div class="flex items-start gap-2.5 p-2.5 rounded-2xl bg-white/[0.04] border border-white/[0.08] hover:border-amber-400/30 transition-all">
+                    <div class="flex items-start gap-2.5 p-2.5 rounded-2xl bg-white/[0.04] border border-white/[0.08] pop-card">
                         <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 bg-amber-400/10 border border-amber-400/20 text-amber-400 text-xs">
                             <i class="fa-solid ${window.KaghanSafe ? window.KaghanSafe.escapeHTML(p.icon || 'fa-gift') : p.icon}"></i>
                         </div>

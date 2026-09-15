@@ -167,8 +167,8 @@
             </a>
 
             <div id="auth-links" class="flex gap-3 items-center">
-                <a href="/login" class="border border-slate-600 hover:border-[#C5A059] text-white px-4 py-1.5 rounded-xl hover:bg-[#C5A059] hover:text-slate-950 transition-all text-xs font-bold shadow-sm">Login</a>
-                <a href="/login?register=true" class="bg-[#C5A059] hover:bg-[#D4AF37] text-slate-950 px-4 py-1.5 rounded-xl transition-all text-xs font-extrabold shadow-md border border-amber-300">Register</a>
+                <a href="/login" class="border border-slate-600 hover:border-slate-400 text-white px-4 py-1.5 rounded-xl hover:bg-slate-800 transition-all text-xs font-bold shadow-sm pop-btn">Login</a>
+                <a href="/login?register=true" class="bg-[#C5A059] hover:bg-amber-400 text-slate-950 px-4 py-1.5 rounded-xl transition-all text-xs font-extrabold shadow-md border border-amber-300 pop-btn">Register</a>
             </div>
         </div>
 
@@ -191,8 +191,8 @@
             <span>WhatsApp Concierge</span>
         </a>
         <div id="auth-links-mobile" class="flex flex-col gap-3 w-64 text-center mt-4">
-            <a href="/login" class="border border-slate-600 text-white py-2.5 rounded-xl hover:bg-[#C5A059] hover:text-slate-950 transition-all text-sm font-bold" onclick="toggleDrawer()">Login</a>
-            <a href="/login?register=true" class="bg-[#C5A059] text-slate-950 py-2.5 rounded-xl hover:bg-white transition-all text-sm font-extrabold border border-amber-300" onclick="toggleDrawer()">Register</a>
+            <a href="/login" class="border border-slate-600 text-white py-2.5 rounded-xl hover:bg-slate-800 transition-all text-sm font-bold pop-btn" onclick="toggleDrawer()">Login</a>
+            <a href="/login?register=true" class="bg-[#C5A059] text-slate-950 py-2.5 rounded-xl hover:bg-amber-400 transition-all text-sm font-extrabold border border-amber-300 pop-btn" onclick="toggleDrawer()">Register</a>
         </div>
     </div>
 
@@ -251,8 +251,8 @@
                 <!-- Dates Picker Trigger -->
                 <div class="sm:col-span-1 lg:col-span-3 relative">
                     <label class="block text-xs uppercase tracking-widest text-[#FFDF9E] font-extrabold mb-1.5 ml-1">Stay Dates</label>
-                    <button type="button" onclick="KaghanSearchWidget.openCalendarModal()" class="w-full bg-slate-900/90 border border-slate-700 hover:border-[#C5A059] focus:border-[#C5A059] rounded-2xl pl-11 pr-4 py-3.5 outline-none transition-all text-white text-xs md:text-sm text-left flex items-center justify-between cursor-pointer group shadow-inner">
-                        <i class="fa-solid fa-calendar-days absolute left-4 text-[#C5A059] pointer-events-none text-sm group-hover:scale-110 transition-transform"></i>
+                    <button type="button" onclick="KaghanSearchWidget.openCalendarModal()" class="w-full bg-slate-900/90 border border-slate-700 hover:border-slate-500 focus:border-slate-400 rounded-2xl pl-11 pr-4 py-3.5 outline-none transition-all text-white text-xs md:text-sm text-left flex items-center justify-between cursor-pointer group shadow-inner pop-hover">
+                        <i class="fa-solid fa-calendar-days absolute left-4 text-amber-400 pointer-events-none text-sm group-hover:scale-110 transition-transform"></i>
                         <span id="search-date-trigger-text" class="font-bold whitespace-nowrap overflow-hidden text-ellipsis">Add dates</span>
                         <i class="fa-solid fa-chevron-down text-slate-400 text-xs shrink-0"></i>
                     </button>
@@ -432,8 +432,8 @@
 
                 <div class="hidden lg:flex justify-between items-center mb-6 pb-2 border-b border-slate-100">
                     <p class="text-slate-500 text-sm font-semibold"><span id="results-count" class="text-slate-900 font-extrabold text-lg">0</span> properties matching</p>
-                    <button id="toggle-map-btn" onclick="toggleMapMode()" class="bg-white border-2 border-slate-200 text-slate-800 text-xs font-extrabold px-4 py-2 rounded-xl shadow-sm hover:border-[#C5A059] hover:text-[#C5A059] transition-all flex items-center gap-2 cursor-pointer">
-                        <i class="fa-solid fa-map-location-dot text-[#C5A059]"></i> <span id="toggle-map-text">Show Map</span>
+                    <button id="toggle-map-btn" onclick="toggleMapMode()" class="bg-white border-2 border-slate-200 text-slate-800 text-xs font-extrabold px-4 py-2 rounded-xl shadow-sm hover:border-slate-400 hover:text-slate-900 transition-all flex items-center gap-2 cursor-pointer pop-btn">
+                        <i class="fa-solid fa-map-location-dot text-amber-500"></i> <span id="toggle-map-text">Show Map</span>
                     </button>
                 </div>
 

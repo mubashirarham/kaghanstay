@@ -284,8 +284,8 @@
 
             <div id="auth-links" class="flex gap-3 items-center">
                 <!-- Dynamically updated by shared JS -->
-                <a href="/login" class="border border-slate-600 text-slate-200 px-4 py-1.5 rounded-full hover:border-[#C5A059] hover:text-white transition-all text-xs font-bold">Login</a>
-                <a href="/login?register=true" class="bg-[#C5A059] text-slate-950 px-4 py-1.5 rounded-full hover:bg-white hover:text-slate-900 transition-all text-xs font-extrabold shadow-md">Register</a>
+                <a href="/login" class="border border-slate-600 text-slate-200 px-4 py-1.5 rounded-full hover:border-slate-400 hover:text-white transition-all text-xs font-bold pop-btn">Login</a>
+                <a href="/login?register=true" class="bg-[#C5A059] hover:bg-amber-400 text-slate-950 px-4 py-1.5 rounded-full transition-all text-xs font-extrabold shadow-md pop-btn">Register</a>
             </div>
         </div>
 
@@ -301,15 +301,15 @@
             <i class="fa-solid fa-xmark"></i>
         </button>
         <a href="/" class="text-[#C5A059] text-2xl font-extrabold" onclick="toggleDrawer()">Home</a>
-        <a href="/rooms" class="hover:text-[#C5A059] text-slate-200" onclick="toggleDrawer()">Accommodations</a>
-        <a href="/blog" class="hover:text-[#C5A059] text-slate-200" onclick="toggleDrawer()">Blog</a>
-        <a href="/track" class="hover:text-[#C5A059] text-slate-200" onclick="toggleDrawer()">Track Stay</a>
+        <a href="/rooms" class="hover:text-amber-300 text-slate-200" onclick="toggleDrawer()">Accommodations</a>
+        <a href="/blog" class="hover:text-amber-300 text-slate-200" onclick="toggleDrawer()">Blog</a>
+        <a href="/track" class="hover:text-amber-300 text-slate-200" onclick="toggleDrawer()">Track Stay</a>
         <a href="https://wa.me/923340091127" target="_blank" rel="noopener noreferrer" class="border border-emerald-500/60 bg-emerald-950/80 text-emerald-300 px-6 py-2.5 rounded-full text-base font-bold flex items-center gap-2" onclick="toggleDrawer()">
             <i class="fa-brands fa-whatsapp text-lg text-emerald-400"></i> WhatsApp Concierge
         </a>
         <div id="auth-links-mobile" class="flex flex-col gap-3 w-64 text-center mt-2">
-            <a href="/login" class="border border-slate-600 text-white py-2.5 rounded-full hover:bg-slate-800 transition-all text-sm font-bold" onclick="toggleDrawer()">Login</a>
-            <a href="/login?register=true" class="bg-[#C5A059] text-slate-950 py-2.5 rounded-full hover:bg-white transition-all text-sm font-extrabold shadow-lg" onclick="toggleDrawer()">Register</a>
+            <a href="/login" class="border border-slate-600 text-white py-2.5 rounded-full hover:bg-slate-800 transition-all text-sm font-bold pop-btn" onclick="toggleDrawer()">Login</a>
+            <a href="/login?register=true" class="bg-[#C5A059] hover:bg-amber-400 text-slate-950 py-2.5 rounded-full transition-all text-sm font-extrabold shadow-lg pop-btn" onclick="toggleDrawer()">Register</a>
         </div>
     </div>
 
@@ -335,10 +335,10 @@
                 <span>Luxury Serviced Living across Pakistan</span>
             </div>
 
-            <!-- Clean Master Headline -->
-            <h1 class="text-3xl sm:text-5xl lg:text-6xl text-white font-extrabold outfit tracking-tight leading-tight mb-4 drop-shadow-md" data-animate="fade-up">
+            <!-- Clean Master Headline with High Contrast on Mobile -->
+            <h1 class="text-3xl sm:text-5xl lg:text-6xl text-white font-extrabold outfit tracking-tight leading-tight mb-4 drop-shadow-lg" data-animate="fade-up">
                 Find Your Sanctuary in <br class="hidden sm:inline">
-                <span class="text-[#C5A059] font-serif italic font-normal">Islamabad, Murree & Nathia Gali</span>
+                <span class="hero-headline-highlight">Islamabad, Murree &amp; Nathia Gali</span>
             </h1>
 
             <!-- High-Clarity Subtitle -->
@@ -348,32 +348,32 @@
 
             <!-- Quick 1-Tap Destination Filters (Fast & Simple Navigation) -->
             <div class="flex flex-wrap items-center justify-center gap-2 mb-7" data-animate="fade-up">
-                <button type="button" onclick="selectHeroDestination('all', this)" class="hero-dest-pill active px-4 py-2 rounded-full text-xs font-extrabold bg-[#C5A059] text-slate-950 border border-amber-400 shadow-md cursor-pointer transition-all">
+                <button type="button" onclick="selectHeroDestination('all', this)" class="hero-dest-pill active px-4 py-2 rounded-full text-xs font-extrabold bg-[#C5A059] text-slate-950 border border-amber-300 shadow-md cursor-pointer transition-all pop-btn">
                     <i class="fa-solid fa-globe mr-1"></i> All Suites
                 </button>
-                <button type="button" onclick="selectHeroDestination('islamabad', this)" class="hero-dest-pill px-4 py-2 rounded-full text-xs font-bold bg-slate-900/85 hover:bg-slate-800 text-slate-200 border border-slate-700 hover:border-[#C5A059] hover:text-white cursor-pointer transition-all">
+                <button type="button" onclick="selectHeroDestination('islamabad', this)" class="hero-dest-pill px-4 py-2 rounded-full text-xs font-bold bg-slate-900/85 hover:bg-slate-800 text-slate-200 border border-slate-700 hover:border-slate-400 hover:text-white cursor-pointer transition-all pop-btn">
                     <i class="fa-solid fa-city text-amber-400 mr-1"></i> Islamabad
                 </button>
-                <button type="button" onclick="selectHeroDestination('murree', this)" class="hero-dest-pill px-4 py-2 rounded-full text-xs font-bold bg-slate-900/85 hover:bg-slate-800 text-slate-200 border border-slate-700 hover:border-[#C5A059] hover:text-white cursor-pointer transition-all">
+                <button type="button" onclick="selectHeroDestination('murree', this)" class="hero-dest-pill px-4 py-2 rounded-full text-xs font-bold bg-slate-900/85 hover:bg-slate-800 text-slate-200 border border-slate-700 hover:border-slate-400 hover:text-white cursor-pointer transition-all pop-btn">
                     <i class="fa-solid fa-tree text-emerald-400 mr-1"></i> Murree Hills
                 </button>
-                <button type="button" onclick="selectHeroDestination('nathiagali', this)" class="hero-dest-pill px-4 py-2 rounded-full text-xs font-bold bg-slate-900/85 hover:bg-slate-800 text-slate-200 border border-slate-700 hover:border-[#C5A059] hover:text-white cursor-pointer transition-all">
+                <button type="button" onclick="selectHeroDestination('nathiagali', this)" class="hero-dest-pill px-4 py-2 rounded-full text-xs font-bold bg-slate-900/85 hover:bg-slate-800 text-slate-200 border border-slate-700 hover:border-slate-400 hover:text-white cursor-pointer transition-all pop-btn">
                     <i class="fa-solid fa-mountain-sun text-cyan-400 mr-1"></i> Nathia Gali
                 </button>
             </div>
 
             <!-- Unified Luxury Booking & Search Card -->
-            <div id="hero-search-card" class="relative z-50 backdrop-blur-xl bg-[#0F172A]/95 rounded-3xl p-4 sm:p-6 md:p-7 border border-[#C5A059]/40 shadow-[0_24px_50px_-12px_rgba(0,0,0,0.8)] text-left text-white max-w-5xl mx-auto" style="position: relative; z-index: 50;">
+            <div id="hero-search-card" class="relative z-50 backdrop-blur-xl bg-[#0F172A]/95 rounded-3xl p-4 sm:p-6 md:p-7 border border-slate-700/80 shadow-[0_24px_50px_-12px_rgba(0,0,0,0.8)] text-left text-white max-w-5xl mx-auto" style="position: relative; z-index: 50;">
                 
                 <!-- Stay Duration Tag Selector -->
                 <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mb-5 border-b border-slate-700/80 pb-4">
                     <span class="text-xs uppercase tracking-widest text-[#FFDF9E] font-extrabold flex items-center gap-2">
-                        <i class="fa-solid fa-sliders text-[#C5A059]"></i> Select Stay Duration
+                        <i class="fa-solid fa-sliders text-amber-400"></i> Select Stay Duration
                     </span>
                     <div class="grid grid-cols-3 sm:flex gap-2 w-full sm:w-auto" id="hero-stay-type-tags">
-                        <button type="button" onclick="selectHeroStayType('daily')" id="stay-tag-daily" class="px-4 py-1.5 rounded-full text-xs font-extrabold transition-all bg-[#C5A059] text-slate-950 border border-amber-400 shadow-md cursor-pointer text-center whitespace-nowrap">Daily Stay</button>
-                        <button type="button" onclick="selectHeroStayType('weekly')" id="stay-tag-weekly" class="px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-slate-800/90 text-slate-200 border border-slate-600 hover:border-[#C5A059] hover:text-white cursor-pointer text-center whitespace-nowrap">Weekly (-15%)</button>
-                        <button type="button" onclick="selectHeroStayType('monthly')" id="stay-tag-monthly" class="px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-slate-800/90 text-slate-200 border border-slate-600 hover:border-[#C5A059] hover:text-white cursor-pointer text-center whitespace-nowrap">Monthly (-35%)</button>
+                        <button type="button" onclick="selectHeroStayType('daily')" id="stay-tag-daily" class="px-4 py-1.5 rounded-full text-xs font-extrabold transition-all bg-[#C5A059] text-slate-950 border border-amber-300 shadow-md cursor-pointer text-center whitespace-nowrap pop-btn">Daily Stay</button>
+                        <button type="button" onclick="selectHeroStayType('weekly')" id="stay-tag-weekly" class="px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-slate-800/90 text-slate-200 border border-slate-600 hover:border-slate-400 hover:text-white cursor-pointer text-center whitespace-nowrap pop-btn">Weekly (-15%)</button>
+                        <button type="button" onclick="selectHeroStayType('monthly')" id="stay-tag-monthly" class="px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-slate-800/90 text-slate-200 border border-slate-600 hover:border-slate-400 hover:text-white cursor-pointer text-center whitespace-nowrap pop-btn">Monthly (-35%)</button>
                     </div>
                     <input type="hidden" id="hero-stay-type" value="daily">
                 </div>
@@ -383,8 +383,8 @@
                     <div class="sm:col-span-1 lg:col-span-3">
                         <label class="block text-xs uppercase tracking-widest text-[#FFDF9E] font-extrabold mb-1.5 ml-1">Destination</label>
                         <div class="relative custom-dropdown" id="dropdown-location">
-                            <button type="button" onclick="toggleCustomDropdown('dropdown-location')" class="w-full bg-slate-900/90 border border-slate-700 hover:border-[#C5A059] focus:border-[#C5A059] rounded-2xl pl-11 pr-8 py-3.5 outline-none transition-all text-white text-xs md:text-sm text-left flex items-center justify-between cursor-pointer relative shadow-inner">
-                                <i class="fa-solid fa-location-dot absolute left-4 text-[#C5A059] pointer-events-none text-base"></i>
+                            <button type="button" onclick="toggleCustomDropdown('dropdown-location')" class="w-full bg-slate-900/90 border border-slate-700 hover:border-slate-500 focus:border-slate-400 rounded-2xl pl-11 pr-8 py-3.5 outline-none transition-all text-white text-xs md:text-sm text-left flex items-center justify-between cursor-pointer relative shadow-inner pop-hover">
+                                <i class="fa-solid fa-location-dot absolute left-4 text-amber-400 pointer-events-none text-base"></i>
                                 <span class="dropdown-selected font-bold whitespace-nowrap overflow-hidden text-ellipsis">All Locations</span>
                                 <i class="fa-solid fa-chevron-down text-slate-400 text-xs ml-1 shrink-0 transition-transform duration-300"></i>
                             </button>
@@ -426,8 +426,8 @@
                     <div class="sm:col-span-1 lg:col-span-3">
                         <label class="block text-xs uppercase tracking-widest text-[#FFDF9E] font-extrabold mb-1.5 ml-1">Suite Type</label>
                         <div class="relative custom-dropdown" id="dropdown-type">
-                            <button type="button" onclick="toggleCustomDropdown('dropdown-type')" class="w-full bg-slate-900/90 border border-slate-700 hover:border-[#C5A059] focus:border-[#C5A059] rounded-2xl pl-11 pr-8 py-3.5 outline-none transition-all text-white text-xs md:text-sm text-left flex items-center justify-between cursor-pointer relative shadow-inner">
-                                <i class="fa-solid fa-bed absolute left-4 text-[#C5A059] pointer-events-none text-base"></i>
+                            <button type="button" onclick="toggleCustomDropdown('dropdown-type')" class="w-full bg-slate-900/90 border border-slate-700 hover:border-slate-500 focus:border-slate-400 rounded-2xl pl-11 pr-8 py-3.5 outline-none transition-all text-white text-xs md:text-sm text-left flex items-center justify-between cursor-pointer relative shadow-inner pop-hover">
+                                <i class="fa-solid fa-bed absolute left-4 text-amber-400 pointer-events-none text-base"></i>
                                 <span class="dropdown-selected font-bold whitespace-nowrap overflow-hidden text-ellipsis">All Suite Types</span>
                                 <i class="fa-solid fa-chevron-down text-slate-400 text-xs ml-1 shrink-0 transition-transform duration-300"></i>
                             </button>
@@ -482,8 +482,8 @@
                     <!-- Dates Picker Trigger -->
                     <div class="sm:col-span-1 lg:col-span-2">
                         <label class="block text-xs uppercase tracking-widest text-[#FFDF9E] font-extrabold mb-1.5 ml-1">Dates</label>
-                        <button type="button" onclick="KaghanSearchWidget.openCalendarModal()" class="w-full bg-slate-900/90 border border-slate-700 hover:border-[#C5A059] focus:border-[#C5A059] rounded-2xl pl-11 pr-4 py-3.5 outline-none transition-all text-white text-xs md:text-sm text-left flex items-center justify-between cursor-pointer relative group shadow-inner">
-                            <i class="fa-solid fa-calendar-days absolute left-4 text-[#C5A059] pointer-events-none text-base group-hover:scale-110 transition-transform"></i>
+                        <button type="button" onclick="KaghanSearchWidget.openCalendarModal()" class="w-full bg-slate-900/90 border border-slate-700 hover:border-slate-500 focus:border-slate-400 rounded-2xl pl-11 pr-4 py-3.5 outline-none transition-all text-white text-xs md:text-sm text-left flex items-center justify-between cursor-pointer relative group shadow-inner pop-hover">
+                            <i class="fa-solid fa-calendar-days absolute left-4 text-amber-400 pointer-events-none text-base group-hover:scale-110 transition-transform"></i>
                             <span id="search-date-trigger-text" class="font-bold whitespace-nowrap overflow-hidden text-ellipsis">Add dates</span>
                             <i class="fa-solid fa-chevron-down text-slate-400 text-xs shrink-0"></i>
                         </button>
@@ -494,21 +494,21 @@
                     <!-- Guests Count Stepper Trigger -->
                     <div class="sm:col-span-1 lg:col-span-2 relative">
                         <label class="block text-xs uppercase tracking-widest text-[#FFDF9E] font-extrabold mb-1.5 ml-1">Guests</label>
-                        <button type="button" onclick="KaghanSearchWidget.toggleGuestStepperPopover()" class="w-full bg-slate-900/90 border border-slate-700 hover:border-[#C5A059] focus:border-[#C5A059] rounded-2xl pl-11 pr-4 py-3.5 outline-none transition-all text-white text-xs md:text-sm text-left flex items-center justify-between cursor-pointer relative group shadow-inner">
-                            <i class="fa-solid fa-users absolute left-4 text-[#C5A059] pointer-events-none text-base group-hover:scale-110 transition-transform"></i>
+                        <button type="button" onclick="KaghanSearchWidget.toggleGuestStepperPopover()" class="w-full bg-slate-900/90 border border-slate-700 hover:border-slate-500 focus:border-slate-400 rounded-2xl pl-11 pr-4 py-3.5 outline-none transition-all text-white text-xs md:text-sm text-left flex items-center justify-between cursor-pointer relative group shadow-inner pop-hover">
+                            <i class="fa-solid fa-users absolute left-4 text-amber-400 pointer-events-none text-base group-hover:scale-110 transition-transform"></i>
                             <span id="search-guest-trigger-text" class="font-bold whitespace-nowrap overflow-hidden text-ellipsis">2 Guests</span>
                             <i class="fa-solid fa-chevron-down text-slate-400 text-xs shrink-0"></i>
                         </button>
                         <input type="hidden" id="search-guests" value="2">
 
                         <!-- Mobile-Optimized Screen-Safe Guest Stepper Dropdown Popover -->
-                        <div id="guest-stepper-popover" class="hidden absolute top-full left-0 sm:left-auto right-0 mt-2 sm:mt-3 bg-[#0F172A] border-2 border-[#C5A059]/50 rounded-2xl p-4 sm:p-5 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.95)] z-[100] text-white space-y-3 sm:space-y-4 w-full sm:w-80 max-w-[calc(100vw-2.5rem)]">
+                        <div id="guest-stepper-popover" class="hidden absolute top-full left-0 sm:left-auto right-0 mt-2 sm:mt-3 bg-[#0F172A] border-2 border-slate-700 rounded-2xl p-4 sm:p-5 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.95)] z-[100] text-white space-y-3 sm:space-y-4 w-full sm:w-80 max-w-[calc(100vw-2.5rem)]">
                             <div class="text-[10px] uppercase font-extrabold tracking-widest text-[#FFDF9E] mb-1">Quick Presets</div>
                             <div class="grid grid-cols-4 gap-1.5 pb-3 border-b border-slate-700">
-                                <button type="button" onclick="KaghanSearchWidget.setGuestPreset(1,0,0)" data-adults="1" data-children="0" data-infants="0" class="preset-btn py-1.5 px-1 rounded-lg bg-slate-800 hover:bg-[#C5A059] hover:text-slate-950 border border-slate-600 text-[10px] font-bold transition-all text-center cursor-pointer">Solo (1)</button>
-                                <button type="button" onclick="KaghanSearchWidget.setGuestPreset(2,0,0)" data-adults="2" data-children="0" data-infants="0" class="preset-btn py-1.5 px-1 rounded-lg bg-[#C5A059] text-slate-950 border-amber-400 text-[10px] font-extrabold transition-all text-center cursor-pointer">Couple (2)</button>
-                                <button type="button" onclick="KaghanSearchWidget.setGuestPreset(2,2,0)" data-adults="2" data-children="2" data-infants="0" class="preset-btn py-1.5 px-1 rounded-lg bg-slate-800 hover:bg-[#C5A059] hover:text-slate-950 border border-slate-600 text-[10px] font-bold transition-all text-center cursor-pointer">Family (4)</button>
-                                <button type="button" onclick="KaghanSearchWidget.setGuestPreset(4,2,0)" data-adults="4" data-children="2" data-infants="0" class="preset-btn py-1.5 px-1 rounded-lg bg-slate-800 hover:bg-[#C5A059] hover:text-slate-950 border border-slate-600 text-[10px] font-bold transition-all text-center cursor-pointer">Group (6)</button>
+                                <button type="button" onclick="KaghanSearchWidget.setGuestPreset(1,0,0)" data-adults="1" data-children="0" data-infants="0" class="preset-btn py-1.5 px-1 rounded-lg bg-slate-800 hover:bg-slate-700 hover:text-white border border-slate-600 text-[10px] font-bold transition-all text-center cursor-pointer pop-btn">Solo (1)</button>
+                                <button type="button" onclick="KaghanSearchWidget.setGuestPreset(2,0,0)" data-adults="2" data-children="0" data-infants="0" class="preset-btn py-1.5 px-1 rounded-lg bg-[#C5A059] text-slate-950 border-amber-300 text-[10px] font-extrabold transition-all text-center cursor-pointer pop-btn">Couple (2)</button>
+                                <button type="button" onclick="KaghanSearchWidget.setGuestPreset(2,2,0)" data-adults="2" data-children="2" data-infants="0" class="preset-btn py-1.5 px-1 rounded-lg bg-slate-800 hover:bg-slate-700 hover:text-white border border-slate-600 text-[10px] font-bold transition-all text-center cursor-pointer pop-btn">Family (4)</button>
+                                <button type="button" onclick="KaghanSearchWidget.setGuestPreset(4,2,0)" data-adults="4" data-children="2" data-infants="0" class="preset-btn py-1.5 px-1 rounded-lg bg-slate-800 hover:bg-slate-700 hover:text-white border border-slate-600 text-[10px] font-bold transition-all text-center cursor-pointer pop-btn">Group (6)</button>
                             </div>
                             <!-- Adults -->
                             <div class="flex items-center justify-between pt-1">
@@ -520,9 +520,9 @@
                                     </div>
                                 </div>
                                 <div class="flex items-center gap-2.5">
-                                    <button type="button" onclick="KaghanSearchWidget.changeGuests('adults', -1)" class="w-8 h-8 rounded-full border border-slate-600 bg-slate-800 flex items-center justify-center text-xs hover:bg-[#C5A059] hover:text-slate-950 hover:border-amber-400 active:scale-95 transition-all font-bold text-white cursor-pointer">-</button>
+                                    <button type="button" onclick="KaghanSearchWidget.changeGuests('adults', -1)" class="w-8 h-8 rounded-full border border-slate-600 bg-slate-800 flex items-center justify-center text-xs hover:bg-slate-700 hover:text-white hover:border-slate-500 active:scale-95 transition-all font-bold text-white cursor-pointer pop-btn">-</button>
                                     <span id="stepper-adults-count" class="w-5 text-center text-xs font-extrabold text-[#FFDF9E]">2</span>
-                                    <button type="button" onclick="KaghanSearchWidget.changeGuests('adults', 1)" class="w-8 h-8 rounded-full border border-slate-600 bg-slate-800 flex items-center justify-center text-xs hover:bg-[#C5A059] hover:text-slate-950 hover:border-amber-400 active:scale-95 transition-all font-bold text-white cursor-pointer">+</button>
+                                    <button type="button" onclick="KaghanSearchWidget.changeGuests('adults', 1)" class="w-8 h-8 rounded-full border border-slate-600 bg-slate-800 flex items-center justify-center text-xs hover:bg-slate-700 hover:text-white hover:border-slate-500 active:scale-95 transition-all font-bold text-white cursor-pointer pop-btn">+</button>
                                 </div>
                             </div>
                             <!-- Children -->
@@ -535,9 +535,9 @@
                                     </div>
                                 </div>
                                 <div class="flex items-center gap-2.5">
-                                    <button type="button" onclick="KaghanSearchWidget.changeGuests('children', -1)" class="w-8 h-8 rounded-full border border-slate-600 bg-slate-800 flex items-center justify-center text-xs hover:bg-[#C5A059] hover:text-slate-950 hover:border-amber-400 active:scale-95 transition-all font-bold text-white cursor-pointer">-</button>
+                                    <button type="button" onclick="KaghanSearchWidget.changeGuests('children', -1)" class="w-8 h-8 rounded-full border border-slate-600 bg-slate-800 flex items-center justify-center text-xs hover:bg-slate-700 hover:text-white hover:border-slate-500 active:scale-95 transition-all font-bold text-white cursor-pointer pop-btn">-</button>
                                     <span id="stepper-children-count" class="w-5 text-center text-xs font-extrabold text-[#FFDF9E]">0</span>
-                                    <button type="button" onclick="KaghanSearchWidget.changeGuests('children', 1)" class="w-8 h-8 rounded-full border border-slate-600 bg-slate-800 flex items-center justify-center text-xs hover:bg-[#C5A059] hover:text-slate-950 hover:border-amber-400 active:scale-95 transition-all font-bold text-white cursor-pointer">+</button>
+                                    <button type="button" onclick="KaghanSearchWidget.changeGuests('children', 1)" class="w-8 h-8 rounded-full border border-slate-600 bg-slate-800 flex items-center justify-center text-xs hover:bg-slate-700 hover:text-white hover:border-slate-500 active:scale-95 transition-all font-bold text-white cursor-pointer pop-btn">+</button>
                                 </div>
                             </div>
                             <!-- Infants -->
@@ -550,9 +550,9 @@
                                     </div>
                                 </div>
                                 <div class="flex items-center gap-2.5">
-                                    <button type="button" onclick="KaghanSearchWidget.changeGuests('infants', -1)" class="w-8 h-8 rounded-full border border-slate-600 bg-slate-800 flex items-center justify-center text-xs hover:bg-[#C5A059] hover:text-slate-950 hover:border-amber-400 active:scale-95 transition-all font-bold text-white cursor-pointer">-</button>
+                                    <button type="button" onclick="KaghanSearchWidget.changeGuests('infants', -1)" class="w-8 h-8 rounded-full border border-slate-600 bg-slate-800 flex items-center justify-center text-xs hover:bg-slate-700 hover:text-white hover:border-slate-500 active:scale-95 transition-all font-bold text-white cursor-pointer pop-btn">-</button>
                                     <span id="stepper-infants-count" class="w-5 text-center text-xs font-extrabold text-[#FFDF9E]">0</span>
-                                    <button type="button" onclick="KaghanSearchWidget.changeGuests('infants', 1)" class="w-8 h-8 rounded-full border border-slate-600 bg-slate-800 flex items-center justify-center text-xs hover:bg-[#C5A059] hover:text-slate-950 hover:border-amber-400 active:scale-95 transition-all font-bold text-white cursor-pointer">+</button>
+                                    <button type="button" onclick="KaghanSearchWidget.changeGuests('infants', 1)" class="w-8 h-8 rounded-full border border-slate-600 bg-slate-800 flex items-center justify-center text-xs hover:bg-slate-700 hover:text-white hover:border-slate-500 active:scale-95 transition-all font-bold text-white cursor-pointer pop-btn">+</button>
                                 </div>
                             </div>
                         </div>
@@ -560,7 +560,7 @@
 
                     <!-- Submit Search Button -->
                     <div class="sm:col-span-2 lg:col-span-2">
-                        <button type="submit" id="hero-search-submit" class="w-full bg-[#C5A059] hover:bg-white hover:text-slate-950 text-slate-950 font-black py-3.5 rounded-2xl transition-all shadow-lg flex items-center justify-center gap-2 text-xs md:text-sm cursor-pointer min-h-[52px] border-2 border-amber-300">
+                        <button type="submit" id="hero-search-submit" class="w-full bg-[#C5A059] hover:bg-amber-400 text-slate-950 font-black py-3.5 rounded-2xl transition-all shadow-lg flex items-center justify-center gap-2 text-xs md:text-sm cursor-pointer min-h-[52px] border border-amber-300 pop-btn">
                             <i class="fa-solid fa-magnifying-glass text-base"></i>
                             <span>Find Suites</span>
                         </button>
@@ -581,23 +581,23 @@
             <!-- Subtle Minimalist Bottom Suite Preview & Controls -->
             <div class="relative z-0 mt-8 sm:mt-12 flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-800/80 max-w-5xl mx-auto" style="position: relative; z-index: 1;">
                 <!-- Clickable Live Suite Tag -->
-                <a id="hero-current-suite-link" href="/rooms" class="flex items-center gap-2.5 backdrop-blur-md bg-slate-900/80 hover:bg-slate-800 border border-slate-700 hover:border-[#C5A059] px-4 py-2 rounded-full text-xs text-slate-200 transition-all group cursor-pointer">
+                <a id="hero-current-suite-link" href="/rooms" class="flex items-center gap-2.5 backdrop-blur-md bg-slate-900/80 hover:bg-slate-800 border border-slate-700 hover:border-slate-500 px-4 py-2 rounded-full text-xs text-slate-200 transition-all group cursor-pointer pop-hover">
                     <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
                     <span class="text-slate-400 font-normal">Now Viewing:</span>
-                    <span id="hero-current-suite-name" class="font-bold text-white group-hover:text-[#C5A059] transition-colors truncate max-w-[200px] sm:max-w-xs">Featured Luxury Suite</span>
+                    <span id="hero-current-suite-name" class="font-bold text-white group-hover:text-amber-300 transition-colors truncate max-w-[200px] sm:max-w-xs">Featured Luxury Suite</span>
                     <span id="hero-current-suite-price" class="text-[#FFDF9E] font-extrabold ml-1">PKR --</span>
-                    <i class="fa-solid fa-arrow-right text-[10px] text-[#C5A059] group-hover:translate-x-1 transition-transform"></i>
+                    <i class="fa-solid fa-arrow-right text-[10px] text-amber-400 group-hover:translate-x-1 transition-transform"></i>
                 </a>
 
                 <!-- Clean Slide Controls & Indicators -->
                 <div class="flex items-center gap-2">
-                    <button type="button" onclick="KaghanHeroSlider.prev(true)" class="w-8 h-8 rounded-full bg-slate-900/80 hover:bg-[#C5A059] hover:text-slate-950 text-slate-300 flex items-center justify-center text-xs transition-all border border-slate-700 cursor-pointer" title="Previous Suite">
+                    <button type="button" onclick="KaghanHeroSlider.prev(true)" class="w-8 h-8 rounded-full bg-slate-900/80 hover:bg-slate-700 hover:text-white text-slate-300 flex items-center justify-center text-xs transition-all border border-slate-700 cursor-pointer pop-btn" title="Previous Suite">
                         <i class="fa-solid fa-chevron-left text-[10px]"></i>
                     </button>
                     <div id="hero-slider-dots" class="flex items-center gap-1.5 px-2">
                         <!-- Minimal dots -->
                     </div>
-                    <button type="button" onclick="KaghanHeroSlider.next(true)" class="w-8 h-8 rounded-full bg-slate-900/80 hover:bg-[#C5A059] hover:text-slate-950 text-slate-300 flex items-center justify-center text-xs transition-all border border-slate-700 cursor-pointer" title="Next Suite">
+                    <button type="button" onclick="KaghanHeroSlider.next(true)" class="w-8 h-8 rounded-full bg-slate-900/80 hover:bg-slate-700 hover:text-white text-slate-300 flex items-center justify-center text-xs transition-all border border-slate-700 cursor-pointer pop-btn" title="Next Suite">
                         <i class="fa-solid fa-chevron-right text-[10px]"></i>
                     </button>
                 </div>
@@ -616,7 +616,7 @@
                     </span>
                     <h2 class="text-3xl md:text-5xl font-extrabold outfit text-slate-900 tracking-tight">Featured <span class="text-[#C5A059]">Accommodations</span></h2>
                 </div>
-                <a href="/rooms" class="text-slate-900 border-b-2 border-[#C5A059] font-extrabold py-2 flex items-center gap-2 hover:text-[#C5A059] transition-all mt-4 md:mt-0 text-sm">
+                <a href="/rooms" class="text-slate-900 border-b-2 border-slate-900 font-extrabold py-2 flex items-center gap-2 hover:text-amber-600 transition-all mt-4 md:mt-0 text-sm pop-hover">
                     Explore All Rooms
                     <i class="fa-solid fa-arrow-right text-sm"></i>
                 </a>
@@ -626,11 +626,11 @@
             <div data-animate="fade-up" class="relative max-w-7xl mx-auto mt-8 z-20 bg-white rounded-3xl sm:rounded-[2.5rem] shadow-lg p-5 sm:p-7 md:p-8 mb-16 border border-slate-200">
                 <div class="flex items-center justify-between mb-6 pb-3 border-b border-slate-100">
                     <h3 class="text-xs uppercase tracking-widest text-slate-600 font-extrabold flex items-center gap-2">
-                        <i class="fa-solid fa-filter text-[#C5A059]"></i> Filter by Suite Type
+                        <i class="fa-solid fa-filter text-amber-500"></i> Filter by Suite Type
                     </h3>
                     <div class="flex gap-2">
-                        <button type="button" aria-label="Scroll left" onclick="document.getElementById('index-categories-container').scrollBy({left: -200, behavior: 'smooth'})" class="w-8 h-8 rounded-full border border-slate-300 flex items-center justify-center text-slate-700 hover:text-slate-950 hover:border-slate-800 hover:bg-slate-100 transition-colors cursor-pointer"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-                        <button type="button" aria-label="Scroll right" onclick="document.getElementById('index-categories-container').scrollBy({left: 200, behavior: 'smooth'})" class="w-8 h-8 rounded-full border border-slate-300 flex items-center justify-center text-slate-700 hover:text-slate-950 hover:border-slate-800 hover:bg-slate-100 transition-colors cursor-pointer"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                        <button type="button" aria-label="Scroll left" onclick="document.getElementById('index-categories-container').scrollBy({left: -200, behavior: 'smooth'})" class="w-8 h-8 rounded-full border border-slate-300 flex items-center justify-center text-slate-700 hover:text-slate-950 hover:border-slate-800 hover:bg-slate-100 transition-colors cursor-pointer pop-btn"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                        <button type="button" aria-label="Scroll right" onclick="document.getElementById('index-categories-container').scrollBy({left: 200, behavior: 'smooth'})" class="w-8 h-8 rounded-full border border-slate-300 flex items-center justify-center text-slate-700 hover:text-slate-950 hover:border-slate-800 hover:bg-slate-100 transition-colors cursor-pointer pop-btn"><i class="fa-solid fa-chevron-right text-xs"></i></button>
                     </div>
                 </div>
 
@@ -647,17 +647,17 @@
                 <!-- 3 Stay Duration Selector Buttons (Daily / Weekly / Monthly) -->
                 <div class="mt-6 pt-5 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
                     <div class="flex items-center gap-2 text-xs font-extrabold text-slate-700 uppercase tracking-wider">
-                        <i class="fa-solid fa-tags text-[#C5A059] text-sm"></i>
+                        <i class="fa-solid fa-tags text-amber-500 text-sm"></i>
                         <span>Select Rate Plan:</span>
                     </div>
                     <div class="grid grid-cols-3 sm:flex items-center gap-2 bg-slate-100 p-1.5 rounded-2xl border border-slate-200 w-full sm:w-auto" id="featured-stay-plans">
-                        <button type="button" onclick="setFeaturedStayType('daily', this)" id="featured-plan-daily" class="featured-plan-btn active px-4 sm:px-5 py-2 rounded-xl text-xs font-black transition-all bg-slate-900 text-white shadow-md cursor-pointer text-center">
+                        <button type="button" onclick="setFeaturedStayType('daily', this)" id="featured-plan-daily" class="featured-plan-btn active px-4 sm:px-5 py-2 rounded-xl text-xs font-black transition-all bg-slate-900 text-white shadow-md cursor-pointer text-center pop-btn">
                             <i class="fa-solid fa-calendar-day mr-1"></i> Daily Stay
                         </button>
-                        <button type="button" onclick="setFeaturedStayType('weekly', this)" id="featured-plan-weekly" class="featured-plan-btn px-4 sm:px-5 py-2 rounded-xl text-xs font-bold transition-all text-slate-600 hover:text-slate-900 hover:bg-white cursor-pointer text-center">
+                        <button type="button" onclick="setFeaturedStayType('weekly', this)" id="featured-plan-weekly" class="featured-plan-btn px-4 sm:px-5 py-2 rounded-xl text-xs font-bold transition-all text-slate-600 hover:text-slate-900 hover:bg-white cursor-pointer text-center pop-btn">
                             <i class="fa-solid fa-calendar-week mr-1"></i> Weekly <span class="text-emerald-700 font-black text-[10px] bg-emerald-100 border border-emerald-200 px-1.5 py-0.5 rounded-full ml-1">-15%</span>
                         </button>
-                        <button type="button" onclick="setFeaturedStayType('monthly', this)" id="featured-plan-monthly" class="featured-plan-btn px-4 sm:px-5 py-2 rounded-xl text-xs font-bold transition-all text-slate-600 hover:text-slate-900 hover:bg-white cursor-pointer text-center">
+                        <button type="button" onclick="setFeaturedStayType('monthly', this)" id="featured-plan-monthly" class="featured-plan-btn px-4 sm:px-5 py-2 rounded-xl text-xs font-bold transition-all text-slate-600 hover:text-slate-900 hover:bg-white cursor-pointer text-center pop-btn">
                             <i class="fa-solid fa-calendar-days mr-1"></i> Monthly <span class="text-amber-800 font-black text-[10px] bg-amber-100 border border-amber-300 px-1.5 py-0.5 rounded-full ml-1">-35%</span>
                         </button>
                     </div>
@@ -715,7 +715,7 @@
                     <p class="text-slate-700 text-base leading-relaxed font-normal mb-8">
                         Our service apartments combine the privacy and spaciousness of fully furnished luxury homes with five-star hotel conveniences — including daily housekeeping, round-the-clock security, ultra-fast fiber Wi-Fi, and 24/7 concierge assistance.
                     </p>
-                    <a href="/rooms" class="inline-flex items-center justify-center bg-slate-900 text-white font-extrabold px-8 py-4 rounded-xl hover:bg-[#C5A059] hover:text-slate-950 transition-all gap-2.5 text-sm shadow-md border border-slate-800 hover:border-[#C5A059]">
+                    <a href="/rooms" class="inline-flex items-center justify-center bg-slate-900 text-white font-extrabold px-8 py-4 rounded-xl hover:bg-slate-800 transition-all gap-2.5 text-sm shadow-md border border-slate-800 hover:border-slate-600 pop-btn">
                         <span>Book Your Suite</span>
                         <i class="fa-solid fa-arrow-right"></i>
                     </a>
@@ -724,7 +724,7 @@
                 <!-- Cards Grid -->
                 <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8" data-animate-group data-animate="fade-left">
                     <!-- Card 1: Home-like Spaces -->
-                    <div data-animate="fade-up" class="p-8 border-2 border-slate-200 rounded-3xl hover-lift bg-slate-50/90 hover:bg-white hover:border-[#C5A059] shadow-sm hover:shadow-lg flex flex-col justify-between transition-all">
+                    <div data-animate="fade-up" class="p-8 border-2 border-slate-200 rounded-3xl bg-slate-50/90 hover:bg-white shadow-sm hover:shadow-xl flex flex-col justify-between transition-all pop-card">
                         <div>
                             <div class="w-14 h-14 bg-amber-500/15 border border-amber-400/30 text-[#B8860B] rounded-2xl flex items-center justify-center mb-6 shadow-sm">
                                 <i class="fa-solid fa-house-chimney text-xl"></i>
@@ -737,7 +737,7 @@
                     </div>
 
                     <!-- Card 2: Hotel-Style Care -->
-                    <div data-animate="fade-up" class="p-8 border-2 border-slate-200 rounded-3xl hover-lift bg-slate-50/90 hover:bg-white hover:border-[#C5A059] shadow-sm hover:shadow-lg flex flex-col justify-between transition-all">
+                    <div data-animate="fade-up" class="p-8 border-2 border-slate-200 rounded-3xl bg-slate-50/90 hover:bg-white shadow-sm hover:shadow-xl flex flex-col justify-between transition-all pop-card">
                         <div>
                             <div class="w-14 h-14 bg-amber-500/15 border border-amber-400/30 text-[#B8860B] rounded-2xl flex items-center justify-center mb-6 shadow-sm">
                                 <i class="fa-solid fa-bell-concierge text-xl"></i>
@@ -750,7 +750,7 @@
                     </div>
 
                     <!-- Card 3: Extended Travel -->
-                    <div data-animate="fade-up" class="p-8 border-2 border-slate-200 rounded-3xl hover-lift bg-slate-50/90 hover:bg-white hover:border-[#C5A059] shadow-sm hover:shadow-lg flex flex-col justify-between sm:col-span-2 transition-all">
+                    <div data-animate="fade-up" class="p-8 border-2 border-slate-200 rounded-3xl bg-slate-50/90 hover:bg-white shadow-sm hover:shadow-xl flex flex-col justify-between sm:col-span-2 transition-all pop-card">
                         <div class="flex flex-col sm:flex-row sm:items-center gap-6">
                             <div class="w-14 h-14 bg-amber-500/15 border border-amber-400/30 text-[#B8860B] rounded-2xl flex items-center justify-center mb-0 shrink-0 shadow-sm">
                                 <i class="fa-solid fa-briefcase text-xl"></i>
@@ -780,7 +780,7 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" data-animate-group data-animate="fade-up">
-                <div data-animate="fade-up" class="bg-slate-800/80 border-2 border-slate-700/80 p-8 rounded-3xl shadow-xl hover:border-amber-400/60 transition-all flex flex-col justify-between">
+                <div data-animate="fade-up" class="bg-slate-800/80 border-2 border-slate-700/80 p-8 rounded-3xl shadow-xl hover:border-slate-500 transition-all flex flex-col justify-between pop-card">
                     <div>
                         <div class="flex gap-1 text-amber-400 mb-6 text-sm">
                             <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
@@ -798,7 +798,7 @@
                     </div>
                 </div>
 
-                <div data-animate="fade-up" class="bg-slate-800/80 border-2 border-slate-700/80 p-8 rounded-3xl shadow-xl hover:border-amber-400/60 transition-all flex flex-col justify-between">
+                <div data-animate="fade-up" class="bg-slate-800/80 border-2 border-slate-700/80 p-8 rounded-3xl shadow-xl hover:border-slate-500 transition-all flex flex-col justify-between pop-card">
                     <div>
                         <div class="flex gap-1 text-amber-400 mb-6 text-sm">
                             <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
@@ -816,7 +816,7 @@
                     </div>
                 </div>
 
-                <div data-animate="fade-up" class="bg-slate-800/80 border-2 border-slate-700/80 p-8 rounded-3xl shadow-xl hover:border-amber-400/60 transition-all flex flex-col justify-between">
+                <div data-animate="fade-up" class="bg-slate-800/80 border-2 border-slate-700/80 p-8 rounded-3xl shadow-xl hover:border-slate-500 transition-all flex flex-col justify-between pop-card">
                     <div>
                         <div class="flex gap-1 text-amber-400 mb-6 text-sm">
                             <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
@@ -847,7 +847,7 @@
                     </span>
                     <h2 class="text-3xl md:text-5xl font-extrabold outfit text-slate-900 tracking-tight">Alpine Insights & <span class="text-[#C5A059]">Attractions Guide</span></h2>
                 </div>
-                <a href="/blog" class="text-slate-900 border-b-2 border-[#C5A059] font-extrabold py-2 flex items-center gap-2 hover:text-[#C5A059] transition-all mt-4 md:mt-0 text-sm">
+                <a href="/blog" class="text-slate-900 border-b-2 border-slate-900 font-extrabold py-2 flex items-center gap-2 hover:text-amber-600 transition-all mt-4 md:mt-0 text-sm pop-hover">
                     Read All Articles <i class="fa-solid fa-arrow-right text-xs"></i>
                 </a>
             </div>
@@ -872,7 +872,7 @@
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <!-- Islamabad -->
-                <div class="bg-white rounded-3xl overflow-hidden border-2 border-slate-200 shadow-md hover:border-[#C5A059] hover-lift group flex flex-col justify-between transition-all">
+                <div class="bg-white rounded-3xl overflow-hidden border-2 border-slate-200 shadow-md pop-card group flex flex-col justify-between transition-all">
                     <div>
                         <div class="relative h-56 overflow-hidden border-b border-slate-200">
                             <img src="https://images.unsplash.com/photo-1567449303078-57ad995bd329?auto=format&fit=crop&w=800&q=80" alt="Furnished apartment in Islamabad" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
@@ -894,12 +894,12 @@
                         </div>
                     </div>
                     <div class="px-6 pb-6 pt-2 border-t border-slate-100">
-                        <a href="/rooms?location=Islamabad" class="w-full text-center bg-slate-900 hover:bg-[#C5A059] hover:text-slate-950 text-white text-xs font-extrabold py-3 rounded-xl block transition-all shadow-sm border border-slate-800 hover:border-[#C5A059]">View Islamabad Apartments</a>
+                        <a href="/rooms?location=Islamabad" class="w-full text-center bg-slate-900 hover:bg-slate-800 text-white text-xs font-extrabold py-3 rounded-xl block transition-all shadow-sm border border-slate-800 hover:border-slate-600 pop-btn">View Islamabad Apartments</a>
                     </div>
                 </div>
 
                 <!-- Murree -->
-                <div class="bg-white rounded-3xl overflow-hidden border-2 border-slate-200 shadow-md hover:border-[#C5A059] hover-lift group flex flex-col justify-between transition-all">
+                <div class="bg-white rounded-3xl overflow-hidden border-2 border-slate-200 shadow-md pop-card group flex flex-col justify-between transition-all">
                     <div>
                         <div class="relative h-56 overflow-hidden border-b border-slate-200">
                             <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=800&q=80" alt="Furnished apartment in Murree" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
@@ -921,12 +921,12 @@
                         </div>
                     </div>
                     <div class="px-6 pb-6 pt-2 border-t border-slate-100">
-                        <a href="/rooms?location=Murree" class="w-full text-center bg-slate-900 hover:bg-[#C5A059] hover:text-slate-950 text-white text-xs font-extrabold py-3 rounded-xl block transition-all shadow-sm border border-slate-800 hover:border-[#C5A059]">View Murree Apartments</a>
+                        <a href="/rooms?location=Murree" class="w-full text-center bg-slate-900 hover:bg-slate-800 text-white text-xs font-extrabold py-3 rounded-xl block transition-all shadow-sm border border-slate-800 hover:border-slate-600 pop-btn">View Murree Apartments</a>
                     </div>
                 </div>
 
                 <!-- Nathia Gali -->
-                <div class="bg-white rounded-3xl overflow-hidden border-2 border-slate-200 shadow-md hover:border-[#C5A059] hover-lift group flex flex-col justify-between transition-all">
+                <div class="bg-white rounded-3xl overflow-hidden border-2 border-slate-200 shadow-md pop-card group flex flex-col justify-between transition-all">
                     <div>
                         <div class="relative h-56 overflow-hidden border-b border-slate-200">
                             <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=800&q=80" alt="Furnished apartment in Nathia Gali" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
@@ -948,7 +948,7 @@
                         </div>
                     </div>
                     <div class="px-6 pb-6 pt-2 border-t border-slate-100">
-                        <a href="/rooms?location=Nathia%20Gali" class="w-full text-center bg-slate-900 hover:bg-[#C5A059] hover:text-slate-950 text-white text-xs font-extrabold py-3 rounded-xl block transition-all shadow-sm border border-slate-800 hover:border-[#C5A059]">View Nathia Gali Apartments</a>
+                        <a href="/rooms?location=Nathia%20Gali" class="w-full text-center bg-slate-900 hover:bg-slate-800 text-white text-xs font-extrabold py-3 rounded-xl block transition-all shadow-sm border border-slate-800 hover:border-slate-600 pop-btn">View Nathia Gali Apartments</a>
                     </div>
                 </div>
             </div>
@@ -968,28 +968,28 @@
             </div>
 
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-8 mb-16">
-                <div class="text-center p-6 bg-slate-800/80 border-2 border-slate-700/80 rounded-3xl shadow-lg hover:border-amber-400/40 transition-all">
+                <div class="text-center p-6 bg-slate-800/80 border-2 border-slate-700/80 rounded-3xl shadow-lg hover:border-slate-500 transition-all pop-card">
                     <div class="w-14 h-14 bg-amber-500/20 border border-amber-400/30 text-[#FFDF9E] rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
                         <i class="fa-solid fa-users text-xl"></i>
                     </div>
                     <span class="text-3xl md:text-4xl font-extrabold text-[#FFDF9E] outfit block">500+</span>
                     <p class="text-xs uppercase text-slate-300 tracking-wider font-extrabold mt-2">Happy Guests Served</p>
                 </div>
-                <div class="text-center p-6 bg-slate-800/80 border-2 border-slate-700/80 rounded-3xl shadow-lg hover:border-amber-400/40 transition-all">
+                <div class="text-center p-6 bg-slate-800/80 border-2 border-slate-700/80 rounded-3xl shadow-lg hover:border-slate-500 transition-all pop-card">
                     <div class="w-14 h-14 bg-amber-500/20 border border-amber-400/30 text-[#FFDF9E] rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
                         <i class="fa-solid fa-map-location-dot text-xl"></i>
                     </div>
                     <span class="text-3xl md:text-4xl font-extrabold text-[#FFDF9E] outfit block">3</span>
                     <p class="text-xs uppercase text-slate-300 tracking-wider font-extrabold mt-2">Prime Destinations</p>
                 </div>
-                <div class="text-center p-6 bg-slate-800/80 border-2 border-slate-700/80 rounded-3xl shadow-lg hover:border-amber-400/40 transition-all">
+                <div class="text-center p-6 bg-slate-800/80 border-2 border-slate-700/80 rounded-3xl shadow-lg hover:border-slate-500 transition-all pop-card">
                     <div class="w-14 h-14 bg-amber-500/20 border border-amber-400/30 text-[#FFDF9E] rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
                         <i class="fa-solid fa-star text-xl"></i>
                     </div>
                     <span class="text-3xl md:text-4xl font-extrabold text-[#FFDF9E] outfit block">4.9/5</span>
                     <p class="text-xs uppercase text-slate-300 tracking-wider font-extrabold mt-2">Average Guest Rating</p>
                 </div>
-                <div class="text-center p-6 bg-slate-800/80 border-2 border-slate-700/80 rounded-3xl shadow-lg hover:border-amber-400/40 transition-all">
+                <div class="text-center p-6 bg-slate-800/80 border-2 border-slate-700/80 rounded-3xl shadow-lg hover:border-slate-500 transition-all pop-card">
                     <div class="w-14 h-14 bg-amber-500/20 border border-amber-400/30 text-[#FFDF9E] rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
                         <i class="fa-solid fa-headset text-xl"></i>
                     </div>
@@ -999,17 +999,17 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
-                <div class="p-8 bg-slate-800/80 border-2 border-slate-700/80 rounded-3xl shadow-lg">
+                <div class="p-8 bg-slate-800/80 border-2 border-slate-700/80 rounded-3xl shadow-lg hover:border-slate-500 transition-all pop-card">
                     <i class="fa-solid fa-shield-halved text-[#FFDF9E] text-3xl mb-4 block"></i>
                     <h3 class="text-xl font-bold outfit text-white mb-3">Best Rate Guarantee</h3>
                     <p class="text-slate-300 text-sm leading-relaxed font-normal">Book directly through our website for the lowest available rate on every room and apartment. If you find a lower price elsewhere, we will match it.</p>
                 </div>
-                <div class="p-8 bg-slate-800/80 border-2 border-slate-700/80 rounded-3xl shadow-lg">
+                <div class="p-8 bg-slate-800/80 border-2 border-slate-700/80 rounded-3xl shadow-lg hover:border-slate-500 transition-all pop-card">
                     <i class="fa-solid fa-calendar-xmark text-[#FFDF9E] text-3xl mb-4 block"></i>
                     <h3 class="text-xl font-bold outfit text-white mb-3">Free Cancellation</h3>
                     <p class="text-slate-300 text-sm leading-relaxed font-normal">Plans changed? Cancel up to 48 hours before check-in at no charge. We value your flexibility and understand that travel plans can shift unexpectedly.</p>
                 </div>
-                <div class="p-8 bg-slate-800/80 border-2 border-slate-700/80 rounded-3xl shadow-lg">
+                <div class="p-8 bg-slate-800/80 border-2 border-slate-700/80 rounded-3xl shadow-lg hover:border-slate-500 transition-all pop-card">
                     <i class="fa-solid fa-bolt text-[#FFDF9E] text-3xl mb-4 block"></i>
                     <h3 class="text-xl font-bold outfit text-white mb-3">Instant Confirmation</h3>
                     <p class="text-slate-300 text-sm leading-relaxed font-normal">Receive your booking confirmation immediately via email after completing your reservation. No waiting, no phone calls — your suite is secured in seconds.</p>

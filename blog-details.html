@@ -93,7 +93,7 @@
             <a href="/track" class="text-slate-200 hover:text-[#D4AF37] transition-colors">Track Stay</a>
             <a href="/contact" class="text-slate-200 hover:text-[#D4AF37] transition-colors">Contact</a>
             <div id="auth-links" class="flex gap-4 items-center">
-                <a href="/login" class="border-2 border-[#D4AF37] bg-[#D4AF37]/10 text-white px-5 py-2 rounded-xl hover:bg-[#D4AF37] hover:text-slate-900 transition-all text-xs font-extrabold tracking-wider uppercase">Login</a>
+                <a href="/login" class="pop-btn border-2 border-white/20 bg-white/5 text-white px-5 py-2 rounded-xl hover:bg-white hover:text-slate-900 transition-all text-xs font-extrabold tracking-wider uppercase">Login</a>
             </div>
         </div>
     </nav>
@@ -418,13 +418,13 @@
                     const slug = b.slug || b.id;
                     const img = b.imageUrl || '/assets/images/logo.png';
                     return `
-                        <a href="/blog/${encodeURIComponent(slug)}" class="bg-white border-2 border-slate-200 rounded-3xl p-4 shadow-md hover:border-[#C5A059] hover:shadow-xl transition-all flex flex-col justify-between group">
+                        <a href="/blog/${encodeURIComponent(slug)}" class="pop-card bg-white border-2 border-slate-200 rounded-3xl p-4 shadow-md hover:border-slate-400 hover:shadow-xl transition-all flex flex-col justify-between group">
                             <div class="h-44 rounded-2xl overflow-hidden mb-3.5 bg-slate-100 border border-slate-200">
                                 <img src="${img}" alt="${KaghanSafe.escapeHTML(b.title)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onerror="this.src='/assets/images/logo.png'">
                             </div>
                             <div>
                                 <span class="bg-amber-50 text-amber-900 border border-amber-200 text-[10px] uppercase font-extrabold px-2.5 py-1 rounded-lg inline-block tracking-wider mb-2">${KaghanSafe.escapeHTML(b.category || 'Guide')}</span>
-                                <h4 class="font-extrabold outfit text-slate-900 text-base line-clamp-2 group-hover:text-[#B8860B] transition-colors leading-snug">${KaghanSafe.escapeHTML(b.title)}</h4>
+                                <h4 class="font-extrabold outfit text-slate-900 text-base line-clamp-2 group-hover:text-slate-950 transition-colors leading-snug">${KaghanSafe.escapeHTML(b.title)}</h4>
                             </div>
                         </a>
                     `;

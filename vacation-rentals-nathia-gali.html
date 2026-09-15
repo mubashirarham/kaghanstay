@@ -171,28 +171,28 @@
     <!-- Key Features -->
     <section class="py-16 px-6 md:px-12 bg-white border-b-2 border-slate-200">
         <div class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div class="p-6 rounded-2xl bg-slate-50 border-2 border-slate-200 shadow-sm hover:border-[#C5A059] transition-all flex items-start gap-4">
+            <div class="p-6 rounded-2xl bg-slate-50 border-2 border-slate-200 shadow-sm pop-card transition-all flex items-start gap-4">
                 <div class="w-12 h-12 rounded-xl bg-amber-50 border border-amber-200 text-[#B8860B] flex items-center justify-center text-xl shrink-0"><i class="fa-solid fa-tree"></i></div>
                 <div>
                     <h3 class="font-extrabold outfit text-slate-900 text-base mb-1">Pristine Pine Setting</h3>
                     <p class="text-xs text-slate-700 leading-relaxed font-normal">Surrounded by tall Himalayan deodar pines and crisp, refreshing mountain air in Nathia Gali.</p>
                 </div>
             </div>
-            <div class="p-6 rounded-2xl bg-slate-50 border-2 border-slate-200 shadow-sm hover:border-[#C5A059] transition-all flex items-start gap-4">
+            <div class="p-6 rounded-2xl bg-slate-50 border-2 border-slate-200 shadow-sm pop-card transition-all flex items-start gap-4">
                 <div class="w-12 h-12 rounded-xl bg-amber-50 border border-amber-200 text-[#B8860B] flex items-center justify-center text-xl shrink-0"><i class="fa-solid fa-person-hiking"></i></div>
                 <div>
                     <h3 class="font-extrabold outfit text-slate-900 text-base mb-1">Trail Proximity</h3>
                     <p class="text-xs text-slate-700 leading-relaxed font-normal">Minutes away from Pipeline Track, Mukshpuri Peak, and Miranjani hiking trails.</p>
                 </div>
             </div>
-            <div class="p-6 rounded-2xl bg-slate-50 border-2 border-slate-200 shadow-sm hover:border-[#C5A059] transition-all flex items-start gap-4">
+            <div class="p-6 rounded-2xl bg-slate-50 border-2 border-slate-200 shadow-sm pop-card transition-all flex items-start gap-4">
                 <div class="w-12 h-12 rounded-xl bg-amber-50 border border-amber-200 text-[#B8860B] flex items-center justify-center text-xl shrink-0"><i class="fa-solid fa-fire"></i></div>
                 <div>
                     <h3 class="font-extrabold outfit text-slate-900 text-base mb-1">Cozy Alpine Interiors</h3>
                     <p class="text-xs text-slate-700 leading-relaxed font-normal">Wooden panelling, heating, comfortable king beds, and full kitchen setups.</p>
                 </div>
             </div>
-            <div class="p-6 rounded-2xl bg-slate-50 border-2 border-slate-200 shadow-sm hover:border-[#C5A059] transition-all flex items-start gap-4">
+            <div class="p-6 rounded-2xl bg-slate-50 border-2 border-slate-200 shadow-sm pop-card transition-all flex items-start gap-4">
                 <div class="w-12 h-12 rounded-xl bg-amber-50 border border-amber-200 text-[#B8860B] flex items-center justify-center text-xl shrink-0"><i class="fa-solid fa-bell-concierge"></i></div>
                 <div>
                     <h3 class="font-extrabold outfit text-slate-900 text-base mb-1">Dedicated Host Care</h3>
@@ -216,7 +216,7 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="bg-white p-8 rounded-2xl border-2 border-slate-200 shadow-md hover:border-[#C5A059] transition-all">
+                <div class="bg-white p-8 rounded-2xl border-2 border-slate-200 shadow-md pop-card transition-all">
                     <div class="w-14 h-14 bg-amber-50 border border-amber-200 text-[#B8860B] rounded-xl flex items-center justify-center text-2xl mb-6">
                         <i class="fa-solid fa-cloud-sun"></i>
                     </div>
@@ -226,7 +226,7 @@
                     </p>
                 </div>
 
-                <div class="bg-white p-8 rounded-2xl border-2 border-slate-200 shadow-md hover:border-[#C5A059] transition-all">
+                <div class="bg-white p-8 rounded-2xl border-2 border-slate-200 shadow-md pop-card transition-all">
                     <div class="w-14 h-14 bg-amber-50 border border-amber-200 text-[#B8860B] rounded-xl flex items-center justify-center text-2xl mb-6">
                         <i class="fa-solid fa-kitchen-set"></i>
                     </div>
@@ -236,7 +236,7 @@
                     </p>
                 </div>
 
-                <div class="bg-white p-8 rounded-2xl border-2 border-slate-200 shadow-md hover:border-[#C5A059] transition-all">
+                <div class="bg-white p-8 rounded-2xl border-2 border-slate-200 shadow-md pop-card transition-all">
                     <div class="w-14 h-14 bg-amber-50 border border-amber-200 text-[#B8860B] rounded-xl flex items-center justify-center text-2xl mb-6">
                         <i class="fa-solid fa-route"></i>
                     </div>
@@ -336,7 +336,7 @@
                     const img = room.image || (room.images && room.images.length ? room.images[0] : '/assets/images/logo.png');
 
                     return `
-                    <div class="bg-white rounded-2xl overflow-hidden border-2 border-slate-200 shadow-md hover:border-[#C5A059] hover:shadow-xl transition-all flex flex-col justify-between group">
+                    <div class="bg-white rounded-2xl overflow-hidden border-2 border-slate-200 shadow-md pop-card transition-all flex flex-col justify-between group">
                         <div>
                             <div class="relative h-56 overflow-hidden bg-slate-900 border-b border-slate-200">
                                 <img src="${KaghanSafe.escapeHTML(img)}" alt="${KaghanSafe.escapeHTML(room.name)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
@@ -346,7 +346,7 @@
                             </div>
                             <div class="p-6">
                                 <div class="flex justify-between items-start mb-1 gap-2">
-                                    <h3 class="text-lg font-bold outfit text-slate-900 group-hover:text-[#B8860B] transition-colors">${KaghanSafe.escapeHTML(room.name)}</h3>
+                                    <h3 class="text-lg font-bold outfit text-slate-900 group-hover:text-amber-600 transition-colors">${KaghanSafe.escapeHTML(room.name)}</h3>
                                     <span class="text-xs font-extrabold text-amber-900 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-lg flex items-center gap-1 shrink-0"><i class="fa-solid fa-star text-amber-500"></i> ${room.rating || 5.0}</span>
                                 </div>
                                 <div class="text-[11px] text-slate-600 font-bold mb-3 flex items-center gap-1.5 uppercase tracking-wider">
@@ -361,7 +361,7 @@
                                 <span class="text-[10px] uppercase tracking-wider text-slate-500 block font-bold">Nightly Rate</span>
                                 <span class="text-lg font-black text-[#B8860B] outfit">${price}</span>
                             </div>
-                            <a href="${roomUrl}" class="bg-slate-900 text-white text-xs font-bold px-4 py-2.5 rounded-xl hover:bg-[#C5A059] transition-all shadow-sm">
+                            <a href="${roomUrl}" class="bg-slate-900 text-white text-xs font-bold px-4 py-2.5 rounded-xl hover:bg-slate-800 transition-all shadow-sm pop-btn">
                                 View Details
                             </a>
                         </div>

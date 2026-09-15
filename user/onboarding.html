@@ -140,19 +140,19 @@
                 <div>
                     <label class="block text-xs uppercase tracking-wider text-slate-700 font-black mb-1.5">Favorite Suite Category</label>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                        <button type="button" onclick="selectPrefOption('suiteType', 'studio', this)" class="pref-type-btn p-3.5 rounded-xl border-2 border-[#C5A059] bg-amber-50 text-left cursor-pointer">
+                        <button type="button" onclick="selectPrefOption('suiteType', 'studio', this)" class="pref-type-btn p-3.5 rounded-xl border-2 border-amber-400 bg-amber-50 text-left cursor-pointer pop-btn">
                             <span class="font-extrabold block text-slate-900">Studio Apartment</span>
                             <span class="text-[11px] text-slate-600 font-medium">Cozy & Modern</span>
                         </button>
-                        <button type="button" onclick="selectPrefOption('suiteType', '1bed', this)" class="pref-type-btn p-3.5 rounded-xl border-2 border-slate-200 bg-white text-left hover:border-[#C5A059] cursor-pointer">
+                        <button type="button" onclick="selectPrefOption('suiteType', '1bed', this)" class="pref-type-btn p-3.5 rounded-xl border-2 border-slate-200 bg-white text-left hover:border-slate-400 cursor-pointer pop-btn">
                             <span class="font-extrabold block text-slate-900">1 Bed Furnished</span>
                             <span class="text-[11px] text-slate-600 font-medium">Spacious Living</span>
                         </button>
-                        <button type="button" onclick="selectPrefOption('suiteType', '2bed', this)" class="pref-type-btn p-3.5 rounded-xl border-2 border-slate-200 bg-white text-left hover:border-[#C5A059] cursor-pointer">
+                        <button type="button" onclick="selectPrefOption('suiteType', '2bed', this)" class="pref-type-btn p-3.5 rounded-xl border-2 border-slate-200 bg-white text-left hover:border-slate-400 cursor-pointer pop-btn">
                             <span class="font-extrabold block text-slate-900">2 Bed Suite</span>
                             <span class="text-[11px] text-slate-600 font-medium">Family Comfort</span>
                         </button>
-                        <button type="button" onclick="selectPrefOption('suiteType', 'mountain', this)" class="pref-type-btn p-3.5 rounded-xl border-2 border-slate-200 bg-white text-left hover:border-[#C5A059] cursor-pointer">
+                        <button type="button" onclick="selectPrefOption('suiteType', 'mountain', this)" class="pref-type-btn p-3.5 rounded-xl border-2 border-slate-200 bg-white text-left hover:border-slate-400 cursor-pointer pop-btn">
                             <span class="font-extrabold block text-slate-900">Mountain View Villa</span>
                             <span class="text-[11px] text-slate-600 font-medium">Nathia Gali Resort</span>
                         </button>
@@ -203,9 +203,9 @@
             </div>
 
             <div class="space-y-3">
-                <label class="flex items-center justify-between p-4 rounded-2xl border-2 border-slate-200 bg-slate-50 cursor-pointer hover:border-[#C5A059] transition-all">
+                <label class="flex items-center justify-between p-4 rounded-2xl border-2 border-slate-200 bg-slate-50 cursor-pointer hover:border-slate-400 transition-all pop-card">
                     <div class="flex items-center gap-3 pr-2">
-                        <div class="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 text-[#C5A059] flex items-center justify-center text-base shrink-0">
+                        <div class="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 text-amber-600 flex items-center justify-center text-base shrink-0">
                             <i class="fa-solid fa-car"></i>
                         </div>
                         <div>
@@ -213,12 +213,12 @@
                             <span class="text-xs text-slate-600 font-medium block leading-tight">Direct pickup from Islamabad Airport (ISB)</span>
                         </div>
                     </div>
-                    <input type="checkbox" id="addon-shuttle" class="accent-[#C5A059] w-4 h-4 shrink-0 cursor-pointer">
+                    <input type="checkbox" id="addon-shuttle" class="accent-amber-500 w-4 h-4 shrink-0 cursor-pointer">
                 </label>
 
-                <label class="flex items-center justify-between p-4 rounded-2xl border-2 border-slate-200 bg-slate-50 cursor-pointer hover:border-[#C5A059] transition-all">
+                <label class="flex items-center justify-between p-4 rounded-2xl border-2 border-slate-200 bg-slate-50 cursor-pointer hover:border-slate-400 transition-all pop-card">
                     <div class="flex items-center gap-3 pr-2">
-                        <div class="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 text-[#C5A059] flex items-center justify-center text-base shrink-0">
+                        <div class="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 text-amber-600 flex items-center justify-center text-base shrink-0">
                             <i class="fa-solid fa-utensils"></i>
                         </div>
                         <div>
@@ -226,12 +226,12 @@
                             <span class="text-xs text-slate-600 font-medium block leading-tight">Fresh organic breakfast served in suite</span>
                         </div>
                     </div>
-                    <input type="checkbox" id="addon-breakfast" checked class="accent-[#C5A059] w-4 h-4 shrink-0 cursor-pointer">
+                    <input type="checkbox" id="addon-breakfast" checked class="accent-amber-500 w-4 h-4 shrink-0 cursor-pointer">
                 </label>
 
-                <label class="flex items-center justify-between p-4 rounded-2xl border-2 border-slate-200 bg-slate-50 cursor-pointer hover:border-[#C5A059] transition-all">
+                <label class="flex items-center justify-between p-4 rounded-2xl border-2 border-slate-200 bg-slate-50 cursor-pointer hover:border-slate-400 transition-all pop-card">
                     <div class="flex items-center gap-3 pr-2">
-                        <div class="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 text-[#C5A059] flex items-center justify-center text-base shrink-0">
+                        <div class="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 text-amber-600 flex items-center justify-center text-base shrink-0">
                             <i class="fa-solid fa-gift"></i>
                         </div>
                         <div>
@@ -239,7 +239,7 @@
                             <span class="text-xs text-slate-600 font-medium block leading-tight">Local honey, walnuts & chamomile teas on arrival</span>
                         </div>
                     </div>
-                    <input type="checkbox" id="addon-welcome-hamper" checked class="accent-[#C5A059] w-4 h-4 shrink-0 cursor-pointer">
+                    <input type="checkbox" id="addon-welcome-hamper" checked class="accent-amber-500 w-4 h-4 shrink-0 cursor-pointer">
                 </label>
 
                 <div class="flex gap-3 pt-3">

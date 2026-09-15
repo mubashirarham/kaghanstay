@@ -93,10 +93,10 @@
 
             <!-- Quick Action Chips -->
             <div class="flex flex-wrap gap-2 text-xs">
-                <button onclick="sendQuickHostRequest('Hi! Could you please provide the Wi-Fi password for my room?')" class="bg-slate-50 border-2 border-slate-200 text-slate-800 font-bold px-4 py-2 rounded-xl hover:border-[#C5A059] transition-all">🔑 Wi-Fi Password Query</button>
-                <button onclick="sendQuickHostRequest('Could I please request extra towels and amenities?')" class="bg-slate-50 border-2 border-slate-200 text-slate-800 font-bold px-4 py-2 rounded-xl hover:border-[#C5A059] transition-all">🧺 Extra Towels & Supplies</button>
-                <button onclick="sendQuickHostRequest('What time is standard check-out and is late check-out available?')" class="bg-slate-50 border-2 border-slate-200 text-slate-800 font-bold px-4 py-2 rounded-xl hover:border-[#C5A059] transition-all">⏰ Late Check-Out Inquiry</button>
-                <button onclick="sendQuickHostRequest('Could you arrange a shuttle transfer to Islamabad airport?')" class="bg-slate-50 border-2 border-slate-200 text-slate-800 font-bold px-4 py-2 rounded-xl hover:border-[#C5A059] transition-all">🚕 Airport Shuttle Request</button>
+                <button onclick="sendQuickHostRequest('Hi! Could you please provide the Wi-Fi password for my room?')" class="bg-slate-50 border-2 border-slate-200 text-slate-800 font-bold px-4 py-2 rounded-xl hover:border-slate-400 transition-all pop-chip">🔑 Wi-Fi Password Query</button>
+                <button onclick="sendQuickHostRequest('Could I please request extra towels and amenities?')" class="bg-slate-50 border-2 border-slate-200 text-slate-800 font-bold px-4 py-2 rounded-xl hover:border-slate-400 transition-all pop-chip">🧺 Extra Towels & Supplies</button>
+                <button onclick="sendQuickHostRequest('What time is standard check-out and is late check-out available?')" class="bg-slate-50 border-2 border-slate-200 text-slate-800 font-bold px-4 py-2 rounded-xl hover:border-slate-400 transition-all pop-chip">⏰ Late Check-Out Inquiry</button>
+                <button onclick="sendQuickHostRequest('Could you arrange a shuttle transfer to Islamabad airport?')" class="bg-slate-50 border-2 border-slate-200 text-slate-800 font-bold px-4 py-2 rounded-xl hover:border-slate-400 transition-all pop-chip">🚕 Airport Shuttle Request</button>
             </div>
 
             <!-- Messages Stream Box -->
@@ -106,8 +106,8 @@
 
             <!-- Message Form -->
             <form id="guest-chat-form" class="flex items-center gap-3">
-                <input type="text" id="guest-chat-input" placeholder="Type your inquiry to resort host..." required autocomplete="off" class="flex-grow border-2 border-slate-300 rounded-xl px-5 py-3.5 text-xs md:text-sm font-bold bg-white text-slate-900 outline-none focus:border-[#C5A059] focus:ring-4 focus:ring-[#C5A059]/15 transition-all shadow-xs">
-                <button type="submit" class="bg-[#0F172A] hover:bg-[#C5A059] text-white hover:text-slate-900 border-2 border-slate-800 hover:border-amber-300 px-6 py-3.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow-md flex items-center gap-2 shrink-0 cursor-pointer">
+                <input type="text" id="guest-chat-input" placeholder="Type your inquiry to resort host..." required autocomplete="off" class="flex-grow border-2 border-slate-300 rounded-xl px-5 py-3.5 text-xs md:text-sm font-bold bg-white text-slate-900 outline-none focus:border-slate-800 focus:ring-4 focus:ring-slate-400/15 transition-all shadow-xs">
+                <button type="submit" class="bg-[#0F172A] hover:bg-slate-800 text-white border-2 border-slate-800 hover:border-slate-600 px-6 py-3.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all shadow-md flex items-center gap-2 shrink-0 cursor-pointer pop-btn">
                     <i class="fa-solid fa-paper-plane text-xs"></i> Send Message
                 </button>
             </form>
