@@ -186,17 +186,18 @@ exports.handler = async (event, context) => {
         const host = process.env.SMTP_HOST || 'smtp.hostinger.com';
         const port = parseInt(process.env.SMTP_PORT || '465', 10);
         const user = process.env.SMTP_USER || 'info@kphstay.com';
-        const pass = process.env.SMTP_PASS || 'Targit@2027';
+        const pass = process.env.SMTP_PASS;
 
         const officialEmail = 'info@kphstay.com';
 
-        try {
-            const transporter = nodemailer.createTransport({
-                host,
-                port,
-                secure: port === 465,
-                auth: { user, pass }
-            });
+        if (pass) {
+            try {
+                const transporter = nodemailer.createTransport({
+                    host,
+                    port,
+                    secure: port === 465,
+                    auth: { user, pass }
+                });
 
             // 1. Send notification to official email info@kphstay.com
             await transporter.sendMail({
@@ -219,6 +220,9 @@ exports.handler = async (event, context) => {
         } catch (emailErr) {
             console.error('[submit-inquiry] Email dispatch failed (inquiry saved in database):', emailErr.message);
         }
+    } else {
+        console.warn('[submit-inquiry] SMTP_PASS not set; skipping email dispatch.');
+    }
 
         return {
             statusCode: 200,

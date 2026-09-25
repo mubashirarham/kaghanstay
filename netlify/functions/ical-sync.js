@@ -257,8 +257,8 @@ exports.handler = async (event, context) => {
         const { roomId, all, idToken, cronSecret } = body;
 
         // Check for Cron Secret bypass or Firebase Auth Admin token
-        const expectedSecret = process.env.CRON_SECRET || 'kaghan-cron-secret-2026';
-        const isCronAuthorized = cronSecret === expectedSecret || event.headers['x-cron-secret'] === expectedSecret;
+        const expectedSecret = process.env.CRON_SECRET;
+        const isCronAuthorized = Boolean(expectedSecret && (cronSecret === expectedSecret || event.headers['x-cron-secret'] === expectedSecret));
 
         if (!isCronAuthorized) {
             if (!idToken) {

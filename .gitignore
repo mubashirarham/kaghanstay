@@ -3,9 +3,15 @@ node_modules/
 dist/
 .DS_Store
 .env
+.env.*
 *.json.key
+*.key
+*.pem
+*.p12
 *-firebase-adminsdk-*.json
-*-6ddebc22f141.json
+formal-folder-*.json
+kaghan-properties-*.json
+*.docx
 run-batch-seo.js
 dns-records.md
 deno.lock

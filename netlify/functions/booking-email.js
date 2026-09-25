@@ -512,7 +512,7 @@ function buildInvoiceHTML(booking) {
 </html>`;
 }
 
-const CANONICAL_INTERNAL_SECRET = process.env.INTERNAL_API_SECRET || 'kphstay_internal_secret_2026';
+const CANONICAL_INTERNAL_SECRET = process.env.INTERNAL_API_SECRET;
 
 async function sendBookingEmail(booking, pdfAttachment) {
     if (!booking) {
@@ -531,11 +531,16 @@ async function sendBookingEmail(booking, pdfAttachment) {
 
     const htmlContent = buildInvoiceHTML(booking);
 
-    // SMTP Configuration with Hostinger fallbacks
+    // SMTP Configuration
     const host = process.env.SMTP_HOST || 'smtp.hostinger.com';
     const port = parseInt(process.env.SMTP_PORT || '465', 10);
     const user = process.env.SMTP_USER || 'info@kphstay.com';
-    const pass = process.env.SMTP_PASS || 'Targit@2027';
+    const pass = process.env.SMTP_PASS;
+
+    if (!pass) {
+        console.warn('[Invoice Emailer] SMTP_PASS not set; invoice email skipped.');
+        return { success: true, message: 'Booking processed (email skipped in environment without SMTP credentials)' };
+    }
 
     // Configure Nodemailer
     const transporter = nodemailer.createTransport({

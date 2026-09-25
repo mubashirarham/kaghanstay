@@ -55,39 +55,15 @@
                     await fdb.collection('users').doc(firebaseUser.uid).set(userData, { merge: true });
                 }
 
-                // Sync password field in Firestore document
-                if (userData.password !== cleanPassword) {
-                    userData.password = cleanPassword;
-                    await fdb.collection('users').doc(userData.id || userData.uid || firebaseUser.uid).set({ password: cleanPassword }, { merge: true });
-                }
+                // Strip any legacy sensitive fields from local session
+                const cleanSession = { ...userData };
+                delete cleanSession.password;
 
-                localStorage.setItem('kaghan_hotel_session', JSON.stringify(userData));
-                return { success: true, user: userData };
+                localStorage.setItem('kaghan_hotel_session', JSON.stringify(cleanSession));
+                return { success: true, user: cleanSession };
 
             } catch (authErr) {
-                console.warn("Firebase Auth sign-in warning:", authErr.code || authErr.message);
-
-                // Fallback check against Firestore users database if password was updated by Admin
-                const snap = await fdb.collection('users').where('email', '==', cleanEmail).limit(1).get();
-                if (!snap.empty) {
-                    const userData = snap.docs[0].data();
-
-                    if (userData && userData.password && userData.password === cleanPassword) {
-                        // Password matches Firestore! Auto-sync Firebase Auth credential if possible
-                        try {
-                            const newAuth = await firebase.auth().createUserWithEmailAndPassword(cleanEmail, cleanPassword);
-                            if (newAuth && newAuth.user) {
-                                userData.uid = newAuth.user.uid;
-                                await fdb.collection('users').doc(snap.docs[0].id).set({ uid: newAuth.user.uid }, { merge: true });
-                            }
-                        } catch (cErr) {
-                            console.warn("Auth user creation on fallback:", cErr.message);
-                        }
-
-                        localStorage.setItem('kaghan_hotel_session', JSON.stringify(userData));
-                        return { success: true, user: userData };
-                    }
-                }
+                console.warn("Firebase Auth sign-in notice:", authErr.code || authErr.message);
 
                 let friendlyMsg = authErr.message || 'Invalid email or password.';
                 if (authErr.code === 'auth/invalid-credential' || authErr.code === 'auth/wrong-password' || authErr.code === 'auth/user-not-found') {

@@ -286,30 +286,37 @@ exports.handler = async (event) => {
         const host = process.env.SMTP_HOST || 'smtp.hostinger.com';
         const port = parseInt(process.env.SMTP_PORT || '465', 10);
         const smtpUser = process.env.SMTP_USER || 'info@kphstay.com';
-        const smtpPass = process.env.SMTP_PASS || 'Targit@2027';
+        const smtpPass = process.env.SMTP_PASS;
 
         const isDev = !process.env.NODE_ENV || process.env.NODE_ENV === 'development' || clientIp === '127.0.0.1';
 
-        try {
-            const transporter = nodemailer.createTransport({
-                host: host,
-                port: port,
-                secure: port === 465,
-                auth: { user: smtpUser, pass: smtpPass },
-                connectionTimeout: 8000
-            });
+        if (smtpPass) {
+            try {
+                const transporter = nodemailer.createTransport({
+                    host: host,
+                    port: port,
+                    secure: port === 465,
+                    auth: { user: smtpUser, pass: smtpPass },
+                    connectionTimeout: 8000
+                });
 
-            const mailOptions = {
-                from: `"KPH Stay Guest Portal" <${smtpUser}>`,
-                to: normalized,
-                subject: `Your 6-Digit Verification Code [${otpCode}] | KPH Stay`,
-                html: buildVerificationEmailHTML(name, normalized, otpCode, verifyUrl)
-            };
+                const mailOptions = {
+                    from: `"KPH Stay Guest Portal" <${smtpUser}>`,
+                    to: normalized,
+                    subject: `Your 6-Digit Verification Code [${otpCode}] | KPH Stay`,
+                    html: buildVerificationEmailHTML(name, normalized, otpCode, verifyUrl)
+                };
 
-            await transporter.sendMail(mailOptions);
-            console.log(`[Register API] Verification email with OTP [${otpCode}] sent to ${normalized}`);
-        } catch (emailErr) {
-            console.error(`[Register API] Email dispatch notice (${host}:${port}):`, emailErr.message);
+                await transporter.sendMail(mailOptions);
+                console.log(`[Register API] Verification email with OTP [${otpCode}] sent to ${normalized}`);
+            } catch (emailErr) {
+                console.error(`[Register API] Email dispatch notice (${host}:${port}):`, emailErr.message);
+                if (isDev) {
+                    console.warn(`[Register API DEV FALLBACK] Dev 6-Digit OTP Code for ${normalized}: ${otpCode}`);
+                }
+            }
+        } else {
+            console.warn(`[Register API] SMTP_PASS not set; email dispatch skipped.`);
             if (isDev) {
                 console.warn(`[Register API DEV FALLBACK] Dev 6-Digit OTP Code for ${normalized}: ${otpCode}`);
             }
