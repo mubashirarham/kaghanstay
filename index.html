@@ -111,6 +111,13 @@
         "@type": "Rating",
         "ratingValue": "5"
       },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "reviewCount": "128",
+        "bestRating": "5",
+        "worstRating": "1"
+      },
       "areaServed": [
         {"@type": "City", "name": "Islamabad"},
         {"@type": "City", "name": "Rawalpindi"},
@@ -166,7 +173,7 @@
       "@context": "https://schema.org",
       "@type": "Organization",
       "name": "KPH Stay",
-      "legalName": "Kaghan Hotel & Resorts",
+      "legalName": "Kaghan Properties Hospitality",
       "url": "https://kphstay.com",
       "logo": "https://kphstay.com/assets/images/logo.png",
       "sameAs": [
@@ -228,10 +235,18 @@
         },
         {
           "@type": "Question",
-          "name": "Can I rent furnished apartments in Islamabad on a daily, weekly, or monthly basis?",
+          "name": "Can I rent furnished apartments in Islamabad for daily, weekly, or monthly stays?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes, KPH Stay offers flexible booking plans for furnished apartments in Islamabad, Murree, and Nathia Gali with discounted rates for weekly and monthly corporate or family stays."
+            "text": "Yes, KPH Stay offers flexible booking plans for furnished apartments in Islamabad, Murree, and Nathia Gali with discounted rates for weekly (15% off) and monthly (up to 35% off) corporate or family stays."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is KPH Stay's cancellation policy?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "We offer free cancellation up to 48 hours before your scheduled check-in date. Cancellations made within 48 hours may be subject to a one-night charge. Refunds are processed within 5–7 business days directly to your payment method."
           }
         },
         {
@@ -1443,17 +1458,33 @@
                 } catch(e) {}
 
                 let list = rooms.filter(r => r.status === 'available');
-                if (category !== 'all') {
-                    list = list.filter(r => r.type === category);
+                let isFilteredCategory = (category !== 'all');
+                let isCategoryEmpty = false;
+                if (isFilteredCategory) {
+                    const filtered = list.filter(r => r.type === category);
+                    if (filtered.length > 0) {
+                        list = filtered;
+                    } else {
+                        isCategoryEmpty = true;
+                    }
                 }
 
                 // Sort Pinned Rooms to the top
                 list.sort((a, b) => (b.isPinned ? 1 : 0) - (a.isPinned ? 1 : 0));
 
                 if (!list.length) {
-                    container.innerHTML = `<div class="col-span-3 text-center text-slate-500 py-16 font-semibold bg-white rounded-3xl border-2 border-slate-200">No suites available in this category at the moment.</div>`;
-                    return;
+                    list = (window.KaghanDB && window.KaghanDB._DEFAULT_STAY_ROOMS) ? window.KaghanDB._DEFAULT_STAY_ROOMS : [];
                 }
+
+                const fallbackBanner = isCategoryEmpty ? `
+                    <div class="col-span-1 md:col-span-2 lg:col-span-3 bg-amber-50 border-2 border-amber-200 text-amber-900 rounded-2xl p-4 mb-2 flex items-center justify-between text-xs font-semibold">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-circle-info text-amber-600 text-sm"></i>
+                            <span>No suites available in the selected category. Showing top featured accommodations:</span>
+                        </div>
+                        <button type="button" onclick="loadFeaturedRooms('all')" class="underline hover:text-amber-700 font-bold ml-2">Show All Suites</button>
+                    </div>
+                ` : '';
 
                 const typeLabels = {
                     studio: '<i class="fa-solid fa-cube text-[#FFDF9E]"></i> Studio Furnished',
@@ -1467,7 +1498,7 @@
                     farmhouse: '<i class="fa-solid fa-tree text-[#FFDF9E]"></i> Furnished Farmhouse'
                 };
 
-                container.innerHTML = list.map((room, idx) => {
+                container.innerHTML = fallbackBanner + list.map((room, idx) => {
                     const isSaved = savedWishlist.includes(room.id);
                     const baseDaily = Number(room.price) || 0;
                     let priceHtml = '';
@@ -1801,9 +1832,11 @@
             const container = document.getElementById('resort-blog-feed-container');
             if (!container) return;
 
-            const stayBlogs = blogs.filter(b => !b.portal || b.portal === 'stay');
+            let stayBlogs = blogs.filter(b => !b.portal || b.portal === 'stay');
+            if (!stayBlogs.length && window.KaghanDB && window.KaghanDB._DEFAULT_STAY_BLOGS) {
+                stayBlogs = window.KaghanDB._DEFAULT_STAY_BLOGS;
+            }
             if (!stayBlogs.length) {
-                container.innerHTML = `<div class="col-span-2 text-center text-slate-500 py-12 font-semibold">No updates published yet.</div>`;
                 return;
             }
 

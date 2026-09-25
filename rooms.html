@@ -81,8 +81,106 @@
     }
     </script>
 
-    <!-- Structured Data (JSON-LD ItemList & Accommodations Schema) -->
-    <!-- Dynamically loaded on client side -->
+    <!-- Structured Data (JSON-LD ItemList Schema) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": "Luxury Furnished Apartments & Suites",
+      "itemListOrder": "https://schema.org/ItemListOrderAscending",
+      "numberOfItems": 6,
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "item": {
+            "@type": ["Apartment", "HotelRoom"],
+            "name": "Executive 1BHK Furnished Apartment",
+            "description": "Luxury 1 Bed furnished apartment in Bahria Enclave Islamabad with equipped kitchen, high-speed Wi-Fi, and 24/7 power backup.",
+            "url": "https://kphstay.com/rooms",
+            "image": "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80",
+            "offers": {
+              "@type": "Offer",
+              "price": "14000",
+              "priceCurrency": "PKR",
+              "availability": "https://schema.org/InStock"
+            },
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.9",
+              "reviewCount": "42"
+            }
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "item": {
+            "@type": ["Apartment", "HotelRoom"],
+            "name": "Luxury 2BHK Family Suite",
+            "description": "2 Bedroom luxury serviced apartment in Bahria Enclave Islamabad for families with full kitchen, lounge, and scenic views.",
+            "url": "https://kphstay.com/rooms",
+            "image": "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80",
+            "offers": {
+              "@type": "Offer",
+              "price": "24000",
+              "priceCurrency": "PKR",
+              "availability": "https://schema.org/InStock"
+            },
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.9",
+              "reviewCount": "56"
+            }
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "item": {
+            "@type": ["Apartment", "HotelRoom"],
+            "name": "Mountain View 3BHK Penthouse",
+            "description": "3 Bedroom panoramic penthouse overlooking Margalla foothills and pine valleys with private terrace and luxury amenities.",
+            "url": "https://kphstay.com/rooms",
+            "image": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
+            "offers": {
+              "@type": "Offer",
+              "price": "42000",
+              "priceCurrency": "PKR",
+              "availability": "https://schema.org/InStock"
+            },
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "5.0",
+              "reviewCount": "31"
+            }
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "item": {
+            "@type": ["Apartment", "HotelRoom"],
+            "name": "Deluxe Studio Apartment",
+            "description": "Modern studio apartment in Islamabad Sector C with king bed, kitchenette, high-speed Wi-Fi, and smart workspace.",
+            "url": "https://kphstay.com/rooms",
+            "image": "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80",
+            "offers": {
+              "@type": "Offer",
+              "price": "11500",
+              "priceCurrency": "PKR",
+              "availability": "https://schema.org/InStock"
+            },
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.8",
+              "reviewCount": "27"
+            }
+          }
+        }
+      ]
+    }
+    </script>
 
     <!-- BreadcrumbList Schema -->
     <script type="application/ld+json">

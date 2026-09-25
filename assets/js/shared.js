@@ -980,20 +980,210 @@ const db = {
         return true;
     },
 
-    // Rooms CRUD
-    getRooms: async () => {
-        if (!window.KaghanDB_Cache.rooms || !window.KaghanDB_Cache.rooms.length) {
-            try {
-                const swr = localStorage.getItem('kaghan_swr_rooms');
-                if (swr) {
-                    const list = JSON.parse(swr);
-                    if (list && list.length) {
-                        window.KaghanDB_Cache.rooms = list;
-                    }
-                }
-            } catch(e) {}
+    // Default bundled rooms for instant 0ms first-paint render and offline fallback
+    _DEFAULT_STAY_ROOMS: [
+        {
+            id: "kph-apt-1bhk-bahria",
+            name: "Executive 1BHK Furnished Apartment",
+            title: "Executive 1BHK Furnished Apartment",
+            slug: "executive-1bhk-furnished-apartment-bahria-enclave",
+            type: "1bed",
+            location: "Islamabad",
+            locationName: "Bahria Enclave, Islamabad",
+            price: 14000,
+            priceDaily: 14000,
+            priceWeekly: 83300,
+            priceMonthly: 273000,
+            originalPrice: 18000,
+            rating: 4.9,
+            reviewsCount: 42,
+            maxGuests: 2,
+            bedrooms: 1,
+            bathrooms: 1,
+            area: "850 sq ft",
+            status: "available",
+            isPinned: true,
+            isApartment: true,
+            description: "Spacious luxury 1-bedroom serviced apartment in Bahria Enclave Islamabad. Features private chef's kitchen, high-speed optical Wi-Fi, 24/7 generator power backup, 55-inch 4K Smart TV, and dedicated parking.",
+            image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80",
+            images: [
+                "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80",
+                "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80",
+                "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80"
+            ],
+            amenities: ["Fully Furnished", "Equipped Kitchen", "High-Speed Wi-Fi", "24/7 Power Backup", "Smart 4K TV", "Air Conditioning", "Free Parking", "Housekeeping"]
+        },
+        {
+            id: "kph-apt-2bhk-bahria",
+            name: "Luxury 2BHK Family Suite",
+            title: "Luxury 2BHK Family Suite",
+            slug: "luxury-2bhk-family-suite-bahria-enclave",
+            type: "2bed",
+            location: "Islamabad",
+            locationName: "Bahria Enclave, Islamabad",
+            price: 24000,
+            priceDaily: 24000,
+            priceWeekly: 142800,
+            priceMonthly: 468000,
+            originalPrice: 30000,
+            rating: 4.9,
+            reviewsCount: 56,
+            maxGuests: 4,
+            bedrooms: 2,
+            bathrooms: 2,
+            area: "1,450 sq ft",
+            status: "available",
+            isPinned: true,
+            isApartment: true,
+            description: "Ultra-luxury 2-bedroom furnished family apartment in Bahria Enclave with expansive living lounge, dining suite, modular kitchen, and panoramic Margalla foothills view.",
+            image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80",
+            images: [
+                "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80",
+                "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80",
+                "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80"
+            ],
+            amenities: ["2 En-Suite Bedrooms", "Designer Lounge", "Equipped Kitchen", "High-Speed Wi-Fi", "24/7 Power Backup", "Gated Security", "Free Dedicated Parking"]
+        },
+        {
+            id: "kph-apt-3bhk-penthouse",
+            name: "Mountain View 3BHK Penthouse",
+            title: "Mountain View 3BHK Penthouse",
+            slug: "mountain-view-3bhk-penthouse-islamabad",
+            type: "3bed",
+            location: "Islamabad",
+            locationName: "Margalla Foothills, Islamabad",
+            price: 42000,
+            priceDaily: 42000,
+            priceWeekly: 249900,
+            priceMonthly: 819000,
+            originalPrice: 52000,
+            rating: 5.0,
+            reviewsCount: 31,
+            maxGuests: 6,
+            bedrooms: 3,
+            bathrooms: 3,
+            area: "2,400 sq ft",
+            status: "available",
+            isPinned: true,
+            isApartment: true,
+            description: "Exclusive top-floor 3-bedroom luxury penthouse featuring open-air private sky terrace, panoramic Margalla sunset vistas, chef's kitchen, and high-speed Wi-Fi.",
+            image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
+            images: [
+                "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
+                "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80"
+            ],
+            amenities: ["3 Master Bedrooms", "Private Sky Terrace", "Chef Kitchen", "Panoramic Mountain Views", "24/7 Power Backup", "Dedicated Concierge"]
+        },
+        {
+            id: "kph-chalet-murree",
+            name: "Heated Alpine Chalet & Suite",
+            title: "Heated Alpine Chalet & Suite",
+            slug: "heated-alpine-chalet-murree-bhurban",
+            type: "2bed",
+            location: "Murree",
+            locationName: "Murree Hills / Bhurban",
+            price: 22000,
+            priceDaily: 22000,
+            priceWeekly: 130900,
+            priceMonthly: 429000,
+            originalPrice: 28000,
+            rating: 4.9,
+            reviewsCount: 37,
+            maxGuests: 4,
+            bedrooms: 2,
+            bathrooms: 2,
+            area: "1,200 sq ft",
+            status: "available",
+            isPinned: false,
+            isApartment: true,
+            description: "Cozy pine-valley heated apartment in Murree with valley views, electric thermal blankets, private kitchen, 24/7 hot water geysers, and snow season accessibility.",
+            image: "https://images.unsplash.com/photo-1517824806704-9040b037703b?auto=format&fit=crop&w=800&q=80",
+            images: [
+                "https://images.unsplash.com/photo-1517824806704-9040b037703b?auto=format&fit=crop&w=800&q=80"
+            ],
+            amenities: ["Central Heating", "Electric Blankets", "24/7 Hot Water", "Private Balcony", "Equipped Kitchen", "Generator Backup", "Covered Parking"]
+        },
+        {
+            id: "kph-chalet-nathia-gali",
+            name: "Pine Valley Forest Lodge",
+            title: "Pine Valley Forest Lodge",
+            slug: "pine-valley-forest-lodge-nathia-gali",
+            type: "3bed",
+            location: "Nathia Gali",
+            locationName: "Nathia Gali (Near Pipeline Track)",
+            price: 28000,
+            priceDaily: 28000,
+            priceWeekly: 166600,
+            priceMonthly: 546000,
+            originalPrice: 35000,
+            rating: 5.0,
+            reviewsCount: 29,
+            maxGuests: 6,
+            bedrooms: 3,
+            bathrooms: 3,
+            area: "1,800 sq ft",
+            status: "available",
+            isPinned: false,
+            isApartment: true,
+            description: "Alpine pine chalet nestled beneath cedar canopies in Nathia Gali. Moments from the historic Pipeline Track and Ayubia National Park with roaring wood fireplace and heating.",
+            image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80",
+            images: [
+                "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80"
+            ],
+            amenities: ["Wood Fireplace", "Mountain Forest Balcony", "Full Kitchen", "Room Heating", "24/7 Hot Water", "Wi-Fi", "Private Parking"]
+        },
+        {
+            id: "kph-apt-studio",
+            name: "Deluxe Studio Apartment",
+            title: "Deluxe Studio Apartment",
+            slug: "deluxe-studio-apartment-bahria-enclave",
+            type: "studio",
+            location: "Islamabad",
+            locationName: "Sector C, Bahria Enclave",
+            price: 11500,
+            priceDaily: 11500,
+            priceWeekly: 68425,
+            priceMonthly: 224250,
+            originalPrice: 15000,
+            rating: 4.8,
+            reviewsCount: 27,
+            maxGuests: 2,
+            bedrooms: 1,
+            bathrooms: 1,
+            area: "550 sq ft",
+            status: "available",
+            isPinned: false,
+            isApartment: true,
+            description: "Contemporary studio residence in Bahria Enclave Sector C featuring plush King bed, kitchenette, high-speed fiber Wi-Fi, inverter heating/cooling, and smart workspace.",
+            image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80",
+            images: [
+                "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80"
+            ],
+            amenities: ["King Plush Bed", "Kitchenette", "High-Speed Wi-Fi", "Work Desk", "24/7 Power Backup", "Dedicated Parking"]
         }
-        if (window.KaghanDB_Cache.rooms && window.KaghanDB_Cache.rooms.length) {
+    ],
+
+    // Synchronous instant rooms cache reader for 0ms visual paint
+    getCachedRooms: () => {
+        if (window.KaghanDB_Cache.rooms && window.KaghanDB_Cache.rooms.length > 0) {
+            return window.KaghanDB_Cache.rooms;
+        }
+        try {
+            const swr = localStorage.getItem('kaghan_swr_rooms');
+            if (swr) {
+                const list = JSON.parse(swr);
+                if (Array.isArray(list) && list.length > 0) {
+                    window.KaghanDB_Cache.rooms = list;
+                    return list;
+                }
+            }
+        } catch(e) {}
+        return KaghanDB._DEFAULT_STAY_ROOMS;
+    },
+
+    // Rooms CRUD with SWR caching & zero-flash fallback
+    getRooms: async (forceRefresh = false) => {
+        if (!forceRefresh && window.KaghanDB_Cache.rooms && window.KaghanDB_Cache.rooms.length) {
             const seen = new Set();
             const deduped = [];
             window.KaghanDB_Cache.rooms.forEach(r => {
@@ -1018,12 +1208,15 @@ const db = {
                     list.push({ ...data, id });
                 }
             });
-            window.KaghanDB_Cache.rooms = list;
-            try { localStorage.setItem('kaghan_swr_rooms', JSON.stringify(list)); } catch(e) {}
-            return list;
+            const finalRooms = list.length > 0 ? list : KaghanDB._DEFAULT_STAY_ROOMS;
+            window.KaghanDB_Cache.rooms = finalRooms;
+            try { localStorage.setItem('kaghan_swr_rooms', JSON.stringify(finalRooms)); } catch(e) {}
+            window.dispatchEvent(new CustomEvent('kaghan-db-rooms', { detail: finalRooms }));
+            return finalRooms;
         } catch (err) {
-            console.warn("getRooms Firestore fetch error:", err);
-            return window.KaghanDB_Cache.rooms || [];
+            console.warn("getRooms Firestore fetch error (using SWR fallback):", err);
+            const fallback = window.KaghanDB_Cache.rooms || KaghanDB.getCachedRooms();
+            return fallback && fallback.length > 0 ? fallback : KaghanDB._DEFAULT_STAY_ROOMS;
         }
     },
     generateSlug: (text) => {
@@ -2449,6 +2642,83 @@ const db = {
             category: "Travel Guide",
             portal: "stay",
             createdAt: "2026-08-01T08:30:00.000Z"
+        },
+        {
+            id: "corporate-relocation-bahria-enclave-islamabad-guide",
+            title: "The Ultimate Corporate Relocation & Long-Term Stay Guide to Bahria Enclave Islamabad",
+            slug: "corporate-relocation-bahria-enclave-islamabad-guide",
+            excerpt: "A strategic relocation guide for multinational executives, consultants, and NGO personnel seeking secure, fully serviced monthly apartments in Islamabad.",
+            content: `<h2>Corporate Mobility in Pakistan's Federal Capital</h2>
+<p>Relocating executive teams, diplomatic consultants, or project leads to Islamabad requires housing solutions that balance international security standards, uninterrupted digital infrastructure, and luxurious residential comfort. Traditional hotel stays quickly become inefficient for assignments spanning weeks or months.</p>
+<p>Bahria Enclave has rapidly emerged as Islamabad's premier corporate living destination. With wide boulevards, underground utility lines, gated checkpoints, and rapid transit corridors to the Blue Area and Serena Business Complex, executives enjoy serene mountain vistas without sacrificing productivity.</p>
+<div class="my-6 p-6 bg-slate-900 text-white rounded-2xl">
+    <h3 class="text-amber-400 font-bold mb-2">Key Corporate Amenities at KPH Stay:</h3>
+    <ul class="text-xs space-y-1.5 list-disc list-inside text-slate-300">
+        <li>Dedicated 100+ Mbps optical fiber network with redundant failover.</li>
+        <li>Dual solar and heavy generator continuous power backup (zero downtime).</li>
+        <li>Executive workspace nooks with ergonomic desks and task lighting.</li>
+        <li>Dedicated parking, weekly deep housekeeping, and seamless corporate billing.</li>
+    </ul>
+</div>
+<p>Discover corporate extended stay packages with up to 35% monthly discounts at <a href="/rooms">KPH Stay Serviced Residences</a>.</p>`,
+            author: "Corporate Concierge",
+            imageUrl: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80",
+            category: "Corporate Travel",
+            portal: "stay",
+            createdAt: "2026-09-12T10:00:00.000Z"
+        },
+        {
+            id: "best-hiking-trails-near-ayubia-national-park-nathia-gali",
+            title: "Best Hiking Trails Near Ayubia National Park & Nathia Gali: Pine Valley Trekking Guide",
+            slug: "best-hiking-trails-near-ayubia-national-park-nathia-gali",
+            excerpt: "Explore the top alpine trekking routes in Galiyat—from the family-friendly Pipeline Track to the panoramic summit of Mukshpuri and Miranjani peaks.",
+            content: `<h2>The Alpine Trekking Capital of Northern Pakistan</h2>
+<p>For nature enthusiasts, trekking in the Galiyat range offers unmatched beauty. Dense forests of Blue Pine, cedar, and silver fir create a canopy that shelters an incredible variety of birdlife and mountain flora.</p>
+<h3>1. The Historic Pipeline Track (4 km • Easy)</h3>
+<p>Connecting Dunga Gali to Ayubia, this flat, tranquil walk along the colonial-era water pipeline is perfect for families, seniors, and morning joggers.</p>
+<h3>2. Mukshpuri Peak Trek (3.5 km • Moderate)</h3>
+<p>Ascend through pine woodlands to reach a sprawling grassy plateau at 9,186 feet, offering panoramic views of Kashmir and Nanga Parbat on clear days.</p>
+<h3>3. Miranjani Peak Trek (4.5 km • Strenuous)</h3>
+<p>The highest summit in Hazara at 9,711 feet. A rewarding challenge for avid hikers with views of Tarbela Lake and the Abbottabad basin.</p>
+<p>After a day of trekking, unwind in heated comfort at <a href="/vacation-rentals-nathia-gali">KPH Stay Nathia Gali Chalets</a>.</p>`,
+            author: "Outdoor Adventures Team",
+            imageUrl: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80",
+            category: "Nathia Gali Guide",
+            portal: "stay",
+            createdAt: "2026-09-14T09:00:00.000Z"
+        },
+        {
+            id: "murree-vs-nathia-gali-vacation-guide",
+            title: "Murree vs. Nathia Gali: Which Hill Station Suite is Best for Your Family Vacation?",
+            slug: "murree-vs-nathia-gali-vacation-guide",
+            excerpt: "Comparing atmosphere, travel times, elevation, winter snowfall, and accommodation styles to help you pick the perfect mountain holiday.",
+            content: `<h2>Choosing Your Ideal Hill Station Retreat</h2>
+<p>When planning a mountain holiday from Islamabad or Lahore, travelers often debate between Murree and Nathia Gali. Both offer refreshing cool air and stunning Himalayan scenery, but each offers a distinct vacation style.</p>
+<ul>
+    <li><strong>Murree (Elevation 7,500 ft):</strong> Closer to Islamabad (50-60 min drive), lively atmosphere, iconic Mall Road shopping, Patriata chairlift, and vibrant dining. Best for shorter weekend escapes and families who love bustling mountain towns.</li>
+    <li><strong>Nathia Gali (Elevation 8,200 ft):</strong> Quieter, more secluded (2.5 hr drive), dense undisturbed pine forests, world-class hiking tracks, cooler summer weather, and heavy winter snowfall. Best for nature lovers and tranquil extended retreats.</li>
+</ul>
+<p>Both locations feature full-service <a href="/rooms">KPH Stay heated apartments and chalets</a> with private kitchens and panoramic valley views.</p>`,
+            author: "Travel Desk",
+            imageUrl: "https://images.unsplash.com/photo-1517824806704-9040b037703b?auto=format&fit=crop&w=800&q=80",
+            category: "Travel Guide",
+            portal: "stay",
+            createdAt: "2026-09-16T11:00:00.000Z"
+        },
+        {
+            id: "extended-stay-monthly-furnished-apartments-islamabad",
+            title: "Extended Stay & Monthly Furnished Apartments in Islamabad: Complete Cost & Lifestyle Guide",
+            slug: "extended-stay-monthly-furnished-apartments-islamabad",
+            excerpt: "Everything you need to know about renting fully furnished monthly serviced apartments in Islamabad: rates, utilities, security, and benefits.",
+            content: `<h2>The Rise of Monthly Extended Stay Living</h2>
+<p>Whether relocating for business, renovating a home, or spending the summer in the capital, renting a monthly furnished apartment offers substantial cost savings and lifestyle flexibility compared to long-term leases or hotel rooms.</p>
+<p>KPH Stay offers all-inclusive monthly packages with zero utility setup hassles, daily security, regular housekeeping, and discounts of up to 35% on standard daily rates.</p>
+<p>Check available suites on our <a href="/rooms">Rooms & Pricing Portal</a> or get in touch with our booking concierge.</p>`,
+            author: "Resort Concierge",
+            imageUrl: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80",
+            category: "Islamabad Guide",
+            portal: "stay",
+            createdAt: "2026-09-18T10:00:00.000Z"
         }
     ],
 

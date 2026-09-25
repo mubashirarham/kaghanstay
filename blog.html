@@ -186,11 +186,13 @@
             
             <!-- Category Filter Row -->
             <div class="flex gap-3 overflow-x-auto pb-4 justify-start md:justify-center border-b-2 border-slate-200">
-                <button onclick="filterCategory('all')" id="cat-btn-all" class="pop-chip px-5 py-2.5 rounded-xl text-xs font-bold bg-slate-900 text-white border-2 border-slate-900 shadow-md transition-all whitespace-nowrap">All Blog Articles</button>
-                <button onclick="filterCategory('Resort Updates')" id="cat-btn-Resort Updates" class="pop-chip px-5 py-2.5 rounded-xl text-xs font-bold bg-white border-2 border-slate-200 text-slate-800 hover:border-slate-400 transition-all whitespace-nowrap">Resort Updates</button>
-                <button onclick="filterCategory('Pine Valley Guide')" id="cat-btn-Pine Valley Guide" class="pop-chip px-5 py-2.5 rounded-xl text-xs font-bold bg-white border-2 border-slate-200 text-slate-800 hover:border-slate-400 transition-all whitespace-nowrap">Pine Valley Guide</button>
-                <button onclick="filterCategory('Stay Offers')" id="cat-btn-Stay Offers" class="pop-chip px-5 py-2.5 rounded-xl text-xs font-bold bg-white border-2 border-slate-200 text-slate-800 hover:border-slate-400 transition-all whitespace-nowrap">Stay Offers</button>
+                <button onclick="filterCategory('all')" id="cat-btn-all" class="pop-chip px-5 py-2.5 rounded-xl text-xs font-bold bg-slate-900 text-white border-2 border-slate-900 shadow-md transition-all whitespace-nowrap">All Articles</button>
+                <button onclick="filterCategory('Islamabad Guide')" id="cat-btn-Islamabad Guide" class="pop-chip px-5 py-2.5 rounded-xl text-xs font-bold bg-white border-2 border-slate-200 text-slate-800 hover:border-slate-400 transition-all whitespace-nowrap">Islamabad Guide</button>
+                <button onclick="filterCategory('Murree Guide')" id="cat-btn-Murree Guide" class="pop-chip px-5 py-2.5 rounded-xl text-xs font-bold bg-white border-2 border-slate-200 text-slate-800 hover:border-slate-400 transition-all whitespace-nowrap">Murree Guide</button>
+                <button onclick="filterCategory('Nathia Gali Guide')" id="cat-btn-Nathia Gali Guide" class="pop-chip px-5 py-2.5 rounded-xl text-xs font-bold bg-white border-2 border-slate-200 text-slate-800 hover:border-slate-400 transition-all whitespace-nowrap">Nathia Gali Guide</button>
+                <button onclick="filterCategory('Corporate Travel')" id="cat-btn-Corporate Travel" class="pop-chip px-5 py-2.5 rounded-xl text-xs font-bold bg-white border-2 border-slate-200 text-slate-800 hover:border-slate-400 transition-all whitespace-nowrap">Corporate Travel</button>
                 <button onclick="filterCategory('Travel Guide')" id="cat-btn-Travel Guide" class="pop-chip px-5 py-2.5 rounded-xl text-xs font-bold bg-white border-2 border-slate-200 text-slate-800 hover:border-slate-400 transition-all whitespace-nowrap">Travel Guides</button>
+                <button onclick="filterCategory('Stay Offers')" id="cat-btn-Stay Offers" class="pop-chip px-5 py-2.5 rounded-xl text-xs font-bold bg-white border-2 border-slate-200 text-slate-800 hover:border-slate-400 transition-all whitespace-nowrap">Stay Offers</button>
             </div>
 
             <!-- Blog Grid (Synchronously Hydrated on load for 0ms visual paint) -->
@@ -255,10 +257,21 @@
             const grid = document.getElementById('blog-grid');
             if (!grid) return;
 
-            filteredBlogs = blogsList.filter(b => activeCategory === 'all' || b.category === activeCategory);
+            let source = blogsList;
+            if ((!source || !source.length) && window.KaghanDB && window.KaghanDB._DEFAULT_STAY_BLOGS) {
+                source = window.KaghanDB._DEFAULT_STAY_BLOGS;
+            }
+
+            filteredBlogs = (source || []).filter(b => activeCategory === 'all' || b.category === activeCategory);
 
             if (filteredBlogs.length === 0) {
-                grid.innerHTML = `<div class="col-span-3 text-center text-slate-600 py-12 font-medium">No blog articles published under this category yet.</div>`;
+                grid.innerHTML = `
+                    <div class="col-span-3 text-center text-slate-600 py-12 font-medium bg-white rounded-2xl border-2 border-slate-200 p-8">
+                        <i class="fa-solid fa-folder-open text-3xl text-slate-400 mb-2 block"></i>
+                        <p class="font-bold text-slate-800">No articles under "${escapeHTML(activeCategory)}" yet.</p>
+                        <button onclick="filterCategory('all')" class="mt-3 bg-slate-900 text-white text-xs font-bold px-4 py-2 rounded-xl">View All Articles</button>
+                    </div>
+                `;
                 const pagContainer = document.getElementById('blog-pagination');
                 if (pagContainer) pagContainer.classList.add('hidden');
                 return;
