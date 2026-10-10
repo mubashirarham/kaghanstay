@@ -1,0 +1,604 @@
+{
+  "lastUpdated": "2026-09-26T16:11:56.945Z",
+  "backlinks": [
+    {
+      "id": "bl-001",
+      "referringDomain": "medium.com",
+      "referringUrl": "https://medium.com/@kphstay/top-luxury-serviced-apartments-in-bahria-enclave-islamabad-guide-2026-5b4d7c89f",
+      "targetUrl": "https://kphstay.com/serviced-apartments-islamabad",
+      "expectedAnchor": "serviced apartments in Islamabad",
+      "type": "Guest Post / Syndication",
+      "status": "pending_submission",
+      "lastChecked": null,
+      "isLive": null,
+      "isDofollow": null,
+      "httpStatus": null
+    },
+    {
+      "id": "bl-002",
+      "referringDomain": "tripoto.com",
+      "referringUrl": "https://www.tripoto.com/trip/complete-guide-to-mukshpuri-and-luxury-alpine-lodges-nathia-gali",
+      "targetUrl": "https://kphstay.com/vacation-rentals-nathia-gali",
+      "expectedAnchor": "luxury chalets in Nathia Gali",
+      "type": "Travel Community Guide",
+      "status": "pending_submission",
+      "lastChecked": null,
+      "isLive": null,
+      "isDofollow": null,
+      "httpStatus": null
+    },
+    {
+      "id": "bl-003",
+      "referringDomain": "pakwheels.com",
+      "referringUrl": "https://www.pakwheels.com/forums/t/winter-road-trip-murree-heated-chalets/192837",
+      "targetUrl": "https://kphstay.com/luxury-apartments-murree",
+      "expectedAnchor": "furnished apartment for rent in murree",
+      "type": "Forum Thread Citation",
+      "status": "pending_submission",
+      "lastChecked": null,
+      "isLive": null,
+      "isDofollow": null,
+      "httpStatus": null
+    },
+    {
+      "id": "auto-1790414646022-1",
+      "referringDomain": "dev.to.com",
+      "referringUrl": "https://dev.to/mubashir_arham_edbbd6e862/the-evolution-of-serviced-apartments-in-islamabad-private-residences-vs-5-star-hotels-2513",
+      "targetUrl": "https://kphstay.com/serviced-apartments-islamabad",
+      "expectedAnchor": "serviced apartments in Islamabad",
+      "type": "Autonomous API Publication",
+      "status": "live",
+      "lastChecked": "2026-09-26T09:44:16.386Z",
+      "isLive": true,
+      "isDofollow": true,
+      "httpStatus": 200,
+      "actualAnchor": "\"kphstay.com\", \"KPH Stay\", \"serviced apartments in Islamabad\", \"Cube Apartments Bahria Enclave\", \"kp house islamabad booking\", \"KPH Stay\", \"kphstay.com\"",
+      "matchedHref": "https://kphstay.com/serviced-apartments-islamabad",
+      "matchedLinksCount": 7,
+      "matchedLinks": [
+        {
+          "href": "https://kphstay.com/serviced-apartments-islamabad",
+          "anchorText": "kphstay.com",
+          "isDofollow": true
+        },
+        {
+          "href": "https://kphstay.com/",
+          "anchorText": "KPH Stay",
+          "isDofollow": true
+        },
+        {
+          "href": "https://kphstay.com/serviced-apartments-islamabad",
+          "anchorText": "serviced apartments in Islamabad",
+          "isDofollow": true
+        },
+        {
+          "href": "https://kphstay.com/room/2-bed-furnished-apartment-cube-apartments-bahria-enclave-islamabad",
+          "anchorText": "Cube Apartments Bahria Enclave",
+          "isDofollow": true
+        },
+        {
+          "href": "https://kphstay.com/room/furnished-studio-apartment-islamabad",
+          "anchorText": "kp house islamabad booking",
+          "isDofollow": true
+        },
+        {
+          "href": "https://kphstay.com/",
+          "anchorText": "KPH Stay",
+          "isDofollow": true
+        },
+        {
+          "href": "https://kphstay.com/",
+          "anchorText": "kphstay.com",
+          "isDofollow": true
+        }
+      ]
+    },
+    {
+      "id": "devto-1790415003750-1",
+      "topic": "Tulipano by Nook House Classic Suite C2 Murree Heated Mountain Living",
+      "referringDomain": "dev.to",
+      "referringUrl": "https://dev.to/mubashir_arham_edbbd6e862/tulipano-by-nook-house-a-review-of-heated-mountain-luxury-in-the-murree-hills-39ic",
+      "targetUrl": "https://kphstay.com/room/tulipano-by-nook-house-classic-suite-c2-murree",
+      "expectedAnchor": "tulipano by nook house",
+      "secondaryAnchor": "nook house murree",
+      "type": "Groq AI Generated Dofollow Guest Article",
+      "status": "live",
+      "lastChecked": "2026-09-26T09:44:16.506Z",
+      "isLive": true,
+      "isDofollow": true,
+      "httpStatus": 200,
+      "actualAnchor": "\"kphstay.com\", \"tulipano by nook house\", \"nook house murree\", \"tulipano by nook house\", \"nook house murree\", \"tulipano by nook house\", \"KPH Stay\", \"tulipano by nook house\", \"kph contact number\", \"KPH Stay\"",
+      "matchedHref": "https://kphstay.com/room/tulipano-by-nook-house-classic-suite-c2-murree",
+      "matchedLinksCount": 10,
+      "matchedLinks": [
+        {
+          "href": "https://kphstay.com/room/tulipano-by-nook-house-classic-suite-c2-murree",
+          "anchorText": "kphstay.com",
+          "isDofollow": true
+        },
+        {
+          "href": "https://kphstay.com/room/tulipano-by-nook-house-classic-suite-c2-murree",
+          "anchorText": "tulipano by nook house",
+          "isDofollow": true
+        },
+        {
+          "href": "https://kphstay.com/room/tulipano-by-nook-house-classic-suite-c2-murree",
+          "anchorText": "nook house murree",
+          "isDofollow": true
+        },
+        {
+          "href": "https://kphstay.com/room/tulipano-by-nook-house-classic-suite-c2-murree",
+          "anchorText": "tulipano by nook house",
+          "isDofollow": true
+        },
+        {
+          "href": "https://kphstay.com/room/tulipano-by-nook-house-classic-suite-c2-murree",
+          "anchorText": "nook house murree",
+          "isDofollow": true
+        },
+        {
+          "href": "https://kphstay.com/room/tulipano-by-nook-house-classic-suite-c2-murree",
+          "anchorText": "tulipano by nook house",
+          "isDofollow": true
+        },
+        {
+          "href": "https://kphstay.com/",
+          "anchorText": "KPH Stay",
+          "isDofollow": true
+        },
+        {
+          "href": "https://kphstay.com/room/tulipano-by-nook-house-classic-suite-c2-murree",
+          "anchorText": "tulipano by nook house",
+          "isDofollow": true
+        },
+        {
+          "href": "https://kphstay.com/contact",
+          "anchorText": "kph contact number",
+          "isDofollow": true
+        },
+        {
+          "href": "https://kphstay.com/",
+          "anchorText": "KPH Stay",
+          "isDofollow": true
+        }
+      ]
+    },
+    {
+      "id": "devto-1790415019089-2",
+      "topic": "The Winds Way Lodges Murree Budget Friendly Family Chalets",
+      "referringDomain": "dev.to",
+      "referringUrl": "https://dev.to/mubashir_arham_edbbd6e862/the-winds-way-lodges-murree-budget-friendly-family-chalets-that-redefine-affordable-luxury-1dd7",
+      "targetUrl": "https://kphstay.com/room/the-winds-way-lodges-murree",
+      "expectedAnchor": "furnished apartment for rent in murree",
+      "secondaryAnchor": "with very low budget",
+      "type": "Groq AI Generated Dofollow Guest Article",
+      "status": "live",
+      "lastChecked": "2026-09-26T09:44:16.787Z",
+      "isLive": true,
+      "isDofollow": true,
+      "httpStatus": 200,
+      "actualAnchor": "\"kphstay.com\", \"furnished apartment for rent in murree\", \"with very low budget\", \"KPH Stay\", \"kph contact number\", \"KPH Stay\", \"kph contact number\"",
+      "matchedHref": "https://kphstay.com/room/the-winds-way-lodges-murree",
+      "matchedLinksCount": 7,
+      "matchedLinks": [
+        {
+          "href": "https://kphstay.com/room/the-winds-way-lodges-murree",
+          "anchorText": "kphstay.com",
+          "isDofollow": true
+        },
+        {
+          "href": "https://kphstay.com/room/the-winds-way-lodges-murree",
+          "anchorText": "furnished apartment for rent in murree",
+          "isDofollow": true
+        },
+        {
+          "href": "https://kphstay.com/room/the-winds-way-lodges-murree",
+          "anchorText": "with very low budget",
+          "isDofollow": true
+        },
+        {
+          "href": "https://kphstay.com/",
+          "anchorText": "KPH Stay",
+          "isDofollow": true
+        },
+        {
+          "href": "https://kphstay.com/contact",
+          "anchorText": "kph contact number",
+          "isDofollow": true
+        },
+        {
+          "href": "https://kphstay.com/",
+          "anchorText": "KPH Stay",
+          "isDofollow": true
+        },
+        {
+          "href": "https://kphstay.com/contact",
+          "anchorText": "kph contact number",
+          "isDofollow": true
+        }
+      ]
+    },
+    {
+      "id": "devto-1790415458321-1",
+      "topic": "Valley View Villa Murree 3 Bed Private Farmhouse with Snow Vistas",
+      "referringDomain": "dev.to",
+      "referringUrl": "https://dev.to/mubashir_arham_edbbd6e862/valley-view-villa-murree-3-bed-private-farmhouse-with-snow-capped-vistas-2kgf",
+      "targetUrl": "https://kphstay.com/room/valley-view-villa-murree",
+      "expectedAnchor": "valley view murree",
+      "secondaryAnchor": "valley view residency murree",
+      "type": "Groq AI Generated Dofollow Guest Article",
+      "status": "live",
+      "lastChecked": "2026-09-26T09:44:16.894Z",
+      "isLive": true,
+      "isDofollow": true,
+      "httpStatus": 200,
+      "actualAnchor": "\"kphstay.com\", \"valley view murree\", \"KPH Stay\", \"valley view murree\", \"Reserve Your Stay at Valley View Villa Now\", \"kph contact number\"",
+      "matchedHref": "https://kphstay.com/room/valley-view-villa-murree",
+      "matchedLinksCount": 6,
+      "matchedLinks": [
+        {
+          "href": "https://kphstay.com/room/valley-view-villa-murree",
+          "anchorText": "kphstay.com",
+          "isDofollow": true
+        },
+        {
+          "href": "https://kphstay.com/room/valley-view-villa-murree",
+          "anchorText": "valley view murree",
+          "isDofollow": true
+        },
+        {
+          "href": "https://kphstay.com/",
+          "anchorText": "KPH Stay",
+          "isDofollow": true
+        },
+        {
+          "href": "https://kphstay.com/room/valley-view-villa-murree",
+          "anchorText": "valley view murree",
+          "isDofollow": true
+        },
+        {
+          "href": "https://kphstay.com/room/valley-view-villa-murree",
+          "anchorText": "Reserve Your Stay at Valley View Villa Now",
+          "isDofollow": true
+        },
+        {
+          "href": "https://kphstay.com/contact",
+          "anchorText": "kph contact number",
+          "isDofollow": true
+        }
+      ]
+    },
+    {
+      "id": "devto-1790415481021-2",
+      "topic": "6 Marla 3 Bed Mountain Villa Valley View in Murree",
+      "referringDomain": "dev.to",
+      "referringUrl": "https://dev.to/mubashir_arham_edbbd6e862/escape-the-urban-grind-the-ultimate-guide-to-the-6-marla-3-bed-mountain-villa-in-murree-hills-3fk9",
+      "targetUrl": "https://kphstay.com/room/6-marla-3-bed-villa-valley-view-In-Murree",
+      "expectedAnchor": "furnished apartment for rent in murree",
+      "secondaryAnchor": "kph contact number",
+      "type": "Groq AI Generated Dofollow Guest Article",
+      "status": "live",
+      "lastChecked": "2026-09-26T09:44:16.996Z",
+      "isLive": true,
+      "isDofollow": true,
+      "httpStatus": 200,
+      "actualAnchor": "\"kphstay.com\", \"furnished apartment for rent in murree\", \"KPH Stay\", \"kph contact number\", \"kph contact number\"",
+      "matchedHref": "https://kphstay.com/room/6-marla-3-bed-villa-valley-view-In-Murree",
+      "matchedLinksCount": 5,
+      "matchedLinks": [
+        {
+          "href": "https://kphstay.com/room/6-marla-3-bed-villa-valley-view-In-Murree",
+          "anchorText": "kphstay.com",
+          "isDofollow": true
+        },
+        {
+          "href": "https://kphstay.com/room/6-marla-3-bed-villa-valley-view-In-Murree",
+          "anchorText": "furnished apartment for rent in murree",
+          "isDofollow": true
+        },
+        {
+          "href": "https://kphstay.com/",
+          "anchorText": "KPH Stay",
+          "isDofollow": true
+        },
+        {
+          "href": "https://kphstay.com/room/6-marla-3-bed-villa-valley-view-In-Murree",
+          "anchorText": "kph contact number",
+          "isDofollow": true
+        },
+        {
+          "href": "https://kphstay.com/contact",
+          "anchorText": "kph contact number",
+          "isDofollow": true
+        }
+      ]
+    },
+    {
+      "id": "devto-1790415822049-3",
+      "topic": "Tulipano by Nook House 2BHK Luxury Chalets Murree",
+      "referringDomain": "dev.to",
+      "referringUrl": "https://dev.to/mubashir_arham_edbbd6e862/tulipano-by-nook-house-a-2bhk-luxury-chalet-experience-in-the-murree-hills-5agl",
+      "targetUrl": "https://kphstay.com/room/tulipano-by-nook-house-murree",
+      "expectedAnchor": "nook house murree",
+      "secondaryAnchor": "luxury apartments in Murree",
+      "type": "Groq AI Generated Dofollow Guest Article",
+      "status": "live",
+      "lastChecked": "2026-09-26T09:44:17.127Z",
+      "isLive": true,
+      "isDofollow": true,
+      "httpStatus": 200,
+      "actualAnchor": "\"kphstay.com\", \"nook house murree\", \"nook house murree\", \"KPH Stay\", \"kph contact number\"",
+      "matchedHref": "https://kphstay.com/room/tulipano-by-nook-house-murree",
+      "matchedLinksCount": 5,
+      "matchedLinks": [
+        {
+          "href": "https://kphstay.com/room/tulipano-by-nook-house-murree",
+          "anchorText": "kphstay.com",
+          "isDofollow": true
+        },
+        {
+          "href": "https://kphstay.com/room/tulipano-by-nook-house-murree",
+          "anchorText": "nook house murree",
+          "isDofollow": true
+        },
+        {
+          "href": "https://kphstay.com/room/tulipano-by-nook-house-murree",
+          "anchorText": "nook house murree",
+          "isDofollow": true
+        },
+        {
+          "href": "https://kphstay.com/",
+          "anchorText": "KPH Stay",
+          "isDofollow": true
+        },
+        {
+          "href": "https://kphstay.com/contact",
+          "anchorText": "kph contact number",
+          "isDofollow": true
+        }
+      ]
+    },
+    {
+      "id": "devto-1790416348219-1",
+      "topic": "Inside The Winds Way Lodges Murree - Comprehensive Insider Review & Walkthrough in Murree Hills",
+      "property": "The Winds Way Lodges Murree",
+      "referringDomain": "dev.to",
+      "referringUrl": "https://dev.to/mubashir_arham_edbbd6e862/inside-the-winds-way-lodges-murree-a-comprehensive-insider-review-walkthrough-in-the-murree-hills-25fb",
+      "targetUrl": "https://kphstay.com/room/the-winds-way-lodges-murree",
+      "expectedAnchor": "furnished apartment for rent in murree",
+      "secondaryAnchor": "with very low budget",
+      "type": "Continuous Groq AI Dofollow Guest Article",
+      "status": "live",
+      "lastChecked": "2026-09-26T09:52:28.219Z",
+      "isLive": true,
+      "isDofollow": true,
+      "httpStatus": 200
+    },
+    {
+      "id": "devto-1790416388473-2",
+      "topic": "Why Valley View Villa Murree 3 Bed Private Farmhouse Sets the Gold Standard for Comprehensive Insider Review & Walkthrough in Murree Hills",
+      "property": "Valley View Villa Murree 3 Bed Private Farmhouse",
+      "referringDomain": "dev.to",
+      "referringUrl": "https://dev.to/mubashir_arham_edbbd6e862/why-valley-view-villa-murree-3-bed-private-farmhouse-sets-the-gold-standard-for-comprehensive-inside-24ak",
+      "targetUrl": "https://kphstay.com/room/valley-view-villa-murree",
+      "expectedAnchor": "valley view murree",
+      "secondaryAnchor": "valley view residency murree",
+      "type": "Continuous Groq AI Dofollow Guest Article",
+      "status": "live",
+      "lastChecked": "2026-09-26T09:53:08.473Z",
+      "isLive": true,
+      "isDofollow": true,
+      "httpStatus": 200
+    },
+    {
+      "id": "devto-1790423763565-1",
+      "topic": "Tulipano Standard 2BHK Mountain Suite Murree for Family Holidays",
+      "referringDomain": "dev.to",
+      "referringUrl": "https://dev.to/mubashir_arham/tulipano-standard-2bhk-mountain-suite-murree-for-family-holidays-1f62",
+      "targetUrl": "https://kphstay.com/room/tulipano-by-nook-house-standard-2bhk-murree-islamabad",
+      "expectedAnchor": "furnished apartment for rent in murree",
+      "secondaryAnchor": "nook house",
+      "type": "Groq AI Generated Dofollow Guest Article (Dev.to)",
+      "status": "live",
+      "lastChecked": "2026-09-26T11:56:03.565Z",
+      "isLive": true,
+      "isDofollow": true,
+      "httpStatus": 200
+    },
+    {
+      "id": "devto-1790423891349-1",
+      "topic": "Tulipano Premium Suite A2 Penthouse Vistas Murree",
+      "referringDomain": "dev.to",
+      "referringUrl": "https://dev.to/mubashir_arham/tulipano-premium-suite-a2-penthouse-vistas-murree-a-sky-high-sanctuary-in-the-hills-1171",
+      "targetUrl": "https://kphstay.com/room/tulipano-by-nook-house-premium-suite-a2-murree",
+      "expectedAnchor": "tulipano by nook house",
+      "secondaryAnchor": "luxury chalets in Murree",
+      "type": "Groq AI Generated Dofollow Guest Article (Dev.to)",
+      "status": "live",
+      "lastChecked": "2026-09-26T11:58:11.349Z",
+      "isLive": true,
+      "isDofollow": true,
+      "httpStatus": 200
+    },
+    {
+      "id": "devto-1790425101504-1",
+      "topic": "Murree Winter Vacation Guide Snowfalls Heating and Mountain Lodging",
+      "referringDomain": "dev.to",
+      "referringUrl": "https://dev.to/mubashir_arham/murree-winter-vacation-guide-mastering-snowfalls-heating-and-mountain-lodging-mb0",
+      "targetUrl": "https://kphstay.com/luxury-apartments-murree",
+      "expectedAnchor": "luxury apartments in Murree",
+      "secondaryAnchor": "furnished apartment for rent in murree",
+      "type": "Groq AI Generated Dofollow Guest Article (Dev.to)",
+      "status": "live",
+      "lastChecked": "2026-09-26T12:18:21.505Z",
+      "isLive": true,
+      "isDofollow": true,
+      "httpStatus": 200
+    },
+    {
+      "id": "devto-1790433848306-1",
+      "topic": "Remote Work from Murree Pine Forest Workations with High-Speed Fiber",
+      "referringDomain": "dev.to",
+      "referringUrl": "https://dev.to/mubashir_arham/remote-work-from-murree-pine-forest-workations-with-high-speed-fiber-lmb",
+      "targetUrl": "https://kphstay.com/luxury-apartments-murree?tag=remote-workations",
+      "expectedAnchor": "luxury chalets in Murree",
+      "secondaryAnchor": "kph contact number",
+      "type": "Groq AI Generated Dofollow Guest Article (Dev.to)",
+      "status": "live",
+      "lastChecked": "2026-09-26T14:44:08.306Z",
+      "isLive": true,
+      "isDofollow": true,
+      "httpStatus": 200
+    },
+    {
+      "id": "devto-1790434005721-1",
+      "topic": "1 Bed Executive Furnished Apartment Sector D Bahria Enclave Islamabad",
+      "referringDomain": "dev.to",
+      "referringUrl": "https://dev.to/mubashir_arham/1-bed-executive-furnished-apartment-sector-d-bahria-enclave-islamabad-4jmb",
+      "targetUrl": "https://kphstay.com/room/1-bed-furnished-apartment-sector-d-bahria-enclave-islamabad",
+      "expectedAnchor": "serviced apartments in Islamabad",
+      "secondaryAnchor": "kp house islamabad",
+      "type": "Groq AI Generated Dofollow Guest Article (Dev.to)",
+      "status": "live",
+      "lastChecked": "2026-09-26T14:46:45.721Z",
+      "isLive": true,
+      "isDofollow": true,
+      "httpStatus": 200
+    },
+    {
+      "id": "devto-1790434254179-1",
+      "topic": "2 Bed Furnished Apartment Cube Apartments Bahria Enclave Islamabad",
+      "referringDomain": "dev.to",
+      "referringUrl": "https://dev.to/mubashir_arham/living-the-executive-standard-a-deep-dive-into-cube-apartments-bahria-enclave-islamabad-3m9d",
+      "targetUrl": "https://kphstay.com/room/2-bed-furnished-apartment-cube-apartments-bahria-enclave-islamabad",
+      "expectedAnchor": "Cube Apartments Bahria Enclave",
+      "secondaryAnchor": "serviced apartments in Islamabad",
+      "type": "Groq AI Generated Dofollow Guest Article (Dev.to)",
+      "status": "live",
+      "lastChecked": "2026-09-26T14:50:54.179Z",
+      "isLive": true,
+      "isDofollow": true,
+      "httpStatus": 200
+    },
+    {
+      "id": "devto-1790435215713-1",
+      "topic": "Cube 2 Bed Luxury Executive Suite Bahria Enclave",
+      "referringDomain": "dev.to",
+      "referringUrl": "https://dev.to/mubashir_arham/cube-2-bed-luxury-executive-suite-bahria-enclave-islamabad-9gk",
+      "targetUrl": "https://kphstay.com/room/cube-2-bed-luxury-apartment-bahria-enclave-islamabad",
+      "expectedAnchor": "serviced apartments in Islamabad",
+      "secondaryAnchor": "kph contact number",
+      "type": "Groq AI Generated Dofollow Guest Article (Dev.to)",
+      "status": "live",
+      "lastChecked": "2026-09-26T15:06:55.713Z",
+      "isLive": true,
+      "isDofollow": true,
+      "httpStatus": 200
+    },
+    {
+      "id": "devto-1790435469915-1",
+      "topic": "Long Term Monthly Furnished Rentals in Bahria Enclave Islamabad",
+      "referringDomain": "dev.to",
+      "referringUrl": "https://dev.to/mubashir_arham/long-term-monthly-furnished-rentals-in-bahria-enclave-islamabad-cost-comfort-and-security-unpack-1ne6",
+      "targetUrl": "https://kphstay.com/serviced-apartments-islamabad?plan=monthly-rentals",
+      "expectedAnchor": "serviced apartments in Islamabad",
+      "secondaryAnchor": "kph contact number",
+      "type": "Groq AI Generated Dofollow Guest Article (Dev.to)",
+      "status": "live",
+      "lastChecked": "2026-09-26T15:11:09.915Z",
+      "isLive": true,
+      "isDofollow": true,
+      "httpStatus": 200
+    },
+    {
+      "id": "devto-1790436428161-1",
+      "topic": "Saif-ul-Malook Honeymoon Chalet Naran Luxury Mountain Retreat",
+      "referringDomain": "dev.to",
+      "referringUrl": "https://dev.to/mubashir_arham/saif-ul-malook-honeymoon-chalet-naran-the-definitive-luxury-mountain-retreat-for-couples-4g2a",
+      "targetUrl": "https://kphstay.com/room/honeymoon-chalet-naran-valley",
+      "expectedAnchor": "hotel in Naran Kaghan",
+      "secondaryAnchor": "luxury chalets in Naran",
+      "type": "Groq AI Generated Dofollow Guest Article (Dev.to)",
+      "status": "live",
+      "lastChecked": "2026-09-26T15:27:08.161Z",
+      "isLive": true,
+      "isDofollow": true,
+      "httpStatus": 200
+    },
+    {
+      "id": "devto-1790436685372-1",
+      "topic": "Kaghan Valley Road Trip Guide Best Stays from Balakot to Babusar Top",
+      "referringDomain": "dev.to",
+      "referringUrl": "https://dev.to/mubashir_arham/kaghan-valley-road-trip-guide-best-stays-from-balakot-to-babusar-top-4ldi",
+      "targetUrl": "https://kphstay.com/luxury-hotels-naran-kaghan",
+      "expectedAnchor": "hotel in Naran Kaghan",
+      "secondaryAnchor": "luxury chalets in Naran",
+      "type": "Groq AI Generated Dofollow Guest Article (Dev.to)",
+      "status": "live",
+      "lastChecked": "2026-09-26T15:31:25.372Z",
+      "isLive": true,
+      "isDofollow": true,
+      "httpStatus": 200
+    },
+    {
+      "id": "devto-1790437637002-1",
+      "topic": "Miranjani View Family Suite Nathia Gali Mountain Lodges",
+      "referringDomain": "dev.to",
+      "referringUrl": "https://dev.to/mubashir_arham/sky-high-luxury-inside-the-miranjani-view-family-suite-in-nathia-gali-192e",
+      "targetUrl": "https://kphstay.com/room/miranjani-suite-nathia-gali",
+      "expectedAnchor": "cottages in Nathia Gali",
+      "secondaryAnchor": "luxury chalets in Nathia Gali",
+      "type": "Groq AI Generated Dofollow Guest Article (Dev.to)",
+      "status": "live",
+      "lastChecked": "2026-09-26T15:47:17.002Z",
+      "isLive": true,
+      "isDofollow": true,
+      "httpStatus": 200
+    },
+    {
+      "id": "devto-1790437900548-1",
+      "topic": "Furnished Studio Apartment Islamabad Compact Urban Comfort",
+      "referringDomain": "dev.to",
+      "referringUrl": "https://dev.to/mubashir_arham/furnished-studio-apartment-islamabad-the-new-standard-for-compact-urban-comfort-3m9b",
+      "targetUrl": "https://kphstay.com/room/furnished-studio-apartment-islamabad",
+      "expectedAnchor": "kp house islamabad booking",
+      "secondaryAnchor": "serviced apartments in Islamabad",
+      "type": "Groq AI Generated Dofollow Guest Article (Dev.to)",
+      "status": "live",
+      "lastChecked": "2026-09-26T15:51:40.548Z",
+      "isLive": true,
+      "isDofollow": true,
+      "httpStatus": 200
+    },
+    {
+      "id": "devto-1790438847882-1",
+      "topic": "River View Alpine Suite Kaghan Valley Kunhar Waterfront Stay",
+      "referringDomain": "dev.to",
+      "referringUrl": "https://dev.to/mubashir_arham/the-kunhar-whispers-inside-the-river-view-alpine-suite-kaghan-valley-14hh",
+      "targetUrl": "https://kphstay.com/room/river-view-suite-kaghan-kunhar",
+      "expectedAnchor": "luxury chalets in Naran",
+      "secondaryAnchor": "hotel in Naran Kaghan",
+      "type": "Groq AI Generated Dofollow Guest Article (Dev.to)",
+      "status": "live",
+      "lastChecked": "2026-09-26T16:07:27.882Z",
+      "isLive": true,
+      "isDofollow": true,
+      "httpStatus": 200
+    },
+    {
+      "id": "devto-1790439116944-1",
+      "topic": "Pine Forest Cottage Nathia Gali Alpine Luxury Near Mukshpuri Peak",
+      "referringDomain": "dev.to",
+      "referringUrl": "https://dev.to/mubashir_arham/pine-forest-cottage-nathia-gali-the-ultimate-alpine-basecamp-for-hikers-and-digital-nomads-9n0",
+      "targetUrl": "https://kphstay.com/room/pine-forest-cottage-nathia-gali",
+      "expectedAnchor": "luxury chalets in Nathia Gali",
+      "secondaryAnchor": "cottages in Nathia Gali",
+      "type": "Groq AI Generated Dofollow Guest Article (Dev.to)",
+      "status": "live",
+      "lastChecked": "2026-09-26T16:11:56.944Z",
+      "isLive": true,
+      "isDofollow": true,
+      "httpStatus": 200
+    }
+  ]
+}

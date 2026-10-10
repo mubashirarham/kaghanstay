@@ -122,11 +122,12 @@ const blog1_content = `
 
     <h2 class="text-2xl md:text-3xl font-bold text-slate-900 outfit">1. Why Bahria Enclave is Islamabad's Premier Executive Enclave</h2>
     <p>
-        Situated along Kuri Road and directly connected via the newly carpeted dual-carriageway Islamabad Expressway, Bahria Enclave offers a master-planned sanctuary away from urban congestion. It boasts:
+        Situated along Kuri Road and directly connected via the newly carpeted dual-carriageway Islamabad Expressway, Bahria Enclave offers a master-planned sanctuary away from urban congestion. Whether looking for a <a href="/room/one-bed-apartment-kph-1bhkali-cube923-islamabad" class="text-[#D4AF37] font-bold hover:underline">luxury 1bhk</a> executive unit or a multi-bedroom family residence, guests searching for <a href="/room/furnished-studio-apartment-islamabad" class="text-[#D4AF37] font-bold hover:underline">kp house islamabad booking</a> enjoy:
     </p>
     <ul class="space-y-2 my-4">
-        <li><strong>Uninterrupted Utilities Infrastructure:</strong> Underground electrical wiring and dedicated backup generators ensure zero blackout disruption, while robust commercial gas connections maintain consistent water heating and kitchen cooking.</li>
-        <li><strong>3-Tier Gated Security System:</strong> Round-the-clock physical checkpoint monitoring, automated vehicle recognition, and continuous CCTV patrolling ensure maximum peace of mind.</li>
+        <li><strong>Uninterrupted Utilities Infrastructure:</strong> Underground electrical wiring and dedicated backup generators ensure zero blackout disruption at <a href="/room/2-bed-furnished-apartment-cube-apartments-bahria-enclave-islamabad" class="text-[#D4AF37] font-bold hover:underline">cube apartments bahria enclave</a>, while robust commercial gas connections maintain consistent water heating and kitchen cooking.</li>
+        <li><strong>3-Tier Gated Security System:</strong> Round-the-clock physical checkpoint monitoring, automated vehicle recognition, and continuous CCTV patrolling across Sector A and Sector C ensure maximum peace of mind.</li>
+        <li><strong>Flexible Stay Duration:</strong> Units are fully licensed and available for <a href="/room/2-bed-furnished-apartment-cube-apartments-bahria-enclave-islamabad" class="text-[#D4AF37] font-bold hover:underline">daily rent</a> (1 day or weekend stays) as well as discounted multi-week corporate leases. Direct reservations can be confirmed instantly via the <a href="/contact" class="text-[#D4AF37] font-bold hover:underline">kph contact number</a> (+92 334 009 1127).</li>
         <li><strong>Walkable Lifestyle &amp; Commercial Hub:</strong> Supermarkets, international food franchises, Gloria Jean's Coffee, artisan bakeries, pharmacies, and the world-class CineGold Plex cinema are just steps away.</li>
         <li><strong>Breathtaking Natural Scenery:</strong> Direct views of the green Margalla and Murree mountain ranges, clean air, and lush parks.</li>
     </ul>
@@ -272,28 +273,31 @@ const blog2_content = `
     </ul>
 
     <h2 class="text-2xl md:text-3xl font-bold text-slate-900 outfit">2. Featured Murree Winter Chalets by KPH Stay</h2>
+    <p>
+        Whether you are searching for a high-end honeymoon retreat or a <a href="/room/the-winds-way-lodges-murree" class="text-[#D4AF37] font-bold hover:underline">furnished apartment for rent in murree</a> <a href="/room/the-winds-way-lodges-murree" class="text-[#D4AF37] font-bold hover:underline">with very low budget</a>, our portfolio caters to all mountain travel preferences:
+    </p>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-8">
         <div class="bg-white p-6 rounded-2xl border-2 border-slate-200 shadow-sm hover:border-[#D4AF37] transition-all">
             <h3 class="text-xl font-bold text-slate-900 outfit mb-2">Tulipano by Nook House (2BHK Suites)</h3>
-            <p class="text-sm text-slate-600 mb-4">Luxury 2-bedroom chalets offering expansive valley view balconies, custom pine wood accents, living lounge, and kitchenette.</p>
+            <p class="text-sm text-slate-600 mb-4">Discover the signature <a href="/room/tulipano-by-nook-house-murree" class="text-[#D4AF37] font-bold hover:underline">nook house murree</a> experience at <a href="/room/tulipano-by-nook-house-classic-suite-c2-murree" class="text-[#D4AF37] font-bold hover:underline">tulipano by nook house</a>. Luxury 2-bedroom chalets offering expansive valley view balconies, custom pine wood accents, living lounge, and kitchenette.</p>
             <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full">PKR 25,000 – 26,000 / night</span>
             <div class="mt-4"><a href="/room/tulipano-by-nook-house-murree" class="text-[#D4AF37] font-bold text-sm hover:underline">View Tulipano Chalets &rarr;</a></div>
         </div>
         <div class="bg-white p-6 rounded-2xl border-2 border-slate-200 shadow-sm hover:border-[#D4AF37] transition-all">
             <h3 class="text-xl font-bold text-slate-900 outfit mb-2">The Wind's Way Lodges (2BHK)</h3>
-            <p class="text-sm text-slate-600 mb-4">Secluded alpine lodges set amidst thick pine woods, perfect for couples and small families wanting serene winter quietude.</p>
+            <p class="text-sm text-slate-600 mb-4">Secluded alpine lodges set amidst thick pine woods, perfect for couples and small families wanting serene winter quietude in a private <a href="/room/the-winds-way-lodges-murree" class="text-[#D4AF37] font-bold hover:underline">furnished apartment for rent in murree</a>.</p>
             <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full">PKR 22,000 / night</span>
             <div class="mt-4"><a href="/room/the-winds-way-lodges-murree" class="text-[#D4AF37] font-bold text-sm hover:underline">View The Wind's Way Lodges &rarr;</a></div>
         </div>
         <div class="bg-white p-6 rounded-2xl border-2 border-slate-200 shadow-sm hover:border-[#D4AF37] transition-all">
             <h3 class="text-xl font-bold text-slate-900 outfit mb-2">Valley View Villa (3-Bed Private Farmhouse)</h3>
-            <p class="text-sm text-slate-600 mb-4">Multi-level private mountain villa with lounges on every floor, private outdoor BBQ terrace, and majestic 360-degree snowline views.</p>
+            <p class="text-sm text-slate-600 mb-4">Multi-level private mountain villa with lounges on every floor, private outdoor BBQ terrace, and majestic 360-degree snowline views across the <a href="/room/valley-view-villa-murree" class="text-[#D4AF37] font-bold hover:underline">valley view murree</a> ridge.</p>
             <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full">PKR 30,000 / night</span>
             <div class="mt-4"><a href="/room/valley-view-villa-murree" class="text-[#D4AF37] font-bold text-sm hover:underline">View Valley View Villa &rarr;</a></div>
         </div>
         <div class="bg-white p-6 rounded-2xl border-2 border-slate-200 shadow-sm hover:border-[#D4AF37] transition-all">
             <h3 class="text-xl font-bold text-slate-900 outfit mb-2">Nook 6 Marla Mountain House</h3>
-            <p class="text-sm text-slate-600 mb-4">Independent 3-bedroom private house with attached bathrooms, full kitchen, and private parking for large family retreats.</p>
+            <p class="text-sm text-slate-600 mb-4">Independent 3-bedroom private house with attached bathrooms, full kitchen, and private parking for large family retreats with <a href="/room/6-marla-3-bed-villa-valley-view-In-Murree" class="text-[#D4AF37] font-bold hover:underline">valley view murree villa</a> vistas.</p>
             <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full">PKR 28,000 / night</span>
             <div class="mt-4"><a href="/room/6-marla-3-bed-villa-valley-view-In-Murree" class="text-[#D4AF37] font-bold text-sm hover:underline">View 6 Marla House &rarr;</a></div>
         </div>

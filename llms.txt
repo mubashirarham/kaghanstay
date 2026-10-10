@@ -1,22 +1,35 @@
 # KPH Stay (Kaghan Properties Hospitality)
 
-> Premier provider of luxury furnished apartments, serviced suites, and mountain-view vacation rentals in Islamabad, Murree, and Nathia Gali, Pakistan.
+> Premier provider of luxury furnished apartments, serviced flats, and mountain vacation rentals in Islamabad, Murree, and Nathia Gali, Pakistan.
 
 KPH Stay operates fully furnished service apartments and mountain chalets offering 24/7 concierge, optical fiber Wi-Fi, fully equipped modern kitchens, uninterrupted power backup, and 5-star hospitality.
 
-## Core Offerings & Keywords
-- **Furnished Apartments in Islamabad**: 1BHK, 2BHK, 3BHK, 4BHK luxury apartments in Bahria Enclave and Margalla Foothills.
-- **Furnished Apartments & Mountain Villas in Murree**: The Nook 6-Marla 3-Bed Private Mountain Villa with valley views, Tulipano suites, and The Wind's Way Lodges with climate heating.
-- **Furnished Apartments in Nathia Gali**: Pine-forest 4-bedroom lower ground and upper mountain suites near Ayubia National Park.
-- **Flexible Rental Plans**: Daily, weekly, and monthly rates for business travelers, tourists, overseas Pakistanis, and families.
-- **Unique Property IDs**: Every listing features a verified ID (e.g. KPH-MUR-6MARLA, KPH-ISB-710) for instant concierge lookups and WhatsApp reservations.
+## Core Offerings & Focus Keywords (Islamabad, Murree, Nathia Gali)
+- **Islamabad Accommodations**:
+  - **Stay In Islamabad**: Premier luxury hospitality in Bahria Enclave and Margalla Foothills.
+  - **Furnished Apartments in Islamabad**: 1BHK, 2BHK, 3BHK, and penthouse residences.
+  - **Furnish Apartment**: Turnkey designer living with private chef kitchens and smart workstations.
+  - **Furnished Flats in Islamabad**: Daily, weekly, and monthly self-catering flats.
+  - **Apartments in Islamabad**: Modern serviced suites for executives, overseas Pakistanis, and families.
+- **Murree (& Muree) Accommodations**:
+  - **Stay in Murree / Stay in Muree**: Scenic mountain escapes and alpine holidays.
+  - **Furnished Apartments in Murree / Furnished Apartments in Muree**: Heated valley-view suites.
+  - **Furnish Apartment in Murree**: Cozy chalets with dual heating and uninterrupted hot water.
+  - **Furnished Flats in Murree**: Multi-bedroom private flats for families and groups.
+  - **Apartments in Murree**: Premium mountain lodging near Bhurban and Mall Road.
+- **Nathia Gali Accommodations**:
+  - **Stay in Nathia Gali**: Cloud-touch pine forest getaways near Ayubia National Park.
+  - **Furnished Apartments in Nathia Gali**: Alpine suites moments from the historic Pipeline Track.
+  - **Furnish Apartment in Nathia Gali**: Wood fireplace chalets with scenic mountain decks.
+  - **Furnished Flats in Nathia Gali**: Multi-room family holiday flats with complete kitchens.
+  - **Apartments in Nathia Gali**: High-altitude nature retreats with 24/7 concierge care.
 
 ## Essential Links
-- [All Accommodations](https://kphstay.com/rooms): Complete catalog of studio, 1BHK, 2BHK, 3BHK, and 4BHK furnished apartments.
-- [Islamabad Furnished Apartments](https://kphstay.com/rooms?location=Islamabad): Luxury service apartments in Islamabad.
-- [Murree Furnished Apartments](https://kphstay.com/rooms?location=Murree): Scenic mountain apartments in Murree.
-- [Nathia Gali Furnished Apartments](https://kphstay.com/rooms?location=Nathia%20Gali): Pine-valley chalets in Nathia Gali.
-- [Resort Journal & Travel Guides](https://kphstay.com/blog): Itineraries, packing tips, and local attractions.
+- [All Accommodations](https://kphstay.com/rooms): Complete catalog of studio, 1BHK, 2BHK, 3BHK, and 4BHK furnished apartments in Islamabad, Murree, and Nathia Gali.
+- [Islamabad Furnished Apartments](https://kphstay.com/serviced-apartments-islamabad): Luxury serviced flats and apartments in Islamabad.
+- [Murree Furnished Apartments](https://kphstay.com/luxury-apartments-murree): Heated mountain chalets and apartments in Murree.
+- [Nathia Gali Vacation Rentals](https://kphstay.com/vacation-rentals-nathia-gali): Pine-valley chalets and apartments in Nathia Gali.
+- [Resort Journal & Travel Guides](https://kphstay.com/blog): Itineraries, packing tips, and local attraction guides.
 - [Reservations & 24/7 Concierge](https://kphstay.com/contact): Direct bookings, corporate quotes, and airport shuttle service.
 - [Pricing & Payment Policies](https://kphstay.com/pricing): Transparent PKR pricing, accepted payment methods, and tax policies.
 

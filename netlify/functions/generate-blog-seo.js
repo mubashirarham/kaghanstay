@@ -39,10 +39,15 @@ exports.handler = async (event, context) => {
 - Content Preview: ${cleanContent}
 
 Instructions:
-Act as an Elite Hospitality SEO Strategist & Search Data Analyst. Output strictly valid JSON object with:
-1. "seoTitle": Brand-aligned, high-CTR title string strictly between 50 and 60 characters ending with "| KPH Stay".
-2. "seoDescription": Meta description strictly between 140 and 160 characters highlighting key travel takeaways and call to action.
-3. "seoKeywords": Comma-separated string of 5-7 focus & LSI search keywords.
+Act as an Elite Hospitality SEO Strategist & Search Data Analyst. Weave the optimal combo of short-tail and long-tail target keywords based on region:
+- Islamabad topics: "Stay In Islamabad", "Furnished Apartments in Islamabad", "Furnish Apartment", "Furnished Flats in Islamabad", "Apartments in Islamabad".
+- Murree topics: "Stay in Murree" (and "Stay in Muree"), "Furnished Apartments in Murree", "Furnish Apartment in Murree", "Furnished Flats in Murree", "Apartments in Murree".
+- Nathia Gali topics: "Stay in Nathia Gali", "Furnished Apartments in Nathia Gali", "Furnish Apartment in Nathia Gali", "Furnished Flats in Nathia Gali", "Apartments in Nathia Gali".
+
+Output strictly valid JSON object with:
+1. "seoTitle": Brand-aligned, high-CTR title string strictly between 50 and 60 characters ending with "| KPH Stay" integrating focus keywords.
+2. "seoDescription": Meta description strictly between 140 and 160 characters highlighting key travel takeaways, target keyword combo, and call to action.
+3. "seoKeywords": Comma-separated string of 5-7 focus & LSI search keywords incorporating the short and long combinations.
 4. "slug": Clean, lowercase, hyphenated URL-friendly slug based on title.
 5. "searchIntent": Intent classification (e.g. "Informational / Destination Travel Planning").
 6. "targetAudience": Target demographic (e.g. "Vacationers, Hikers, Overseas Pakistanis & Families").`;

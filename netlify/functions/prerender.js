@@ -8,9 +8,9 @@ const FIRESTORE_BASE_URL = 'https://firestore.googleapis.com/v1/projects/kaghan-
 const DEFAULT_STAY_BLOGS = [
     {
         id: "luxury-serviced-apartments-islamabad-vs-hotels-guide",
-        title: "The Comprehensive Islamabad Accommodation Guide: Why Luxury Serviced Apartments in Bahria Enclave Outperform Traditional Hotels",
+        title: "Stay In Islamabad: Complete Guide to Luxury Furnished Apartments & Furnished Flats in Islamabad",
         slug: "luxury-serviced-apartments-islamabad-vs-hotels-guide",
-        excerpt: "Discover why discerning corporate executives, overseas families, and leisure travelers are choosing spacious serviced apartments over cramped 5-star hotel rooms in Islamabad.",
+        excerpt: "Planning your Stay In Islamabad? Discover why luxury furnished apartments in Islamabad and serviced furnished flats outperform traditional hotels. Learn about turnkey furnish apartment living and prime apartments in Islamabad.",
         content: `<h2>The Evolution of Luxury Hospitality in Pakistan's Capital</h2>
 <p>For decades, travelers visiting Islamabad—whether for international diplomatic missions, corporate conferences, or family reunions—instinctively booked traditional five-star hotels in the Blue Area or the Red Zone. However, the hospitality landscape in Pakistan's capital has undergone a permanent structural transformation. Discerning travelers, overseas Pakistanis, digital nomads, and extended-stay guests are increasingly seeking residences that provide genuine residential comfort, autonomous living, spacious layouts, and total privacy without sacrificing high-end concierge services.</p>
 <p>Modern travelers no longer want to be confined to a standard 300-square-foot hotel room where every extra guest requires an expensive adjoining suite and daily dining depends entirely on overpriced room service menus. This guide provides an in-depth analysis of why fully furnished luxury serviced apartments—particularly in master-planned communities like <a href="/serviced-apartments-islamabad">Bahria Enclave Islamabad</a>—have emerged as the undisputed superior accommodation choice in the federal capital.</p>
@@ -137,9 +137,9 @@ const DEFAULT_STAY_BLOGS = [
     },
     {
         id: "murree-bhurban-luxury-chalets-vacation-guide",
-        title: "The Definitive Murree & Bhurban Vacation Guide: Mountain Chalets, Heated Suites & Four-Season Alpine Itineraries",
+        title: "Stay in Murree & Bhurban: Luxury Furnished Apartments & Mountain Furnished Flats Guide",
         slug: "murree-bhurban-luxury-chalets-vacation-guide",
-        excerpt: "Plan the perfect alpine getaway to Murree Hills and Bhurban with our comprehensive guide on luxury heated chalets, seasonal weather tips, and curated 3-day itineraries.",
+        excerpt: "Plan your dream Stay in Murree (Muree) with alpine furnished apartments in Murree and heated furnished flats. Explore winter snowfall retreats and turnkey furnish apartment chalets.",
         content: `<h2>The Alpine Splendor of Murree Hills and Bhurban</h2>
 <p>Rising over 7,500 feet above sea level, the pine-clad ridges of Murree and the serene forested slopes of Bhurban represent Pakistan's most accessible and beloved mountain getaways. Located just a smooth 60-minute drive from Islamabad via the four-lane Murree Expressway (N-75), this alpine sanctuary offers crisp mountain air, panoramic Himalayan vistas, lush pine forests, and a dramatic four-season climate that transforms the landscape every few months.</p>
 <p>Whether you are seeking a romantic snow-covered winter holiday, a refreshing summer monsoon escape from the plains, or a peaceful autumn retreat among golden foliage, staying in a private <a href="/luxury-apartments-murree">luxury heated apartment or chalet in Murree</a> elevates your vacation from a standard hotel visit into an unforgettable mountain experience.</p>
@@ -267,9 +267,9 @@ const DEFAULT_STAY_BLOGS = [
     },
     {
         id: "nathia-gali-galiyat-travel-guide-pine-chalets-hiking",
-        title: "Nathia Gali & The Galiyat Highlands: Complete Travel Guide to Cloud-Touch Chalets, Mukshpuri Treks & Alpine Living",
+        title: "Stay in Nathia Gali: Complete Guide to Furnished Apartments, Chalets & Flats",
         slug: "nathia-gali-galiyat-travel-guide-pine-chalets-hiking",
-        excerpt: "Experience the pristine wilderness of Nathia Gali and the Galiyat range. Discover Mukshpuri and Miranjani hiking trails, Pipeline Track walks, and luxury chalets nestled in ancient pine forests.",
+        excerpt: "Planning your Stay in Nathia Gali? Discover luxury furnished apartments in Nathia Gali, forest furnished flats, and scenic apartments in Nathia Gali with heating and mountain trail access.",
         content: `<h2>The Crown Jewel of the Galiyat Mountain Range</h2>
 <p>Perched at an elevation of 8,200 feet (2,500 meters) in the heart of the Hazara region of Khyber Pakhtunkhwa, Nathia Gali is widely celebrated as the most serene and ecologically intact mountain resort in Northern Pakistan. Unlike more commercialized hill towns, Nathia Gali retains its pristine alpine charm: towering centuries-old Himalayan cedar (Deodar) and Blue Pine forests, rolling cloud banks that drift directly through your balcony, and tranquil trails where the only sounds are chirping birds and mountain breezes.</p>
 <p>For nature enthusiasts, trekking adventurers, and families seeking refined alpine luxury, choosing a private <a href="/vacation-rentals-nathia-gali">luxury chalet or vacation rental in Nathia Gali</a> provides the ultimate mountain experience. This comprehensive guide covers top hiking tracks, seasonal weather insights, wildlife etiquette, and accommodation tips for an unforgettable holiday in the Galiyat.</p>
@@ -764,9 +764,8 @@ function prerenderRoomDetails(html, room) {
         typeName = '1 Bed Furnished Apartment';
     }
 
-    // 3. Clean Name & Dynamic High-Impact Title Tag
+    // 3. Clean Name & Dynamic High-Impact CTR-Optimized Title Tag
     let cleanRoomName = room.name ? room.name
-        .replace(/\s*[–—-]\s*by\s+Nook\s+House/gi, '')
         .replace(/\s*[–—-]\s*Book\s+Your\s+Stay.*/gi, '')
         .replace(/\s*[–—-]\s*Your\s+Perfect\s+Mountain\s+Getaway/gi, '')
         .replace(/\s*[–—-]\s*Your\s+Private\s+Mountain\s+Escape.*/gi, '')
@@ -779,31 +778,66 @@ function prerenderRoomDetails(html, room) {
             .trim();
         roomTitle = `${baseSeoTitle} | KPH Stay`;
     } else {
-        roomTitle = `${cleanRoomName} | ${typeName} in ${city} | KPH Stay`;
+        const formattedPrice = formatPKR(pkrPrice);
+        if (city === 'Murree') {
+            if (rawName.includes('tulipano') || rawName.includes('nook house')) {
+                roomTitle = `${cleanRoomName} | Heated Luxury Suite & Mountain Views - KPH Stay`;
+            } else if (rawName.includes('winds way') || rawName.includes('wind')) {
+                roomTitle = `The Winds Way Lodges Murree | Furnished Apartment for Rent • KPH Stay`;
+            } else if (rawName.includes('valley view')) {
+                roomTitle = `${cleanRoomName} | 3-Bed Luxury Mountain Chalet in Murree • KPH Stay`;
+            } else {
+                roomTitle = `${cleanRoomName} | Furnished Apartment for Rent in Murree (From ${formattedPrice}/Night) - KPH Stay`;
+            }
+        } else if (city === 'Islamabad') {
+            if (rawName.includes('cube') || rawLoc.includes('cube') || rawLoc.includes('bahria')) {
+                roomTitle = `${cleanRoomName} | Cube Apartments Bahria Enclave Islamabad • KPH Stay`;
+            } else if (rawName.includes('studio')) {
+                roomTitle = `${cleanRoomName} | Furnished Studio Apartment Islamabad (From ${formattedPrice}/Night) • KPH Stay`;
+            } else if (bedsCount === 1) {
+                roomTitle = `${cleanRoomName} | Luxury 1BHK Serviced Apartment Islamabad • KPH Stay`;
+            } else {
+                roomTitle = `${cleanRoomName} | ${typeName} in Bahria Enclave Islamabad (From ${formattedPrice}/Night) - KPH Stay`;
+            }
+        } else if (city === 'Nathia Gali') {
+            roomTitle = `${cleanRoomName} | Luxury Heated Mountain Chalet in Nathia Gali • KPH Stay`;
+        } else {
+            roomTitle = `${cleanRoomName} | ${typeName} in ${city} (From ${formattedPrice}/Night) - KPH Stay`;
+        }
     }
     roomTitle = escapeHTML(roomTitle);
 
-    // 4. Dynamic Meta Description with High-Intent Keywords
+    // 4. Dynamic Meta Description with High-Intent Keywords & Pricing Signals
     let rawDesc = '';
     if (room.seoDescription && room.seoDescription.trim() && room.seoDescription.length > 50) {
         rawDesc = room.seoDescription.trim();
     } else {
-        rawDesc = `Book ${cleanRoomName}, a fully furnished ${typeName.toLowerCase()} in ${city}. Features equipped kitchen, 24/7 generator backup, fast Wi-Fi, heating/AC, and private parking. Rates from ${formatPKR(pkrPrice)}/night with KPH Stay.`;
+        const formattedPrice = formatPKR(pkrPrice);
+        rawDesc = `Book ${cleanRoomName} (${typeName.toLowerCase()}) in ${city}. Features 24/7 generator backup, equipped kitchen, heating/AC, fast Wi-Fi & private parking. Rates from ${formattedPrice}/night. Instant WhatsApp & online booking with KPH Stay.`;
     }
     const roomDesc = escapeHTML(rawDesc.slice(0, 160));
 
     // 5. Dynamic Keywords Assembly
     const keywordSet = new Set();
-    keywordSet.add(`furnished apartments in ${city.toLowerCase()}`);
-    keywordSet.add(`furnished apartment ${city.toLowerCase()}`);
-    keywordSet.add(`${typeName.toLowerCase()} in ${city.toLowerCase()}`);
-    keywordSet.add(`${typeName.toLowerCase()} ${city.toLowerCase()}`);
-    keywordSet.add(`luxury serviced apartments ${city.toLowerCase()}`);
-    keywordSet.add(`short stay apartments ${city.toLowerCase()}`);
-    keywordSet.add(`monthly furnished apartment ${city.toLowerCase()}`);
-    keywordSet.add(`vacation rentals ${city.toLowerCase()}`);
+    const cityLower = city.toLowerCase();
+    keywordSet.add(`stay in ${cityLower}`);
+    keywordSet.add(`furnished apartments in ${cityLower}`);
+    keywordSet.add(`furnish apartment`);
+    keywordSet.add(`furnish apartment in ${cityLower}`);
+    keywordSet.add(`furnished flats in ${cityLower}`);
+    keywordSet.add(`apartments in ${cityLower}`);
+    keywordSet.add(`${typeName.toLowerCase()} in ${cityLower}`);
+    keywordSet.add(`luxury serviced apartments in ${cityLower}`);
+    keywordSet.add(`short stay furnished apartments ${cityLower}`);
+    keywordSet.add(`monthly furnished apartment ${cityLower}`);
+    keywordSet.add(`vacation rentals ${cityLower}`);
 
     if (city === 'Islamabad') {
+        keywordSet.add('stay in islamabad');
+        keywordSet.add('furnished apartments in islamabad');
+        keywordSet.add('furnished flats in islamabad');
+        keywordSet.add('apartments in islamabad');
+        keywordSet.add('furnish apartment in islamabad');
         keywordSet.add('bahria enclave furnished apartments');
         keywordSet.add('royal mall islamabad apartment');
         keywordSet.add('cube apartments islamabad');
@@ -815,12 +849,27 @@ function prerenderRoomDetails(html, room) {
             keywordSet.add('murree view apartment islamabad');
         }
     } else if (city === 'Murree') {
+        keywordSet.add('stay in murree');
+        keywordSet.add('stay in muree');
+        keywordSet.add('furnished apartments in murree');
+        keywordSet.add('furnished apartments in muree');
+        keywordSet.add('furnished flats in murree');
+        keywordSet.add('furnished flats in muree');
+        keywordSet.add('apartments in murree');
+        keywordSet.add('apartments in muree');
+        keywordSet.add('furnish apartment in murree');
+        keywordSet.add('furnish apartment in muree');
         keywordSet.add('mountain view chalets murree');
         keywordSet.add('murree vacation rentals');
         keywordSet.add('bhurban furnished apartments');
         keywordSet.add('heated apartments murree');
         keywordSet.add('holiday homes murree');
     } else if (city === 'Nathia Gali') {
+        keywordSet.add('stay in nathia gali');
+        keywordSet.add('furnished apartments in nathia gali');
+        keywordSet.add('furnished flats in nathia gali');
+        keywordSet.add('apartments in nathia gali');
+        keywordSet.add('furnish apartment in nathia gali');
         keywordSet.add('luxury chalets nathia gali');
         keywordSet.add('pine forest cottages nathia gali');
         keywordSet.add('galiyat vacation homes');
@@ -1076,6 +1125,41 @@ function prerenderRoomDetails(html, room) {
                             "text": `Guests enjoy complimentary high-speed optical fiber Wi-Fi, 24/7 generator power backup, climate heating/cooling, microwave, refrigerator, hot water geyser, and dedicated parking.`
                         }
                     },
+                    ...(city === 'Murree' ? [
+                        {
+                            "@type": "Question",
+                            "name": `What makes Nook House Murree and Tulipano suites ideal for winter mountain vacations?`,
+                            "acceptedAnswer": {
+                                "@type": "Answer",
+                                "text": `Nook House and Tulipano luxury suites in Murree feature high-BTU climate heating, warm electric thermal under-blankets, 24/7 instant hot water, private scenic valley balconies, and dedicated parking with snow clearing access.`
+                            }
+                        },
+                        {
+                            "@type": "Question",
+                            "name": `Is this furnished apartment in Murree suitable for families looking for budget & low-cost stays?`,
+                            "acceptedAnswer": {
+                                "@type": "Answer",
+                                "text": `Yes! KPH Stay provides spacious 1-bed, 2-bed, and 3-bed furnished apartments in Murree with full kitchens and mountain views at direct owner budget-friendly nightly rates.`
+                            }
+                        }
+                    ] : [
+                        {
+                            "@type": "Question",
+                            "name": `Are Cube Apartments in Bahria Enclave Islamabad available for 1 day daily rent and monthly corporate stays?`,
+                            "acceptedAnswer": {
+                                "@type": "Answer",
+                                "text": `Yes! KPH Stay offers 1-bedroom and 2-bedroom executive Cube Apartments in Bahria Enclave for daily rent (1 day or more), weekly stays (15% off), and monthly reservations (up to 35% discount) with 24/7 solar and generator power backup.`
+                            }
+                        },
+                        {
+                            "@type": "Question",
+                            "name": `How do I contact KPH Stay for direct booking and customer support?`,
+                            "acceptedAnswer": {
+                                "@type": "Answer",
+                                "text": `You can contact our 24/7 resort front desk hotline at +92 334 009 1127 or +92 51 8461975 for instant WhatsApp reservation confirmation and inquiries.`
+                            }
+                        }
+                    ]),
                     {
                         "@type": "Question",
                         "name": `Can I book this furnished apartment in ${city} for weekly or monthly stays?`,
@@ -1134,6 +1218,13 @@ function prerenderBlogPost(html, post) {
         modified = modified.replace(/<link\s+rel=["']canonical["'][^>]*>/i, `<link rel="canonical" href="${postUrl}">`);
     } else {
         modified = modified.replace(/<\/head>/i, `  <link rel="canonical" href="${postUrl}">\n</head>`);
+    }
+
+    const postKeywords = post.keywords || post.seoKeywords || 'Stay In Islamabad, Furnished Apartments in Islamabad, Furnish Apartment, Furnished Flats in Islamabad, Apartments in Islamabad, Stay in Murree, Furnished Apartments in Murree, Furnished Flats in Murree, Apartments in Murree, Stay in Nathia Gali, Furnished Apartments in Nathia Gali, Furnished Flats in Nathia Gali, Apartments in Nathia Gali, Stay in Muree';
+    if (/<meta\s+name=["']keywords["']/i.test(modified)) {
+        modified = modified.replace(/<meta\s+name=["']keywords["'][^>]*>/i, `<meta name="keywords" content="${escapeHTML(postKeywords)}">`);
+    } else {
+        modified = modified.replace(/<\/head>/i, `  <meta name="keywords" content="${escapeHTML(postKeywords)}">\n</head>`);
     }
 
     const ogTags = `

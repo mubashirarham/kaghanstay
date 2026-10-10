@@ -6,7 +6,9 @@
   "scripts": {
     "build": "tailwindcss -i ./assets/css/input.css -o ./assets/css/tailwind.min.css --minify",
     "index:google": "node scripts/submit-indexing.js",
-    "index:listings": "node scripts/submit-indexing.js --listings"
+    "index:listings": "node scripts/submit-indexing.js --listings",
+    "backlinks:agent": "node scripts/continuous-backlink-agent.js",
+    "backlinks:continuous": "node scripts/continuous-backlink-agent.js --continuous --interval=30"
   },
   "dependencies": {
     "@netlify/blobs": "^10.7.9",

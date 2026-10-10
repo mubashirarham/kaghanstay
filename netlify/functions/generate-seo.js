@@ -40,10 +40,16 @@ exports.handler = async (event, context) => {
 - Description Overview: ${description || 'Luxury serviced accommodation with scenic views and premium facilities.'}
 
 Instructions:
-Act as an Elite Hospitality SEO Strategist & Search Data Analyst. Analyze the target audience, search intent, and competitiveness for travel in Pakistan (Islamabad, Nathia Gali, Murree). Return strictly a valid JSON object with the following keys:
-1. "seoTitle": Brand-aligned, high-CTR title string strictly between 50 and 60 characters ending with "| KPH Stay".
-2. "seoDescription": Compelling meta description string strictly between 140 and 160 characters highlighting key features, value props (e.g. 24/7 security, views, Wi-Fi), and a clear booking call-to-action.
-3. "seoKeywords": Comma-separated string of 5-7 high-converting focus & LSI search keywords.
+Act as an Elite Hospitality SEO Strategist & Search Data Analyst. Analyze the target audience, search intent, and competitiveness for travel in Pakistan (Islamabad, Nathia Gali, Murree/Muree).
+Weave the optimal balance of short-tail and long-tail focus keywords based on location:
+- Islamabad listings: "Stay In Islamabad", "Furnished Apartments in Islamabad", "Furnish Apartment", "Furnished Flats in Islamabad", "Apartments in Islamabad".
+- Murree listings: "Stay in Murree" (and "Stay in Muree"), "Furnished Apartments in Murree", "Furnish Apartment in Murree", "Furnished Flats in Murree", "Apartments in Murree".
+- Nathia Gali listings: "Stay in Nathia Gali", "Furnished Apartments in Nathia Gali", "Furnish Apartment in Nathia Gali", "Furnished Flats in Nathia Gali", "Apartments in Nathia Gali".
+
+Return strictly a valid JSON object with the following keys:
+1. "seoTitle": Brand-aligned, high-CTR title string strictly between 50 and 60 characters ending with "| KPH Stay" integrating high-intent keywords.
+2. "seoDescription": Compelling meta description string strictly between 140 and 160 characters highlighting key features, value props (e.g. 24/7 security, views, Wi-Fi), target keywords, and a clear booking call-to-action.
+3. "seoKeywords": Comma-separated string of 5-7 high-converting focus & LSI search keywords combining short and long variants.
 4. "slug": Clean, lowercase, hyphenated URL-friendly slug based on the listing name and location.
 5. "searchIntent": Classification of search intent ("High Commercial / Transactional Intent - Direct Reservation").
 6. "targetAudience": Brief demographic description (e.g., "Diplomats, Overseas Pakistanis, Corporate Executives & Vacationing Families").

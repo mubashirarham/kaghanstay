@@ -91,6 +91,62 @@
   to = "/vacation-rentals-nathia-gali.html"
   status = 200
 
+# Exact Match Target Keyword Aliases
+[[redirects]]
+  from = "/stay-in-islamabad"
+  to = "/serviced-apartments-islamabad.html"
+  status = 200
+
+[[redirects]]
+  from = "/furnished-flats-islamabad"
+  to = "/serviced-apartments-islamabad.html"
+  status = 200
+
+[[redirects]]
+  from = "/apartments-in-islamabad"
+  to = "/serviced-apartments-islamabad.html"
+  status = 200
+
+[[redirects]]
+  from = "/stay-in-murree"
+  to = "/luxury-apartments-murree.html"
+  status = 200
+
+[[redirects]]
+  from = "/stay-in-muree"
+  to = "/luxury-apartments-murree.html"
+  status = 200
+
+[[redirects]]
+  from = "/furnished-apartments-muree"
+  to = "/luxury-apartments-murree.html"
+  status = 200
+
+[[redirects]]
+  from = "/furnished-flats-murree"
+  to = "/luxury-apartments-murree.html"
+  status = 200
+
+[[redirects]]
+  from = "/apartments-in-murree"
+  to = "/luxury-apartments-murree.html"
+  status = 200
+
+[[redirects]]
+  from = "/stay-in-nathia-gali"
+  to = "/vacation-rentals-nathia-gali.html"
+  status = 200
+
+[[redirects]]
+  from = "/furnished-flats-nathia-gali"
+  to = "/vacation-rentals-nathia-gali.html"
+  status = 200
+
+[[redirects]]
+  from = "/apartments-in-nathia-gali"
+  to = "/vacation-rentals-nathia-gali.html"
+  status = 200
+
 [[redirects]]
   from = "/room-details"
   to = "/room-details.html"

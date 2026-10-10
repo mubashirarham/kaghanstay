@@ -12,8 +12,9 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
-    <title>Room Details | KPH Stay Luxury Service Apartments</title>
-    <meta name="description" content="View detailed room information, luxury amenities, photo gallery, and pricing for KPH Stay service apartments in Islamabad & Nathia Gali.">
+    <title>Furnished Apartments & Flats | Stay in Islamabad, Murree & Nathia Gali - KPH Stay</title>
+    <meta name="description" content="Book luxury furnished apartments in Islamabad, furnished flats in Murree, apartments in Nathia Gali, and turnkey furnish apartment suites. View photos, amenities, and direct reservations.">
+    <meta name="keywords" content="Stay In Islamabad, Furnished Apartments in Islamabad, Furnish Apartment, Furnished Flats in Islamabad, Apartments in Islamabad, Stay in Murree, Furnished Apartments in Murree, Furnished Flats in Murree, Apartments in Murree, Stay in Nathia Gali, Furnished Apartments in Nathia Gali, Furnished Flats in Nathia Gali, Apartments in Nathia Gali, Stay in Muree, KPH Stay">
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
     <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
     <meta name="bingbot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
@@ -39,8 +40,8 @@
     <meta property="og:site_name" content="KPH Stay">
     <meta property="og:locale" content="en_US">
     <meta property="og:url" content="https://kphstay.com/rooms">
-    <meta property="og:title" content="Suite & Apartment Details | KPH Stay">
-    <meta property="og:description" content="Explore details, luxury amenities, virtual photos, and transparent pricing for KPH Stay luxury suites in Islamabad & Nathia Gali.">
+    <meta property="og:title" content="Furnished Apartments & Flats | Stay in Islamabad, Murree & Nathia Gali">
+    <meta property="og:description" content="Book luxury furnished apartments in Islamabad, furnished flats in Murree, apartments in Nathia Gali, and turnkey furnish apartment suites.">
     <meta property="og:image" content="https://kphstay.com/assets/images/og-share.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -51,8 +52,8 @@
     <meta name="twitter:site" content="@kphstay">
     <meta name="twitter:creator" content="@kphstay">
     <meta name="twitter:url" content="https://kphstay.com/rooms">
-    <meta name="twitter:title" content="Suite & Apartment Details | KPH Stay">
-    <meta name="twitter:description" content="Explore details, luxury amenities, virtual photos, and transparent pricing for KPH Stay luxury suites in Islamabad & Nathia Gali.">
+    <meta name="twitter:title" content="Furnished Apartments & Flats | Stay in Islamabad, Murree & Nathia Gali">
+    <meta name="twitter:description" content="Book luxury furnished apartments in Islamabad, furnished flats in Murree, apartments in Nathia Gali, and turnkey furnish apartment suites.">
     <meta name="twitter:image" content="https://kphstay.com/assets/images/og-share.jpg">
     <meta name="twitter:image:alt" content="KPH Stay Luxury Suite Details">
 
@@ -1008,38 +1009,51 @@
 
                 // Dynamic Keywords Assembly
                 const keywordSet = new Set();
+                keywordSet.add(`stay in ${city.toLowerCase()}`);
                 keywordSet.add(`furnished apartments in ${city.toLowerCase()}`);
+                keywordSet.add('furnish apartment');
+                keywordSet.add(`furnish apartment in ${city.toLowerCase()}`);
+                keywordSet.add(`furnished flats in ${city.toLowerCase()}`);
+                keywordSet.add(`apartments in ${city.toLowerCase()}`);
                 keywordSet.add(`furnished apartment ${city.toLowerCase()}`);
                 keywordSet.add(`${typeName.toLowerCase()} in ${city.toLowerCase()}`);
-                keywordSet.add(`${typeName.toLowerCase()} ${city.toLowerCase()}`);
                 keywordSet.add(`luxury serviced apartments ${city.toLowerCase()}`);
-                keywordSet.add(`short stay apartments ${city.toLowerCase()}`);
-                keywordSet.add(`monthly furnished apartment ${city.toLowerCase()}`);
                 keywordSet.add(`vacation rentals ${city.toLowerCase()}`);
 
                 if (city === 'Islamabad') {
+                    keywordSet.add('stay in islamabad');
+                    keywordSet.add('furnished apartments in islamabad');
+                    keywordSet.add('furnished flats in islamabad');
+                    keywordSet.add('apartments in islamabad');
                     keywordSet.add('bahria enclave furnished apartments');
                     keywordSet.add('royal mall islamabad apartment');
                     keywordSet.add('cube apartments islamabad');
                     keywordSet.add('1 bed furnished apartment islamabad');
                     keywordSet.add('2 bed furnished apartment islamabad');
-                    keywordSet.add('furnished flats for rent in islamabad');
                     if (rawName.includes('murree view')) {
                         keywordSet.add('murree view studio islamabad');
                         keywordSet.add('murree view apartment islamabad');
                     }
                 } else if (city === 'Murree') {
+                    keywordSet.add('stay in murree');
+                    keywordSet.add('stay in muree');
+                    keywordSet.add('furnished apartments in murree');
+                    keywordSet.add('furnished apartments in muree');
+                    keywordSet.add('furnish apartment in murree');
+                    keywordSet.add('furnished flats in murree');
+                    keywordSet.add('apartments in murree');
                     keywordSet.add('mountain view chalets murree');
-                    keywordSet.add('murree vacation rentals');
                     keywordSet.add('bhurban furnished apartments');
                     keywordSet.add('heated apartments murree');
-                    keywordSet.add('holiday homes murree');
                 } else if (city === 'Nathia Gali') {
+                    keywordSet.add('stay in nathia gali');
+                    keywordSet.add('furnished apartments in nathia gali');
+                    keywordSet.add('furnish apartment in nathia gali');
+                    keywordSet.add('furnished flats in nathia gali');
+                    keywordSet.add('apartments in nathia gali');
                     keywordSet.add('luxury chalets nathia gali');
                     keywordSet.add('pine forest cottages nathia gali');
-                    keywordSet.add('galiyat vacation homes');
                     keywordSet.add('ayubia family suites');
-                    keywordSet.add('4 bedroom cottage nathia gali');
                 }
 
                 if (currentRoom.seoKeywords) {

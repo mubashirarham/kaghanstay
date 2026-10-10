@@ -1,7 +1,10 @@
-const CACHE_NAME = 'kph-stay-cache-v11';
+const CACHE_NAME = 'kph-stay-cache-v12';
 const ASSETS_TO_CACHE = [
   '/',
   '/rooms',
+  '/serviced-apartments-islamabad',
+  '/luxury-apartments-murree',
+  '/vacation-rentals-nathia-gali',
   '/blog',
   '/booking',
   '/login',
